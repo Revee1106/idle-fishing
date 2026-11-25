@@ -37,6 +37,19 @@ export interface SpikeOfflineSession {
   settledUntilMs: number;
 }
 
+/**
+ * SPIKE-ONLY: result locked when a v1 attempt enters FIGHTING, so a migrated
+ * in-progress attempt can be resumed without re-drawing. Normal v2 runs do not
+ * persist this field (it is optional and absent).
+ */
+export interface SpikeAttemptLock {
+  seq: number;
+  claimKey: string;
+  speciesU: number;
+  captureU: number;
+  fightMs: number;
+}
+
 /** Save schema v2 (current spike schema). */
 export interface SpikeGameState {
   schemaVersion: 2;
@@ -56,9 +69,14 @@ export interface SpikeGameState {
   envNextCheckMs: number;
   envActivityMicro: number;
   offline: SpikeOfflineSession | null;
+  attemptLock?: SpikeAttemptLock | null;
 }
 
-/** Save schema v1, only used to verify migration. */
+/**
+ * Save schema v1, only used to verify migration. The optional attempt fields
+ * are a minimal experimental extension used to prove an in-progress attempt
+ * survives migration; real v1 saves do not contain them.
+ */
 export interface SpikeGameStateV1 {
   schemaVersion: 1;
   saveEpoch: string;
@@ -67,6 +85,13 @@ export interface SpikeGameStateV1 {
   counter: number;
   gold: Nat;
   rng: SpikeRngState;
+  attempt?: {
+    stage: Exclude<SpikeStage, 'IDLE'>;
+    stageStartMs: number;
+    stageDone: Nat;
+    stageRequired: Nat;
+    lock?: SpikeAttemptLock | null;
+  };
 }
 
 export interface SpikeEnvelope {

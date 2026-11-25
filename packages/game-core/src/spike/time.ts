@@ -14,6 +14,17 @@ export function assertSafeMs(value: number, label: string): void {
   }
 }
 
+/** Add millisecond values only when the result remains a representable safe integer. */
+export function safeAddMs(a: number, b: number, label = 'millisecond sum'): number {
+  assertSafeMs(a, `${label} left operand`);
+  assertSafeMs(b, `${label} right operand`);
+  const sum = a + b;
+  if (!Number.isSafeInteger(sum)) {
+    throw new CanonicalJsonError(`${label} exceeds the safe millisecond range: ${a} + ${b}`);
+  }
+  return sum;
+}
+
 /** round(ms * 1e6); a positive value that rounds to 0 becomes 1 micro-unit. */
 export function workFromMs(ms: number): Nat {
   if (!Number.isFinite(ms) || ms < 0) throw new CanonicalJsonError(`Invalid work ms: ${ms}`);
@@ -70,8 +81,10 @@ export function integrateWork(
     const needed = requiredBig - doneBig;
     if (needed <= 0n) return { done: required, completedAtMs: startMs };
     const elapsed = Number(ceilDiv(needed, rate));
-    if (elapsed > dt) throw new CanonicalJsonError('Internal: completion outside interval');
-    return { done: required, completedAtMs: startMs + elapsed };
+    if (!Number.isSafeInteger(elapsed) || elapsed > dt) {
+      throw new CanonicalJsonError('Internal: completion outside interval');
+    }
+    return { done: required, completedAtMs: safeAddMs(startMs, elapsed, 'completion time') };
   }
   return { done: natFromBigInt(total), completedAtMs: null };
 }
@@ -90,7 +103,9 @@ export function completionTimeMs(
   const elapsed = ceilDiv(requiredBig - doneBig, rate);
   const ms = Number(elapsed);
   if (!Number.isSafeInteger(ms)) return null;
-  return startMs + ms;
+  assertSafeMs(startMs, 'startMs');
+  const result = startMs + ms;
+  return Number.isSafeInteger(result) ? result : null;
 }
 
 /**

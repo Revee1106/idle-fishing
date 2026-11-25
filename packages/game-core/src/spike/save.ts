@@ -42,6 +42,7 @@ export function validateSpikeState(raw: unknown): StateValidationIssue[] {
     return issues;
   }
   const s = raw as Record<string, unknown>;
+  const cursorMs = typeof s.cursorMs === 'number' ? s.cursorMs : null;
   const schemaVersion = s.schemaVersion;
   if (schemaVersion !== 1 && schemaVersion !== 2) {
     add('schemaVersion', 'unsupported schemaVersion');
@@ -127,6 +128,115 @@ export function validateSpikeState(raw: unknown): StateValidationIssue[] {
       ) {
         add('offline.allowanceMs', 'must be positive');
       }
+      const started = o.startedMs;
+      const allowance = o.allowanceMs;
+      const deadline = o.deadlineMs;
+      const settled = o.settledUntilMs;
+      if (
+        typeof started === 'number' &&
+        typeof allowance === 'number' &&
+        typeof deadline === 'number'
+      ) {
+        const sum = started + allowance;
+        if (!Number.isSafeInteger(sum) || deadline !== sum) {
+          add('offline.deadlineMs', 'must equal startedMs + allowanceMs within safe range');
+        }
+      }
+      if (typeof settled === 'number') {
+        if (typeof started === 'number' && settled < started) {
+          add('offline.settledUntilMs', 'must not precede startedMs');
+        }
+        if (typeof deadline === 'number' && settled > deadline) {
+          add('offline.settledUntilMs', 'must not pass deadlineMs');
+        }
+        if (typeof cursorMs === 'number' && Number.isSafeInteger(cursorMs) && settled > cursorMs) {
+          add('offline.settledUntilMs', 'must not pass cursorMs');
+        }
+      }
+    }
+  }
+
+  const attempts = (s.counters as Record<string, unknown> | undefined)?.attempts;
+  const lastTerminal = isNat(s.lastTerminalAttemptSeq) ? natToBigInt(s.lastTerminalAttemptSeq) : null;
+  if (typeof attempts === 'number' && Number.isSafeInteger(attempts) && lastTerminal !== null) {
+    if (lastTerminal > BigInt(attempts)) {
+      add('lastTerminalAttemptSeq', 'must not exceed counters.attempts');
+    }
+  }
+
+  if (Array.isArray(s.claims) && s.claims.every((c) => typeof c === 'string')) {
+    for (const claim of s.claims) {
+      const match = /^fish:([1-9][0-9]*)$/.exec(claim);
+      if (match === null) continue;
+      if (lastTerminal !== null && BigInt(match[1]!) > lastTerminal) {
+        add('claims', `claim ${claim} is newer than lastTerminalAttemptSeq`);
+      }
+    }
+    if (lastTerminal !== null && lastTerminal > 0n && !s.claims.includes(`fish:${lastTerminal}`)) {
+      add('claims', 'must contain the last terminal attempt key');
+    }
+  }
+
+  if (typeof s.stage === 'string' && STAGES.has(s.stage)) {
+    const inProgress = s.stage === 'CASTING' || s.stage === 'WAITING' || s.stage === 'FIGHTING';
+    if (typeof attempts === 'number' && Number.isSafeInteger(attempts)) {
+      if (inProgress && attempts <= 0) {
+        add('counters.attempts', 'an in-progress stage requires a positive attempt count');
+      }
+      if (inProgress && lastTerminal !== null && lastTerminal >= BigInt(attempts)) {
+        add('stage', 'in-progress stage cannot have its current attempt already settled');
+      }
+      if (s.stage === 'PREPARING' && lastTerminal !== null && lastTerminal !== BigInt(attempts)) {
+        add('stage', 'PREPARING requires the current attempt to be settled');
+      }
+    }
+    if (s.stage !== 'IDLE' && isNat(s.stageDone) && isNat(s.stageRequired)) {
+      const done = natToBigInt(s.stageDone);
+      const required = natToBigInt(s.stageRequired);
+      if (required <= 0n) add('stageRequired', 'in-progress stage requires positive work');
+      if (done > required) add('stageDone', 'must not exceed stageRequired');
+      if (
+        typeof s.stageStartMs === 'number' &&
+        Number.isSafeInteger(s.stageStartMs) &&
+        cursorMs !== null &&
+        s.stageStartMs > cursorMs
+      ) {
+        add('stageStartMs', 'must not exceed cursorMs');
+      }
+    }
+  }
+
+  const lock = s.attemptLock;
+  if (lock !== undefined && lock !== null) {
+    if (typeof lock !== 'object' || Array.isArray(lock)) {
+      add('attemptLock', 'must be null or an object');
+    } else {
+      const l = lock as Record<string, unknown>;
+      const seq = l.seq;
+      if (typeof seq !== 'number' || !Number.isSafeInteger(seq) || seq <= 0) {
+        add('attemptLock.seq', 'must be a positive safe integer');
+      } else {
+        if (typeof attempts === 'number' && seq !== attempts) {
+          add('attemptLock.seq', 'must equal counters.attempts');
+        }
+        if (l.claimKey !== `fish:${seq}`) add('attemptLock.claimKey', 'must match fish:<seq>');
+        if (Array.isArray(s.claims) && s.claims.includes(l.claimKey)) {
+          add('attemptLock.claimKey', 'locked attempt is already claimed');
+        }
+        if (lastTerminal !== null && lastTerminal >= BigInt(seq)) {
+          add('attemptLock.seq', 'locked attempt is already settled');
+        }
+      }
+      for (const key of ['speciesU', 'captureU'] as const) {
+        const value = l[key];
+        if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value >= 1) {
+          add(`attemptLock.${key}`, 'must be a finite U53 in [0,1)');
+        }
+      }
+      if (typeof l.fightMs !== 'number' || !Number.isSafeInteger(l.fightMs) || l.fightMs < 0) {
+        add('attemptLock.fightMs', 'must be a non-negative safe integer');
+      }
+      if (s.stage !== 'FIGHTING') add('attemptLock', 'only allowed while FIGHTING');
     }
   }
   return issues;
@@ -201,7 +311,16 @@ export function parseEnvelope(text: string): EnvelopeParse {
   } catch {
     return { ok: false, detail: 'payload is not JSON' };
   }
-  if (canonicalStringify(state) !== e.payload) {
+  if (typeof state !== 'object' || state === null || Array.isArray(state)) {
+    return { ok: false, detail: 'payload state must be an object' };
+  }
+  let canonicalPayload: string;
+  try {
+    canonicalPayload = canonicalStringify(state);
+  } catch (error) {
+    return { ok: false, detail: `payload is not canonical JSON: ${(error as Error).message}` };
+  }
+  if (canonicalPayload !== e.payload) {
     return { ok: false, detail: 'payload is not canonical JSON' };
   }
   const schemaVersion = (state as { schemaVersion?: unknown }).schemaVersion;
@@ -209,7 +328,12 @@ export function parseEnvelope(text: string): EnvelopeParse {
     return { ok: false, detail: 'missing or invalid schemaVersion' };
   }
   if (SUPPORTED_SCHEMA_VERSIONS.includes(schemaVersion)) {
-    const issues = validateSpikeState(state);
+    let issues: StateValidationIssue[];
+    try {
+      issues = validateSpikeState(state);
+    } catch (error) {
+      return { ok: false, detail: `state validation threw: ${(error as Error).message}` };
+    }
     if (issues.length > 0) {
       return { ok: false, detail: `state invalid: ${issues.map((i) => i.path).join(',')}` };
     }
@@ -227,6 +351,31 @@ interface SlotRead {
   readonly ioError: boolean;
   readonly parsed: ParsedEnvelope | null;
   readonly parseIssue: string | null;
+}
+
+function validSlotsDescending(slots: readonly SlotRead[]): Array<SlotRead & { parsed: ParsedEnvelope }> {
+  return slots
+    .filter((s): s is SlotRead & { parsed: ParsedEnvelope } => s.parsed !== null)
+    .sort((a, b) => {
+      const ra = natToBigInt(a.parsed.revision);
+      const rb = natToBigInt(b.parsed.revision);
+      if (ra !== rb) return rb > ra ? 1 : -1;
+      return a.slot - b.slot;
+    });
+}
+
+function slotConflict(valid: readonly (SlotRead & { parsed: ParsedEnvelope })[]): string | null {
+  if (valid.length === 0) return null;
+  const top = valid[0]!;
+  const topRevision = natToBigInt(top.parsed.revision);
+  const sameRevision = valid.filter((s) => natToBigInt(s.parsed.revision) === topRevision);
+  if (new Set(sameRevision.map((s) => s.parsed.envelope.sha256)).size > 1) {
+    return 'multiple valid slots share a revision but differ';
+  }
+  if (new Set(valid.map((s) => s.parsed.envelope.epoch)).size > 1) {
+    return 'multiple valid epochs present';
+  }
+  return null;
 }
 
 export class SpikeFileSaveRepository implements SpikeSaveRepository {
@@ -255,7 +404,12 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
         slots.push({ slot, path, text: null, ioError: false, parsed: null, parseIssue: null });
         continue;
       }
-      const parsed = parseEnvelope(text);
+      let parsed: EnvelopeParse;
+      try {
+        parsed = parseEnvelope(text);
+      } catch (error) {
+        parsed = { ok: false, detail: `envelope parse threw: ${(error as Error).message}` };
+      }
       if (!parsed.ok) {
         slots.push({ slot, path, text, ioError: false, parsed: null, parseIssue: parsed.detail });
       } else {
@@ -339,17 +493,18 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
     }
 
     const slots = await this.readSlots();
-    const valid = slots
-      .filter((s): s is SlotRead & { parsed: ParsedEnvelope } => s.parsed !== null)
-      .sort((a, b) => {
-        const ra = natToBigInt(a.parsed.revision);
-        const rb = natToBigInt(b.parsed.revision);
-        if (ra !== rb) return rb > ra ? 1 : -1;
-        return a.slot - b.slot;
-      });
+    const valid = validSlotsDescending(slots);
 
-    if (slots.every((s) => s.ioError)) {
-      return { kind: 'FAILED', detail: 'cannot determine current revision: all slot reads failed' };
+    const unreadable = slots.filter((s) => s.ioError);
+    if (unreadable.length > 0) {
+      return {
+        kind: 'UNCERTAIN',
+        detail: `slot read unavailable (${unreadable.map((s) => s.path).join(',')}); no write attempted`,
+      };
+    }
+    const conflict = slotConflict(valid);
+    if (conflict !== null) {
+      return { kind: 'FAILED', detail: `save state conflict: ${conflict}` };
     }
     if (valid.length === 0) {
       const anyPresent = slots.some((s) => s.text !== null);
@@ -432,6 +587,18 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
     } catch {
       return { kind: 'UNCERTAIN', detail: 'write result unknown; rescan failed' };
     }
+    const unreadable = slots.filter((s) => s.ioError);
+    if (unreadable.length > 0) {
+      return {
+        kind: 'UNCERTAIN',
+        detail: `write result unknown; rescan unreadable (${unreadable.map((s) => s.path).join(',')})`,
+      };
+    }
+    const valid = validSlotsDescending(slots);
+    const conflict = slotConflict(valid);
+    if (conflict !== null) {
+      return { kind: 'UNCERTAIN', detail: `write result unknown; rescan conflict: ${conflict}` };
+    }
     const claimed = slots.find(
       (s) =>
         s.parsed !== null &&
@@ -446,13 +613,7 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
         recoveredFromUncertainWrite: true,
       };
     }
-    const top = slots
-      .filter((s): s is SlotRead & { parsed: ParsedEnvelope } => s.parsed !== null)
-      .sort((a, b) => {
-        const ra = natToBigInt(a.parsed.revision);
-        const rb = natToBigInt(b.parsed.revision);
-        return ra === rb ? a.slot - b.slot : rb > ra ? 1 : -1;
-      })[0];
+    const top = valid[0];
     const currentRevision = top ? natToBigInt(top.parsed.revision) : null;
     const expectedBig = expectedRevision === null ? null : natToBigInt(expectedRevision);
     if ((currentRevision === null && expectedBig === null) || (currentRevision !== null && currentRevision === expectedBig)) {

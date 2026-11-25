@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": [],
+    "declaration": false
+  },
+  "include": ["tests/backend/be-000/cocos-type-consumer.mts"]
+}

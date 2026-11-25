@@ -130,13 +130,33 @@ test('OFF-08 attempt sequence advances monotonically and each terminal attempt i
   assert.equal(natToBigInt(result.state.lastTerminalAttemptSeq), BigInt(c.fights));
 });
 
-test('OFF-09 same-time deadline settlement does not leave a half-finished stage', () => {
-  const result = advanceOffline(initialState(), START_MS + DAY);
-  assert.ok(result.state.cursorMs >= result.state.offline!.deadlineMs);
-  if (result.state.cursorMs > result.state.offline!.deadlineMs) {
-    assert.equal(result.state.stage, 'IDLE', 'no stage may be in progress past the deadline');
+test('OFF-09 checkpoint advances to the deadline and freezes past it', () => {
+  const deadline = START_MS + DAY;
+  const before = advanceOffline(initialState(), deadline - 1);
+  assert.equal(before.state.offline?.settledUntilMs, deadline - 1);
+  assert.equal(before.state.cursorMs, deadline - 1);
+
+  const exactly = advanceOffline(before.state, deadline);
+  assert.equal(exactly.state.cursorMs, deadline);
+  assert.equal(exactly.state.offline?.settledUntilMs, deadline);
+  assert.ok(natToBigInt(exactly.state.stageDone) <= natToBigInt(exactly.state.stageRequired));
+
+  const after = advanceOffline(exactly.state, deadline + 1);
+  assert.equal(after.state.cursorMs, deadline + 1);
+  assert.equal(after.state.offline?.settledUntilMs, deadline, 'settled checkpoint must freeze at the deadline');
+  assert.deepEqual(after.state.claims, exactly.state.claims, 'no settlement past the deadline');
+  assert.equal(after.state.gold, exactly.state.gold);
+  assert.equal(after.state.counters.attempts, exactly.state.counters.attempts);
+  if (after.state.stage !== 'IDLE') {
+    assert.ok(
+      natToBigInt(after.state.stageDone) < natToBigInt(after.state.stageRequired),
+      'no completed stage may remain unprocessed past the deadline'
+    );
   }
-  assert.ok(natToBigInt(result.state.stageDone) <= natToBigInt(result.state.stageRequired));
+
+  const day = advanceOffline(initialState(), deadline + HOUR);
+  assert.equal(day.state.offline?.settledUntilMs, deadline);
+  assert.equal(day.state.cursorMs, deadline + HOUR);
 });
 
 test('OFF-10 input state is never mutated', () => {
@@ -147,6 +167,18 @@ test('OFF-10 input state is never mutated', () => {
   const copy = cloneState(start);
   copy.gold = '123';
   assert.equal(canonicalStringify(start), before);
+});
+
+test('OFF-12 custom fixture option is rejected instead of being silently ignored', () => {
+  assert.throws(
+    () => createInitialState({
+      saveEpoch: 'epoch.be000',
+      startMs: START_MS,
+      allowanceMs: DAY,
+      fixture: { ...DEFAULT_OFFLINE_FIXTURE, castMs: 17 },
+    } as never),
+    /Custom offline fixtures are not supported/
+  );
 });
 
 test('OFF-11 triangle quantile honours bounds and approximates mean 1', () => {

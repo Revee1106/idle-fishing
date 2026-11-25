@@ -1,0 +1,137 @@
+✖ A1 unknown slot cannot authorize a new save (12.9967ms)
+✖ A2 durable write with unreadable target stays uncertain (12.6533ms)
+✖ A3 conflicting highest slots cannot authorize a write (3.84ms)
+✖ A4 invalid payload in one slot still allows backup recovery (2.2441ms)
+✖ A5 offline checkpoint records time already settled (2.7945ms)
+✖ A6 resulting time must remain a safe millisecond (0.8747ms)
+✔ A7 exact fight completion at deadline issues one reward (2.9616ms)
+✖ A8 previously claimed reward must not be paid by restored fight (1.9143ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 1
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 609.0464
+
+✖ failing tests:
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:23:1
+✖ A1 unknown slot cannot authorize a new save (12.9967ms)
+  AssertionError [ERR_ASSERTION]: {"kind":"COMMITTED","revision":"1","slot":1,"recoveredFromUncertainWrite":false}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:28:10)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:31:1
+✖ A2 durable write with unreadable target stays uncertain (12.6533ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'FAILED'
+  - 'UNCERTAIN'
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:42:10)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'UNCERTAIN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:45:1
+✖ A3 conflicting highest slots cannot authorize a write (3.84ms)
+  AssertionError [ERR_ASSERTION]: {"kind":"COMMITTED","revision":"8","slot":2,"recoveredFromUncertainWrite":false}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:51:10)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:54:1
+✖ A4 invalid payload in one slot still allows backup recovery (2.2441ms)
+  TypeError: Cannot read properties of null (reading 'schemaVersion')
+      at parseEnvelope (file:///E:/idle-fishing-backend/packages/game-core/src/spike/save.ts:207:64)
+      at SpikeFileSaveRepository.readSlots (file:///E:/idle-fishing-backend/packages/game-core/src/spike/save.ts:258:22)
+      at async SpikeFileSaveRepository.load (file:///E:/idle-fishing-backend/packages/game-core/src/spike/save.ts:269:19)
+      at async TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:63:18)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:68:1
+✖ A5 offline checkpoint records time already settled (2.7945ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 4500
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:71:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 4500,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:74:1
+✖ A6 resulting time must remain a safe millisecond (0.8747ms)
+  AssertionError [ERR_ASSERTION]: 9007199254740992
+      at TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:76:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at reports\backend\BE-000-R1\evidence\pre\review-pre.test.mjs:96:1
+✖ A8 previously claimed reward must not be paid by restored fight (1.9143ms)
+  AssertionError [ERR_ASSERTION]: {"gold":"131","claims":["fish:1"]}
+  
+  '131' !== '100'
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-backend/reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs:115:10)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '131',
+    expected: '100',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
