@@ -1,0 +1,14 @@
+{
+  "experimentalFixture": true,
+  "note": "FE-000 / SPIKE-001 test display fixture only. Never replaces shared backend module or production rules.",
+  "title": "Idle Fishing — FE-000 Technical Spike",
+  "version": "0.0.0-spike",
+  "fixtureEntries": [
+    { "id": "fx-01", "label": "Code First Dynamic Node/Layout/Scroll/Modal", "tag": "T11" },
+    { "id": "fx-02", "label": "Shared @idle-fishing/game-core Verification", "tag": "T02/T03" },
+    { "id": "fx-03", "label": "24h Offline Advancement Benchmark", "tag": "T06" },
+    { "id": "fx-04", "label": "WeChat FileSystem / 3-Slot Save / Fault Injection", "tag": "T04/T05" },
+    { "id": "fx-05", "label": "Lifecycle / Clock Rollback / Ad 5-Case Stub", "tag": "T08/T09" },
+    { "id": "fx-06", "label": "Local Subpackage Bundle Loading (spike-pack)", "tag": "T10" }
+  ]
+}
