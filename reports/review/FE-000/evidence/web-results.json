@@ -1,0 +1,206 @@
+{
+  "boot": {
+    "env": "WEB",
+    "page": "overview",
+    "switchHistory": [
+      "overview"
+    ],
+    "viewport": {
+      "visibleWidth": 720,
+      "visibleHeight": 1558,
+      "scale": 1,
+      "orientation": "PORTRAIT"
+    },
+    "modalVisible": false,
+    "coreReport": {
+      "env": "WEB",
+      "allPassed": true,
+      "cases": [
+        {
+          "id": "T02-SHA256",
+          "name": "Canonical JSON & SHA-256 vector",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "canon ok; sha256(\"abc\")=ba7816bf8f01cfea...",
+          "durationMs": 1.6
+        },
+        {
+          "id": "T03-RNG01",
+          "name": "xoshiro128** golden vector [1,2,3,4]",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "outputs=11520,0,5927040,70819200,2031721883 final=[15224335,29364750,272377353,1125134346]",
+          "durationMs": 0.1
+        },
+        {
+          "id": "T03-RNG02/03",
+          "name": "PRNG save/restore continuity & stream isolation",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "2000 draws exact match; isolated across 100 env draws; u[1999]=0.145147152269",
+          "durationMs": 13.9
+        },
+        {
+          "id": "T02-BIGINT",
+          "name": "BigInt runtime & Nat serialization (>2^53)",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "BigInt ok; roundTrip=123456789012345678901234567890; scaled=1234567000000000000000",
+          "durationMs": 0.4
+        },
+        {
+          "id": "T02-MATH",
+          "name": "Math.pow / sqrt / imul / triangularQuantile determinism",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "q(0)=0.3, q(0.5)=0.961916848035, imul=84696351",
+          "durationMs": 0.1
+        },
+        {
+          "id": "T03-ADVANCE",
+          "name": "Continuous vs 60s-sliced 1h advancement equality",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "1h exact match: cycles=110, gold=3116, nodes=564",
+          "durationMs": 16.3
+        },
+        {
+          "id": "T07-MIGRATE",
+          "name": "v1 -> v2 schema migration & invalid input guard",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "v1->v2 ok (gold=4200, attempts=7); bad v1 rejected",
+          "durationMs": 2.3
+        }
+      ],
+      "summaryState": {
+        "gold": "3116",
+        "big": "13580246791358024679135802467900",
+        "cycles": 110,
+        "attempts": 111,
+        "cursorMs": 1700003600000,
+        "rngPreview": "wait=[1371918276,2731703835,3549262139,2518769466]",
+        "canonicalHash": "c7e02507057b371782d539401d0e9b1ec446037f18fc0799c8d0c3eac6fb982e"
+      }
+    },
+    "perfReport": null,
+    "fsResults": [],
+    "platformResults": [],
+    "subpackResult": null
+  },
+  "runtime": {
+    "modal": true,
+    "closed": true,
+    "active": "platform",
+    "fs": [
+      {
+        "id": "FS-CRUD",
+        "name": "File CRUD & path guard (BROWSER_LOCAL_STORAGE_FALLBACK)",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "CRUD ok on BROWSER_LOCAL_STORAGE_FALLBACK; idempotent delete & path guard verified",
+        "durationMs": 10.2
+      },
+      {
+        "id": "T04-ROTATE",
+        "name": "3-slot rotation & highest revision load",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "5 commits rotated across 3 slots; loaded rev=5, gold=217",
+        "durationMs": 11.9
+      },
+      {
+        "id": "T04-CORRUPT",
+        "name": "Corrupt slot fallback & all-corrupt fail-closed",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "Single-slot corruption recovered rev=4; all-corrupt returned CORRUPT (save_slot_0.json: invalid JSON; save_slot_1.json: invalid JS)",
+        "durationMs": 3.4
+      },
+      {
+        "id": "T05-FAULTS",
+        "name": "Fault injection: pre-write / partial / uncertain post-write",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "Pre-write=FAILED, Partial=recovered rev 1, Post-write throw=claimed rev 2 once",
+        "durationMs": 9.2
+      },
+      {
+        "id": "FS-SIZE-PROBE",
+        "name": "Payload size write/readback probe (64KB / 256KB)",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "64KB & 256KB write+readback verified & cleaned on BROWSER_LOCAL_STORAGE_FALLBACK",
+        "durationMs": 3.5
+      },
+      {
+        "id": "FS-BG-RECOVERY",
+        "name": "Hide flush + abnormal kill reentry recovery",
+        "status": "FAIL",
+        "env": "WEB",
+        "detail": "HIDE callback did not fire",
+        "durationMs": 1.9
+      }
+    ],
+    "platform": [
+      {
+        "id": "T08-MONO-PROBE",
+        "name": "Runtime ClockProvider monotonic capability",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "source=performance.now(ms), wall=1795585857639, mono=5304",
+        "durationMs": 0.7
+      },
+      {
+        "id": "T08-LIFECYCLE-CLOCK",
+        "name": "Repeated hide/show, clock rollback & deadline clamp",
+        "status": "FAIL",
+        "env": "WEB",
+        "detail": "Expected deduped hide=2, show=2; got hide=0, show=0",
+        "durationMs": 1.3
+      },
+      {
+        "id": "T09-AD-STUB-5",
+        "name": "EXPERIMENTAL_STUB Ad 5-case & duplicate callback guard",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "5/5 stub cases passed (acks=2, ignoredDuplicates=2, 0 business state mutated)",
+        "durationMs": 0.4
+      },
+      {
+        "id": "T09-REAL-AD",
+        "name": "Real WeChat RewardedVideoAd verification",
+        "status": "BLOCKED",
+        "env": "WEB",
+        "detail": "BLOCKED: no real WeChat Mini Game adUnitId / real device available in FE-000",
+        "durationMs": 0
+      }
+    ],
+    "bundle": {
+      "status": "PASS",
+      "bundleName": "spike-pack",
+      "manifestVersion": "spike-pack-v1",
+      "iconLoaded": true,
+      "durationMs": 3786.1,
+      "detail": "Loaded local bundle \"spike-pack\" (icon 64x64 + manifest=spike-pack-v1) in 3786.1ms"
+    },
+    "perf": {
+      "env": "WEB",
+      "singleShotMs": 177.1,
+      "slicedTotalWallMs": 508.8,
+      "slicedComputeMs": 156.3,
+      "sliceCount": 60,
+      "maxSliceMs": 11.6,
+      "avgSliceMs": 2.605,
+      "processedNodes": 14935,
+      "cycles": 2929,
+      "attempts": 2930,
+      "gold": "85366",
+      "big": "361604935017160493501716049349810",
+      "singleEqualsSliced": true,
+      "canonicalHash": "406c327d50f8f0f49cd6553dd88c9846ce0156e3481389a5521d4d73c67f9036",
+      "memorySnapshot": "jsHeap=20.19MB/33.56MB"
+    },
+    "back": "overview"
+  }
+}
