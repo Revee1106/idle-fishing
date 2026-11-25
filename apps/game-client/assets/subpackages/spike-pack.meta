@@ -9,11 +9,7 @@
     "isBundle": true,
     "bundleName": "spike-pack",
     "priority": 1,
-    "compressionType": {
-      "wechatgame": "subpackage",
-      "web-mobile": "merge_dep"
-    },
     "isRemote": {},
-    "isRemoteBundle": {}
+    "bundleConfigID": "auto_05wYOSxc5MVIWgbcnp3w7x"
   }
 }

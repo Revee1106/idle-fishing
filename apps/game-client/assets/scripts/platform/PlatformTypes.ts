@@ -1,9 +1,9 @@
 /**
  * FE-000 / SPIKE-001 Platform adapter interfaces aligned with docs/interfaces/19.
- * These are verification ports; no production game rules live here.
+ * Distinguishes runtime hosts explicitly so Node/Mock/Web never masquerade as real WeChat.
  */
 
-export type RuntimeEnvKind = 'WECHAT' | 'WEB' | 'NODE';
+export type RuntimeEnvKind = 'WECHAT_DEVICE' | 'WECHAT_DEVTOOLS' | 'WECHAT_MOCK' | 'WEB' | 'NODE';
 
 export type VerificationStatus = 'PASS' | 'FAIL' | 'BLOCKED' | 'NOT_RUN';
 
@@ -52,10 +52,38 @@ export interface AdProvider {
   show(requestId: string, placement: string): Promise<{ outcome: AdOutcome; detail: string }>;
 }
 
+export function isWeChatRealEnv(env: RuntimeEnvKind): boolean {
+  return env === 'WECHAT_DEVICE' || env === 'WECHAT_DEVTOOLS';
+}
+
 export function detectRuntimeEnv(): RuntimeEnvKind {
   const g = globalThis as Record<string, unknown>;
-  if (typeof g.wx === 'object' && g.wx !== null && typeof (g.wx as Record<string, unknown>).getFileSystemManager === 'function') {
-    return 'WECHAT';
+  const isNodeProcess =
+    typeof g.process === 'object' &&
+    g.process !== null &&
+    typeof (g.process as { versions?: { node?: string } }).versions?.node === 'string';
+
+  if (
+    typeof g.wx === 'object' &&
+    g.wx !== null &&
+    typeof (g.wx as Record<string, unknown>).getFileSystemManager === 'function'
+  ) {
+    const wxObj = g.wx as {
+      __FE000_MOCK__?: boolean;
+      getSystemInfoSync?: () => { platform?: string };
+    };
+    if (wxObj.__FE000_MOCK__ || isNodeProcess) {
+      return 'WECHAT_MOCK';
+    }
+    try {
+      const info = typeof wxObj.getSystemInfoSync === 'function' ? wxObj.getSystemInfoSync() : null;
+      if (info && info.platform === 'devtools') {
+        return 'WECHAT_DEVTOOLS';
+      }
+    } catch {
+      // Ignore probe error and fall back to WECHAT_DEVICE
+    }
+    return 'WECHAT_DEVICE';
   }
   if (typeof g.window === 'object' && g.window !== null && typeof g.document === 'object') {
     return 'WEB';

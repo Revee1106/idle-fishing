@@ -1,10 +1,12 @@
 /**
  * FE-000 SharedCoreBridge: consumes the SINGLE source-of-truth backend module
- * `@idle-fishing/game-core` built by BE-000. Zero duplicate business algorithms.
+ * `@idle-fishing/game-core` built by BE-000 (pinned at commit 358b111 for FE-000-R1).
+ * Zero duplicate business algorithms.
  */
 import {
   advanceOffline,
   advanceOfflineSliced,
+  buildEnvelope,
   canonicalStringify,
   createInitialState,
   DEFAULT_OFFLINE_FIXTURE,
@@ -24,6 +26,12 @@ import {
 } from '@idle-fishing/game-core';
 import { detectRuntimeEnv, type VerificationCaseResult } from '../platform/PlatformTypes';
 
+export interface FrameIntervalStats {
+  readonly samples: number;
+  readonly maxFrameMs: number;
+  readonly avgFrameMs: number;
+}
+
 export interface Offline24hBenchmarkResult {
   readonly env: string;
   readonly singleShotMs: number;
@@ -39,7 +47,10 @@ export interface Offline24hBenchmarkResult {
   readonly big: string;
   readonly singleEqualsSliced: boolean;
   readonly canonicalHash: string;
+  readonly envelopeHashRev1: string;
+  readonly matchesBe000Golden24hEnvelope: boolean;
   readonly memorySnapshot: string;
+  readonly slicedRafStats: FrameIntervalStats | null;
 }
 
 export interface SharedCoreReport {
@@ -57,6 +68,18 @@ export interface SharedCoreReport {
   };
 }
 
+// Golden hashes published in reports/backend/BE-000/SHARED_MODULE_HANDOFF.md §6.2 (pinned commit 358b111)
+export const BE000_GOLDEN = {
+  epoch: 'epoch.be000',
+  startMs: 1_700_000_000_000,
+  allowanceMs: 86_400_000,
+  initialSha256: '79a773550beb088cf0462e0851b043c7b86ebd2bd0f3cbe3447dd4d6ca0a35f4',
+  oneHourSha256: 'bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a',
+  oneHourEnvelopeSha256: '2c768fc2d368faa38b841e8b94c55d1e9398c80ff4e894a49cc2644b056ed5ee',
+  eightHourSha256: '7da517674df168ca5f88535b949f51a072982e77a0577b362811aa21c430839f',
+  twentyFourHourEnvelopeSha256: '88cb5751c258baec38c452814d5653bb2535029ab7e21c762603e10310ff8536',
+} as const;
+
 function nowMs(): number {
   if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
     return performance.now();
@@ -65,14 +88,17 @@ function nowMs(): number {
 }
 
 function sampleMemory(): string {
-  const perf = (globalThis as { performance?: { memory?: { usedJSHeapSize?: number; totalJSHeapSize?: number } } })
-    .performance;
+  const perf = (globalThis as unknown as {
+    performance?: { memory?: { usedJSHeapSize?: number; totalJSHeapSize?: number } };
+  }).performance;
   if (perf?.memory?.usedJSHeapSize !== undefined) {
     const usedMb = (perf.memory.usedJSHeapSize / (1024 * 1024)).toFixed(2);
     const totalMb = ((perf.memory.totalJSHeapSize ?? 0) / (1024 * 1024)).toFixed(2);
     return `jsHeap=${usedMb}MB/${totalMb}MB`;
   }
-  const proc = (globalThis as { process?: { memoryUsage?: () => { heapUsed: number; rss: number } } }).process;
+  const proc = (globalThis as unknown as {
+    process?: { memoryUsage?: () => { heapUsed: number; rss: number } };
+  }).process;
   if (proc?.memoryUsage) {
     const m = proc.memoryUsage();
     return `nodeHeap=${(m.heapUsed / (1024 * 1024)).toFixed(2)}MB rss=${(m.rss / (1024 * 1024)).toFixed(2)}MB`;
@@ -149,17 +175,13 @@ export function runSharedCoreVerification(): SharedCoreReport {
   runCase('T03-RNG02/03', 'PRNG save/restore continuity & stream isolation', () => {
     const seed = 0x1234abcd;
     let continuous = newRngState();
-    const first1000: number[] = [];
     const second1000: number[] = [];
     for (let i = 0; i < 1000; i++) {
       const d = drawU53(continuous, seed, 'wait');
       if (!(d.u >= 0 && d.u < 1)) throw new Error(`U out of [0,1): ${d.u}`);
-      first1000.push(d.u);
       continuous = d.state;
     }
-    // Serialize mid-run and restore
     let restored = JSON.parse(canonicalStringify(continuous));
-    // Interleave 100 draws on environment stream (isolation check RNG-03)
     for (let i = 0; i < 100; i++) {
       restored = drawU53(restored, seed, ENV_STREAM_NAME).state;
     }
@@ -202,14 +224,18 @@ export function runSharedCoreVerification(): SharedCoreReport {
     return `q(0)=${q0}, q(0.5)=${qHalf.toFixed(12)}, imul=${imulVal}`;
   });
 
-  // 6. Continuous vs Sliced time advancement (1 hour = 3,600,000 ms)
+  // 6. Continuous vs Sliced time advancement + exact BE-000 golden vector comparison (epoch.be000)
   let latestState: SpikeGameState = createInitialState({
-    saveEpoch: 'fe000-epoch-1',
-    startMs: 1_700_000_000_000,
-    allowanceMs: 24 * 3600 * 1000,
+    saveEpoch: BE000_GOLDEN.epoch,
+    startMs: BE000_GOLDEN.startMs,
+    allowanceMs: BE000_GOLDEN.allowanceMs,
   });
 
-  runCase('T03-ADVANCE', 'Continuous vs 60s-sliced 1h advancement equality', () => {
+  runCase('T03-ADVANCE', 'Continuous vs 60s-sliced 1h & BE-000 golden hash match', () => {
+    const initHash = sha256Hex(canonicalStringify(latestState));
+    if (initHash !== BE000_GOLDEN.initialSha256) {
+      throw new Error(`Initial state hash mismatch vs BE-000: ${initHash}`);
+    }
     const targetMs = latestState.cursorMs + 3_600_000;
     const cont = advanceOffline(latestState, targetMs);
     const sliced = advanceOfflineSliced(latestState, targetMs, 60_000);
@@ -218,8 +244,17 @@ export function runSharedCoreVerification(): SharedCoreReport {
     if (contJson !== slicedJson) {
       throw new Error('Continuous and 60s-sliced states diverged');
     }
+    const oneHourHash = sha256Hex(contJson);
+    if (oneHourHash !== BE000_GOLDEN.oneHourSha256) {
+      throw new Error(`1h hash mismatch vs BE-000: ${oneHourHash}`);
+    }
+    const env1h = buildEnvelope(cont.state, '1');
+    const env1hTextHash = sha256Hex(env1h.text);
+    if (env1hTextHash !== BE000_GOLDEN.oneHourEnvelopeSha256) {
+      throw new Error(`1h envelope text sha256 mismatch vs BE-000: ${env1hTextHash}`);
+    }
     latestState = cont.state;
-    return `1h exact match: cycles=${cont.state.counters.cycles}, gold=${cont.state.gold}, nodes=${cont.processedNodes}`;
+    return `1h exact match vs BE-000: cycles=${cont.state.counters.cycles}, gold=${cont.state.gold}, sha256=${oneHourHash.slice(0, 16)}...`;
   });
 
   // 7. Schema v1 -> v2 migration check (T07 bridge check)
@@ -269,26 +304,46 @@ export function runSharedCoreVerification(): SharedCoreReport {
 
 /**
  * Representative 24-hour offline advancement benchmark (T06).
- * Runs both single-shot and frame-sliced (`maxNodes` per macrotask tick) and asserts exact canonical equality.
+ * Separates single-shot timing from sliced execution + isolated rAF frame-gap measurement
+ * during the sliced window so single-shot blocking does not pollute sliced frame observations.
  */
 export async function run24hOfflineBenchmark(maxNodesPerSlice = 250): Promise<Offline24hBenchmarkResult> {
   const env = detectRuntimeEnv();
-  const startMs = 1_700_000_000_000;
-  const duration24h = 24 * 60 * 60 * 1000;
+  const startMs = BE000_GOLDEN.startMs;
+  const duration24h = BE000_GOLDEN.allowanceMs;
   const targetMs = startMs + duration24h;
 
   const initial = createInitialState({
-    saveEpoch: 'fe000-perf-24h',
+    saveEpoch: BE000_GOLDEN.epoch,
     startMs,
     allowanceMs: duration24h,
   });
 
-  // 1. Single-shot timing
+  // 1. Single-shot timing (isolated)
   const tSingle0 = nowMs();
   const single = advanceOffline(initial, targetMs);
   const singleShotMs = Number((nowMs() - tSingle0).toFixed(3));
 
-  // 2. Sliced (yielding to event loop between slices to measure frame blocking)
+  // Yield once before measuring sliced phase + rAF intervals cleanly
+  await new Promise<void>((resolve) => setTimeout(resolve, 16));
+
+  let rafActive = false;
+  let rafId = 0;
+  let lastRafTs = 0;
+  const rafDeltas: number[] = [];
+  const hasRaf = typeof globalThis.requestAnimationFrame === 'function';
+  if (hasRaf) {
+    rafActive = true;
+    const onRaf = (ts: number) => {
+      if (!rafActive) return;
+      if (lastRafTs > 0) rafDeltas.push(ts - lastRafTs);
+      lastRafTs = ts;
+      rafId = globalThis.requestAnimationFrame(onRaf);
+    };
+    rafId = globalThis.requestAnimationFrame(onRaf);
+  }
+
+  // 2. Sliced phase (yielding to event loop between slices)
   const tWall0 = nowMs();
   let state = initial;
   let totalNodes = 0;
@@ -310,10 +365,35 @@ export async function run24hOfflineBenchmark(maxNodesPerSlice = 250): Promise<Of
   }
   const slicedTotalWallMs = Number((nowMs() - tWall0).toFixed(3));
 
+  if (hasRaf) {
+    rafActive = false;
+    if (typeof globalThis.cancelAnimationFrame === 'function') {
+      globalThis.cancelAnimationFrame(rafId);
+    }
+  }
+
+  let slicedRafStats: FrameIntervalStats | null = null;
+  if (rafDeltas.length > 0) {
+    let maxD = 0;
+    let sumD = 0;
+    for (let i = 0; i < rafDeltas.length; i++) {
+      const d = rafDeltas[i];
+      if (d > maxD) maxD = d;
+      sumD += d;
+    }
+    slicedRafStats = {
+      samples: rafDeltas.length,
+      maxFrameMs: Number(maxD.toFixed(2)),
+      avgFrameMs: Number((sumD / rafDeltas.length).toFixed(2)),
+    };
+  }
+
   const singleJson = canonicalStringify(single.state);
   const slicedJson = canonicalStringify(state);
   const singleEqualsSliced = singleJson === slicedJson;
   const canonicalHash = sha256Hex(singleJson);
+  const envelopeHashRev1 = sha256Hex(buildEnvelope(single.state, '1').text);
+  const matchesBe000Golden24hEnvelope = envelopeHashRev1 === BE000_GOLDEN.twentyFourHourEnvelopeSha256;
 
   return {
     env,
@@ -330,6 +410,9 @@ export async function run24hOfflineBenchmark(maxNodesPerSlice = 250): Promise<Of
     big: single.state.big,
     singleEqualsSliced,
     canonicalHash,
+    envelopeHashRev1,
+    matchesBe000Golden24hEnvelope,
     memorySnapshot: sampleMemory(),
+    slicedRafStats,
   };
 }

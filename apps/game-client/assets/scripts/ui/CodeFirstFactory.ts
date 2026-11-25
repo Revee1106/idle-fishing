@@ -6,11 +6,13 @@
 import {
   Button,
   Color,
+  HorizontalTextAlignment,
   Label,
   Layers,
   Layout,
   Mask,
   Node,
+  Overflow,
   ScrollView,
   Size,
   Sprite,
@@ -19,6 +21,7 @@ import {
   UIOpacity,
   UITransform,
   Vec3,
+  VerticalTextAlignment,
   Widget,
 } from 'cc';
 
@@ -115,8 +118,8 @@ export interface LabelOptions {
   color?: Color;
   width?: number;
   height?: number;
-  hAlign?: Label.HorizontalAlign;
-  overflow?: Label.Overflow;
+  hAlign?: HorizontalTextAlignment;
+  overflow?: Overflow;
   isBold?: boolean;
 }
 
@@ -129,9 +132,9 @@ export function createLabel(name: string, text: string, opts: LabelOptions = {})
   label.fontSize = fontSize;
   label.lineHeight = lineHeight;
   label.color = (opts.color ?? SPIKE_PALETTE.text).clone();
-  label.horizontalAlign = opts.hAlign ?? Label.HorizontalAlign.LEFT;
-  label.verticalAlign = Label.VerticalAlign.CENTER;
-  label.overflow = opts.overflow ?? Label.Overflow.CLAMP;
+  label.horizontalAlign = opts.hAlign ?? HorizontalTextAlignment.LEFT;
+  label.verticalAlign = VerticalTextAlignment.CENTER;
+  label.overflow = opts.overflow ?? Overflow.CLAMP;
   label.isBold = Boolean(opts.isBold);
   return { node, label };
 }

@@ -124,7 +124,7 @@ export class WeChatFilePort implements FilePort {
     const target = dir ? this.resolve(dir) : this.rootDir;
     try {
       const entries = this.fs.readdirSync(target);
-      return [...entries].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+      return entries.slice().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
     } catch (err) {
       if (isNotFoundError(err)) return [];
       throw new FilePortIoError('LIST_IO_ERROR', dir || '.', String((err as { errMsg?: string })?.errMsg ?? err));

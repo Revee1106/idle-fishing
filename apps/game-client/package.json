@@ -10,10 +10,13 @@
     "@idle-fishing/game-core": "file:../../packages/game-core"
   },
   "scripts": {
+    "typecheck": "node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.typecheck.json",
     "build:web": "node scripts/build-cocos.mjs web-mobile",
     "build:wechat": "node scripts/build-cocos.mjs wechatgame",
     "build:all": "node scripts/build-cocos.mjs web-mobile && node scripts/build-cocos.mjs wechatgame",
-    "test:frontend": "node --test ../../tests/frontend/fe-000/*.test.mjs"
+    "test:frontend": "node ../../tests/frontend/fe-000/run-node-tests.mjs",
+    "verify:wechat": "node ../../tests/frontend/fe-000/verify-wechat-build.mjs",
+    "verify:web": "node ../../tests/frontend/fe-000/verify-web-build.mjs"
   },
-  "uuid": "952abca9-c6d3-40a8-a624-3dc69d36b6ff"
+  "uuid": "740efad0-cfbd-4efe-b221-963b70fc3a9d"
 }

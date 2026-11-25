@@ -1,8 +1,9 @@
 /**
- * FE-000 Platform Verification Suite:
- * Covers Section 9 (FileSystem & 3-slot persistence), Section 10 (Lifecycle, Clock & Ad),
- * and Section 11 (Local resources & subpackage).
- * Explicitly labels runtime environment (WECHAT / WEB / NODE) so Web/Mock never substitutes for WeChat real tests.
+ * FE-000 Platform Verification Suite (R1 hardened for I01, I03, I04, I05, V02):
+ * - Every RuntimeLifecycleProvider created by a suite is owned and disposed in try/finally
+ *   so wx/DOM platform listeners never leak on normal or failure exits.
+ * - Local unsubscribe() semantics stay strictly local (sibling subscribers continue receiving events).
+ * - Clearly distinguishes simulated emit / same-process reload / real platform callback / blocked real device items.
  */
 import {
   advanceOffline,
@@ -15,18 +16,18 @@ import {
 import { BrowserFilePort, MemoryFilePort } from './BrowserFilePort';
 import { ExperimentalAdStubCoordinator } from './ExperimentalAdProvider';
 import { FaultInjectingFilePort } from './FaultInjectingFilePort';
-import { detectRuntimeEnv, type FilePort, type VerificationCaseResult } from './PlatformTypes';
+import { detectRuntimeEnv, isWeChatRealEnv, type FilePort, type VerificationCaseResult } from './PlatformTypes';
 import { MonotonicTimelineGuard, RuntimeClockProvider, VirtualClockProvider } from './WeChatClockProvider';
 import { FilePortIoError, WeChatFilePort } from './WeChatFilePort';
 import { RuntimeLifecycleProvider } from './WeChatLifecycleProvider';
 
-export function createRuntimeFilePort(): FilePort {
+export function createRuntimeFilePort(namespace = 'idle_fishing_spike'): FilePort {
   const env = detectRuntimeEnv();
-  if (env === 'WECHAT') {
-    return new WeChatFilePort('idle_fishing_spike');
+  if (isWeChatRealEnv(env) || env === 'WECHAT_MOCK') {
+    return new WeChatFilePort(namespace);
   }
   if (env === 'WEB') {
-    return new BrowserFilePort('idle_fishing_spike_fs');
+    return new BrowserFilePort(`${namespace}_fs`);
   }
   return new MemoryFilePort();
 }
@@ -46,7 +47,15 @@ async function cleanSlots(port: FilePort): Promise<void> {
   await port.remove('spike_size_probe.dat');
 }
 
-export async function runFileSystemAndSaveSuite(customPort?: FilePort): Promise<VerificationCaseResult[]> {
+export interface SuiteTestHooks {
+  /** Optional test hook invoked immediately after lifecycle.subscribe() to verify try/finally disposal on fault. */
+  afterLifecycleSubscribe?: (lifecycle: RuntimeLifecycleProvider) => void;
+}
+
+export async function runFileSystemAndSaveSuite(
+  customPort?: FilePort,
+  hooks?: SuiteTestHooks
+): Promise<VerificationCaseResult[]> {
   const env = detectRuntimeEnv();
   const basePort = customPort ?? createRuntimeFilePort();
   const results: VerificationCaseResult[] = [];
@@ -128,13 +137,11 @@ export async function runFileSystemAndSaveSuite(customPort?: FilePort): Promise<
   // 3. Corrupt single slot -> recover backup; all slots corrupt -> CORRUPT (never EMPTY)
   await run('T04-CORRUPT', 'Corrupt slot fallback & all-corrupt fail-closed', async () => {
     const repo = new SpikeFileSaveRepository(basePort);
-    // Corrupt slot 1 (holds rev 5 after 5 commits: 0->1,1->2,2->3,0->4,1->5)
     await basePort.write(SLOT_PATHS[1], '{"broken":true');
     const recovered = await repo.load();
     if (recovered.kind !== 'VALID' || !recovered.recovered || recovered.revision !== '4') {
       throw new Error(`Expected backup rev=4 recovered=true, got ${JSON.stringify(recovered)}`);
     }
-    // Corrupt all 3 slots
     await basePort.write(SLOT_PATHS[0], 'BAD0');
     await basePort.write(SLOT_PATHS[1], 'BAD1');
     await basePort.write(SLOT_PATHS[2], 'BAD2');
@@ -158,13 +165,11 @@ export async function runFileSystemAndSaveSuite(customPort?: FilePort): Promise<
     const c1 = await repo.commit(state, null);
     if (c1.kind !== 'COMMITTED') throw new Error('Initial commit failed');
 
-    // A: pre-write failure -> rev stays 1
     state = advanceOffline(state, state.cursorMs + 30_000).state;
     faultPort.armNextWriteFault('PRE_WRITE_ERROR');
     const fPre = await repo.commit(state, '1');
     if (fPre.kind !== 'FAILED') throw new Error(`Expected FAILED on pre-write, got ${fPre.kind}`);
 
-    // B: partial write -> backup rev 1 stays valid
     faultPort.armNextWriteFault('PARTIAL_WRITE');
     const fPartial = await repo.commit(state, '1');
     if (fPartial.kind !== 'FAILED') throw new Error(`Expected FAILED on partial write, got ${fPartial.kind}`);
@@ -173,7 +178,6 @@ export async function runFileSystemAndSaveSuite(customPort?: FilePort): Promise<
       throw new Error(`Expected rev=1 recovered=true after partial write, got ${afterPartial.kind}`);
     }
 
-    // C: post-write throw (uncertain write) -> rescan claims committed rev=2 with no duplicate
     faultPort.armNextWriteFault('POST_WRITE_THROW');
     const fPost = await repo.commit(state, '1');
     if (fPost.kind !== 'COMMITTED' || !fPost.recoveredFromUncertainWrite || fPost.revision !== '2') {
@@ -198,50 +202,59 @@ export async function runFileSystemAndSaveSuite(customPort?: FilePort): Promise<
     return `64KB & 256KB write+readback verified & cleaned on ${basePort.kind}`;
   });
 
-  // 6. Background/Foreground flush & abnormal exit recovery
-  await run('FS-BG-RECOVERY', 'Hide flush + abnormal kill reentry recovery', async () => {
+  // 6. HIDE callback triggered save + fresh repository reload (I01 + I05 owner try/finally disposal)
+  await run('FS-BG-RECOVERY', 'HIDE callback save & same-process repo reload', async () => {
     await cleanSlots(basePort);
     const repo = new SpikeFileSaveRepository(basePort);
     const lifecycle = new RuntimeLifecycleProvider();
-    let state = createInitialState({
-      saveEpoch: 'fe000-bg-epoch',
-      startMs: 1_700_000_000_000,
-      allowanceMs: 8 * 3600 * 1000,
-    });
-    const c1 = await repo.commit(state, null);
-    if (c1.kind !== 'COMMITTED') throw new Error('Seed commit failed');
+    let unsub: (() => void) | null = null;
+    try {
+      let state = createInitialState({
+        saveEpoch: 'fe000-bg-epoch',
+        startMs: 1_700_000_000_000,
+        allowanceMs: 8 * 3600 * 1000,
+      });
+      const c1 = await repo.commit(state, null);
+      if (c1.kind !== 'COMMITTED') throw new Error('Seed commit failed');
 
-    let hideFlushed = false;
-    const unsub = lifecycle.subscribe((ev) => {
-      if (ev === 'HIDE') {
-        hideFlushed = true;
+      const pendingCommits: Promise<{ kind: string; revision?: string }>[] = [];
+      unsub = lifecycle.subscribe((ev) => {
+        if (ev === 'HIDE') {
+          state = advanceOffline(state, state.cursorMs + 120_000).state;
+          pendingCommits.push(repo.commit(state, '1'));
+        }
+      });
+
+      // Allow test harness to inject post-subscribe fault to prove owner try/finally disposal
+      hooks?.afterLifecycleSubscribe?.(lifecycle);
+
+      lifecycle.emit('HIDE', 'suite-simulated-hide');
+      if (pendingCommits.length === 0) throw new Error('HIDE callback did not fire');
+      const c2 = await pendingCommits[0];
+      if (c2.kind !== 'COMMITTED') throw new Error(`Hide callback commit failed: ${c2.kind}`);
+
+      // Same-process fresh repository load (real cross-reload verified separately in Web E2E; real kill BLOCKED on device)
+      const freshRepo = new SpikeFileSaveRepository(basePort);
+      const reloaded = await freshRepo.load();
+      if (reloaded.kind !== 'VALID' || reloaded.revision !== '2') {
+        throw new Error(`Expected rev=2 after repo reload, got ${reloaded.kind}`);
       }
-    });
-    lifecycle.emit('HIDE', 'spike-test');
-    if (!hideFlushed) throw new Error('HIDE callback did not fire');
-    state = advanceOffline(state, state.cursorMs + 120_000).state;
-    const c2 = await repo.commit(state, '1');
-    if (c2.kind !== 'COMMITTED') throw new Error('Hide flush commit failed');
-
-    // Simulate abnormal exit (discard in-memory state, reload fresh repository)
-    const freshRepo = new SpikeFileSaveRepository(basePort);
-    const reloaded = await freshRepo.load();
-    unsub();
-    if (reloaded.kind !== 'VALID' || reloaded.revision !== '2') {
-      throw new Error(`Expected rev=2 after reentry, got ${reloaded.kind}`);
+      const restoredState = reloaded.raw as SpikeGameState;
+      if (restoredState.offline?.deadlineMs !== state.offline?.deadlineMs) {
+        throw new Error('Offline deadline changed across reload recovery');
+      }
+      return `HIDE callback committed rev=2 on ${basePort.kind}; fresh repo restored deadlineMs=${restoredState.offline?.deadlineMs} (same-process; real kill requires device)`;
+    } finally {
+      unsub?.();
+      lifecycle.dispose();
     }
-    const restoredState = reloaded.raw as SpikeGameState;
-    if (restoredState.offline?.deadlineMs !== state.offline?.deadlineMs) {
-      throw new Error('Offline deadline changed across abnormal exit recovery');
-    }
-    return `HIDE flush rev=2 restored cleanly; locked deadlineMs=${restoredState.offline?.deadlineMs} preserved`;
   });
 
   await cleanSlots(basePort);
   return results;
 }
 
-export async function runLifecycleClockAndAdSuite(): Promise<VerificationCaseResult[]> {
+export async function runLifecycleClockAndAdSuite(hooks?: SuiteTestHooks): Promise<VerificationCaseResult[]> {
   const env = detectRuntimeEnv();
   const results: VerificationCaseResult[] = [];
 
@@ -272,56 +285,96 @@ export async function runLifecycleClockAndAdSuite(): Promise<VerificationCaseRes
     return `source=${clock.monotonicSource}, wall=${w1}, mono=${m1}`;
   });
 
-  // 2. Repeated HIDE/SHOW dedupe + wall rollback freeze + forward jump deadline clamp
-  await run('T08-LIFECYCLE-CLOCK', 'Repeated hide/show, clock rollback & deadline clamp', async () => {
+  // 2. Lifecycle dispatch, local unsubscribe, dedupe, exception isolation, owner disposal,
+  //    unsupported monotonic freeze, wall rollback + recovery, and +48h deadline clamp
+  await run('T08-LIFECYCLE-CLOCK', 'Lifecycle dispatch/isolation & clock guard boundaries', async () => {
     const lifecycle = new RuntimeLifecycleProvider();
-    let showCount = 0;
-    let hideCount = 0;
-    const unsub = lifecycle.subscribe((ev) => {
-      if (ev === 'SHOW') showCount += 1;
-      if (ev === 'HIDE') hideCount += 1;
-    });
-    lifecycle.emit('HIDE', 'test');
-    lifecycle.emit('HIDE', 'test-dup'); // deduped
-    lifecycle.emit('SHOW', 'test');
-    lifecycle.emit('SHOW', 'test-dup'); // deduped
-    lifecycle.emit('HIDE', 'test-2');
-    lifecycle.emit('SHOW', 'test-2');
-    unsub();
-    if (hideCount !== 2 || showCount !== 2) {
-      throw new Error(`Expected deduped hide=2, show=2; got hide=${hideCount}, show=${showCount}`);
+    let unsubA: (() => void) | null = null;
+    let unsubB: (() => void) | null = null;
+    let unsubFaulty: (() => void) | null = null;
+    try {
+      const eventsA: string[] = [];
+      const eventsB: string[] = [];
+      unsubFaulty = lifecycle.subscribe(() => {
+        throw new Error('intentional faulty listener');
+      });
+      unsubA = lifecycle.subscribe((ev) => eventsA.push(ev));
+      unsubB = lifecycle.subscribe((ev) => eventsB.push(ev));
+
+      // Allow test harness to inject post-subscribe fault to prove owner try/finally disposal
+      hooks?.afterLifecycleSubscribe?.(lifecycle);
+
+      lifecycle.emit('HIDE', 'suite-1');
+      lifecycle.emit('HIDE', 'suite-dup'); // deduped
+      lifecycle.emit('SHOW', 'suite-1');
+      lifecycle.emit('SHOW', 'suite-dup'); // deduped
+
+      // Local unsubscribe on A must NOT break sibling B
+      unsubA();
+      unsubA = null;
+      lifecycle.emit('HIDE', 'suite-2');
+      lifecycle.emit('SHOW', 'suite-2');
+
+      if (eventsA.join(',') !== 'HIDE,SHOW') {
+        throw new Error(`Expected A=[HIDE,SHOW], got [${eventsA.join(',')}]`);
+      }
+      if (eventsB.join(',') !== 'HIDE,SHOW,HIDE,SHOW') {
+        throw new Error(`Expected sibling B=[HIDE,SHOW,HIDE,SHOW], got [${eventsB.join(',')}]`);
+      }
+      if (lifecycle.listenerErrorCount !== 4) {
+        throw new Error(`Expected 4 isolated listener errors, got ${lifecycle.listenerErrorCount}`);
+      }
+    } finally {
+      unsubA?.();
+      unsubB?.();
+      unsubFaulty?.();
+      lifecycle.dispose();
     }
 
+    // Unsupported monotonic clock must freeze foreground jump (I03)
     const start = 1_700_000_000_000;
     const deadline = start + 8 * 3600 * 1000;
-    const vClock = new VirtualClockProvider(start, 1000);
-    const guard = new MonotonicTimelineGuard(vClock, 2000);
+    const noMonoClock = new VirtualClockProvider(start, 0, false);
+    const noMonoGuard = new MonotonicTimelineGuard(noMonoClock, 2000);
+    noMonoClock.setWallMs(start + 48 * 3600 * 1000);
+    const frozenRes = noMonoGuard.tickForeground(noMonoClock);
+    if (frozenRes.ok || frozenRes.code !== 'CLOCK_ERROR' || frozenRes.cursorMs !== start) {
+      throw new Error(`Unsupported monotonic must freeze cursor: ${JSON.stringify(frozenRes)}`);
+    }
 
-    // Normal foreground advance 5s
+    // Normal monotonic + rollback freeze + recovery + forward jump deadline clamp
+    const vClock = new VirtualClockProvider(start, 1000, true);
+    const guard = new MonotonicTimelineGuard(vClock, 2000);
     vClock.advance(5000);
     const okTick = guard.tickForeground(vClock);
     if (!okTick.ok || okTick.cursorMs !== start + 5000) throw new Error('Normal foreground tick failed');
 
-    // Roll back wall clock by 10 minutes -> CLOCK_ERROR freeze, cursor must NOT rewind
     vClock.setWallMs(start - 600_000);
     const rollbackTick = guard.tickForeground(vClock);
     if (rollbackTick.ok || rollbackTick.code !== 'CLOCK_ERROR' || rollbackTick.cursorMs !== start + 5000) {
       throw new Error(`Rollback should freeze without rewind: ${JSON.stringify(rollbackTick)}`);
     }
 
-    // Resume while rolled back -> strict reject
     const badResume = guard.lockOfflineResumeTarget(vClock, deadline);
     if (badResume.ok || badResume.code !== 'CLOCK_ERROR') {
       throw new Error('Resume rollback should be rejected');
     }
 
-    // Forward jump +48h -> clamped strictly to 8h deadline!
+    // Wall clock recovers to >= highWaterMs -> foreground unfreezes without rewinding or adopting fake jump
+    vClock.setWallMs(start + 6000);
+    vClock.setMonoMs(7000);
+    const recoveredTick = guard.tickForeground(vClock);
+    if (!recoveredTick.ok || recoveredTick.frozen || recoveredTick.cursorMs !== start + 5000) {
+      throw new Error(`Expected clean freeze recovery at cursor=${start + 5000}: ${JSON.stringify(recoveredTick)}`);
+    }
+
+    // Forward jump +48h on resume -> clamped strictly to 8h deadline
     vClock.setWallMs(start + 48 * 3600 * 1000);
     const clampedResume = guard.lockOfflineResumeTarget(vClock, deadline);
     if (!clampedResume.ok || !clampedResume.clampedByDeadline || clampedResume.lockedTargetMs !== deadline) {
       throw new Error(`Expected 48h jump clamped to 8h deadline: ${JSON.stringify(clampedResume)}`);
     }
-    return `dedupe ok (2/2); rollback=CLOCK_ERROR frozen; +48h jump clamped to 8h deadline`;
+    return `dispatch/dedupe/unsub/isolation ok; unsupported-mono frozen; rollback+recovery ok; +48h clamped to 8h`;
   });
 
   // 3. Ad 5-case experimental stub (COMPLETED, CANCELLED, LOAD_FAILED, PLAY_FAILED, DUPLICATE_CALLBACK)
@@ -361,7 +414,7 @@ export async function runLifecycleClockAndAdSuite(): Promise<VerificationCaseRes
     name: 'Real WeChat RewardedVideoAd verification',
     status: 'BLOCKED',
     env,
-    detail: 'BLOCKED: no real WeChat Mini Game adUnitId / real device available in FE-000',
+    detail: 'BLOCKED: no real WeChat Mini Game adUnitId / real device available in FE-000-R1',
     durationMs: 0,
   });
 

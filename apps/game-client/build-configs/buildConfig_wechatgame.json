@@ -12,7 +12,6 @@
   },
   "experimentalEraseModules": false,
   "startSceneAssetBundle": false,
-  "bundleConfigs": [],
   "useBuiltinServer": false,
   "mainBundleIsRemote": false,
   "mainBundleCompressionType": "merge_dep",
