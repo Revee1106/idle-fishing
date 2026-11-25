@@ -39,6 +39,10 @@ export function migrateSpikeState(raw: unknown, from: number, to: number): Spike
     throw new MigrationError((error as Error).message);
   }
   const stageLevel = attempt === null ? 0 : ATTEMPT_DEPTH[attempt.stage];
+  // PREPARING means the current attempt was already settled (design doc 12), so
+  // the terminal seq and its claim key must survive migration; v1 gold already
+  // contains that reward and must not be granted again.
+  const settledAttemptSeq = attempt?.stage === 'PREPARING' ? v1.counter : null;
   return {
     schemaVersion: 2,
     saveEpoch: v1.saveEpoch,
@@ -56,11 +60,11 @@ export function migrateSpikeState(raw: unknown, from: number, to: number): Spike
       prepares: stageLevel >= 4 ? 1 : 0,
       cycles: 0,
       envChecks: 0,
-      events: 0,
+      events: settledAttemptSeq === null ? 0 : 1,
     },
     gold: v1.gold,
-    claims: [],
-    lastTerminalAttemptSeq: '0',
+    claims: settledAttemptSeq === null ? [] : [`fish:${settledAttemptSeq}`],
+    lastTerminalAttemptSeq: settledAttemptSeq === null ? '0' : String(settledAttemptSeq),
     rng: cloneRngState(v1.rng),
     big: '0',
     envNextCheckMs,

@@ -1,7 +1,7 @@
 # BE-000-R1 候选文件清单（FILE_LIST）
 
 - 基准：`358b11105cfdee9bd076049c86a34d8f0aaa00e7`（`r1/be-000`）
-- 实际候选：未提交工作区；`HEAD` 未变
+- 实际候选：R1 期间为未提交工作区，后提交为 `c5718a436fac29dbb9ca39c9499c6e752ab19c04`；P2 收口（`BE-000-R1-P2-CLEANUP`）变更清单见 `IMPLEMENTATION_REPORT.md` 第 7 节与 `FILES-P2.sha256`
 - 校验：`FILES.sha256`（可入库文件），`LOGS.sha256`（被 gitignore 的本地证据）
 - 未修改：`apps/game-client/`、`tests/frontend/`、`reports/frontend/`、`docs/`、`packages/contracts/`、`config/rules/`、`config/content/`
 

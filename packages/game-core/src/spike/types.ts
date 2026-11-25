@@ -38,9 +38,10 @@ export interface SpikeOfflineSession {
 }
 
 /**
- * SPIKE-ONLY: result locked when a v1 attempt enters FIGHTING, so a migrated
- * in-progress attempt can be resumed without re-drawing. Normal v2 runs do not
- * persist this field (it is optional and absent).
+ * SPIKE-ONLY: result locked when an attempt enters FIGHTING so the attempt can
+ * be resumed (including after v1 -> v2 migration) without re-drawing. It is part
+ * of the persisted state while FIGHTING, absent in other stages, and removed
+ * when the fight settles.
  */
 export interface SpikeAttemptLock {
   seq: number;

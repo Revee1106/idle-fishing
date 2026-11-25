@@ -9,6 +9,7 @@
 import { canonicalStringify, isNat, natToBigInt, natFromBigInt } from './canonical-json.ts';
 import { validateRngState } from './prng.ts';
 import { sha256Hex } from './sha256.ts';
+import { workFromMs } from './time.ts';
 import type {
   Nat,
   SpikeCommitResult,
@@ -235,6 +236,8 @@ export function validateSpikeState(raw: unknown): StateValidationIssue[] {
       }
       if (typeof l.fightMs !== 'number' || !Number.isSafeInteger(l.fightMs) || l.fightMs < 0) {
         add('attemptLock.fightMs', 'must be a non-negative safe integer');
+      } else if (isNat(s.stageRequired) && workFromMs(l.fightMs) !== s.stageRequired) {
+        add('attemptLock.fightMs', 'must match stageRequired work');
       }
       if (s.stage !== 'FIGHTING') add('attemptLock', 'only allowed while FIGHTING');
     }

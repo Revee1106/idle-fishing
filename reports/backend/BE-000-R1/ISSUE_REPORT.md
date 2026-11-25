@@ -1,16 +1,27 @@
 # BE-000-R1 问题报告（ISSUE_REPORT）
 
 - 日期：2026-11-25
-- 范围：BE-000-R1 后端 Spike 整改
-- 状态：`OPEN` 等待决定；`BLOCKED` 需外部输入/设备/设计确认；`INFO` 已记录事实，不阻塞本轮代码
+- 范围：BE-000-R1 后端 Spike 整改 + `BE-000-R1-P2-CLEANUP` 收口
+- 状态：`OPEN` 等待决定；`BLOCKED` 需外部输入/设备/设计确认；`INFO` 已记录事实，不阻塞本轮代码；`CLOSED` 代码与测试均已证明关闭
 - 本报告不修改根 `ISSUES.md`，也不把任何设计待办视为已解决
+
+## P2 收口状态（BE-000-R1-P2-CLEANUP）
+
+| 编号 | 摘要 | 处理 | 测试证据 | 状态 |
+|---|---|---|---|---|
+| R1-N01 | PREPARING 迁移产出不满足 `validateSpikeState` | 按设计 12“PREPARING=已结算”语义迁移 `claims`/`lastTerminalAttemptSeq`，不重新发奖 | `MIG-07` | **CLOSED** |
+| R1-N02 | `attemptLock.fightMs` 与 `stageRequired` 不一致未被存档校验发现 | `validateSpikeState` 增加 `workFromMs(fightMs) === stageRequired` | `SAVE-T13` | **CLOSED** |
+| R1-N03 | `allowanceMs=0` 可构造但无法通过存档校验 | `createInitialState` 显式要求 `allowanceMs > 0` | `OFF-13` | **CLOSED** |
+| R1-N04 | 报告映射、`attemptLock` 注释与 G01/G02 回归缺陷 | 修正 3.9 节归属与注释；G01/G02 纳入 `D01-04`/`D01-05` 并独立复算 | `D01-04`、`D01-05`、`evidence/p2-g01-g02-independent.mjs` | **CLOSED** |
+
+> 关闭依据为本轮实际测试输出（`logs/p2-*.log`，`npm run verify` 82/82）；最终是否接受仍由独立复审判定。
 
 ## 汇总
 
 | 编号 | 摘要 | 影响 | 状态 |
 |---|---|---|---|
 | BE000-R1-ISS-01 | 日志默认被 `.gitignore` 忽略；R1 关键日志已强制入库 | 后续证据入库策略 | OPEN |
-| BE000-R1-ISS-02 | 设计方 G01/G02 只发布外层字节数与摘要，缺 payload 原文 | BE-D01 摘要复算 | BLOCKED |
+| BE000-R1-ISS-02 | 设计方 G01/G02 曾缺 payload 原文 | BE-D01 摘要复算 | CLOSED（P2 轮次） |
 | BE000-R1-ISS-03 | 正式存档字节级格式仍未批准，Spike 方案仅实验 | 存档兼容 | BLOCKED |
 | BE000-R1-ISS-04 | v1 `attempt` 字段是本轮实验扩展，真实 v1 档不含 | 迁移样例解释 | INFO |
 | BE000-R1-ISS-05 | 可替换离线夹具没有初始化/推进/恢复一致契约 | 夹具扩展 | OPEN |
@@ -29,13 +40,11 @@
 - 建议：负责人决定是否为 `reports/**/logs/` 增加 `.gitignore` 例外，避免每次强制添加。
 - 状态：OPEN（R1 证据已入库，长期规则待定）。
 
-## BE000-R1-ISS-02 G01/G02 缺 payload 原文
+## BE000-R1-ISS-02 G01/G02 payload 缺口（P2 已关闭）
 
-- 描述：审核 `R1/HANDOFF.md` 给出两组向量共用 `IDLE_FISHING`、`1`、`"7"`、`epoch.audit`，G01 外层 55 字节 / `7322a234…c40a27`，G02 外层 150 字节 / `431dafc1…8b5354`；但未给出 payload 原文。全量检索 `E:/idle-fishing`、`E:/idle-fishing-backend`、`E:/idle-fishing-frontend`、`E:/idle-fishing-review` 与本地会话记录，均只有摘要表。
-- 影响：无法在不猜测输入的前提下复算两条发布摘要；不能声称已核对 G01/G02。
-- 当前处理：按设计方 R1 编码规则实现并新增两条**本地** D01 向量（payload 明确写出，Python 标准库独立复算）：`tests/backend/be-000/d01-encoding.test.ts`、`evidence/d01-independent.py`、`logs/r1-d01-python.log`。本地向量不冒充 G01/G02。
-- 建议：设计方补发 G01/G02 的完整 payload 字符串（含转义后的字节），后端可直接加入同一测试。
-- 状态：BLOCKED（等待设计输入）。
+- 描述：R1 时审核 `R1/HANDOFF.md` 只给出两组向量共用 `IDLE_FISHING`、`1`、`"7"`、`epoch.audit`，G01 外层 55 字节 / `7322a234…c40a27`，G02 外层 150 字节 / `431dafc1…8b5354`，但未给出 payload 原文；R1 未在不猜测输入的前提下复算。
+- P2 处理：设计方补充记录 `reports/review/DESIGN_VECTOR_SUPPLEMENT.md` 已提供 G01/G02 完整 payload、规范 JSON 与外层哈希输入文本。`tests/backend/be-000/d01-encoding.test.ts` 新增 `D01-04`/`D01-05`，期望值按设计原文固定；`evidence/p2-g01-g02-independent.mjs` 仅用 `node:crypto` 从原文外层文本复算，字节数与摘要全部一致（日志 `logs/p2-g01-g02-independent.log`）。
+- 状态：**CLOSED**（P2 轮次）。正式存档格式批准（ISS-03）仍待设计方决定，不因本项关闭而改变。
 
 ## BE000-R1-ISS-03 正式存档格式未批准
 

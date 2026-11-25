@@ -4,6 +4,7 @@ import {
   SLOT_PATHS,
   SpikeFileSaveRepository,
   parseEnvelope,
+  validateSpikeState,
 } from '../../../packages/game-core/src/spike/save.ts';
 import { MigrationError, migrateSpikeState } from '../../../packages/game-core/src/spike/migration.ts';
 import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
@@ -41,6 +42,18 @@ function v1AttemptFixture(): SpikeGameStateV1 {
         captureU: 0.4494557859023359,
         fightMs: 9_362,
       },
+    },
+  };
+}
+
+function v1PreparingFixture(): SpikeGameStateV1 {
+  return {
+    ...v1Fixture(),
+    attempt: {
+      stage: 'PREPARING',
+      stageStartMs: 1_700_000_000_000 - 2_000,
+      stageDone: '1000000000',
+      stageRequired: '2500000000',
     },
   };
 }
@@ -187,6 +200,69 @@ test('MIG-06 invalid in-progress v1 leaves the original slot bytes untouched', a
   const loaded = await repo.load();
   assert.equal(loaded.kind, 'VALID');
   if (loaded.kind === 'VALID') assert.equal(loaded.schemaVersion, 1);
+});
+
+test('MIG-07 v1 PREPARING migrates to a valid settled v2 state and never repays', async () => {
+  const port = new MemoryFilePort();
+  const repo = new SpikeFileSaveRepository(port);
+  const source = v1PreparingFixture();
+  const first = await repo.commit(source as unknown as SpikeGameState, null);
+  assert.equal(first.kind, 'COMMITTED');
+  const originalV1Text = port.files.get(SLOT_PATHS[0] as string) as string;
+  const before = new Map(port.files);
+
+  const loaded = await repo.load();
+  assert.equal(loaded.kind, 'VALID');
+  if (loaded.kind !== 'VALID') return;
+  assert.equal(loaded.schemaVersion, 1);
+
+  const migrated = migrateSpikeState(loaded.raw, 1, 2);
+  assert.equal(migrated.stage, 'PREPARING');
+  assert.equal(migrated.stageStartMs, source.attempt!.stageStartMs);
+  assert.equal(migrated.stageDone, source.attempt!.stageDone);
+  assert.equal(migrated.stageRequired, source.attempt!.stageRequired);
+  assert.equal(migrated.counters.attempts, 7);
+  assert.equal(migrated.counters.prepares, 1);
+  assert.equal(migrated.counters.events, 1);
+  assert.deepEqual(migrated.claims, ['fish:7']);
+  assert.equal(migrated.lastTerminalAttemptSeq, '7');
+  assert.equal(migrated.gold, source.gold, 'settled reward must not be granted again');
+  assert.equal(migrated.attemptLock, undefined);
+  assert.deepEqual(validateSpikeState(migrated), [], 'migration output must satisfy v2 invariants');
+  assert.deepEqual(port.files, before, 'original v1 slot bytes must stay untouched');
+
+  const second = await repo.commit(migrated, loaded.revision);
+  assert.equal(second.kind, 'COMMITTED');
+  assert.equal(port.files.get(SLOT_PATHS[0] as string), originalV1Text, 'old v1 slot must remain readable');
+
+  const reloaded = await repo.load();
+  assert.equal(reloaded.kind, 'VALID');
+  if (reloaded.kind !== 'VALID') return;
+  assert.equal(reloaded.schemaVersion, 2);
+  const restored = reloaded.raw as SpikeGameState;
+  assert.deepEqual(validateSpikeState(restored), []);
+  assert.deepEqual(restored.claims, ['fish:7']);
+  assert.equal(restored.lastTerminalAttemptSeq, '7');
+  assert.equal(restored.gold, source.gold);
+
+  const settledGold = restored.gold;
+  const warm = advanceOffline(restored, restored.cursorMs + 5_000).state;
+  assert.equal(warm.stage, 'WAITING', 'preparation ends and the next attempt is already underway');
+  assert.equal(warm.gold, settledGold, 'resuming a settled PREPARING attempt must not pay again');
+  assert.deepEqual(warm.claims, ['fish:7']);
+  assert.equal(warm.counters.events, 1);
+  assert.equal(warm.counters.cycles, 1);
+
+  const savedWarm = await repo.commit(warm, reloaded.revision);
+  assert.equal(savedWarm.kind, 'COMMITTED');
+  const finalLoad = await repo.load();
+  assert.equal(finalLoad.kind, 'VALID');
+  if (finalLoad.kind !== 'VALID') return;
+  const finalState = finalLoad.raw as SpikeGameState;
+  assert.equal(finalState.gold, settledGold);
+  assert.deepEqual(finalState.claims, ['fish:7']);
+  assert.equal(finalState.counters.events, 1);
+  assert.equal(finalState.claims.filter((key) => key === 'fish:7').length, 1);
 });
 
 test('MIG-03 unsupported migration paths are refused', () => {

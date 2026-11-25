@@ -9,9 +9,11 @@ import {
   computeEnvelopeHash,
   copyStateForCommit,
   parseEnvelope,
+  validateSpikeState,
 } from '../../../packages/game-core/src/spike/save.ts';
 import { createInitialState, advanceOffline } from '../../../packages/game-core/src/spike/offline.ts';
 import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
+import { workFromMs } from '../../../packages/game-core/src/spike/time.ts';
 import type { SpikeGameState, SpikeGameStateV1 } from '../../../packages/game-core/src/spike/types.ts';
 import { MemoryFilePort, createTempPort, type WriteBehavior } from './helpers.ts';
 
@@ -34,6 +36,15 @@ async function commitRevision(
 
 function corrupt(path: string, port: MemoryFilePort): void {
   port.files.set(path, '{"not":"a valid envelope"');
+}
+
+function advanceToStage(state: SpikeGameState, stage: SpikeGameState['stage'], targetMs: number): SpikeGameState {
+  let current = state;
+  for (let guard = 0; current.stage !== stage; guard++) {
+    assert.ok(guard < 1_000_000, `stage ${stage} must be reached`);
+    current = advanceOffline(current, targetMs, { maxNodes: 1 }).state;
+  }
+  return current;
 }
 
 test('SAVE-T01 three slots rotate and never overwrite the highest revision', async () => {
@@ -384,4 +395,38 @@ test('SAVE-T12 rollback after uncertain write keeps the previously committed rev
     assert.equal(natToBigInt(load.revision), 2n);
     assert.equal((load.raw as SpikeGameState).gold, '3');
   }
+});
+
+test('SAVE-T13 attemptLock fightMs must match stageRequired before commit and load', async () => {
+  const fighting = advanceToStage(freshState('0'), 'FIGHTING', START_MS + 3_600_000);
+  assert.deepEqual(validateSpikeState(fighting), []);
+  const lock = fighting.attemptLock;
+  if (lock === undefined || lock === null) assert.fail('real FIGHTING state must carry a locked result');
+  assert.equal(workFromMs(lock.fightMs), fighting.stageRequired);
+
+  const tampered = copyStateForCommit(fighting);
+  tampered.attemptLock = { ...lock, fightMs: lock.fightMs + 1 };
+  const issues = validateSpikeState(tampered);
+  assert.ok(
+    issues.some((issue) => issue.path === 'attemptLock.fightMs'),
+    'duration mismatch must be reported by state validation'
+  );
+  assert.notEqual(tampered.attemptLock.fightMs, lock.fightMs);
+
+  const port = new MemoryFilePort();
+  const repo = new SpikeFileSaveRepository(port);
+  const accepted = await repo.commit(fighting, null);
+  if (accepted.kind !== 'COMMITTED') assert.fail(`legal FIGHTING state must commit: ${accepted.detail}`);
+  const writes = port.writeCount;
+  const snapshot = new Map(port.files);
+  const rejected = await repo.commit(tampered, accepted.revision);
+  if (rejected.kind !== 'FAILED') assert.fail('tampered lock must be refused');
+  assert.match(rejected.detail, /attemptLock\.fightMs/);
+  assert.equal(port.writeCount, writes, 'invalid state must not trigger a write');
+  assert.deepEqual(port.files, snapshot);
+
+  const tamperedPort = new MemoryFilePort();
+  tamperedPort.files.set(SLOT_PATHS[0] as string, buildEnvelope(tampered, '1').text);
+  const loaded = await new SpikeFileSaveRepository(tamperedPort).load();
+  assert.equal(loaded.kind, 'CORRUPT', 'a persisted inconsistent lock must not load as VALID');
 });

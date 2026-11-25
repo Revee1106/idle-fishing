@@ -4,7 +4,7 @@
 - 工作区：`E:/idle-fishing-backend`
 - 分支：`r1/be-000`
 - 整改基准提交：`358b11105cfdee9bd076049c86a34d8f0aaa00e7`
-- 实际状态：`HEAD` 仍为 `358b111`；整改为**未提交**工作区变更。候选文件 SHA-256 见 `FILES.sha256`，逐文件清单见 `FILE_LIST.md`，源码/配置/测试补丁见 `BE-000-R1-code.patch`（`git apply --check -R` 已验证与工作区一致）
+- 实际状态：R1 整改已提交为 `c5718a436fac29dbb9ca39c9499c6e752ab19c04`；本轮 P2 收口（`BE-000-R1-P2-CLEANUP`）是基于该提交的**未提交**工作区变更。R1 候选文件 SHA-256 见 `FILES.sha256`，P2 变更见 `FILES-P2.sha256`，逐文件清单见 `FILE_LIST.md`，源码/配置/测试补丁见 `BE-000-R1-code.patch`（`git apply --check -R` 已验证与 R1 工作区一致）
 - 日期：2026-11-25
 - 宿主：Windows 10.0.19045 x64 / Git Bash / Node v24.20.0 / npm 11.4.2 / TypeScript 5.9.3 / Cocos Creator 3.8.8
 - 边界：仅修改 `packages/game-core/src/spike/`、`packages/game-core/scripts/emit-cocos-mjs.mjs`、`tests/backend/be-000/`、根 `package.json` / `tsconfig.test.json`（后端维护的根工具链）及后端交接/报告；未修改前端、设计文档、正式契约、正式数值；未推送、未合并、未开始 BE-001
@@ -127,7 +127,8 @@ A1–A8 失败摘要：未知槽仍可写（A1）、已落盘但目标不可读�
 ### 3.9 V01 覆盖修正
 
 - `SAVE-T05` 改为真实引擎：推进到 FIGHTING、保存、加载、恢复、只发一次奖；再用已领取 `fish:<seq>` 的伪造候选证明被拒绝。
-- `SAVE-T04e` 覆盖“写入已落盘但目标槽不可读、旧槽可读”，结果 `UNCERTAIN` 且不再写。
+- `R1-SAVE-05`（`r1-regression.test.ts`）覆盖“写入已落盘但目标槽随后不可读、旧槽仍可读”：结果为 `UNCERTAIN`；恢复可读后载入新 revision。
+- `SAVE-T04e`（`save.test.ts`）覆盖“写入前并发出现另一 epoch 的更高 revision、导致写入不可观察”的 `UNCERTAIN` 分支；该用例未被 R1 修改。P2 轮次已修正此处原先的错误归属（见第 7.4 节）。
 - `OFF-09` 覆盖 deadline−1、恰好 deadline、deadline+1，执行原先遗漏的 `>` 分支。
 - 新增 `r1-regression.test.ts` 7 项，覆盖未知槽、非法 payload、同版本冲突、隐藏高版本、持久化后不可读、检查点三段、时间溢出。
 
@@ -188,10 +189,47 @@ A1–A8 失败摘要：未知槽仍可写（A1）、已落盘但目标不可读�
 
 | 项 | 状态 | 说明 |
 |---|---|---|
-| 设计方 G01/G02 摘要复算 | BLOCKED | 只发布外层字节数与摘要，未保留 payload 原文；不以猜测输入伪造结果 |
+| 设计方 G01/G02 摘要复算 | CLOSED（P2 轮次） | 设计方 `reports/review/DESIGN_VECTOR_SUPPLEMENT.md` 已补发完整 payload 与外层文本；`D01-04`/`D01-05` 已固定期望值并纳入回归，独立复算证据见 `evidence/p2-g01-g02-independent.mjs` |
 | 正式存档字节格式 | BLOCKED | BE-D01 仅 Spike；正式格式待设计方批准 |
 | 真机性能预算 | BLOCKED | 仅 Node 虚拟时钟 + Cocos Web；代表设备/微信真机未测 |
 | 微信文件系统/强退/广告 | BLOCKED | 属前端与真机联合验证 |
 | 根日志入库 | OPEN | 默认规则忽略 `*.log`/`logs/`；R1 的 14 份关键日志已强制入库（构建日志中的代理凭据已脱敏），后续策略待定 |
 
 详细问题记录见 `ISSUE_REPORT.md`；测试证据见 `TEST_REPORT.md`。
+
+## 7. P2 收口整改（BE-000-R1-P2-CLEANUP，2026-11-25）
+
+- 任务：处理独立复审 `reports/review/R1/BE-000-R1/` 记录的 4 项 P2 非阻塞遗留问题（`R1-N01`–`R1-N04`）。
+- 基准提交：`c5718a436fac29dbb9ca39c9499c6e752ab19c04`；本轮为基于该提交的未提交工作区变更。
+- 修改文件：`packages/game-core/src/spike/{migration,save,offline,types}.ts`、`tests/backend/be-000/{migration,save,offline,d01-encoding}.test.ts`、本报告目录；未修改 `docs/`、`packages/contracts/`、`config/`、前端、`package.json`/`package-lock.json`。
+
+### 7.1 R1-N01：PREPARING 迁移产生无效 v2 状态（已修复）
+
+- 问题：`readV1Attempt` 接受 `attempt.stage='PREPARING'`，但 `migrateSpikeState` 固定输出 `claims=[]`、`lastTerminalAttemptSeq='0'`，与 `validateSpikeState` 的 PREPARING 规则（`lastTerminalAttemptSeq === counters.attempts`，且 `claims` 必须含 `fish:<seq>`）冲突，迁移产物无法保存。
+- 设计依据：正式设计 12 定义 PREPARING 的入口语义为“已结算”（FIGHTING→PREPARING 属统一结算事务）；因此 PREPARING 表示该次尝试已完成结算，v1 `gold` 已包含该次奖励。v1 `attempt` 仍为本轮 Spike 的实验扩展（真实 v1 档不含该字段，`BE000-R1-ISS-04` 不变）。
+- 方案（`migration.ts`）：PREPARING 迁移时输出 `claims=['fish:<counter>']`、`lastTerminalAttemptSeq=String(counter)`、`counters.events=1`；保留 v1 `gold` 不重新发奖；进度、RNG 与计数深度沿用原迁移逻辑。`events=1` 与 v2 中“每次 FIGHTING 结算 `events+1` 且新增一个 claim”的语义一致（`claims.length === events` 在全部迁移输出中保持成立：IDLE/进行中为 0/0，PREPARING 为 1/1）。
+- 测试：`MIG-07` 验证有效输入字段、`validateSpikeState` 通过、`commit`/`load` 往返、恢复推进不重复发奖、`claims`/`lastTerminalAttemptSeq` 一致、原始 v1 槽字节不变；`MIG-01`/`MIG-02`/`MIG-05`/`MIG-06` 保持通过。
+
+### 7.2 R1-N02：attemptLock.fightMs 与 stageRequired 不一致未被存档校验发现（已修复）
+
+- 问题：`validateSpikeState` 仅校验 `fightMs` 的数值合法性，未比对 `workFromMs(fightMs) === stageRequired`；被篡改的锁可被 `commit` 接受并载入，直到 `advanceOffline` 才抛错。
+- 方案（`save.ts`）：在 `attemptLock` 校验块增加 `workFromMs(l.fightMs) !== s.stageRequired` → `attemptLock.fightMs: must match stageRequired work`。沿用项目既有 `workFromMs` 量化语义（`round(ms×1e6)`，正数不低于 1 micro-unit），未使用浮点近似比较，未修改时间单位或量化规则。
+- 测试：`SAVE-T13` 通过真实推进获得带锁 FIGHTING 状态，验证合法状态通过校验并可提交；仅篡改 `fightMs` 后 `validateSpikeState` 报错、`commit` 返回 `FAILED` 且零写入、伪造信封无法加载为 `VALID`；`SAVE-T05` 真实结算幂等链路保持通过。
+
+### 7.3 R1-N03：allowanceMs=0 的构造与校验规则不一致（已修复）
+
+- 问题：`createInitialState` 仅调用 `assertSafeMs`（允许 0），而 `validateSpikeState` 要求 `offline.allowanceMs > 0`，构造入口可生成无法通过自身存档校验的状态。
+- 方案（`offline.ts`）：初始化入口在安全整数校验后显式要求 `allowanceMs > 0`（`<= 0` 抛 `allowanceMs must be positive`）；deadline 仍由 `safeAddMs` 保证安全范围。构造、校验、推进与测试四处规则一致，未引入新业务语义。
+- 测试：`OFF-13` 覆盖正数创建、0/负数/非安全整数拒绝、deadline 溢出拒绝、正常状态通过 `validateSpikeState`；`OFF-01`–`OFF-12` 全部通过。
+
+### 7.4 R1-N04：报告编号、过期注释与 G01/G02 回归（已修复）
+
+- 报告映射：第 3.9 节已修正——“已落盘但目标槽不可读”归属 `R1-SAVE-05`（`r1-regression.test.ts`）；`SAVE-T04e` 对应“并发更高 revision 导致写入不可观察”的 `UNCERTAIN` 分支。同步修正“未提交工作区”等 R1 提交前表述。
+- 注释（`types.ts`）：`attemptLock` 说明更正为“进入 FIGHTING 时锁定结果、FIGHTING 期间随存档持久化、结算后移除，迁移可恢复”；仅改注释，未改字段结构或公共契约。
+- 黄金向量：`reports/review/DESIGN_VECTOR_SUPPLEMENT.md` 已提供 G01/G02 完整 payload 与外层文本。`d01-encoding.test.ts` 新增 `D01-04`（G01：55 B / `7322a23453d23eca40a924d1b24105c95a157f3931430cc4c56ac82862c40a27`）与 `D01-05`（G02：150 B / `431dafc1a07776a1bb9d80357a62323176faabc7c38385da0e13a80daf8b5354`）。期望值按设计原文固定，未动态自生成；`evidence/p2-g01-g02-independent.mjs` 仅用 `node:crypto` 从设计原文外层文本独立复算一致。
+
+### 7.5 与正式设计的关系及向量影响
+
+- 未修改正式设计文档、公共契约、正式数值或存档格式；PREPARING 语义完全依据设计 12，`allowanceMs > 0` 与既有存档校验器一致，`workFromMs` 比对复用既有时间量化规则。
+- 正常运行路径未变化：`VEC-05` 固定向量通过，24h Envelope SHA-256 仍为 `0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f`（与 R1 相同）；G01/G02 为新增固定输入回归，不属于向量“变化”。
+- 证据：`TEST_REPORT.md` 第 11 节；日志 `logs/p2-{typecheck,build-cocos,typecheck-cocos,test,verify,perf,review-a1-a8,g01-g02-independent}.log`；清单 `FILES-P2.sha256`。

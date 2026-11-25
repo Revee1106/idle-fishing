@@ -68,6 +68,9 @@ export function createInitialState(options: CreateInitialOptions): SpikeGameStat
   const fixture = DEFAULT_OFFLINE_FIXTURE;
   assertSafeMs(options.startMs, 'startMs');
   assertSafeMs(options.allowanceMs, 'allowanceMs');
+  if (options.allowanceMs <= 0) {
+    throw new Error('allowanceMs must be positive');
+  }
   const session: SpikeOfflineSession = {
     startedMs: options.startMs,
     allowanceMs: options.allowanceMs,

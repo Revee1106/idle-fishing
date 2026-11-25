@@ -10,7 +10,7 @@ import {
 } from '../../../packages/game-core/src/spike/offline.ts';
 import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
 import { validateRngState } from '../../../packages/game-core/src/spike/prng.ts';
-import { SpikeFileSaveRepository, copyStateForCommit } from '../../../packages/game-core/src/spike/save.ts';
+import { SpikeFileSaveRepository, copyStateForCommit, validateSpikeState } from '../../../packages/game-core/src/spike/save.ts';
 import type { SpikeGameState } from '../../../packages/game-core/src/spike/types.ts';
 import { MemoryFilePort } from './helpers.ts';
 
@@ -179,6 +179,35 @@ test('OFF-12 custom fixture option is rejected instead of being silently ignored
     } as never),
     /Custom offline fixtures are not supported/
   );
+});
+
+test('OFF-13 createInitialState enforces the positive allowance invariant used by state validation', () => {
+  assert.throws(
+    () => createInitialState({ saveEpoch: 'epoch.be000', startMs: START_MS, allowanceMs: 0 }),
+    /allowanceMs must be positive/
+  );
+  assert.throws(
+    () => createInitialState({ saveEpoch: 'epoch.be000', startMs: START_MS, allowanceMs: -1 }),
+    /allowanceMs/
+  );
+  assert.throws(
+    () => createInitialState({ saveEpoch: 'epoch.be000', startMs: START_MS, allowanceMs: 1.5 }),
+    /allowanceMs/
+  );
+  assert.throws(
+    () => createInitialState({ saveEpoch: 'epoch.be000', startMs: START_MS, allowanceMs: 2 ** 53 }),
+    /allowanceMs/
+  );
+  assert.throws(
+    () => createInitialState({ saveEpoch: 'epoch.be000', startMs: 1, allowanceMs: Number.MAX_SAFE_INTEGER }),
+    /safe millisecond range/
+  );
+
+  const minimal = createInitialState({ saveEpoch: 'epoch.be000', startMs: START_MS, allowanceMs: 1 });
+  assert.equal(minimal.offline?.allowanceMs, 1);
+  assert.equal(minimal.offline?.deadlineMs, START_MS + 1);
+  assert.deepEqual(validateSpikeState(minimal), []);
+  assert.deepEqual(validateSpikeState(initialState()), []);
 });
 
 test('OFF-11 triangle quantile honours bounds and approximates mean 1', () => {

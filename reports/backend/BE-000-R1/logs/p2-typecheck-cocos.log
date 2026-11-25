@@ -1,0 +1,4 @@
+
+> idle-fishing@0.1.0 typecheck:cocos
+> tsc -p tsconfig.cocos-consumer.json
+

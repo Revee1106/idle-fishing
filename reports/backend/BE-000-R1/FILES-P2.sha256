@@ -1,0 +1,26 @@
+# BE-000-R1-P2-CLEANUP file SHA-256 manifest
+# Base commit: c5718a436fac29dbb9ca39c9499c6e752ab19c04 (r1/be-000)
+# Convention: sha256 of the exact on-disk bytes in this workspace (core.autocrlf=true, CRLF).
+# R1 candidate manifest remains in FILES.sha256; this file covers P2-touched sources, tests, reports and evidence.
+#
+e63eb27a6451fa46a7192849001509212ffb9dfa1ac404107e9bc58137bd4962 *packages/game-core/src/spike/migration.ts
+cf13f29bbfacadf2db97cd591dff6c66e33a84577dbcf7bb6d6d5a31376d26b2 *packages/game-core/src/spike/offline.ts
+e5a624dfdff84c693d0f329abf6a49086a562062f20fd238196970bb4bf42413 *packages/game-core/src/spike/save.ts
+5ee45bdb8481ff38ed52ae20d94af3e54ab6707be191f6f331c63d2cf59acbc7 *packages/game-core/src/spike/types.ts
+58728c897d0423dbd8d9df1ef8d8eb0defd5d304d341f9ca11098f7839ed0f77 *tests/backend/be-000/d01-encoding.test.ts
+00a8ae0dbc10c6e1df1b05fc53b995453a3b3f12971391677c5d94c91f18f4f5 *tests/backend/be-000/migration.test.ts
+2871a93e5468ead163d5537226beca5ee888aea3f478c6dc83c29eb33fdd3a22 *tests/backend/be-000/offline.test.ts
+f8c84eba8d42386499f4f519e7ba206a333c0f9d1b685b87fb9e24e31e504ca5 *tests/backend/be-000/save.test.ts
+d912ce297338a43a0158d8d609e08619674ef891ef7ab929cbefb815ba33892d *reports/backend/BE-000-R1/IMPLEMENTATION_REPORT.md
+249344d351366e91fca62244fcf9918923580b58f16a8422be578cf634cb0761 *reports/backend/BE-000-R1/TEST_REPORT.md
+ae2542756fa228071bdd99c19b605f4bfbfed57a789ca04ffc0d0a07d45567cd *reports/backend/BE-000-R1/ISSUE_REPORT.md
+dee536fc8247cb01c85bfb3d8e91a7609f53ad25ce831b3cbabc240a541674bc *reports/backend/BE-000-R1/FILE_LIST.md
+ba1600a39694567ea20268f7f47f85a1ea994ec87a8c1b0c7263a27af5d2c00f *reports/backend/BE-000-R1/evidence/p2-g01-g02-independent.mjs
+f72937db59b0d9723a246d796fce94b6e1419e095cad4645fee5955ccc070cdf *reports/backend/BE-000-R1/logs/p2-typecheck.log
+b837d119de355ad367ff7f5f66a1531ebfadb7741a2587c59ab9bd50eddbfa90 *reports/backend/BE-000-R1/logs/p2-build-cocos.log
+37dcc7e13ed66206e3bc891658a10312740095392dd4c047d7f6ad478deec177 *reports/backend/BE-000-R1/logs/p2-typecheck-cocos.log
+a47e1cf1ce4eea968c97a8506306c1faeb8bb71864c34e7bcedade0c39b05638 *reports/backend/BE-000-R1/logs/p2-test.log
+07701410ae73716ad41f4d51deb2ffb746f7cb868b7a3449224385cfa28fa3b5 *reports/backend/BE-000-R1/logs/p2-verify.log
+5b7033dc33b74b75b004afa7dfa57e11853a1ab5ee6c0c6ad20e330474a53b9e *reports/backend/BE-000-R1/logs/p2-perf.log
+0869ece1e43704982ec9b4f1afe4c26c43c4b7243033f1dc0e6b1bc6e71e5727 *reports/backend/BE-000-R1/logs/p2-review-a1-a8.log
+1b5803cb1845491ee37bd4d7ec04156a0c00b1828380e4cfd4f9ff732937f413 *reports/backend/BE-000-R1/logs/p2-g01-g02-independent.log
