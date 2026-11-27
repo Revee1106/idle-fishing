@@ -1,0 +1,821 @@
+--- tests/frontend/fe-000/verify-web-build.mjs
+
++++ tests/frontend/fe-000/verify-web-build.mjs
+
+@@ -40,7 +40,7 @@
+
+   ? path.resolve(repoRoot, outDirArg.slice('--out-dir='.length))
+   : process.env.VERIFY_WEB_OUT_DIR
+     ? path.resolve(repoRoot, process.env.VERIFY_WEB_OUT_DIR)
+-    : path.join(repoRoot, 'reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04');
++    : path.join(repoRoot, 'reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05');
+ 
+ const MIME = {
+   '.html': 'text/html; charset=utf-8',
+@@ -235,6 +235,28 @@
+
+         });
+       } finally { db.close(); }
+     },
++    async writeTxState(ns, val) {
++      const db = await openDb();
++      try {
++        await new Promise((resolve, reject) => {
++          const tx = db.transaction(STORE, 'readwrite');
++          tx.objectStore(STORE).put(val, ns + ':__tx_state__');
++          tx.oncomplete = () => resolve();
++          tx.onerror = () => reject(tx.error);
++        });
++      } finally { db.close(); }
++    },
++    async deleteSlot(ns, idx) {
++      const db = await openDb();
++      try {
++        await new Promise((resolve, reject) => {
++          const tx = db.transaction(STORE, 'readwrite');
++          tx.objectStore(STORE).delete(ns + ':save_slot_' + idx + '.json');
++          tx.oncomplete = () => resolve();
++          tx.onerror = () => reject(tx.error);
++        });
++      } finally { db.close(); }
++    },
+     async clearNs(ns) {
+       const db = await openDb();
+       try {
+@@ -306,6 +328,9 @@
+
+   rework04A02AppCrossTab: null,
+   rework04A02FaultCrashMatrix: null,
+   rework04P2IdbAndLegacy: null,
++  rework05Rev401And03Safety: null,
++  rework05AppUiRecoveryLoop: null,
++  rework05AppUiCorruptMarkerConfirm: null,
+   modalClickCheck: null,
+   platformChecks: null,
+   scrollOffsetCheck: null,
+@@ -1902,6 +1927,764 @@
+
+     );
+   }
+ 
++  // =========================================================================
++  // 3k. REWORK-05 REV4-01 & REV4-03 REAL CHROME SAVE RECOVERY SAFETY MATRIX
++  //     - Prior rev 1 + PENDING + all slots deleted -> SAVE_DISAPPEARED_PENDING_RECOVERY (stays frozen)
++  //     - Partial IO FROZEN marker (preserving backup rev 2) + all slots deleted -> stays frozen
++  //     - Unknown prior history (legacy expectedRevision=null) + EMPTY -> stays frozen
++  //     - Confirmed initial create (CONFIRMED_EMPTY_INITIAL_CREATE) + EMPTY -> safely recovers EMPTY
++  //     - Valid rev 1 < confirmed historical rev 2 -> REVISION_REGRESSION_PENDING_RECOVERY (stays frozen)
++  //     - Corrupt marker + EMPTY -> TX_STATE_CORRUPT, canConfirmRecovery=false, confirm REJECTED
++  //     - Corrupt marker + VALID rev 1 -> TX_STATE_CORRUPT, concurrent mutation REJECTED, fresh confirm succeeds
++  //     - Marker read IO error -> TX_STATE_UNREADABLE, controlled recovery REJECTED
++  // =========================================================================
++  {
++    const r5Safety = await cdp.evalJson(`(async () => {
++      const coordMod = await System.import('chunks:///_virtual/SingleWriterSaveCoordinator.ts');
++      const portMod = await System.import('chunks:///_virtual/BrowserFilePort.ts');
++      const faultMod = await System.import('chunks:///_virtual/FaultInjectingFilePort.ts');
++      const coreMod = await System.import('chunks:///_virtual/SharedCoreBridge.ts');
++      const idb = ${IDB_HELPERS_EXPR};
++      const START = 1700000000000;
++      const s0 = coreMod.createInitialState({ saveEpoch: 'epoch.r5.web.safety', startMs: START, allowanceMs: 8 * 3600000 });
++      const s1 = coreMod.advanceOffline(s0, START + 60000).state;
++      const s2 = coreMod.advanceOffline(s1, START + 120000).state;
++      const s3 = coreMod.advanceOffline(s2, START + 180000).state;
++      const ts = Date.now();
++
++      // 1. Prior rev 1 + PENDING(expectedRevision='1') + all 3 slots deleted -> MUST stay frozen!
++      const ns1 = 'r5_lost_valid_' + ts;
++      const p1 = new portMod.BrowserFilePort(ns1);
++      const c1 = new coordMod.SingleWriterSaveCoordinator(p1);
++      await c1.commit(s1, null);
++      await idb.writeTxState(ns1, JSON.stringify({
++        version: 1, storageKey: p1.storageKey, txId: 'tx_lost_1', state: 'PENDING',
++        expectedRevision: '1', targetRevision: '2', createdAtMs: START, updatedAtMs: START, reason: 'lost slots'
++      }));
++      for (let i = 0; i < 3; i++) await idb.deleteSlot(ns1, i);
++      const resLost = await c1.loadSafe();
++      const markerLostAfter = Boolean(await idb.readTxState(ns1));
++      await p1.clearAll();
++
++      // 2. Partial IO FROZEN marker preserving backup rev=2 + all slots deleted -> MUST stay frozen!
++      const ns2 = 'r5_frozen_backup_lost_' + ts;
++      const p2 = new portMod.BrowserFilePort(ns2);
++      const f2 = new faultMod.FaultInjectingFilePort(p2);
++      const c2 = new coordMod.SingleWriterSaveCoordinator(f2);
++      await c2.commit(s1, null);
++      await c2.commit(s2, '1');
++      await c2.commit(s3, '2');
++      f2.setReadFault(coreMod.SLOT_PATHS[2], true);
++      const partialRes = await c2.loadSafe();
++      f2.setReadFault(coreMod.SLOT_PATHS[2], false);
++      const frozenMarkerObj = JSON.parse(await idb.readTxState(ns2));
++      for (let i = 0; i < 3; i++) await idb.deleteSlot(ns2, i);
++      const resFrozenLost = await c2.loadSafe();
++      const frozenMarkerStill = Boolean(await idb.readTxState(ns2));
++      await p2.clearAll();
++
++      // 3. Unknown prior history (legacy expectedRevision=null) + EMPTY -> MUST stay frozen!
++      const ns3 = 'r5_unknown_empty_' + ts;
++      const p3 = new portMod.BrowserFilePort(ns3);
++      const c3 = new coordMod.SingleWriterSaveCoordinator(p3);
++      await idb.writeTxState(ns3, JSON.stringify({
++        version: 1, storageKey: p3.storageKey, txId: 'tx_unknown_null', state: 'FROZEN',
++        expectedRevision: null, targetRevision: null, createdAtMs: START, updatedAtMs: START, reason: 'unknown'
++      }));
++      const resUnknownEmpty = await c3.loadSafe();
++      const unknownMarkerStill = Boolean(await idb.readTxState(ns3));
++      await p3.clearAll();
++
++      // 4. Confirmed initial create (CONFIRMED_EMPTY_INITIAL_CREATE) + EMPTY -> safely recovers EMPTY!
++      const ns4 = 'r5_confirmed_initial_' + ts;
++      const p4 = new portMod.BrowserFilePort(ns4);
++      const c4 = new coordMod.SingleWriterSaveCoordinator(p4);
++      await idb.writeTxState(ns4, JSON.stringify({
++        version: 1, storageKey: p4.storageKey, txId: 'tx_init_create', state: 'PENDING',
++        expectedRevision: null, targetRevision: '1', priorSaveHistory: 'CONFIRMED_EMPTY_INITIAL_CREATE',
++        confirmedRevision: null, createdAtMs: START, updatedAtMs: START, reason: 'initial create'
++      }));
++      const resInitial = await c4.loadSafe();
++      const initialMarkerAfter = await idb.readTxState(ns4);
++      await p4.clearAll();
++
++      // 5. Valid rev 1 < confirmed historical rev 2 -> REVISION_REGRESSION_PENDING_RECOVERY (stays frozen!)
++      const ns5 = 'r5_rev_regression_' + ts;
++      const p5 = new portMod.BrowserFilePort(ns5);
++      const c5 = new coordMod.SingleWriterSaveCoordinator(p5);
++      await c5.commit(s1, null);
++      await c5.commit(s2, '1');
++      await idb.writeTxState(ns5, JSON.stringify({
++        version: 1, storageKey: p5.storageKey, txId: 'tx_rev2_reg', state: 'PENDING',
++        expectedRevision: '2', targetRevision: '3', priorSaveHistory: 'CONFIRMED_VALID',
++        confirmedRevision: '2', createdAtMs: START, updatedAtMs: START, reason: 'rev 2 commit'
++      }));
++      await idb.deleteSlot(ns5, 1); // delete rev 2 slot leaving rev 1
++      const resReg = await c5.loadSafe();
++      const regMarkerStill = Boolean(await idb.readTxState(ns5));
++      await p5.clearAll();
++
++      // 6 & 7 & 8. Corrupt marker + EMPTY (rejected), Corrupt marker + VALID (concurrent rejected -> confirm succeeds), Read IO error (rejected)
++      const ns6 = 'r5_corrupt_ctrl_' + ts;
++      const p6 = new portMod.BrowserFilePort(ns6);
++      const f6 = new faultMod.FaultInjectingFilePort(p6);
++      const c6 = new coordMod.SingleWriterSaveCoordinator(f6);
++      await idb.writeTxState(ns6, '{corrupt-empty-disk');
++      const corrEmptyLoad = await c6.loadSafe();
++      const corrEmptyConfirm = await c6.recoverFromCorruptTxMarker({
++        expectedCorruptMarkerSha256: corrEmptyLoad.corruptMarkerRecoveryPreview.corruptMarkerSha256,
++        expectedValidRevision: '1',
++        expectedSlotsSnapshotSha256: '0'.repeat(64),
++      });
++      await p6.clearTxState();
++      await c6.loadSafe();
++      await c6.commit(s1, null);
++      const slot0Before = await p6.read(coreMod.SLOT_PATHS[0]);
++      await idb.writeTxState(ns6, '{corrupt-valid-v1');
++      const corrValidLoad1 = await c6.loadSafe();
++      // Mutate corrupt marker between preview & confirm -> CONCURRENT_RECOVERY_STATE_CHANGED!
++      await idb.writeTxState(ns6, '{corrupt-valid-v2');
++      const corrStaleConfirm = await c6.recoverFromCorruptTxMarker({
++        expectedCorruptMarkerSha256: corrValidLoad1.corruptMarkerRecoveryPreview.corruptMarkerSha256,
++        expectedValidRevision: corrValidLoad1.corruptMarkerRecoveryPreview.verifiedRevision,
++        expectedSlotsSnapshotSha256: corrValidLoad1.corruptMarkerRecoveryPreview.slotsSnapshotSha256,
++      });
++      // Re-preview & confirm cleanly -> recovers VALID rev 1, slot0 untouched!
++      const corrValidLoad2 = await c6.loadSafe();
++      const corrOkConfirm = await c6.recoverFromCorruptTxMarker({
++        expectedCorruptMarkerSha256: corrValidLoad2.corruptMarkerRecoveryPreview.corruptMarkerSha256,
++        expectedValidRevision: corrValidLoad2.corruptMarkerRecoveryPreview.verifiedRevision,
++        expectedSlotsSnapshotSha256: corrValidLoad2.corruptMarkerRecoveryPreview.slotsSnapshotSha256,
++      });
++      const slot0After = await p6.read(coreMod.SLOT_PATHS[0]);
++      // Marker read IO failure -> TX_STATE_UNREADABLE & controlled confirm rejected!
++      f6.setTxMarkerFault('READ', true);
++      const readIoLoad = await c6.loadSafe();
++      const readIoConfirm = await c6.recoverFromCorruptTxMarker({
++        expectedCorruptMarkerSha256: '0'.repeat(64),
++        expectedValidRevision: '1',
++        expectedSlotsSnapshotSha256: '0'.repeat(64),
++      });
++      f6.setTxMarkerFault('READ', false);
++      await p6.clearAll();
++
++      return {
++        resLost: { kind: resLost.kind, cls: resLost.recoveryClassification, markerLostAfter },
++        resFrozenLost: {
++          partialCls: partialRes.recoveryClassification,
++          frozenConfirmedRev: frozenMarkerObj.confirmedRevision,
++          kind: resFrozenLost.kind,
++          cls: resFrozenLost.recoveryClassification,
++          frozenMarkerStill,
++        },
++        resUnknownEmpty: { kind: resUnknownEmpty.kind, cls: resUnknownEmpty.recoveryClassification, unknownMarkerStill },
++        resInitial: { kind: resInitial.kind, initialMarkerAfter },
++        resReg: { kind: resReg.kind, cls: resReg.recoveryClassification, backupRev: resReg.readOnlyBackup?.revision ?? null, regMarkerStill },
++        corrupt: {
++          emptyCls: corrEmptyLoad.recoveryClassification,
++          emptyCanConfirm: corrEmptyLoad.corruptMarkerRecoveryPreview?.canConfirmRecovery ?? null,
++          emptyConfirmCls: corrEmptyConfirm.recoveryClassification,
++          staleConfirmCls: corrStaleConfirm.recoveryClassification,
++          okKind: corrOkConfirm.kind,
++          okRev: corrOkConfirm.kind === 'VALID' ? corrOkConfirm.revision : null,
++          slot0Preserved: slot0Before === slot0After,
++          readIoLoadCls: readIoLoad.recoveryClassification,
++          readIoConfirmCls: readIoConfirm.recoveryClassification,
++        },
++      };
++    })()`);
++
++    report.rework05Rev401And03Safety = r5Safety;
++    assertCheck(
++      'web_rework05_rev4_01_03_recovery_safety_matrix',
++      r5Safety.resLost.kind === 'STORAGE_UNAVAILABLE' &&
++        r5Safety.resLost.cls === 'SAVE_DISAPPEARED_PENDING_RECOVERY' &&
++        r5Safety.resLost.markerLostAfter === true &&
++        r5Safety.resFrozenLost.partialCls === 'PARTIAL_IO_UNAVAILABLE' &&
++        r5Safety.resFrozenLost.frozenConfirmedRev === '2' &&
++        r5Safety.resFrozenLost.kind === 'STORAGE_UNAVAILABLE' &&
++        r5Safety.resFrozenLost.cls === 'SAVE_DISAPPEARED_PENDING_RECOVERY' &&
++        r5Safety.resFrozenLost.frozenMarkerStill === true &&
++        r5Safety.resUnknownEmpty.kind === 'STORAGE_UNAVAILABLE' &&
++        r5Safety.resUnknownEmpty.cls === 'SAVE_DISAPPEARED_PENDING_RECOVERY' &&
++        r5Safety.resUnknownEmpty.unknownMarkerStill === true &&
++        r5Safety.resInitial.kind === 'EMPTY' &&
++        r5Safety.resInitial.initialMarkerAfter === null &&
++        r5Safety.resReg.kind === 'STORAGE_UNAVAILABLE' &&
++        r5Safety.resReg.cls === 'REVISION_REGRESSION_PENDING_RECOVERY' &&
++        r5Safety.resReg.backupRev === '1' &&
++        r5Safety.resReg.regMarkerStill === true &&
++        r5Safety.corrupt.emptyCls === 'TX_STATE_CORRUPT' &&
++        r5Safety.corrupt.emptyCanConfirm === false &&
++        r5Safety.corrupt.emptyConfirmCls === 'CORRUPT_MARKER_NO_VALID_SAVE' &&
++        r5Safety.corrupt.staleConfirmCls === 'CONCURRENT_RECOVERY_STATE_CHANGED' &&
++        r5Safety.corrupt.okKind === 'VALID' &&
++        r5Safety.corrupt.okRev === '1' &&
++        r5Safety.corrupt.slot0Preserved === true &&
++        r5Safety.corrupt.readIoLoadCls === 'TX_STATE_UNREADABLE' &&
++        r5Safety.corrupt.readIoConfirmCls === 'TX_STATE_UNREADABLE',
++      JSON.stringify(r5Safety)
++    );
++  }
++
++  // =========================================================================
++  // 3l. REWORK-05 REV4-02 & REV4-04 REAL CHROME APPLICATION-LEVEL UI RECOVERY LOOP
++  //     Strictly exercises the REAL Spike UI buttons (`BtnRecoverStorage`) via real CDP pointer clicks!
++  //     Covers:
++  //     1. Normal HIDE -> UNCERTAIN -> StorageRecoveryOverlay visible (+ screenshot!)
++  //     2. Page.reload() -> stays frozen (PENDING_RECOVERY_REQUIRED) & overlay visible
++  //     3. Recovery while storage still failing -> stays frozen & displays failure reason
++  //     4. Fault cleared -> user clicks real BtnRecoverStorage -> recovers VALID rev 1 & overlay hides
++  //     5. Normal HIDE after UI recovery -> COMMITTED rev 2
++  //     6. Cross-tab recovery + stale memory guard: Tab A halted at rev 2, Tab B recovers via UI & commits rev 3 ->
++  //        Tab A clicks BtnRecoverStorage -> loads rev 3 (Tab B's gold!) -> next HIDE commits rev 4
++  //     7. Duplicate rapid clicks (3x) + SHOW/HIDE interleaving during in-flight recovery -> deduped & serialized cleanly -> rev 5
++  //     8. Destroy BootEntry during in-flight recovery -> stays destroyed, never reactivated, 0 subsequent writes
++  //     9. REV4-04 QUOTA failure -> conservative freeze -> space freed -> real UI BtnRecoverStorage recovers -> rev 6
++  // =========================================================================
++  {
++    const appNs = 'idle_fishing_lifecycle_persist_fs';
++    const findBtnCoordExpr = (btnName) => `(() => {
++      const cc = globalThis.cc;
++      const canvas = cc.director.getScene().getChildByName('Canvas');
++      const find = (root, name) => {
++        if (root.name === name) return root;
++        for (const ch of root.children) { const r = find(ch, name); if (r) return r; }
++        return null;
++      };
++      const node = find(canvas, ${JSON.stringify(btnName)});
++      if (!node || !node.activeInHierarchy) return null;
++      const cam = canvas.getComponent(cc.Canvas).cameraComponent;
++      const wp = node.getWorldPosition();
++      const sp = cam.worldToScreen(wp);
++      const rect = document.getElementById('GameCanvas').getBoundingClientRect();
++      const dpr = cc.view.getDevicePixelRatio();
++      return {
++        x: Math.round(rect.left + sp.x / dpr),
++        y: Math.round(rect.top + rect.height - sp.y / dpr),
++      };
++    })()`;
++
++    const clickUiBtn = async (client, btnName) => {
++      await client.send('Page.bringToFront');
++      await new Promise((r) => setTimeout(r, 120));
++      const coord = await client.evalJson(findBtnCoordExpr(btnName));
++      if (!coord) throw new Error(`UI button ${btnName} not visible/active`);
++      await client.click(coord.x, coord.y);
++      return coord;
++    };
++
++    await cdp.send('Page.bringToFront');
++    await cdp.evalJson(`(${IDB_HELPERS_EXPR}).clearNs(${JSON.stringify(appNs)})`);
++    await cdp.send('Page.reload', { ignoreCache: true });
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 UI clean boot');
++    await new Promise((r) => setTimeout(r, 350));
++
++    // Step 1: Seed rev 1 via normal HIDE, then trigger UNCERTAIN via normal HIDE -> overlay visible!
++    const seed1 = await cdp.evalJson(`(async () => {
++      const fire = (st) => {
++        Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
++        document.dispatchEvent(new Event('visibilitychange'));
++      };
++      fire('hidden'); fire('visible');
++      return globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++    })()`);
++
++    const unc1 = await cdp.evalJson(`(async () => {
++      const origPut = IDBObjectStore.prototype.put;
++      const origGet = IDBObjectStore.prototype.get;
++      let afterSlotWrite = false;
++      IDBObjectStore.prototype.put = function(val, key) {
++        if (String(key || '').includes(':save_slot_')) {
++          afterSlotWrite = true;
++          throw new DOMException('R5 UI UNCERTAIN slot write fail', 'QuotaExceededError');
++        }
++        return origPut.call(this, val, key);
++      };
++      IDBObjectStore.prototype.get = function(key) {
++        if (afterSlotWrite && String(key || '').includes(':save_slot_')) {
++          throw new DOMException('R5 UI UNCERTAIN slot read fail', 'UnknownError');
++        }
++        return origGet.call(this, key);
++      };
++      const fire = (st) => {
++        Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
++        document.dispatchEvent(new Event('visibilitychange'));
++      };
++      try {
++        fire('hidden'); fire('visible');
++        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++        return globalThis.__SPIKE_HARNESS__.getSnapshot();
++      } finally {
++        IDBObjectStore.prototype.put = origPut;
++        IDBObjectStore.prototype.get = origGet;
++      }
++    })()`);
++
++    // Step 2: Reload -> MUST stay frozen with StorageRecoveryOverlay visible!
++    await cdp.send('Page.reload', { ignoreCache: true });
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 UI reload frozen');
++    await new Promise((r) => setTimeout(r, 350));
++    const afterReloadFrozen = await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.getSnapshot()`);
++    const recoveryPng = path.join(evidenceDir, 'r5-recovery-overlay.png');
++    await cdp.screenshot(recoveryPng);
++    report.screenshots.push(path.relative(repoRoot, recoveryPng).replace(/\\/g, '/'));
++
++    // Step 3: Storage still unavailable (probe fails) -> user clicks REAL BtnRecoverStorage -> stays frozen!
++    await cdp.evalJson(`(() => {
++      globalThis.__R5_ORIG_PUT__ = IDBObjectStore.prototype.put;
++      IDBObjectStore.prototype.put = function(val, key) {
++        if (String(key || '').endsWith(':__probe__')) {
++          throw new DOMException('R5 storage still unavailable on retry', 'QuotaExceededError');
++        }
++        return globalThis.__R5_ORIG_PUT__.call(this, val, key);
++      };
++    })()`);
++    await clickUiBtn(cdp, 'BtnRecoverStorage');
++    await new Promise((r) => setTimeout(r, 150));
++    const failedUiRecovery = await cdp.evalJson(`(async () => {
++      await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      IDBObjectStore.prototype.put = globalThis.__R5_ORIG_PUT__;
++      return globalThis.__SPIKE_HARNESS__.getSnapshot();
++    })()`);
++
++    // Step 4: Fault cleared -> user clicks REAL BtnRecoverStorage -> recovers VALID rev 1 & overlay hides!
++    await clickUiBtn(cdp, 'BtnRecoverStorage');
++    await new Promise((r) => setTimeout(r, 150));
++    const okUiRecovery1 = await cdp.evalJson(`(async () => {
++      await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      return globalThis.__SPIKE_HARNESS__.getSnapshot();
++    })()`);
++
++    // Step 5: Normal HIDE after UI recovery -> COMMITTED rev 2!
++    const hideAfterUiRec1 = await cdp.evalJson(`(async () => {
++      const fire = (st) => {
++        Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
++        document.dispatchEvent(new Event('visibilitychange'));
++      };
++      fire('hidden'); fire('visible');
++      return globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++    })()`);
++
++    // Step 6: Cross-tab UI recovery & stale memory guard (Tab A frozen at rev 2; Tab B recovers via UI & commits rev 3 -> Tab A recovers rev 3 via UI -> commits rev 4!)
++    const { targetId: tabBUiTid } = await cdp.send('Target.createTarget', { url: baseUrl });
++    let cdpBUi = null;
++    let crossTabUiRes = null;
++    try {
++      const tabBInfo = await waitUntil(async () => {
++        const r = await fetch(`http://127.0.0.1:${debugPort}/json/list`);
++        const list = await r.json();
++        return list.find((t) => t.id === tabBUiTid && t.webSocketDebuggerUrl) || null;
++      }, 15000, 'R5 Tab B UI');
++      cdpBUi = new CdpClient(tabBInfo.webSocketDebuggerUrl);
++      await cdpBUi.waitOpen();
++      await cdpBUi.send('Page.enable');
++      await cdpBUi.send('Runtime.enable');
++      await cdpBUi.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
++      await waitUntil(() => cdpBUi.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 Tab B UI ready');
++      await new Promise((r) => setTimeout(r, 300));
++
++      // Let any automatic Chrome tab-switch visibilitychange settle on Tab A, then sync Tab B via reload
++      const tabASettled = await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.awaitPendingHideSave()`);
++      await cdpBUi.send('Page.reload', { ignoreCache: true });
++      await waitUntil(() => cdpBUi.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 Tab B synced reload');
++      await new Promise((r) => setTimeout(r, 300));
++      const baseCrossRev = Number(tabASettled.revision);
++
++      // Tab A gets UNCERTAIN on HIDE (do NOT bring Tab A to front so Tab B does not receive an unintended browser HIDE)
++      const tabAUncRes = await cdp.evalJson(`(async () => {
++        const origPut = IDBObjectStore.prototype.put;
++        const origGet = IDBObjectStore.prototype.get;
++        let afterW = false;
++        IDBObjectStore.prototype.put = function(val, key) {
++          if (String(key || '').includes(':save_slot_')) { afterW = true; throw new DOMException('TabA cross-tab UNCERTAIN', 'QuotaExceededError'); }
++          return origPut.call(this, val, key);
++        };
++        IDBObjectStore.prototype.get = function(key) {
++          if (afterW && String(key || '').includes(':save_slot_')) throw new DOMException('TabA cross-tab read fail', 'UnknownError');
++          return origGet.call(this, key);
++        };
++        const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++        try {
++          fire('visible');
++          fire('hidden');
++          fire('visible');
++          return await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++        }
++        finally { IDBObjectStore.prototype.put = origPut; IDBObjectStore.prototype.get = origGet; }
++      })()`);
++
++      // Tab B (already in foreground) normal HIDE -> STORAGE_UNAVAILABLE & overlay visible -> Tab B clicks REAL BtnRecoverStorage -> Tab B HIDE commits baseCrossRev+1!
++      const tabBHalted = await cdpBUi.evalJson(`(async () => {
++        const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++        fire('visible');
++        fire('hidden');
++        fire('visible');
++        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++        return globalThis.__SPIKE_HARNESS__.getSnapshot();
++      })()`);
++      await clickUiBtn(cdpBUi, 'BtnRecoverStorage');
++      await new Promise((r) => setTimeout(r, 150));
++      const tabBCommittedNext = await cdpBUi.evalJson(`(async () => {
++        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++        const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++        fire('visible');
++        fire('hidden');
++        fire('visible');
++        return globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      })()`);
++
++      // Now Tab A (which was halted at baseCrossRev!) clicks REAL BtnRecoverStorage -> MUST reload baseCrossRev+1 & Tab B's gold -> next HIDE commits baseCrossRev+2!
++      await clickUiBtn(cdp, 'BtnRecoverStorage');
++      await new Promise((r) => setTimeout(r, 150));
++      const tabARecoveredNext = await cdp.evalJson(`(async () => {
++        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++        return globalThis.__SPIKE_HARNESS__.getSnapshot();
++      })()`);
++      const tabACommittedAfter = await cdp.evalJson(`(async () => {
++        const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++        fire('visible');
++        fire('hidden');
++        fire('visible');
++        return globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      })()`);
++      crossTabUiRes = {
++        baseCrossRev: String(baseCrossRev),
++        tabAUncKind: tabAUncRes.lastCommitKind,
++        tabBHaltedOverlay: tabBHalted.recoveryOverlayVisible,
++        tabBCommittedRev: tabBCommittedNext.revision,
++        tabBCommittedGold: tabBCommittedNext.gold,
++        tabARecoveredRev: tabARecoveredNext.lifecyclePersistence.revision,
++        tabARecoveredGold: tabARecoveredNext.lifecyclePersistence.gold,
++        tabACommittedRev: tabACommittedAfter.revision,
++      };
++    } finally {
++      cdpBUi?.close();
++      try { await cdp.send('Target.closeTarget', { targetId: tabBUiTid }); } catch {}
++      await cdp.send('Page.bringToFront');
++    }
++
++    // Step 7: Duplicate rapid clicks (3x) + SHOW/HIDE interleaving during in-flight recovery!
++    // Freeze Tab A again (UNCERTAIN), pause inside loadSafe, click BtnRecoverStorage 3x, dispatch SHOW & HIDE, release!
++    await cdp.evalJson(`(async () => {
++      const origPut = IDBObjectStore.prototype.put;
++      const origGet = IDBObjectStore.prototype.get;
++      let afterW = false;
++      IDBObjectStore.prototype.put = function(val, key) {
++        if (String(key || '').includes(':save_slot_')) { afterW = true; throw new DOMException('R5 dup-click UNCERTAIN', 'QuotaExceededError'); }
++        return origPut.call(this, val, key);
++      };
++      IDBObjectStore.prototype.get = function(key) {
++        if (afterW && String(key || '').includes(':save_slot_')) throw new DOMException('R5 dup-click read fail', 'UnknownError');
++        return origGet.call(this, key);
++      };
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      try { fire('hidden'); fire('visible'); await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave(); }
++      finally { IDBObjectStore.prototype.put = origPut; IDBObjectStore.prototype.get = origGet; }
++
++      const mod = await System.import('chunks:///_virtual/SingleWriterSaveCoordinator.ts');
++      const proto = mod.SingleWriterSaveCoordinator.prototype;
++      globalThis.__R5_ORIG_LOAD__ = proto.loadSafe;
++      globalThis.__R5_LOAD_CALLS__ = 0;
++      globalThis.__R5_LOAD_ENTERED__ = false;
++      globalThis.__R5_LOAD_REL__ = null;
++      proto.loadSafe = function(...args) {
++        globalThis.__R5_LOAD_CALLS__ += 1;
++        globalThis.__R5_LOAD_ENTERED__ = true;
++        const self = this;
++        return new Promise((res, rej) => {
++          globalThis.__R5_LOAD_REL__ = () => {
++            proto.loadSafe = globalThis.__R5_ORIG_LOAD__;
++            globalThis.__R5_ORIG_LOAD__.apply(self, args).then(res, rej);
++          };
++        });
++      };
++    })()`);
++
++    const recBtnCoord = await clickUiBtn(cdp, 'BtnRecoverStorage');
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__R5_LOAD_ENTERED__)`), 10000, 'R5 recovery entered');
++    // 2 extra rapid clicks while recovery is in-flight + SHOW + HIDE interleaving!
++    await cdp.click(recBtnCoord.x, recBtnCoord.y);
++    await cdp.click(recBtnCoord.x, recBtnCoord.y);
++    const interleaveMid = await cdp.evalJson(`(() => {
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      fire('visible'); // SHOW during recovery must not unfreeze
++      fire('hidden');  // HIDE queued strictly behind recovery
++      fire('visible');
++      const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
++      return {
++        loadCalls: globalThis.__R5_LOAD_CALLS__,
++        dupIgnored: snap.lifecyclePersistence.recoveryDuplicateClicksIgnored,
++        haltedMid: snap.lifecyclePersistence.persistenceHalted,
++        inProgressMid: snap.lifecyclePersistence.recoveryInProgress,
++      };
++    })()`);
++    await cdp.evalJson(`globalThis.__R5_LOAD_REL__()`);
++    const interleaveDone = await cdp.evalJson(`(async () => {
++      const rec = await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      return {
++        loadCalls: globalThis.__R5_LOAD_CALLS__,
++        rev: rec.revision,
++        halted: rec.persistenceHalted,
++        lastCommitKind: rec.lastCommitKind,
++      };
++    })()`);
++
++    // Step 8: Destroy BootEntry during in-flight recovery -> stays destroyed, NEVER reactivated, 0 subsequent writes!
++    await cdp.evalJson(`(async () => {
++      const origPut = IDBObjectStore.prototype.put;
++      const origGet = IDBObjectStore.prototype.get;
++      let afterW = false;
++      IDBObjectStore.prototype.put = function(val, key) {
++        if (String(key || '').includes(':save_slot_')) { afterW = true; throw new DOMException('R5 destroy-mid-rec UNCERTAIN', 'QuotaExceededError'); }
++        return origPut.call(this, val, key);
++      };
++      IDBObjectStore.prototype.get = function(key) {
++        if (afterW && String(key || '').includes(':save_slot_')) throw new DOMException('R5 destroy-mid-rec read fail', 'UnknownError');
++        return origGet.call(this, key);
++      };
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      try { fire('hidden'); fire('visible'); await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave(); }
++      finally { IDBObjectStore.prototype.put = origPut; IDBObjectStore.prototype.get = origGet; }
++
++      const mod = await System.import('chunks:///_virtual/SingleWriterSaveCoordinator.ts');
++      const proto = mod.SingleWriterSaveCoordinator.prototype;
++      globalThis.__R5_ORIG_LOAD2__ = proto.loadSafe;
++      globalThis.__R5_LOAD2_ENTERED__ = false;
++      globalThis.__R5_LOAD2_REL__ = null;
++      proto.loadSafe = function(...args) {
++        globalThis.__R5_LOAD2_ENTERED__ = true;
++        const self = this;
++        return new Promise((res, rej) => {
++          globalThis.__R5_LOAD2_REL__ = () => {
++            proto.loadSafe = globalThis.__R5_ORIG_LOAD2__;
++            globalThis.__R5_ORIG_LOAD2__.apply(self, args).then(res, rej);
++          };
++        });
++      };
++    })()`);
++    await clickUiBtn(cdp, 'BtnRecoverStorage');
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__R5_LOAD2_ENTERED__)`), 10000, 'R5 destroy-mid-rec entered');
++    const destroyMidRec = await cdp.evalJson(`(async () => {
++      const idb = ${IDB_HELPERS_EXPR};
++      const slotsBefore = await idb.readSlots(${JSON.stringify(appNs)});
++      const boot = globalThis.cc.director.getScene().getComponentInChildren('BootEntry');
++      boot.destroy();
++      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
++      globalThis.__R5_LOAD2_REL__();
++      await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      const snapAfter = globalThis.__SPIKE_HARNESS__.getSnapshot();
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      fire('hidden'); fire('visible');
++      await new Promise((r) => setTimeout(r, 250));
++      const slotsAfter = await idb.readSlots(${JSON.stringify(appNs)});
++      return {
++        destroyed: snapAfter.destroyed,
++        lastRecoveryOutcome: snapAfter.lifecyclePersistence.lastRecoveryOutcome,
++        haltedAfter: snapAfter.lifecyclePersistence.persistenceHalted,
++        slotsIdentical: JSON.stringify(slotsBefore) === JSON.stringify(slotsAfter),
++      };
++    })()`);
++
++    // Step 9: REV4-04 QUOTA failure (slot write throws QuotaExceededError, reads succeed -> conservative FROZEN marker)
++    // -> space freed -> real UI BtnRecoverStorage recovers VALID rev 5 -> next HIDE commits rev 6!
++    await cdp.send('Page.reload', { ignoreCache: true });
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 quota boot');
++    await new Promise((r) => setTimeout(r, 300));
++    const quotaFailSnap = await cdp.evalJson(`(async () => {
++      const origPut = IDBObjectStore.prototype.put;
++      IDBObjectStore.prototype.put = function(val, key) {
++        if (String(key || '').includes(':save_slot_')) {
++          throw new DOMException('Simulated disk quota full', 'QuotaExceededError');
++        }
++        return origPut.call(this, val, key);
++      };
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      try {
++        fire('hidden'); fire('visible');
++        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++        const marker = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
++        return { snap: globalThis.__SPIKE_HARNESS__.getSnapshot(), markerState: marker ? JSON.parse(marker).state : null };
++      } finally {
++        IDBObjectStore.prototype.put = origPut;
++      }
++    })()`);
++    // Space freed -> click REAL BtnRecoverStorage -> recovers rev 5 -> next HIDE commits rev 6!
++    await clickUiBtn(cdp, 'BtnRecoverStorage');
++    await new Promise((r) => setTimeout(r, 150));
++    const quotaRecovered = await cdp.evalJson(`(async () => {
++      await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      const snapRec = globalThis.__SPIKE_HARNESS__.getSnapshot();
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      fire('hidden'); fire('visible');
++      const committed = await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      return {
++        recRev: snapRec.lifecyclePersistence.revision,
++        recHalted: snapRec.lifecyclePersistence.persistenceHalted,
++        recOverlay: snapRec.recoveryOverlayVisible,
++        nextKind: committed.lastCommitKind,
++        nextRev: committed.revision,
++      };
++    })()`);
++
++    report.rework05AppUiRecoveryLoop = {
++      seed1Rev: seed1.revision,
++      unc1Overlay: unc1.recoveryOverlayVisible,
++      unc1Last: unc1.lifecyclePersistence.lastCommitKind,
++      afterReloadFrozen: {
++        status: afterReloadFrozen.lifecyclePersistence.loadStatus,
++        cls: afterReloadFrozen.lifecyclePersistence.recoveryClassification,
++        overlay: afterReloadFrozen.recoveryOverlayVisible,
++      },
++      failedUiRecovery: {
++        halted: failedUiRecovery.lifecyclePersistence.persistenceHalted,
++        outcome: failedUiRecovery.lifecyclePersistence.lastRecoveryOutcome,
++        overlay: failedUiRecovery.recoveryOverlayVisible,
++      },
++      okUiRecovery1: {
++        halted: okUiRecovery1.lifecyclePersistence.persistenceHalted,
++        rev: okUiRecovery1.lifecyclePersistence.revision,
++        outcome: okUiRecovery1.lifecyclePersistence.lastRecoveryOutcome,
++        overlay: okUiRecovery1.recoveryOverlayVisible,
++      },
++      hideAfterUiRec1Rev: hideAfterUiRec1.revision,
++      crossTabUiRes,
++      interleaveMid,
++      interleaveDone,
++      destroyMidRec,
++      quotaFail: {
++        lastKind: quotaFailSnap.snap.lifecyclePersistence.lastCommitKind,
++        halted: quotaFailSnap.snap.lifecyclePersistence.persistenceHalted,
++        overlay: quotaFailSnap.snap.recoveryOverlayVisible,
++        markerState: quotaFailSnap.markerState,
++      },
++      quotaRecovered,
++    };
++
++    const baseCrossNum = Number(crossTabUiRes.baseCrossRev);
++    const expectedAfterTabB = String(baseCrossNum + 1);
++    const expectedAfterTabA = String(baseCrossNum + 2);
++    const expectedAfterInterleave = String(baseCrossNum + 3);
++    const expectedAfterQuota = String(baseCrossNum + 4);
++    const expectedAfterCorruptConfirm = String(baseCrossNum + 5);
++
++    assertCheck(
++      'web_rework05_rev4_02_04_app_ui_recovery_loop',
++      seed1.revision === '1' &&
++        unc1.recoveryOverlayVisible === true &&
++        unc1.lifecyclePersistence.lastCommitKind === 'UNCERTAIN' &&
++        afterReloadFrozen.lifecyclePersistence.loadStatus === 'STORAGE_UNAVAILABLE' &&
++        afterReloadFrozen.lifecyclePersistence.recoveryClassification === 'PENDING_RECOVERY_REQUIRED' &&
++        afterReloadFrozen.recoveryOverlayVisible === true &&
++        failedUiRecovery.lifecyclePersistence.persistenceHalted === true &&
++        failedUiRecovery.lifecyclePersistence.lastRecoveryOutcome === 'FAILED' &&
++        failedUiRecovery.recoveryOverlayVisible === true &&
++        okUiRecovery1.lifecyclePersistence.persistenceHalted === false &&
++        okUiRecovery1.lifecyclePersistence.revision === '1' &&
++        okUiRecovery1.lifecyclePersistence.lastRecoveryOutcome === 'RECOVERED_VALID' &&
++        okUiRecovery1.recoveryOverlayVisible === false &&
++        hideAfterUiRec1.revision === '2' &&
++        crossTabUiRes.tabAUncKind === 'UNCERTAIN' &&
++        crossTabUiRes.tabBHaltedOverlay === true &&
++        crossTabUiRes.tabBCommittedRev === expectedAfterTabB &&
++        crossTabUiRes.tabARecoveredRev === expectedAfterTabB &&
++        crossTabUiRes.tabARecoveredGold === crossTabUiRes.tabBCommittedGold &&
++        crossTabUiRes.tabACommittedRev === expectedAfterTabA &&
++        interleaveMid.loadCalls === 1 &&
++        interleaveMid.dupIgnored >= 2 &&
++        interleaveMid.haltedMid === true &&
++        interleaveDone.loadCalls === 1 &&
++        interleaveDone.rev === expectedAfterInterleave &&
++        interleaveDone.halted === false &&
++        interleaveDone.lastCommitKind === 'COMMITTED' &&
++        destroyMidRec.destroyed === true &&
++        destroyMidRec.lastRecoveryOutcome === 'CANCELLED_DESTROYED' &&
++        destroyMidRec.haltedAfter === true &&
++        destroyMidRec.slotsIdentical === true &&
++        quotaFailSnap.snap.lifecyclePersistence.lastCommitKind === 'STORAGE_UNAVAILABLE' &&
++        quotaFailSnap.snap.lifecyclePersistence.persistenceHalted === true &&
++        quotaFailSnap.snap.recoveryOverlayVisible === true &&
++        quotaFailSnap.markerState === 'FROZEN' &&
++        quotaRecovered.recRev === expectedAfterInterleave &&
++        quotaRecovered.recHalted === false &&
++        quotaRecovered.recOverlay === false &&
++        quotaRecovered.nextKind === 'COMMITTED' &&
++        quotaRecovered.nextRev === expectedAfterQuota,
++      JSON.stringify(report.rework05AppUiRecoveryLoop)
++    );
++
++    // =========================================================================
++    // 3m. REWORK-05 REV4-03 REAL CHROME APP UI CONTROLLED CORRUPT-MARKER CONFIRMATION
++    //     - Corrupt tx marker + valid rev 6 save -> reload shows TX_STATE_CORRUPT & BtnConfirmCorruptMarkerRecovery
++    //     - Clicking ordinary BtnRecoverStorage keeps frozen (does NOT auto-discard corrupt marker!)
++    //     - Clicking separate BtnConfirmCorruptMarkerRecovery clears ONLY corrupt marker, recovers rev 6, next HIDE -> rev 7!
++    // =========================================================================
++    await cdp.evalJson(`(${IDB_HELPERS_EXPR}).writeTxState(${JSON.stringify(appNs)}, '{"version":1,"corrupt_truncated')`);
++    await cdp.send('Page.reload', { ignoreCache: true });
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 corrupt marker UI boot');
++    await new Promise((r) => setTimeout(r, 350));
++    const corruptBootSnap = await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.getSnapshot()`);
++
++    // Ordinary recovery button MUST keep frozen (TX_STATE_CORRUPT)!
++    await clickUiBtn(cdp, 'BtnRecoverStorage');
++    await new Promise((r) => setTimeout(r, 150));
++    const afterOrdinaryBtn = await cdp.evalJson(`(async () => {
++      await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      return globalThis.__SPIKE_HARNESS__.getSnapshot();
++    })()`);
++
++    // Separate controlled confirm button recovers rev 6 & next HIDE commits rev 7!
++    await clickUiBtn(cdp, 'BtnConfirmCorruptMarkerRecovery');
++    await new Promise((r) => setTimeout(r, 150));
++    const afterConfirmBtn = await cdp.evalJson(`(async () => {
++      await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      const snapRec = globalThis.__SPIKE_HARNESS__.getSnapshot();
++      const markerAfter = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
++      const fire = (st) => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st }); document.dispatchEvent(new Event('visibilitychange')); };
++      fire('hidden'); fire('visible');
++      const nextCommit = await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
++      return {
++        recRev: snapRec.lifecyclePersistence.revision,
++        recHalted: snapRec.lifecyclePersistence.persistenceHalted,
++        recOverlay: snapRec.recoveryOverlayVisible,
++        markerAfter,
++        nextKind: nextCommit.lastCommitKind,
++        nextRev: nextCommit.revision,
++      };
++    })()`);
++
++    // Clean app namespace & reload clean healthy EMPTY state before Step 4 UI clicks!
++    await cdp.evalJson(`(${IDB_HELPERS_EXPR}).clearNs(${JSON.stringify(appNs)})`);
++    await cdp.send('Page.reload', { ignoreCache: true });
++    await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__ && globalThis.__SPIKE_HARNESS__.ready)`), 25000, 'R5 clean boot before Step 4');
++    await new Promise((r) => setTimeout(r, 350));
++
++    report.rework05AppUiCorruptMarkerConfirm = {
++      bootCls: corruptBootSnap.lifecyclePersistence.recoveryClassification,
++      bootBackupRev: corruptBootSnap.lifecyclePersistence.readOnlyBackup?.revision ?? null,
++      bootConfirmVisible: corruptBootSnap.corruptConfirmButtonVisible,
++      afterOrdinaryHalted: afterOrdinaryBtn.lifecyclePersistence.persistenceHalted,
++      afterOrdinaryCls: afterOrdinaryBtn.lifecyclePersistence.recoveryClassification,
++      afterConfirmBtn,
++    };
++
++    assertCheck(
++      'web_rework05_rev4_03_app_ui_corrupt_marker_confirm',
++      corruptBootSnap.lifecyclePersistence.recoveryClassification === 'TX_STATE_CORRUPT' &&
++        corruptBootSnap.lifecyclePersistence.readOnlyBackup?.revision === expectedAfterQuota &&
++        corruptBootSnap.corruptConfirmButtonVisible === true &&
++        afterOrdinaryBtn.lifecyclePersistence.persistenceHalted === true &&
++        afterOrdinaryBtn.lifecyclePersistence.recoveryClassification === 'TX_STATE_CORRUPT' &&
++        afterConfirmBtn.recRev === expectedAfterQuota &&
++        afterConfirmBtn.recHalted === false &&
++        afterConfirmBtn.recOverlay === false &&
++        afterConfirmBtn.markerAfter === null &&
++        afterConfirmBtn.nextKind === 'COMMITTED' &&
++        afterConfirmBtn.nextRev === expectedAfterCorruptConfirm,
++      JSON.stringify(report.rework05AppUiCorruptMarkerConfirm)
++    );
++  }
++
+   // 4. Real pointer click to open Modal + screenshot + close Modal + click to switch to Page 2
+   const btnCoords = await cdp.evalJson(`(() => {
+     const cc = globalThis.cc;

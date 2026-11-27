@@ -1,0 +1,23 @@
+{
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend\\fe-000\\fixtures\\fixture-deep-nested.test.js",
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "todo": 0,
+  "containerFailures": 0,
+  "streamError": null,
+  "uncaughtError": null,
+  "leafEvents": [
+    {
+      "name": "nested leaf 1",
+      "nesting": 2,
+      "status": "pass"
+    },
+    {
+      "name": "deep leaf 2",
+      "nesting": 3,
+      "status": "pass"
+    }
+  ]
+}

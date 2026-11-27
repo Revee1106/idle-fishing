@@ -1,0 +1,11 @@
+# BE-000 environment capture
+2026-11-25T04:55:46Z
+OS: MINGW64_NT-10.0-19045 SH-WANGWENJIE10 3.6.3-7674c51e.x86_64 2025-07-01 09:13 UTC x86_64 Msys
+Node: v24.20.0
+npm: 11.4.2
+TypeScript: Version 5.9.3
+Git: git version 2.50.1.windows.1
+Branch: feature/be-000
+Commit: 2106ce19d991ec47555cdbf207454c36d8cd104a
+Cocos: 3.8.8 (build 31.3.1) at C:/ProgramData/cocos/editors/Creator/3.8.8
+CPU: Intel64 Family 6 Model 142 Stepping 10, GenuineIntel

@@ -1,0 +1,44 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-mixed-fail.test.ts --out-dir=.compiled-r2-log
+EXIT_CODE: 1
+DURATION_MS: 2946
+--- STDOUT ---
+✔ mixed pass (1.4987ms)
+﹣ mixed skip (0.3527ms) # SKIP
+✔ mixed todo (0.3465ms) # TODO
+✖ mixed fail (1.7862ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 1
+ℹ duration_ms 26.7358
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-mixed-fail.test.js:8:1
+✖ mixed fail (1.7862ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-integration/tests/frontend/fe-000/.compiled-r2-log/tests/frontend/fe-000/fixtures/fixture-mixed-fail.test.js:9:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+[FE-000 Test Summary] total=4 pass=1 fail=1 skip=1 todo=1 containerFail=0 procErr=0
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: 1 leaf test(s) failed.

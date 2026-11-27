@@ -1,0 +1,15 @@
+{
+  "ver": "1.2.0",
+  "importer": "directory",
+  "imported": true,
+  "uuid": "2a3b4c5d-6e7f-4890-abcd-ef1234567890",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "isBundle": true,
+    "bundleName": "spike-pack",
+    "priority": 1,
+    "isRemote": {},
+    "bundleConfigID": "auto_05wYOSxc5MVIWgbcnp3w7x"
+  }
+}

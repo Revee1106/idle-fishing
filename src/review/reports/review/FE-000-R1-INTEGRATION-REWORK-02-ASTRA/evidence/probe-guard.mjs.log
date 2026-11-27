@@ -1,0 +1,13 @@
+{"label":"absent parent","name":"apps/game-client/build/web-mobile","ok":true,"expected":true}
+{"label":"existing parent, absent leaf","name":"apps/game-client/build/web-mobile","ok":true,"expected":true}
+{"label":"sibling","name":"apps/game-client/build/web-mobile-sample","ok":false,"code":"OUTSIDE_BUILD_ALLOWLIST","expected":false}
+{"label":"other parent","name":"apps/game-client/build-sample/web-mobile","ok":false,"code":"OUTSIDE_BUILD_ALLOWLIST","expected":false}
+{"label":"outside by normalization","name":"apps/game-client/build/../cache","ok":false,"code":"OUTSIDE_BUILD_ALLOWLIST","expected":false}
+{"label":"drive","name":"Z:/astralocal","ok":false,"code":"OUTSIDE_BUILD_ALLOWLIST","expected":false}
+{"label":"UNC","name":"//audit.invalid/share","ok":false,"code":"UNC_REJECTED","expected":false}
+{"label":"case","name":"APPS/GAME-CLIENT/BUILD/WEB-MOBILE","ok":true,"expected":true}
+{"label":"mixed","name":"apps/game-client\\build/web-mobile","ok":true,"expected":true}
+{"label":"junction","name":"C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\guard-audit\\apps\\game-client\\build\\wechatgame","ok":false,"code":"SYMLINK_OR_JUNCTION_REJECTED","expected":false}
+{"label":"invalid leaf below junction","name":"C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\guard-audit\\apps\\game-client\\build\\wechatgame\\child","ok":false,"code":"SYMLINK_OR_JUNCTION_REJECTED","expected":false}
+{"label":"nested junction","name":"C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\guard-audit\\apps\\game-client\\build\\wechatgame\\second\\leaf","ok":false,"code":"SYMLINK_OR_JUNCTION_REJECTED","expected":false}
+symlink setup EPERM

@@ -1,0 +1,43 @@
+{
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend\\fe-000\\fixtures\\fixture-multi-nested.test.js",
+  "passed": 2,
+  "failed": 2,
+  "skipped": 1,
+  "todo": 1,
+  "containerFailures": 0,
+  "streamError": null,
+  "uncaughtError": null,
+  "leafEvents": [
+    {
+      "name": "pass leaf A",
+      "nesting": 1,
+      "status": "pass"
+    },
+    {
+      "name": "fail leaf A",
+      "nesting": 1,
+      "status": "fail"
+    },
+    {
+      "name": "pass leaf B",
+      "nesting": 2,
+      "status": "pass"
+    },
+    {
+      "name": "fail leaf B",
+      "nesting": 2,
+      "status": "fail"
+    },
+    {
+      "name": "skip leaf C",
+      "nesting": 2,
+      "status": "skip"
+    },
+    {
+      "name": "todo leaf D",
+      "nesting": 2,
+      "status": "todo"
+    }
+  ]
+}

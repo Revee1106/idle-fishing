@@ -1,0 +1,3 @@
+['diff', '--check'] 0
+['diff', '--cached', '--check'] 2
+['diff', '--cached', '--stat'] 0

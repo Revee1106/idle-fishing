@@ -1,0 +1,10 @@
+COMMAND: C:\Program Files\nodejs\node.exe tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-hanging.test.ts --out-dir=.compiled-r3-cli --worker-timeout-ms=1200
+EXIT_CODE: 1
+DURATION_MS: 4396
+--- STDOUT ---
+
+[FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: Worker timed out after 1200ms and was terminated: E:\idle-fishing-integration\tests\frontend\fe-000\.compiled-r3-cli\tests\frontend\fe-000\fixtures\fixture-hanging.test.js
+[FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected.

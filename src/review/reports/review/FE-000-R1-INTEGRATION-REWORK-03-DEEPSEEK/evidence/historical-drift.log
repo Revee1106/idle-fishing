@@ -1,0 +1,4 @@
+=== historical report drift ===
+reports/integration/FE-000-R1-INTEGRATION-REWORK-02/FILES-REWORK.sha256 reportEntries=41 ok=41 drift=0
+reports/integration/FE-000-R1-INTEGRATION-REWORK-01/FILES-REWORK.sha256 reportEntries=29 ok=29 drift=0
+reports/integration/FE-000-R1-INTEGRATION/FILES.sha256 reportEntries=48 ok=48 drift=0

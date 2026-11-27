@@ -1,0 +1,35 @@
+
+> idle-fishing-client@0.0.0-spike verify:web
+> node ../../tests/frontend/fe-000/verify-web-build.mjs
+
+[Web E2E] Assertions: 27/28 PASS
+[Web E2E] Saved JSON evidence: C:\Users\WANGWE~1\AppData\Local\Temp\astra02-sr6tbrsx\reports\integration\FE-000-R1-INTEGRATION-REWORK-02\evidence\web-rework02\r1-green-web-results.json
+  [PASS] web_boot_env — env=WEB
+  [PASS] web_boot_page — page=overview
+  [PASS] web_shared_core_7_of_7 — passed=7/7
+  [PASS] web_be000_1h_golden_hash — hash=8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63
+  [PASS] web_be000_1h_envelope_digests — inner=183ed74c32d759e434345eb7fe152eec1192f8ea69637cf60e657d629010681a, text=4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6
+  [PASS] web_be000_8h_golden_and_lock — 8hHash=91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9, lock=true, settledUntilMs=1700003600000
+  [PASS] web_bundle_i01_lifecycle_dispatch — {"seenA":["HIDE","SHOW"],"seenB":["HIDE","SHOW","HIDE","SHOW"],"errCount":4,"remainingSubs":0,"attached":false}
+  [PASS] web_real_visibilitychange_hide_commit — {"storageHealth":"AVAILABLE","storageUnavailableReason":null,"loadStatus":"EMPTY","loadDetail":null,"persistenceHalted":false,"restoredOnBoot":false,"revision":"1","gold":"31","cursorMs":1700000060000,"deadlineMs":1700028800000,"lastHideCommitAtMs":1795673469019,"lastHideTriggerSource":"document.visibilitychange","lastCommitKind":"COMMITTED","lastCommitDetail":null,"hideCommitCount":1,"showEventCount":0}
+  [PASS] web_cross_reload_persistence_recovery — {"storageHealth":"AVAILABLE","storageUnavailableReason":null,"loadStatus":"VALID","loadDetail":null,"persistenceHalted":false,"restoredOnBoot":true,"revision":"1","gold":"31","cursorMs":1700000060000,"deadlineMs":1700028800000,"lastHideCommitAtMs":null,"lastHideTriggerSource":"boot-load","lastCommitKind":null,"lastCommitDetail":null,"hideCommitCount":0,"showEventCount":0}
+  [PASS] web_p1_01_compat_save_boot_unavailable — {"faultStatus":"STORAGE_UNAVAILABLE","faultHalted":true,"faultHideCommits":0,"slotsUntouchedDuringFault":true,"expectedRev":"1","recoveredStatus":"VALID","recoveredRev":"1","recoveredGold":"31","recoveredCursorMs":1700000060000}
+  [PASS] web_p1_02_compat_lifecycle_hide_show_hide — {"commits":4,"rev":"4","cursorMs":1700000255000,"historyKinds":["null->1:COMMITTED","1->2:COMMITTED","2->3:COMMITTED","3->4:COMMITTED"],"reloadedRev":"4","reloadedCursorMs":1700000255000}
+  [PASS] web_p1_02_queued_hide_after_uncertain_halts — {"lastCommitKind":"UNCERTAIN","halted":true,"slotWriteCount":0,"history":["UNCERTAIN","SKIPPED_HALTED"]}
+  [PASS] web_p1_01_runtime_failure_freeze_and_recovery — {"runtimeFaultKind":"STORAGE_UNAVAILABLE","stayedFrozenBeforeReinit":true,"slotsStillRev1":true,"reinitRev":"1","postReinitRev":"2","writeIoHealth":"STORAGE_UNAVAILABLE"}
+  [PASS] web_p1_02_destroy_cancels_queued_before_write — {"revBeforeDestroy":"8","diskMaxRevAfterDestroy":8,"rejectedAfterDestroy":true,"historyTail":[{"seq":9,"triggerSource":"document.visibilitychange","expectedRevision":"8","taskState":"CANCELLED","resultKind":"SKIPPED_DESTROYED","revision":"8","cursorMs":1700000480000,"gold":"332","detail":"Commit cancelled before physical execution started (owner destroyed or halted)"},{"seq":10,"triggerSource":"document.visibilitychange","expectedRevision":"8","taskState":"CANCELLED","resultKind":"SKIPPED_DESTROYED","revision":"8","cursorMs":1700000480000,"gold":"332","detail":"BootEntry destroyed while task was QUEUED in BootEntry queue"}]}
+  [PASS] web_p1_02_destroy_started_completes_cleanly — {"diskMaxRev":9,"rejectedSecond":true,"history":[{"seq":1,"triggerSource":"document.visibilitychange","expectedRevision":"8","taskState":"COMMITTED","resultKind":"COMMITTED","revision":"9","cursorMs":1700000540000,"gold":"405","detail":"Completed in-flight STARTED write during onDestroy"}]}
+  [FAIL] web_p2_04_compat_save_cross_tab_commit — {"raceA":"COMMITTED","raceB":"COMMITTED","reloadedMatch":false,"seqRev2":"2","seqRev3":"3","lockRejectKind":"STORAGE_UNAVAILABLE","postTabCrashRev":"4","reloadedRev4":"4"}
+  [PASS] web_corrupt_save_fail_closed_no_overwrite — {"snapBefore":{"storageHealth":"AVAILABLE","storageUnavailableReason":null,"loadStatus":"CORRUPT","loadDetail":"save_slot_0.json: invalid JSON; save_slot_1.json: invalid JSON; save_slot_2.json: invalid JSON","persistenceHalted":true,"restoredOnBoot":false,"revision":null,"gold":"0","cursorMs":0,"deadlineMs":null,"lastHideCommitAtMs":null,"lastHideTriggerSource":null,"lastCommitKind":null,"lastCommitDetail":null,"hideCommitCount":0,"showEventCount":0},"slot0After":"CORRUPT_WEB_PROBE_0"}
+  [PASS] web_click_modal_open_close — {"modalOpened":true,"modalClosed":true,"openCoord":{"x":101,"y":222},"closeCoord":{"x":195,"y":517}}
+  [PASS] web_click_switch_to_platform — page=platform
+  [PASS] web_platform_fs_6_of_6 — FS-CRUD=PASS, T04-ROTATE=PASS, T04-CORRUPT=PASS, T05-FAULTS=PASS, FS-SIZE-PROBE=PASS, FS-BG-RECOVERY=PASS
+  [PASS] web_platform_t08_2_of_2 — T08-MONO-PROBE=PASS, T08-LIFECYCLE-CLOCK=PASS
+  [PASS] web_platform_t09_stub_pass_real_blocked — stub=true, realBlocked=true
+  [PASS] web_t10_local_bundle_loaded — {"status":"PASS","bundleName":"spike-pack","manifestVersion":"spike-pack-v1","iconLoaded":true,"durationMs":1242.9,"detail":"Loaded local bundle \"spike-pack\" (icon 64x64 + manifest=spike-pack-v1) in 1242.9ms"}
+  [PASS] web_scrollview_wheel_scroll — {"before":{"y":0,"maxY":102},"after":{"y":100,"maxY":102}}
+  [PASS] web_responsive_landscape_resize — {"visibleWidth":720,"visibleHeight":333,"scale":0.26,"orientation":"LANDSCAPE"}
+  [PASS] web_t06_24h_single_equals_sliced — single=225.3ms, sliced=205.9ms, maxSlice=7.8ms, slices=60, rafMax=66.7ms, inner=9ed7cded1c1d, text=0be078f13066, goldenMatch=true
+  [PASS] web_zero_console_errors — count=0
+  [PASS] web_zero_uncaught_exceptions — count=0
+[Web E2E] FAILED (1 failure(s))

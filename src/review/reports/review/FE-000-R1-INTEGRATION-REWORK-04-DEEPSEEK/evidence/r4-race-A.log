@@ -1,0 +1,8 @@
+[PASS] meta/port is IndexedDB in both tabs :: {"metaA":{"kind":"BROWSER_INDEXED_DB","keyEmpty":"browser:audit_p0_empty_1795748163084","keyNon":"browser:audit_p0_nonempty_1795748163084"},"metaB":{"kind":"BROWSER_INDEXED_DB","keyEmpty":"browser:audit_p0_empty_1795748163084","keyNon":"browser:audit_p0_nonempty_1795748163084"}}
+[PASS] A01/empty: exactly one COMMITTED, one CONFLICT, disk=A candidate :: {"eHeld":true,"ePend":true,"a":"COMMITTED/1","b":"CONFLICT","topA":{"rev":"1","gold":"31","cursorMs":1700000060000},"topB":{"rev":"1","gold":"31","cursorMs":1700000060000},"aGold":"31"}
+[PASS] A01/seed rev8 :: 8
+[PASS] A01/12 rounds interleaved: zero double-COMMITTED, unique winner on disk :: {"rounds":12,"doubles":0,"last":{"round":11,"mode":"post-write-pre-readback","distinctClients":true,"expectedRev":"19","a":"COMMITTED/20/s1","b":"CONFLICT","aGold":"965","bGold":"1062","postA":"20","postB":"20","postAGold":"965","postBGold":"965","topA":{"rev":"20","gold":"965","cursorMs":1700001200000},"topB":{"rev":"20","gold":"965","cursorMs":1700001200000}}}
+[PASS] A05: task error propagates unclassified; genuine lock rejection/missing fail-closed :: {"msg":"audit body throw","healthAfterTaskErr":"AVAILABLE","okAfter":"COMMITTED","rejKind":"STORAGE_UNAVAILABLE","rejDetail":"CROSS_TAB_LOCK_REJECTED: audit lock reject","missKind":"STORAGE_UNAVAILABLE","missDetail":"CROSS_TAB_LOCK_UNAVAILABLE: navigator.locks Web Locks API is unavailable in browser runtime"}
+[PASS] A01/lock holder crash: Chrome auto-release + survivor commits :: {"rev":"20","kind":"COMMITTED","newRev":"21","reload":"21"}
+
+===== RACE A: PASS =====

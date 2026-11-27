@@ -1,0 +1,18 @@
+CMD: node chrome-e2e.mjs (real Chrome, snapshot build)
+DATE: 2026-11-26T05:34:01Z
+[PASS] chrome/T1 boot + Web Locks present + shared lock identity :: {"hasLocks":true,"storageKey":"browser:idle_fishing_lifecycle_persist_fs","loadStatus":"EMPTY"}
+[PASS] chrome/T2 boot loadSafe blocked by cross-tab lock until release :: {"readyWhileLocked":false,"after":"EMPTY","rev":null}
+[PASS] chrome/T3 dual-tab race: Tab B blocked while A holds lock; exactly 1 COMMITTED + 1 CONFLICT; disk holds only winner :: {"bStatusWhileHeld":"pending","bStatusFinal":"done","bResJson":"{\"res\":{\"kind\":\"CONFLICT\",\"detail\":\"expectedRevision null but a valid slot exists\"},\"candidateCursorMs\":1700000180000,\"candidateGold\":\"129\"}","a":"COMMITTED/1","disk":{"rev":"1","cursorMs":1700000060000,"count":1},"bCursor":1700000060000,"aCursor":1700000060000,"expectCursor":1700000060000}
+[PASS] chrome/T4 same-page concurrent commits serialize (1 COMMITTED + 1 CONFLICT) :: {"kinds":["COMMITTED","CONFLICT"],"revs":["2",null]}
+[PASS] chrome/T5 second coordinator instance shares lock namespace (blocks on same lock) :: {"imported":true,"doneAfter700ms":false,"storageKey":"browser:idle_fishing_lifecycle_persist_fs"}
+[PASS] chrome/T6 Web Locks missing => STORAGE_UNAVAILABLE, 0 slot writes, halted :: {"kind":"STORAGE_UNAVAILABLE","slotWrites":0,"halted":true,"health":"STORAGE_UNAVAILABLE"}
+[PASS] chrome/T6b explicit reinit recovers after lock-unavailable freeze :: {"health":"AVAILABLE","rev":"2"}
+[PASS] chrome/T7 Web Locks rejection => STORAGE_UNAVAILABLE, 0 slot writes, halted :: {"kind":"STORAGE_UNAVAILABLE","slotWrites":0,"halted":true}
+[PASS] chrome/T8 rapid sequential A->B commits strictly increment revisions :: {"a":"COMMITTED/3","b":"COMMITTED/4"}
+[PASS] chrome/T9 lock holder crash -> Chrome auto-release; survivor commits + reload consistent :: {"preRev":"4","c4":"COMMITTED/5","reloadedRev":"5","reloadedCursor":1700000180000,"c4Cursor":1700000180000}
+[PASS] chrome/T10 destroy cancels BOTH queued HIDEs behind held Web Lock (disk unchanged) :: {"diskBefore":{"rev":"5","cursorMs":1700000180000,"count":3},"diskAfter":{"rev":"5","cursorMs":1700000180000,"count":3},"queued":[true,true],"rejectedAfter":false,"historyTail":["CANCELLED/SKIPPED_DESTROYED","CANCELLED/SKIPPED_DESTROYED"]}
+[PASS] chrome/T11 storage write failure + HIDE => STORAGE_UNAVAILABLE, halted; destroy rejects new task :: {"health":"STORAGE_UNAVAILABLE","halted":true,"last":"STORAGE_UNAVAILABLE","rejected":false}
+[PASS] chrome/T12 fresh instance re-reads disk; stale revision CONFLICT; fresh commit COMMITTED :: {"bootRev":"5","bootStatus":"VALID","stale":"CONFLICT","fresh":"COMMITTED/6"}
+
+===== CHROME E2E SUMMARY: 13/13 PASS =====
+EXIT=0

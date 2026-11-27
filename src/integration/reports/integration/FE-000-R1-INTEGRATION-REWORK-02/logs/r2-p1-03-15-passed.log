@@ -1,0 +1,17 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-passed.test.ts --out-dir=.compiled-r2-log
+EXIT_CODE: 0
+DURATION_MS: 3137
+--- STDOUT ---
+✔ single passing test case (1.0205ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11.334
+
+[FE-000 Test Summary] total=1 pass=1 fail=0 skip=0 todo=0 containerFail=0 procErr=0
+
+--- STDERR ---

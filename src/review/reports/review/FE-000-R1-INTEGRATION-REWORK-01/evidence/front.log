@@ -1,0 +1,27 @@
+
+> idle-fishing-client@0.0.0-spike test:frontend
+> node ../../tests/frontend/fe-000/run-node-tests.mjs
+
+✔ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (288.1065ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO/quota errors, path guard & 3-slot save (75.6387ms)
+✔ [NODE-MEMORY/T04/T05/T07] MemoryFilePort 3-slot rotation, fault injection & v1->v2 migration (8.971ms)
+✔ [MOCK-WX/I01/I05/T08] Local unsubscribe keeps siblings alive; suites dispose wx hooks on normal & fault exits (26.6626ms)
+✔ [MOCK-DOM/I05/T08] Suites dispose DOM visibilitychange listeners on normal & post-subscribe fault exits (17.6093ms)
+✔ [NODE/I03/T08] Unsupported monotonic source freezes +48h jump; rollback/recovery & deadline clamp (0.7865ms)
+✔ [MOCK-WX/I04/T09] Ad SDK single-instance guard, load/show reject cleanup, duplicate callback & 5-case stub (3.3029ms)
+✔ [NODE/COMPAT-SAVE] 5bcc9ac save protocol: UNCERTAIN, unknown slot, post-write unreadable, conflict, mixed epoch, UNSUPPORTED & lock mismatch (52.0937ms)
+✔ [NODE/COMPAT-OFFLINE-MIGRATION] 5bcc9ac offline checkpoints, overflow/allowance guards & in-progress FIGHTING/PREPARING migration (8.2591ms)
+✔ [NODE/COMPAT-LEGACY-358B111] Real pre-R1 (358b111) v2 Spike saves load & advance cleanly on 5bcc9ac (38.4716ms)
+✔ [NODE/P1-01/COMPAT-SAVE-BOOT-UNAVAILABLE] Storage probe failure returns STORAGE_UNAVAILABLE (never EMPTY or false COMMITTED) and recovers original save (3.576ms)
+✔ [NODE/P2-04/COMPAT-SAVE-CONCURRENT-COMMIT] SingleWriterSaveCoordinator prevents double COMMITTED across same & shared-namespace callers (40.6274ms)
+✔ [NODE/P1-03/COMPAT-RUNNER-ZERO-AND-SKIP-GUARD] Test runner rejects empty, all-skipped, failing, missing & empty-arg inputs accurately (23447.1429ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24138.3721
+
+[FE-000 Test Summary] total=13 pass=13 fail=0 skip=0 todo=0

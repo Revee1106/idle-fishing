@@ -1,0 +1,123 @@
+
+> idle-fishing@0.1.0 verify
+> npm run typecheck && npm run build:cocos && npm run typecheck:cocos && npm run test
+
+
+> idle-fishing@0.1.0 typecheck
+> tsc -p tsconfig.test.json
+
+
+> idle-fishing@0.1.0 build:cocos
+> npm run build && npm run build:cocos -w @idle-fishing/game-core
+
+
+> idle-fishing@0.1.0 build
+> npm run build -w @idle-fishing/game-core
+
+
+> @idle-fishing/game-core@0.0.0-spike build
+> tsc -p tsconfig.json
+
+
+> @idle-fishing/game-core@0.0.0-spike build:cocos
+> node scripts/emit-cocos-mjs.mjs
+
+cocos artifacts: 9 .mjs + 9 .d.mts -> C:\Users\WANGWENJIE10\AppData\Local\Temp\fe-int-audit-djllsqjf\packages\game-core\dist\cocos\spike\
+
+> idle-fishing@0.1.0 typecheck:cocos
+> tsc -p tsconfig.cocos-consumer.json
+
+
+> idle-fishing@0.1.0 test
+> node --test "tests/backend/be-000/**/*.test.ts"
+
+✔ CANON-01 sorts object keys by UTF-16 code unit and keeps array order (2.9413ms)
+✔ CANON-02 rejects values that cannot round-trip (1.7585ms)
+✔ CANON-03 Nat helpers enforce canonical decimal strings (0.8138ms)
+✔ CANON-04 UTF-8 encoder matches Node Buffer for ASCII, CJK and emoji (2.458ms)
+✔ SHA-01 matches node:crypto for block-boundary messages (5.8819ms)
+✔ SHA-02 byte-level hashing matches for binary input (1.2263ms)
+✔ SHA-03 canonical payload hash is stable across key insertion order (5.3047ms)
+✔ COCOS-01 .mjs artifact imports in Node and reproduces RNG-01 (82.0477ms)
+✔ COCOS-02 emitted modules and .d.mts declarations use .mjs specifiers only (53.676ms)
+✔ D01-01 envelope hash covers the fixed outer array and matches an independent UTF-8 SHA-256 (5.1342ms)
+✔ D01-02 quotes, backslashes, control escapes and non-ASCII match the independent vector (1.1309ms)
+✔ D01-03 object keys sort by UTF-16 code unit, arrays keep order, no Unicode normalization (0.9942ms)
+✔ D01-04 G01 design golden vector: fixed outer bytes and SHA-256 (0.5968ms)
+✔ D01-05 G02 design golden vector: escapes, UTF-16 key order and non-ASCII bytes (0.9019ms)
+✔ DIST-01 built ESM artifact runs in Node and matches RNG-01 (56.9299ms)
+✔ DIST-02 built artifact reproduces the same offline states as the source (301.286ms)
+✔ DIST-03 built artifact exposes the documented spike module surface (1.1332ms)
+✔ MIG-01 v1 loads, migrates to v2 and is committed as a new revision (23.1012ms)
+✔ MIG-02 invalid v1 is rejected without touching persisted data (3.2025ms)
+✔ MIG-05 in-progress v1 attempt keeps progress, lock and RNG and settles once (9.2851ms)
+✔ MIG-06 invalid in-progress v1 leaves the original slot bytes untouched (1.4086ms)
+✔ MIG-07 v1 PREPARING migrates to a valid settled v2 state and never repays (6.3622ms)
+✔ MIG-03 unsupported migration paths are refused (1.4197ms)
+✔ MIG-04 same-version migration returns an independent deep copy (2.9588ms)
+✔ OFF-01 8h continuous, 60s-sliced and 37s-sliced advancement are identical (305.381ms)
+✔ OFF-02 checkpoint save/restore in the middle continues identically (140.7001ms)
+✔ OFF-03 node-budget slices produce the same final state (31.5714ms)
+✔ OFF-04 no fishing attempt starts at or after the offline deadline (179.4747ms)
+✔ OFF-05 huge BigInt savings survive canonical JSON round-trip (5.5651ms)
+✔ OFF-06 RNG streams are lazy, named and valid after advancement (5.8901ms)
+✔ OFF-07 activity stays inside the spike band and changes over time (11.2008ms)
+✔ OFF-08 attempt sequence advances monotonically and each terminal attempt is claimed once (27.9002ms)
+✔ OFF-09 checkpoint advances to the deadline and freezes past it (284.5008ms)
+✔ OFF-10 input state is never mutated (9.125ms)
+✔ OFF-12 custom fixture option is rejected instead of being silently ignored (1.5401ms)
+✔ OFF-13 createInitialState enforces the positive allowance invariant used by state validation (1.1142ms)
+✔ OFF-11 triangle quantile honours bounds and approximates mean 1 (1.5332ms)
+✔ RNG-01 golden vector from docs/interfaces/20 matches (4.7272ms)
+✔ RNG-02 stream derivation is stable and independent of other streams (1.2323ms)
+✔ RNG-03 U53 stream regression vector (12.7428ms)
+✔ RNG-04 state export/restore continues the exact same stream (5.6416ms)
+✔ RNG-05 drawing other streams does not shift the wait stream (2.4933ms)
+✔ RNG-06 each U53 consumes exactly two uint32 steps (0.6982ms)
+✔ RNG-07 invalid root seed is rejected (1.4876ms)
+✔ R1-SAVE-01 an unreadable slot blocks commit even when an older backup is readable (24.2741ms)
+✔ R1-SAVE-02 valid checksum with a null payload is isolated and backup is recovered (2.1494ms)
+✔ R1-SAVE-03 same revision with different content blocks commit without writing (4.772ms)
+✔ R1-SAVE-04 a hidden higher revision forbids a new first commit (6.3783ms)
+✔ R1-SAVE-05 durable write whose target becomes unreadable stays UNCERTAIN (4.2389ms)
+✔ R1-CHK-01 persistence records cursor, rewards, RNG and checkpoint before, at and past the deadline (51.2024ms)
+✔ R1-TIME-01 completion and slices reject unrepresentable millisecond results (2.7798ms)
+✔ SAVE-T01 three slots rotate and never overwrite the highest revision (58.2822ms)
+✔ SAVE-T02 corrupt newest slot falls back; all corrupt refuses silent overwrite (6.4219ms)
+✔ SAVE-T03 future schema returns UNSUPPORTED without overwriting (2.854ms)
+✔ SAVE-T04a write failure before bytes is FAILED and old save survives (5.4839ms)
+✔ SAVE-T04b partial write is FAILED and detected as corruption (4.7174ms)
+✔ SAVE-T04c full write followed by an exception is recovered as COMMITTED (3.7698ms)
+✔ SAVE-T04d silent short write is not reported as success and does not lose old data (2.0251ms)
+✔ SAVE-T04e unobservable write with a concurrent higher revision is UNCERTAIN (3.2737ms)
+✔ SAVE-T05 real FIGHTING settlement is idempotent across save/load and rejects replay (9.4652ms)
+✔ SAVE-T06 revision and epoch conflicts are rejected without writing (1.9657ms)
+✔ SAVE-T07 all slot reads failing is CORRUPT; commit stays UNCERTAIN and writes nothing (1.6159ms)
+✔ SAVE-T08 mixed epochs across valid slots is CORRUPT (3.2245ms)
+✔ SAVE-T09 initial commit over EMPTY slots only; expectedRevision null with existing save conflicts (1.1597ms)
+✔ SAVE-T10 3-slot rotation works on a real filesystem adapter (105.4914ms)
+✔ SAVE-T11 v1 envelope loads as VALID and reports schema 1 (1.4368ms)
+✔ SAVE-T12 rollback after uncertain write keeps the previously committed revision loadable (2.6925ms)
+✔ SAVE-T13 attemptLock fightMs must match stageRequired before commit and load (2.9829ms)
+✔ TIME-01 ms to micro-work uses round(ms*1e6) and keeps tiny positives at 1 (5.7425ms)
+✔ TIME-02 rate quantization is one millionth and never below 1 (0.859ms)
+✔ TIME-03 ceilDiv is exact at multiples and rounds up otherwise (0.6257ms)
+✔ TIME-04 integration completes at the exact millisecond and discards surplus (1.1974ms)
+✔ TIME-05 split integration equals one continuous integration (3.8678ms)
+✔ TIME-06 completionTimeMs agrees with integrateWork and rejects unsafe spans (1.4061ms)
+✔ TIME-07 nat multiplier follows (v*q+500000)/1e6 with floor/ceil modes (5.4399ms)
+✔ TIME-08 BigInt accumulation exceeds Number.MAX_SAFE_INTEGER and round-trips (0.5429ms)
+✔ TIME-09 invalid millisecond inputs are rejected (0.717ms)
+✔ VEC-01 Math cross-runtime fixtures match this runtime (13.1546ms)
+✔ VEC-02 Math.imul fixture agrees with an independent BigInt implementation (4.1367ms)
+✔ VEC-03 exact square roots and half-rounding are IEEE-754 stable (5.2066ms)
+✔ VEC-04 RNG fixture matches derivation, U53 sequence and exported state (10.4144ms)
+✔ VEC-05 offline/save fixtures are reproducible from the spike source (88.9376ms)
+ℹ tests 82
+ℹ suites 0
+ℹ pass 82
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1966.2436

@@ -1,0 +1,6 @@
+{"label":"seed","kind":"COMMITTED","rev":"1","marker":null,"slots":[["save_slot_0.json","1"]]}
+{"label":"newer","kind":"COMMITTED","rev":"2","marker":null,"slots":[["save_slot_0.json","1"],["save_slot_1.json","2"]]}
+{"label":"confirmed","kind":"VALID","rev":"2","marker":null,"slots":[["save_slot_0.json","1"],["save_slot_1.json","2"]]}
+{"label":"scan with highest unreadable","kind":"STORAGE_UNAVAILABLE","freeze":"PARTIAL_IO_UNAVAILABLE","marker":{"version":1,"storageKey":"review.history","txId":"tx_1795758688392_3_364279","state":"FROZEN","expectedRevision":"1","targetRevision":null,"priorSaveHistory":"CONFIRMED_VALID","confirmedRevision":"1","createdAtMs":1795758688392,"updatedAtMs":1795758688392,"reason":"Partial save slot IO unavailable (save_slot_1.json); cannot confirm highest physical revision; writes remain frozen (read-only backup rev=1)"},"slots":[["save_slot_0.json","1"],["save_slot_1.json","2"]]}
+{"label":"recover after latest slot vanished","kind":"VALID","rev":"1","marker":null,"slots":[["save_slot_0.json","1"]]}
+{"label":"save prior state again","kind":"COMMITTED","rev":"2","marker":null,"slots":[["save_slot_0.json","1"],["save_slot_1.json","2"]]}

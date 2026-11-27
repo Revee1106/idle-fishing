@@ -1,0 +1,33 @@
+{
+  "files": 411,
+  "drift": [],
+  "inventory": {
+    "status": [
+      10121,
+      10121,
+      true
+    ],
+    "index": [
+      22267,
+      22267,
+      true
+    ],
+    "untracked": [
+      6380,
+      6380,
+      true
+    ],
+    "cached": [
+      2739,
+      2739,
+      true
+    ],
+    "working": [
+      671,
+      671,
+      true
+    ]
+  },
+  "head": "be62996fae44df24094331d670f6f0ab3741a4f2",
+  "merge": "5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355"
+}

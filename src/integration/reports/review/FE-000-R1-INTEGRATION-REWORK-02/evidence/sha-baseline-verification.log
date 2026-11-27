@@ -1,0 +1,30 @@
+=== HEAD/MERGE_HEAD ===
+be62996fae44df24094331d670f6f0ab3741a4f2
+5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+=== merge-base ===
+358b11105cfdee9bd076049c86a34d8f0aaa00e7
+=== protected worktree drift vs 5bcc9ac (expect empty) ===
+EXIT=0
+=== protected index drift vs 5bcc9ac (expect empty) ===
+EXIT=0
+=== staged files touching apps/game-client or tests/frontend (expect empty) ===
+NONE
+=== staged count / unstaged count / untracked count ===
+58
+12
+80
+=== historical reports tracked status (expect no modifications) ===
+NONE
+=== ignored output dirs ===
+!! apps/game-client/build/
+!! apps/game-client/library/
+!! apps/game-client/profiles/
+!! apps/game-client/temp/
+!! node_modules/
+!! packages/game-core/dist/
+!! reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/
+!! reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/
+!! reports/integration/FE-000-R1-INTEGRATION/logs/
+!! reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/audit-a1-a8.log
+!! reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/audit-backend-perf.log
+!! reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/audit-backend-verify.log

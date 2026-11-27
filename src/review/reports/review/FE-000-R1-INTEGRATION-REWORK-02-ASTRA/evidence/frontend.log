@@ -1,0 +1,29 @@
+
+> idle-fishing-client@0.0.0-spike test:frontend
+> node ../../tests/frontend/fe-000/run-node-tests.mjs
+
+✔ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (438.0115ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO/quota errors, path guard & 3-slot save (126.7199ms)
+✔ [NODE-MEMORY/T04/T05/T07] MemoryFilePort 3-slot rotation, fault injection & v1->v2 migration (24.9562ms)
+✔ [MOCK-WX/I01/I05/T08] Local unsubscribe keeps siblings alive; suites dispose wx hooks on normal & fault exits (62.4478ms)
+✔ [MOCK-DOM/I05/T08] Suites dispose DOM visibilitychange listeners on normal & post-subscribe fault exits (28.5968ms)
+✔ [NODE/I03/T08] Unsupported monotonic source freezes +48h jump; rollback/recovery & deadline clamp (0.6313ms)
+✔ [MOCK-WX/I04/T09] Ad SDK single-instance guard, load/show reject cleanup, duplicate callback & 5-case stub (2.5276ms)
+✔ [NODE/COMPAT-SAVE] 5bcc9ac save protocol: UNCERTAIN, unknown slot, post-write unreadable, conflict, mixed epoch, UNSUPPORTED & lock mismatch (68.6634ms)
+✔ [NODE/COMPAT-OFFLINE-MIGRATION] 5bcc9ac offline checkpoints, overflow/allowance guards & in-progress FIGHTING/PREPARING migration (10.733ms)
+✔ [NODE/COMPAT-LEGACY-358B111] Real pre-R1 (358b111) v2 Spike saves load & advance cleanly on 5bcc9ac (53.8752ms)
+✔ [NODE/P1-01/COMPAT-SAVE-BOOT-UNAVAILABLE] Storage probe failure returns STORAGE_UNAVAILABLE (never EMPTY or false COMMITTED) and recovers original save (3.4378ms)
+✔ [NODE/P2-04/COMPAT-SAVE-CONCURRENT-COMMIT] SingleWriterSaveCoordinator prevents double COMMITTED across same & shared-namespace callers (34.7664ms)
+✔ [NODE/P1-03/COMPAT-RUNNER-ZERO-AND-SKIP-GUARD] Supervised Node 24 runner accurately counts nested leaves and blocks early exit / unsafe out-dir (67072.1056ms)
+✔ [NODE/P1-01/TEST-01-A-B-C-D-E] Runtime storage freeze/recovery & WeChat missing-FS fail-closed (N1+N2) (4.138ms)
+✔ [NODE/P2-05/COMPAT-SAFE-PATH-GUARD] Output dir deletion guard enforces exact allowlist and blocks traversal, roots, UNC & Windows junctions (64.3659ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68158.3823
+
+[FE-000 Test Summary] total=15 pass=15 fail=0 skip=0 todo=0 containerFail=0 procErr=0

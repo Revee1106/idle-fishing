@@ -1,0 +1,157 @@
+﻿
+> idle-fishing-client@0.0.0-spike build:wechat
+> node scripts/build-cocos.mjs wechatgame
+
+[FE-000 Build] Target: wechatgame
+[FE-000 Build] Exe: C:\ProgramData\cocos\editors\Creator\3.8.8\CocosCreator.exe
+[FE-000 Build] Args: ["--project","E:\\idle-fishing-integration\\apps\\game-client","--build","configPath=E:\\idle-fishing-integration\\apps\\game-client\\build-configs\\buildConfig_wechatgame.json"]
+[FE-000 Build] Raw Exit Code: 36
+[FE-000 Build] Duration: 92003 ms
+[FE-000 Build] Output Exists: true (E:\idle-fishing-integration\apps\game-client\build\wechatgame)
+[FE-000 Build] Total Output: 41 files, 1936.20 KB (1982670 bytes)
+--- STDOUT TAIL ---
+2026-11-26 09:27:52 - debug: // ---- build task cocos-service：onAfterBuild ----
+
+2026-11-26 09:27:52 - debug: // ---- build task cocos-service：onAfterBuild ---- (6ms)
+
+2026-11-26 09:27:52 - debug: cocos-service:(onAfterBuild) in 6 ms ✓, progress: 64%
+
+2026-11-26 09:27:52 - debug: adsense-h5g-plugin:(onAfterBuild) start..., progress: 64%
+
+2026-11-26 09:27:52 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ----
+
+2026-11-26 09:27:52 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ---- (2ms)
+
+2026-11-26 09:27:52 - debug: adsense-h5g-plugin:(onAfterBuild) in 2 ms ✓, progress: 65%
+
+2026-11-26 09:27:52 - log: Asset DB is resume!
+
+2026-11-26 09:27:52 - debug: builder:build-project-total (54407ms)
+
+2026-11-26 09:27:52 - debug: build task(wechatgame) in 54407!
+
+2026-11-26 09:27:52 - debug: [Build Memory track]: builder:build-project-total start:298.65MB, end 228.20MB, increase: -72138.88KB
+
+2026-11-26 09:27:52 - debug: ================================ build Task (wechatgame) Finished in (54 s)ms ================================
+
+
+{
+  "buildDir": "E:\\idle-fishing-integration\\apps\\game-client\\build\\wechatgame",
+  "status": "PASS",
+  "appid": "touristappid",
+  "compileType": "game",
+  "gameJson": {
+    "deviceOrientation": "portrait",
+    "networkTimeout": {
+      "request": 5000,
+      "connectSocket": 5000,
+      "uploadFile": 5000,
+      "downloadFile": 500000
+    },
+    "subpackages": [
+      {
+        "name": "spike-pack",
+        "root": "subpackages/spike-pack/"
+      }
+    ]
+  },
+  "sizes": {
+    "totalFiles": 41,
+    "totalBytes": 1982670,
+    "totalKB": 1936.2,
+    "mainFiles": 34,
+    "mainBytes": 1980073,
+    "mainKB": 1933.67,
+    "subpackageRoot": "subpackages/spike-pack",
+    "subpackageFiles": 7,
+    "subpackageBytes": 2597,
+    "subpackageKB": 2.54
+  },
+  "subpackageFileList": [
+    {
+      "rel": "config.json",
+      "bytes": 563
+    },
+    {
+      "rel": "game.js",
+      "bytes": 608
+    },
+    {
+      "rel": "47cd4a6d-1822-4566-8f1f-d589e3abc836.json",
+      "bytes": 292
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90.json",
+      "bytes": 72
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90@6c48a.json",
+      "bytes": 149
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90@f9941.json",
+      "bytes": 600
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90.png",
+      "bytes": 313
+    }
+  ],
+  "checks": [
+    {
+      "name": "wechatgame_dir_exists",
+      "status": "PASS",
+      "detail": "E:\\idle-fishing-integration\\apps\\game-client\\build\\wechatgame"
+    },
+    {
+      "name": "main_game_js",
+      "status": "PASS",
+      "detail": "E:\\idle-fishing-integration\\apps\\game-client\\build\\wechatgame\\game.js"
+    },
+    {
+      "name": "project_config_json",
+      "status": "PASS",
+      "detail": "compileType=game, appid=touristappid"
+    },
+    {
+      "name": "game_json_subpackages_registered",
+      "status": "PASS",
+      "detail": "{\"name\":\"spike-pack\",\"root\":\"subpackages/spike-pack/\"}"
+    },
+    {
+      "name": "subpackage_root_exists",
+      "status": "PASS",
+      "detail": "subpackages/spike-pack"
+    },
+    {
+      "name": "subpackage_entry_js",
+      "status": "PASS",
+      "detail": "config.json, game.js, 47cd4a6d-1822-4566-8f1f-d589e3abc836.json, 99611724-5348-4028-858a-4fc3a5c16d90.json, 99611724-5348-4028-858a-4fc3a5c16d90@6c48a.json, 99611724-5348-4028-858a-4fc3a5c16d90@f9941.json, 99611724-5348-4028-858a-4fc3a5c16d90.png"
+    },
+    {
+      "name": "subpackage_bundle_config",
+      "status": "PASS",
+      "detail": "file=config.json, name=spike-pack, manifestInPaths=true, iconInPaths=true"
+    },
+    {
+      "name": "subpackage_manifest_asset",
+      "status": "PASS",
+      "detail": "Found spike-pack-v1 payload inside subpackage"
+    },
+    {
+      "name": "subpackage_icon_png",
+      "status": "PASS",
+      "detail": "99611724-5348-4028-858a-4fc3a5c16d90.png (313 B)"
+    },
+    {
+      "name": "settings_json_subpackages",
+      "status": "PASS",
+      "detail": "assets.subpackages=[\"spike-pack\"]"
+    }
+  ],
+  "errors": []
+}
+
+[WeChat Audit] PASS (10/10 checks passed)
+[FE-000 Build] SUCCESS (Cocos raw status=36, artifact checks PASSED)
+

@@ -1,0 +1,3 @@
+[PASS] meta/port is IndexedDB in both tabs :: {"metaA":{"kind":"BROWSER_INDEXED_DB","keyEmpty":"browser:audit_p0_empty_1795758830195","keyNon":"browser:audit_p0_nonempty_1795758830195"},"metaB":{"kind":"BROWSER_INDEXED_DB","keyEmpty":"browser:audit_p0_empty_1795758830195","keyNon":"browser:audit_p0_nonempty_1795758830195"}}
+[PASS] A01/empty: exactly one COMMITTED, one CONFLICT, disk=A candidate :: {"eHeld":true,"ePend":true,"a":"COMMITTED/1","b":"CONFLICT","topA":{"rev":"1","gold":"31","cursorMs":1700000060000},"topB":{"rev":"1","gold":"31","cursorMs":1700000060000},"aGold":"31"}
+[PASS] A01/seed rev8 :: 8

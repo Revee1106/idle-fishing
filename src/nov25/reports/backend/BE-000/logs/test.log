@@ -1,0 +1,78 @@
+# npm test
+
+> idle-fishing@0.1.0 test
+> node --test "tests/backend/be-000/**/*.test.ts"
+
+✔ CANON-01 sorts object keys by UTF-16 code unit and keeps array order (4.2754ms)
+✔ CANON-02 rejects values that cannot round-trip (2.7945ms)
+✔ CANON-03 Nat helpers enforce canonical decimal strings (1.2411ms)
+✔ CANON-04 UTF-8 encoder matches Node Buffer for ASCII, CJK and emoji (3.3395ms)
+✔ SHA-01 matches node:crypto for block-boundary messages (14.9249ms)
+✔ SHA-02 byte-level hashing matches for binary input (0.8162ms)
+✔ SHA-03 canonical payload hash is stable across key insertion order (0.8487ms)
+✔ COCOS-01 .mjs artifact imports in Node and reproduces RNG-01 (73.3287ms)
+✔ COCOS-02 all emitted modules use relative .mjs specifiers and no CJS/Node APIs (112.6697ms)
+✔ DIST-01 built ESM artifact runs in Node and matches RNG-01 (46.3031ms)
+✔ DIST-02 built artifact reproduces the same offline states as the source (274.8803ms)
+✔ DIST-03 built artifact exposes the documented spike module surface (1.1477ms)
+✔ MIG-01 v1 loads, migrates to v2 and is committed as a new revision (39.0752ms)
+✔ MIG-02 invalid v1 is rejected without touching persisted data (3.5855ms)
+✔ MIG-03 unsupported migration paths are refused (1.0295ms)
+✔ MIG-04 same-version migration returns an independent deep copy (0.9197ms)
+✔ OFF-01 8h continuous, 60s-sliced and 37s-sliced advancement are identical (314.7898ms)
+✔ OFF-02 checkpoint save/restore in the middle continues identically (272.3089ms)
+✔ OFF-03 node-budget slices produce the same final state (58.0086ms)
+✔ OFF-04 no fishing attempt starts at or after the offline deadline (216.6962ms)
+✔ OFF-05 huge BigInt savings survive canonical JSON round-trip (3.8022ms)
+✔ OFF-06 RNG streams are lazy, named and valid after advancement (4.5982ms)
+✔ OFF-07 activity stays inside the spike band and changes over time (10.1344ms)
+✔ OFF-08 attempt sequence advances monotonically and each terminal attempt is claimed once (60.1476ms)
+✔ OFF-09 same-time deadline settlement does not leave a half-finished stage (223.1402ms)
+✔ OFF-10 input state is never mutated (19.4782ms)
+✔ OFF-11 triangle quantile honours bounds and approximates mean 1 (3.6836ms)
+✔ RNG-01 golden vector from docs/interfaces/20 matches (7.3153ms)
+✔ RNG-02 stream derivation is stable and independent of other streams (1.1192ms)
+✔ RNG-03 U53 stream regression vector (1.5891ms)
+✔ RNG-04 state export/restore continues the exact same stream (4.039ms)
+✔ RNG-05 drawing other streams does not shift the wait stream (2.6967ms)
+✔ RNG-06 each U53 consumes exactly two uint32 steps (0.5259ms)
+✔ RNG-07 invalid root seed is rejected (1.1293ms)
+✔ SAVE-T01 three slots rotate and never overwrite the highest revision (73.7607ms)
+✔ SAVE-T02 corrupt newest slot falls back; all corrupt refuses silent overwrite (6.5147ms)
+✔ SAVE-T03 future schema returns UNSUPPORTED without overwriting (3.3948ms)
+✔ SAVE-T04a write failure before bytes is FAILED and old save survives (3.5498ms)
+✔ SAVE-T04b partial write is FAILED and detected as corruption (3.5103ms)
+✔ SAVE-T04c full write followed by an exception is recovered as COMMITTED (2.8318ms)
+✔ SAVE-T04d silent short write is not reported as success and does not lose old data (2.54ms)
+✔ SAVE-T04e unobservable write with a concurrent higher revision is UNCERTAIN (2.4985ms)
+✔ SAVE-T05 committed reward is not re-applied after reload (8.8024ms)
+✔ SAVE-T06 revision and epoch conflicts are rejected without writing (3.7708ms)
+✔ SAVE-T07 all slot reads failing is CORRUPT; commit cannot guess the revision (1.7317ms)
+✔ SAVE-T08 mixed epochs across valid slots is CORRUPT (1.4073ms)
+✔ SAVE-T09 initial commit over EMPTY slots only; expectedRevision null with existing save conflicts (1.0852ms)
+✔ SAVE-T10 3-slot rotation works on a real filesystem adapter (318.2317ms)
+✔ SAVE-T11 v1 envelope loads as VALID and reports schema 1 (2.8783ms)
+✔ SAVE-T12 rollback after uncertain write keeps the previously committed revision loadable (3.9516ms)
+✔ TIME-01 ms to micro-work uses round(ms*1e6) and keeps tiny positives at 1 (4.0159ms)
+✔ TIME-02 rate quantization is one millionth and never below 1 (0.6889ms)
+✔ TIME-03 ceilDiv is exact at multiples and rounds up otherwise (0.4988ms)
+✔ TIME-04 integration completes at the exact millisecond and discards surplus (0.9638ms)
+✔ TIME-05 split integration equals one continuous integration (0.7148ms)
+✔ TIME-06 completionTimeMs agrees with integrateWork and rejects unsafe spans (0.4874ms)
+✔ TIME-07 nat multiplier follows (v*q+500000)/1e6 with floor/ceil modes (0.6421ms)
+✔ TIME-08 BigInt accumulation exceeds Number.MAX_SAFE_INTEGER and round-trips (0.479ms)
+✔ TIME-09 invalid millisecond inputs are rejected (0.8555ms)
+✔ VEC-01 Math cross-runtime fixtures match this runtime (42.2357ms)
+✔ VEC-02 Math.imul fixture agrees with an independent BigInt implementation (3.9179ms)
+✔ VEC-03 exact square roots and half-rounding are IEEE-754 stable (10.4028ms)
+✔ VEC-04 RNG fixture matches derivation, U53 sequence and exported state (8.6514ms)
+✔ VEC-05 offline/save fixtures are reproducible from the spike source (129.2788ms)
+ℹ tests 64
+ℹ suites 0
+ℹ pass 64
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3044.1645
+EXIT=0

@@ -1,0 +1,11 @@
+code/test files in R4 manifest: 36 same-as-R3: 28 changed: 8 missing-in-R3: 0
+changed: [
+ "apps/game-client/assets/scripts/bootstrap/BootEntry.ts",
+ "apps/game-client/assets/scripts/platform/BrowserFilePort.ts",
+ "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts",
+ "apps/game-client/assets/scripts/platform/PlatformTypes.ts",
+ "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts",
+ "apps/game-client/assets/scripts/platform/WeChatFilePort.ts",
+ "tests/frontend/fe-000/platform-and-core.test.ts",
+ "tests/frontend/fe-000/verify-web-build.mjs"
+]

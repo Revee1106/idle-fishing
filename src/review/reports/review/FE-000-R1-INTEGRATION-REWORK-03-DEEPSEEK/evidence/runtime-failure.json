@@ -1,0 +1,33 @@
+{
+  "probeFail": {
+    "rec": {
+      "last": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "health": "STORAGE_UNAVAILABLE"
+    },
+    "rec2": {
+      "halted": true
+    },
+    "hist": [
+      "STORAGE_UNAVAILABLE/STORAGE_UNAVAILABLE",
+      "CANCELLED/SKIPPED_HALTED"
+    ],
+    "slotsSame": true
+  },
+  "writeFail": {
+    "rec": {
+      "last": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "health": "STORAGE_UNAVAILABLE"
+    },
+    "rec2": {
+      "halted": true
+    },
+    "hist": [
+      "STORAGE_UNAVAILABLE/STORAGE_UNAVAILABLE",
+      "CANCELLED/SKIPPED_HALTED"
+    ],
+    "slotsSame": true
+  },
+  "failures": []
+}

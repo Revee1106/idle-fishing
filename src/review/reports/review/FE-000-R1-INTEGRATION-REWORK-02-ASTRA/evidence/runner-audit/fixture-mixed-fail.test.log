@@ -1,0 +1,35 @@
+✔ mixed pass (2.7635ms)
+﹣ mixed skip (0.452ms) # SKIP
+✔ mixed todo (11.3425ms) # TODO
+✖ mixed fail (6.7259ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 1
+ℹ duration_ms 92.9353
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled\tests\frontend\fe-000\fixtures\fixture-mixed-fail.test.js:8:1
+✖ mixed fail (6.7259ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/astra02-sr6tbrsx/tests/frontend/fe-000/.compiled/tests/frontend/fe-000/fixtures/fixture-mixed-fail.test.js:9:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

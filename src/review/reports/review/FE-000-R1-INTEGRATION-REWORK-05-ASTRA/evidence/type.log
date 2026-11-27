@@ -1,0 +1,4 @@
+
+> idle-fishing-client@0.0.0-spike typecheck
+> node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.typecheck.json
+

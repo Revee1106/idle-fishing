@@ -1,0 +1,23 @@
+--- apps/game-client/assets/scripts/platform/WeChatFilePort.ts
+
++++ apps/game-client/assets/scripts/platform/WeChatFilePort.ts
+
+@@ -281,7 +281,16 @@
+
+   }
+ 
+   async writeTxState(text: string): Promise<void> {
+-    return this.write('__tx_state__.json', text);
++    await this.write('__tx_state__.json', text);
++    // Verify written marker bytes immediately to catch truncated/short writes before touching save slots
++    const readback = await this.read('__tx_state__.json');
++    if (readback !== text) {
++      throw new FilePortIoError(
++        'WRITE_IO_ERROR',
++        '__tx_state__.json',
++        `WeChat tx marker readback mismatch (expected ${text.length} chars, got ${readback === null ? 'null' : readback.length})`
++      );
++    }
+   }
+ 
+   async clearTxState(): Promise<void> {

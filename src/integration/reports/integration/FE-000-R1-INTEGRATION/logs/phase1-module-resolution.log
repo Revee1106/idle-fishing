@@ -1,0 +1,7 @@
+NODE_ESM_RESOLVED_MAIN=E:\idle-fishing-integration\packages\game-core\dist\spike\index.js
+NODE_MODULES_REALPATH=E:\idle-fishing-integration\packages\game-core
+PKG_MAIN=E:\idle-fishing-integration\packages\game-core\dist\spike\index.js
+PKG_TYPES=E:\idle-fishing-integration\packages\game-core\dist\spike\index.d.ts
+DIST_SPIKE_FILES=canonical-json.d.ts,canonical-json.js,index.d.ts,index.js,migration.d.ts,migration.js,offline.d.ts,offline.js,prng.d.ts,prng.js,save.d.ts,save.js,sha256.d.ts,sha256.js,time.d.ts,time.js,types.d.ts,types.js
+DIST_COCOS_FILES=canonical-json.d.ts,canonical-json.mjs,index.d.ts,index.mjs,migration.d.ts,migration.mjs,offline.d.ts,offline.mjs,prng.d.ts,prng.mjs,save.d.ts,save.mjs,sha256.d.ts,sha256.mjs,time.d.ts,time.mjs,types.d.ts,types.mjs
+CC_DTS_EXISTS=true

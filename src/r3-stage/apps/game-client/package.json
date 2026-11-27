@@ -1,0 +1,22 @@
+{
+  "name": "idle-fishing-client",
+  "version": "0.0.0-spike",
+  "private": true,
+  "description": "FE-000 / SPIKE-001 minimal Cocos Creator 3.8.8 Code First verification project",
+  "creator": {
+    "version": "3.8.8"
+  },
+  "dependencies": {
+    "@idle-fishing/game-core": "file:../../packages/game-core"
+  },
+  "scripts": {
+    "typecheck": "node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.typecheck.json",
+    "build:web": "node scripts/build-cocos.mjs web-mobile",
+    "build:wechat": "node scripts/build-cocos.mjs wechatgame",
+    "build:all": "node scripts/build-cocos.mjs web-mobile && node scripts/build-cocos.mjs wechatgame",
+    "test:frontend": "node ../../tests/frontend/fe-000/run-node-tests.mjs",
+    "verify:wechat": "node ../../tests/frontend/fe-000/verify-wechat-build.mjs",
+    "verify:web": "node ../../tests/frontend/fe-000/verify-web-build.mjs"
+  },
+  "uuid": "740efad0-cfbd-4efe-b221-963b70fc3a9d"
+}

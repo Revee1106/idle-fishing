@@ -1,0 +1,6 @@
+CMD: node r3-t2-a09.mjs
+[stage] T2
+[PASS] T2 queued destroy: both tasks CANCELLED, zero writes :: {"calls":1,"hist":["CANCELLED/SKIPPED_DESTROYED","CANCELLED/SKIPPED_DESTROYED"],"slotsSame":true}
+[stage] A09
+[WATCHDOG] abort
+EXIT=3

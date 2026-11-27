@@ -1,0 +1,10 @@
+{
+  "bundle": "spike-pack",
+  "experimental": true,
+  "purpose": "T10 local resource subpackage verification without remote server",
+  "items": [
+    "subpack_icon",
+    "subpack_manifest"
+  ],
+  "checksumHint": "spike-pack-v1"
+}

@@ -1,0 +1,11 @@
+▶ parent test with only todo child
+  ✔ todo child leaf (5.5158ms) # TODO
+✔ parent test with only todo child (11.8147ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 80.3995

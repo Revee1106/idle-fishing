@@ -1,0 +1,14 @@
+{
+  "changed04": [
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts",
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts",
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts",
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts",
+    "tests/frontend/fe-000/platform-and-core.test.ts",
+    "tests/frontend/fe-000/verify-web-build.mjs"
+  ],
+  "additional05": [
+    "apps/game-client/assets/scripts/ui/CodeFirstFactory.ts"
+  ],
+  "unlisted": []
+}

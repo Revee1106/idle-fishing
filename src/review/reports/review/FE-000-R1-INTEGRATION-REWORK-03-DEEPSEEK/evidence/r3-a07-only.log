@@ -1,0 +1,23 @@
+⚠ only throwing TODO leaf still triggers zero-pass guard (1.2948ms) # TODO
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 15.9305
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled-r3-audit\tests\frontend\fe-000\fixtures\fixture-only-todo-throws.test.js:2:1
+⚠ only throwing TODO leaf still triggers zero-pass guard (1.2948ms) # TODO
+  Error: intentional throwing TODO with zero passing tests
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/fe000-r3-snap/tests/frontend/fe-000/.compiled-r3-audit/tests/frontend/fe-000/fixtures/fixture-only-todo-throws.test.js:3:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+[FE-000 Test Summary] total=1 pass=0 fail=0 skip=0 todo=1 containerFail=0 procErr=0
+[FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=0, todo=1, fail=0).

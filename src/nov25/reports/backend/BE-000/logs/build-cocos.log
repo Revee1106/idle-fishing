@@ -1,0 +1,19 @@
+# npm run build:cocos
+
+> idle-fishing@0.1.0 build:cocos
+> npm run build && npm run build:cocos -w @idle-fishing/game-core
+
+
+> idle-fishing@0.1.0 build
+> npm run build -w @idle-fishing/game-core
+
+
+> @idle-fishing/game-core@0.0.0-spike build
+> tsc -p tsconfig.json
+
+
+> @idle-fishing/game-core@0.0.0-spike build:cocos
+> node scripts/emit-cocos-mjs.mjs
+
+cocos artifacts: 9 .mjs + 9 .d.ts -> E:\idle-fishing\packages\game-core\dist\cocos\spike\
+EXIT=0

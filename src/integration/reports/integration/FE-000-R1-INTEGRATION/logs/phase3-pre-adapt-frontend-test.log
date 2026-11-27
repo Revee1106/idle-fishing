@@ -1,0 +1,52 @@
+﻿
+> idle-fishing-client@0.0.0-spike test:frontend
+> node ../../tests/frontend/fe-000/run-node-tests.mjs
+
+✖ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (19.1648ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO/quota errors, path guard & 3-slot save (17.2581ms)
+✔ [NODE-MEMORY/T04/T05/T07] MemoryFilePort 3-slot rotation, fault injection & v1->v2 migration (4.1798ms)
+✔ [MOCK-WX/I01/I05/T08] Local unsubscribe keeps siblings alive; suites dispose wx hooks on normal & fault exits (11.03ms)
+✔ [MOCK-DOM/I05/T08] Suites dispose DOM visibilitychange listeners on normal & post-subscribe fault exits (8.7349ms)
+✔ [NODE/I03/T08] Unsupported monotonic source freezes +48h jump; rollback/recovery & deadline clamp (0.3515ms)
+✔ [MOCK-WX/I04/T09] Ad SDK single-instance guard, load/show reject cleanup, duplicate callback & 5-case stub (1.187ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 251.3293
+
+✖ failing tests:
+
+test at ..\..\tests\frontend\fe-000\.compiled\tests\frontend\fe-000\platform-and-core.test.js:110:1
+✖ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (19.1648ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63'
+  - 'bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a'
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-integration/tests/frontend/fe-000/.compiled/tests/frontend/fe-000/platform-and-core.test.js:135:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63',
+    expected: 'bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+[FE-000 Test Summary] total=7 pass=6 fail=1 skip=0
+node.exe : [FE-000 Test Runner] FAIL: 1 test(s) failed.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\WANGWENJIE10\AppData\R ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([FE-000 Test Ru...test(s) failed.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+

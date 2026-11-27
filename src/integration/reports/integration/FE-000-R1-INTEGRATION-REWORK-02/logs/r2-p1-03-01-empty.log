@@ -1,0 +1,18 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-empty.test.ts --out-dir=.compiled-r2-log
+EXIT_CODE: 1
+DURATION_MS: 2608
+--- STDOUT ---
+✔ E:\idle-fishing-integration\tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-empty.test.js (0.9649ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10.5487
+
+[FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=0
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: 0 leaf test cases registered/executed (empty test file guard triggered).

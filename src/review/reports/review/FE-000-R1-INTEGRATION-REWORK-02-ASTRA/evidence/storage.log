@@ -1,0 +1,18 @@
+{"label":"empty","kind":"EMPTY","health":["AVAILABLE","AVAILABLE"],"writes":0}
+{"label":"seed","kind":"COMMITTED","revision":"1","health":["AVAILABLE","AVAILABLE"],"writes":1}
+{"label":"runtime probe","kind":"STORAGE_UNAVAILABLE","detail":"Persistent storage probe failed during commit","health":["STORAGE_UNAVAILABLE","STORAGE_UNAVAILABLE"],"writes":0}
+{"label":"probe again","kind":"STORAGE_UNAVAILABLE","detail":"Persistent storage probe failed","health":["STORAGE_UNAVAILABLE","STORAGE_UNAVAILABLE"],"writes":0}
+{"label":"still frozen","kind":"STORAGE_UNAVAILABLE","detail":"Persistent storage probe failed","health":["STORAGE_UNAVAILABLE","STORAGE_UNAVAILABLE"],"writes":0}
+{"label":"explicit recovery","kind":"VALID","revision":"1","warnings":[],"health":["AVAILABLE","AVAILABLE"],"writes":0}
+{"label":"physical write error","kind":"STORAGE_UNAVAILABLE","detail":"Runtime storage write failure (WRITE_IO_ERROR): [WRITE_IO_ERROR] save_slot_1.json: audit write","health":["STORAGE_UNAVAILABLE","STORAGE_UNAVAILABLE"],"writes":0}
+{"label":"recovery before readback test","kind":"VALID","revision":"1","warnings":[],"health":["AVAILABLE","AVAILABLE"],"writes":0}
+{"label":"physical write then readback unavailable","kind":"UNCERTAIN","detail":"write result unknown; rescan unreadable (save_slot_1.json)","health":["AVAILABLE","AVAILABLE"],"writes":1}
+{"label":"other coordinator, no recovery after UNCERTAIN","kind":"COMMITTED","revision":"3","health":["AVAILABLE","AVAILABLE"],"writes":1}
+{"label":"freeze again","kind":"STORAGE_UNAVAILABLE","detail":"Persistent storage probe failed","health":["STORAGE_UNAVAILABLE","STORAGE_UNAVAILABLE"],"writes":0}
+{"label":"partial recovery hides newest","kind":"VALID","revision":"2","warnings":["save_slot_2.json: io error","selected slot 1 at revision 2"],"health":["AVAILABLE","AVAILABLE"],"writes":0}
+{"label":"stale revision while hidden","kind":"UNCERTAIN","detail":"slot read unavailable (save_slot_2.json); no write attempted","health":["AVAILABLE","AVAILABLE"],"writes":0}
+{"label":"new instance reads full disk","kind":"VALID","revision":"3","warnings":["selected slot 2 at revision 3"],"health":["AVAILABLE","AVAILABLE"],"writes":0}
+{"label":"old instance uses stale rev","kind":"CONFLICT","detail":"expectedRevision does not match highest revision","health":["AVAILABLE","AVAILABLE"],"writes":0}
+noManager {"kind":"STORAGE_UNAVAILABLE","detail":"wx.getFileSystemManager is missing"} STORAGE_UNAVAILABLE
+noRead {"kind":"STORAGE_UNAVAILABLE","detail":"wx FileSystemManager missing required method: accessSync"} STORAGE_UNAVAILABLE
+noWrite {"kind":"STORAGE_UNAVAILABLE","detail":"wx FileSystemManager missing required method: accessSync"} STORAGE_UNAVAILABLE

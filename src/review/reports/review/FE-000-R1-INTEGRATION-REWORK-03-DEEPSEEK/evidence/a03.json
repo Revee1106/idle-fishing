@@ -1,0 +1,20 @@
+{
+  "out": {
+    "empty": "EMPTY",
+    "emptyHealth": "AVAILABLE",
+    "partialKind": "STORAGE_UNAVAILABLE",
+    "partialClass": "PARTIAL_IO_UNAVAILABLE",
+    "backup": "2",
+    "h1": "STORAGE_UNAVAILABLE",
+    "h2": "STORAGE_UNAVAILABLE",
+    "fc": "PARTIAL_IO_UNAVAILABLE",
+    "blocked": "STORAGE_UNAVAILABLE",
+    "zeroWrites": true,
+    "fullKind": "VALID",
+    "fullRev": "3",
+    "h3": "AVAILABLE",
+    "c4": "COMMITTED/4",
+    "allClass": "IO_UNAVAILABLE"
+  },
+  "failures": []
+}

@@ -1,0 +1,104 @@
+{
+  "failures": [],
+  "evidence": {
+    "seeded": {
+      "idbCommit": "COMMITTED",
+      "legacyLen": 1446
+    },
+    "both": {
+      "status": "VALID",
+      "rev": "1",
+      "gold": "468",
+      "legacy": {
+        "detected": true,
+        "keys": [
+          "idle_fishing_lifecycle_persist_fs:save_slot_0.json"
+        ],
+        "policy": "DETECTED_IGNORED_NO_AUTO_MIGRATION",
+        "detail": "Detected 1 legacy experimental localStorage save slot(s) (idle_fishing_lifecycle_persist_fs:save_slot_0.json); preserved untouched without auto-migration or resurrection"
+      },
+      "lsIntact": true
+    },
+    "legacyOnly": {
+      "status": "EMPTY",
+      "halted": false,
+      "legacy": {
+        "detected": true,
+        "keys": [
+          "idle_fishing_lifecycle_persist_fs:save_slot_0.json"
+        ],
+        "policy": "DETECTED_IGNORED_NO_AUTO_MIGRATION",
+        "detail": "Detected 1 legacy experimental localStorage save slot(s) (idle_fishing_lifecycle_persist_fs:save_slot_0.json); preserved untouched without auto-migration or resurrection"
+      },
+      "lsIntact": true,
+      "lsCount": 1
+    },
+    "legacyOnly2": {
+      "status": "EMPTY",
+      "legacy": {
+        "detected": true,
+        "keys": [
+          "idle_fishing_lifecycle_persist_fs:save_slot_0.json"
+        ],
+        "policy": "DETECTED_IGNORED_NO_AUTO_MIGRATION",
+        "detail": "Detected 1 legacy experimental localStorage save slot(s) (idle_fishing_lifecycle_persist_fs:save_slot_0.json); preserved untouched without auto-migration or resurrection"
+      },
+      "lsIntact": true
+    },
+    "noIdb": {
+      "isNode": false,
+      "status": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "restored": false,
+      "legacy": {
+        "detected": true,
+        "keys": [
+          "idle_fishing_lifecycle_persist_fs:save_slot_0.json"
+        ],
+        "policy": "DETECTED_IGNORED_NO_AUTO_MIGRATION",
+        "detail": "Detected 1 legacy experimental localStorage save slot(s) (idle_fishing_lifecycle_persist_fs:save_slot_0.json); preserved untouched without auto-migration or resurrection"
+      },
+      "hide": {
+        "last": null,
+        "count": 0,
+        "halted": true
+      },
+      "optKind": "BROWSER_STORAGE_UNAVAILABLE",
+      "optProbe": false,
+      "optCommit": "STORAGE_UNAVAILABLE",
+      "lsKeysIdentical": true,
+      "lsIntact": true
+    },
+    "openFail": {
+      "status": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "legacy": {
+        "detected": true,
+        "keys": [
+          "idle_fishing_lifecycle_persist_fs:save_slot_0.json"
+        ],
+        "policy": "DETECTED_IGNORED_NO_AUTO_MIGRATION",
+        "detail": "Detected 1 legacy experimental localStorage save slot(s) (idle_fishing_lifecycle_persist_fs:save_slot_0.json); preserved untouched without auto-migration or resurrection"
+      },
+      "hideCount": 0,
+      "lsKeysIdentical": true,
+      "lsIntact": true
+    },
+    "txFail": {
+      "status": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "detail": "IndexedDB probe failed: audit permission failure",
+      "legacy": {
+        "detected": true,
+        "keys": [
+          "idle_fishing_lifecycle_persist_fs:save_slot_0.json"
+        ],
+        "policy": "DETECTED_IGNORED_NO_AUTO_MIGRATION",
+        "detail": "Detected 1 legacy experimental localStorage save slot(s) (idle_fishing_lifecycle_persist_fs:save_slot_0.json); preserved untouched without auto-migration or resurrection"
+      },
+      "hideCount": 0,
+      "lsKeysIdentical": true,
+      "lsIntact": true
+    }
+  }
+}

@@ -1,0 +1,395 @@
+2026-11-25 12:55:50 - debug: =================================== build Task (web-mobile) Start ================================
+2026-11-25 12:55:50 - debug: Start build task, options:{"name":"idle-fishing-web","server":"","platform":"web-mobile","buildPath":"project://build","debug":false,"md5Cache":false,"skipCompressTexture":true,"sourceMaps":false,"polyfills":{"asyncFunctions":false},"experimentalEraseModules":false,"startSceneAssetBundle":false,"bundleConfigs":[],"useBuiltinServer":false,"mainBundleIsRemote":false,"mainBundleCompressionType":"merge_dep","useSplashScreen":false,"bundleCommonChunk":false,"packAutoAtlas":false,"startScene":"1f0e2d3c-4b5a-4678-9abc-def012345678","outputName":"web-mobile","taskName":"web-mobile","scenes":[{"url":"db://assets/scenes/Boot.scene","uuid":"1f0e2d3c-4b5a-4678-9abc-def012345678"}],"packages":{"web-mobile":{"orientation":"portrait","embedWebDebugger":false,"__version__":"1.0.1","useWebGPU":false},"cocos-service":{"configID":"default","services":[],"__version__":"3.0.9"},"adsense-h5g-plugin":{"enableAdsense":false,"enableTestAd":false}},"__version__":"1.3.9","buildMode":"normal","engineModulesConfigKey":"defaultConfig","mangleProperties":false,"overwriteProjectSettings":{"includeModules":{"gfx-webgl2":"on","physics":"inherit-project-setting","physics-2d":"inherit-project-setting"},"macroConfig":{"cleanupImageCache":"inherit-project-setting"}},"nativeCodeBundleMode":"both","inlineEnum":true,"md5CacheOptions":{"excludes":[],"includes":[],"replaceOnly":[],"handleTemplateMd5Link":true},"wasmCompressionMode":false,"binGroupConfig":{"threshold":16,"enable":false},"logDest":"project://temp/builder/log/web-mobile2026-11-25 12-53.log"}
+2026-11-25 12:55:50 - debug: Build with Cocos Creator 3.8.8
+2026-11-25 12:55:50 - debug: cocos-service:(onBeforeBuild) start..., progress: 0%
+2026-11-25 12:55:50 - debug: // ---- build task cocos-service：onBeforeBuild ----
+2026-11-25 12:55:50 - debug: // ---- build task cocos-service：onBeforeBuild ---- (4ms)
+2026-11-25 12:55:50 - debug: cocos-service:(onBeforeBuild) in 4 ms ✓, progress: 2%
+2026-11-25 12:55:50 - debug: scene:(onBeforeBuild) start..., progress: 2%
+2026-11-25 12:55:50 - debug: // ---- build task scene：onBeforeBuild ----
+2026-11-25 12:55:50 - debug: // ---- build task scene：onBeforeBuild ---- (3ms)
+2026-11-25 12:55:50 - debug: scene:(onBeforeBuild) in 3 ms ✓, progress: 4%
+2026-11-25 12:55:50 - debug: Start lock asset db..., progress: 4%
+2026-11-25 12:55:50 - log: Asset DB is paused with build!
+2026-11-25 12:55:50 - debug: Query all assets info in project
+2026-11-25 12:55:50 - debug: init custom config: keepNodeUuid: false, useCache: true
+2026-11-25 12:55:50 - debug: web-mobile:(onAfterInit) start..., progress: 4%
+2026-11-25 12:55:50 - debug: // ---- build task web-mobile：onAfterInit ----
+2026-11-25 12:55:50 - debug: // ---- build task web-mobile：onAfterInit ---- (4ms)
+2026-11-25 12:55:50 - debug: web-mobile:(onAfterInit) in 4 ms ✓, progress: 5%
+2026-11-25 12:55:50 - debug: cocos-service:(onAfterInit) start..., progress: 5%
+2026-11-25 12:55:50 - debug: // ---- build task cocos-service：onAfterInit ----
+2026-11-25 12:55:50 - debug: // ---- build task cocos-service：onAfterInit ---- (11ms)
+2026-11-25 12:55:50 - debug: cocos-service:(onAfterInit) in 11 ms ✓, progress: 7%
+2026-11-25 12:55:50 - debug: adsense-h5g-plugin:(onBeforeBundleInit) start..., progress: 7%
+2026-11-25 12:55:50 - debug: adsense-h5g-plugin:(onBeforeBundleInit) start..., progress: 0%
+2026-11-25 12:55:50 - debug: // ---- build task adsense-h5g-plugin：onBeforeBundleInit ----
+2026-11-25 12:55:50 - debug: [adsense-h5g-plugin] remove script success
+2026-11-25 12:55:50 - debug: // ---- build task adsense-h5g-plugin：onBeforeBundleInit ---- (13ms)
+2026-11-25 12:55:50 - debug(2): adsense-h5g-plugin:(onBeforeBundleInit) in 13 ms ✓, progress: 7%
+2026-11-25 12:55:51 - debug(2): Init all bundles start..., progress: 7%
+2026-11-25 12:55:51 - debug(2): Num of bundles: 3..., progress: 7%
+2026-11-25 12:55:51 - debug(2): web-mobile:(onAfterBundleInit) start..., progress: 7%
+2026-11-25 12:55:51 - debug: // ---- build task web-mobile：onAfterBundleInit ----
+2026-11-25 12:55:51 - debug: // ---- build task web-mobile：onAfterBundleInit ---- (6ms)
+2026-11-25 12:55:51 - debug: web-mobile:(onAfterBundleInit) in 6 ms ✓, progress: 7%
+2026-11-25 12:55:51 - debug: web-mobile:(onAfterBundleInit) in 6 ms ✓, progress: 13%
+2026-11-25 12:55:51 - debug: 查询 Asset Bundle start, progress: 7%
+2026-11-25 12:55:51 - debug: // ---- build task 查询 Asset Bundle ----
+2026-11-25 12:55:51 - debug: Init bundle root assets start..., progress: 7%
+2026-11-25 12:55:51 - debug: Init bundle root assets start..., progress: 13%
+2026-11-25 12:55:51 - debug: Query preload assets/scripts from cc.config.json: 60f7195c-ec2a-45eb-ba94-8955f60e81d0,1c02ae6f-4492-4915-b8f8-7492a3b1e4cd,810e96e4-e456-4468-9b59-f4e8f39732c0,efe8e2a3-eace-427b-b4f1-cb8a937ec77d,e9aa9a3e-5b2b-4ac7-a2c7-073de2b2b24f,8bbdbcdd-5cd4-4100-b6d5-b7c9625b6107,50f4348b-c883-4e2f-8f11-ce233b859fa1,fda095cb-831d-4601-ad94-846013963de8,f92806d7-1768-443f-afe8-12bcde84d0f0,dd3a144d-ab7f-41f0-82b8-2e43a090d496,f0416e68-0200-4b77-a926-4f9d16e494da,970b0598-bcb0-4714-91fb-2e81440dccd8,bcd64cc6-2dd9-43f6-abbe-66318d332032,d930590d-bb92-4cc8-8bd1-23cd027f9edf,a3cd009f-0ab0-420d-9278-b9fdab939bbc,6a2d0734-bd9e-4ddf-946e-caa52498cb75,871c3b6c-7379-419d-bda3-794b239ab90d,ff9b0199-ce04-4cfe-86cc-6c719f08d6e4,de1c2107-70c8-4021-8459-6399f24d01c6,cbf30902-517f-40dc-af90-a550bac27cf1,5c601d96-e4c7-4698-991b-7ee674b11079
+2026-11-25 12:55:51 - debug:   Number of all scenes: 1
+2026-11-25 12:55:51 - debug:   Number of all scripts: 21
+2026-11-25 12:55:51 - debug:   Number of other assets: 322
+2026-11-25 12:55:51 - debug: Init bundle root assets success..., progress: 7%
+2026-11-25 12:55:51 - debug: Init bundle root assets success..., progress: 13%
+2026-11-25 12:55:51 - debug: reload all scripts.
+2026-11-25 12:55:51 - log: creating executor ...
+2026-11-25 12:55:51 - debug: [[Executor]] reload before lock
+2026-11-25 12:55:51 - debug: Set detail map pack:///resolution-detail-map.json: {}
+2026-11-25 12:55:51 - groupCollapsed: Invalidate all modules
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\93\93ba276ea7b26ffcdc433fab14afc1ed6f05647b.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\93\93ba276ea7b26ffcdc433fab14afc1ed6f05647b.js is not in module cache!
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/base" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-webgl" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-webgl2" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-empty" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-webgpu" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/3d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/animation" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/skeletal-animation" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/sorting" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/rich-text" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/mask" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/graphics" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/ui-skew" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/ui" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/affine-transform" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/sorting-2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/particle" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/particle-2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-framework" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-cannon" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-physx" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-ammo" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-builtin" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-framework" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-box2d-jsb" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-box2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-builtin" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-box2d-wasm" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/intersection-2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/primitive" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/profiler" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/geometry-renderer" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/audio" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/video" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/xr" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/light-probe" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/terrain" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/webview" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/tween" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/tiled-map" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/vendor-google" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/spine" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/dragon-bones" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/custom-pipeline" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/custom-pipeline-post-process" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/legacy-pipeline" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/base" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-webgl" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-webgl2" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-empty" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/gfx-webgpu" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/3d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/animation" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/skeletal-animation" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/sorting" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/rich-text" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/mask" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/graphics" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/ui-skew" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/ui" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/affine-transform" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/sorting-2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/particle" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/particle-2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-framework" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-cannon" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-physx" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-ammo" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-builtin" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-framework" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-box2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-builtin" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-box2d-wasm" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/intersection-2d" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/primitive" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/profiler" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/geometry-renderer" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/audio" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/video" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/xr" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/light-probe" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/terrain" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/webview" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/tween" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/tiled-map" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/spine" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/dragon-bones" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/custom-pipeline" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/custom-pipeline-post-process" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/legacy-pipeline" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/vendor-google" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/cc-fu/physics-2d-box2d-jsb" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/93/93ba276ea7b26ffcdc433fab14afc1ed6f05647b.js" loaded.
+2026-11-25 12:55:51 - debug: Invalidating 'pack:///chunks/93/93ba276ea7b26ffcdc433fab14afc1ed6f05647b.js'
+2026-11-25 12:55:51 - groupEnd: Invalidate all modules
+2026-11-25 12:55:51 - groupCollapsed: Imports all modules
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/93/93ba276ea7b26ffcdc433fab14afc1ed6f05647b.js" loaded.
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\6d\6d8fd2b0177941b032ddc0733af48a561fb60657.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\6d\6d8fd2b0177941b032ddc0733af48a561fb60657.js is not in module cache!
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/6d/6d8fd2b0177941b032ddc0733af48a561fb60657.js" loaded.
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\50\50ec684ab28702df18cf262b25c26ec6d899c3a5.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\50\50ec684ab28702df18cf262b25c26ec6d899c3a5.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\6a\6a5019a719a9014c047e67aa1cf34453ab8392ce.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\6a\6a5019a719a9014c047e67aa1cf34453ab8392ce.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\e2\e2831fde95d58c09916d0f882742b7597544b8d1.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\e2\e2831fde95d58c09916d0f882742b7597544b8d1.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\b1\b18130d786bcadd1d0cb653401afdf2ede79b799.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\b1\b18130d786bcadd1d0cb653401afdf2ede79b799.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\fd\fd74c742a972dbbcd3691d204a338b19a4515b62.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\fd\fd74c742a972dbbcd3691d204a338b19a4515b62.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\7d\7dd5f1b51da4ae6cb44c6f9d41d8fc719b109223.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\7d\7dd5f1b51da4ae6cb44c6f9d41d8fc719b109223.js is not in module cache!
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/6a/6a5019a719a9014c047e67aa1cf34453ab8392ce.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/engine-export-to-editor/cc/editor/populate-internal-constants" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/7d/7dd5f1b51da4ae6cb44c6f9d41d8fc719b109223.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "cce:/internal/x/engine-export-to-editor/cc/editor/populate-internal-constants" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Register BuiltinPipelineSettings
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/e2/e2831fde95d58c09916d0f882742b7597544b8d1.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/fd/fd74c742a972dbbcd3691d204a338b19a4515b62.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Register BuiltinPipelinePassBuilder
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/b1/b18130d786bcadd1d0cb653401afdf2ede79b799.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Register BuiltinDepthOfFieldPass
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/50/50ec684ab28702df18cf262b25c26ec6d899c3a5.js" loaded.
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\62\621a159ce4a7bac550092546e00c97e12458f12b.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\62\621a159ce4a7bac550092546e00c97e12458f12b.js is not in module cache!
+2026-11-25 12:55:51 - debug: [[Executor]] Register DebugViewRuntimeControl
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/62/621a159ce4a7bac550092546e00c97e12458f12b.js" loaded.
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\ee\eeedf48b94e5bfd73504df09bbab45802cad0cca.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\ee\eeedf48b94e5bfd73504df09bbab45802cad0cca.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\3f\3f94065498d80a2e9afc4bcc8e6064da8a8f5c13.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\3f\3f94065498d80a2e9afc4bcc8e6064da8a8f5c13.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\82\82cc47b26e050d3cc5c07b10c78d3e44646ed8cd.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\82\82cc47b26e050d3cc5c07b10c78d3e44646ed8cd.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\91\9177b1b7764362508e71561be47f4635398d5b51.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\91\9177b1b7764362508e71561be47f4635398d5b51.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\50\50678fa1f5e99cb5782895e93372fbc77128a6e6.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\50\50678fa1f5e99cb5782895e93372fbc77128a6e6.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\91\91503722f7310155b58114ee7fba9199973f6b3e.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\91\91503722f7310155b58114ee7fba9199973f6b3e.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\1b\1b1f37db0a45b60f2ed71f69aca8cf646fab4820.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\1b\1b1f37db0a45b60f2ed71f69aca8cf646fab4820.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\c4\c429b2bc5113a39359145ed71e0739ceb6fbf432.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\c4\c429b2bc5113a39359145ed71e0739ceb6fbf432.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\6d\6de7010fc4d6869e3488b1b1e9517a39d9561341.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\6d\6de7010fc4d6869e3488b1b1e9517a39d9561341.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\4a\4ab480fb410e0d3c2d60527082db1e5bba6d3361.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\4a\4ab480fb410e0d3c2d60527082db1e5bba6d3361.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\1c\1ca2364685f0ed4e9c68b05166d961c33cc3a060.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\1c\1ca2364685f0ed4e9c68b05166d961c33cc3a060.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\4e\4ef3c23329273bb44e9fa7e1098790de374e6e27.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\4e\4ef3c23329273bb44e9fa7e1098790de374e6e27.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\df\dfb88aa32e0453fbeecf2a3ae500090786852d86.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\df\dfb88aa32e0453fbeecf2a3ae500090786852d86.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\a2\a222298218357f6b0eb6b8156fa19767f7195c6a.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\a2\a222298218357f6b0eb6b8156fa19767f7195c6a.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\a0\a0c91fa77fb48d32a45683eec14c39dddb6ff476.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\a0\a0c91fa77fb48d32a45683eec14c39dddb6ff476.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\f8\f8c67ed455ca5add9fa4185d8b874ecc7b34f040.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\f8\f8c67ed455ca5add9fa4185d8b874ecc7b34f040.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\9b\9bce45a0a3c5011b13d7c2837759a50a053ddd31.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\9b\9bce45a0a3c5011b13d7c2837759a50a053ddd31.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\4b\4b6ce354115c7892f097872b06d6912d7fc6b853.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\4b\4b6ce354115c7892f097872b06d6912d7fc6b853.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\54\548af1a00b6e3cb46d2779c6e6f0ac083368dc13.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\54\548af1a00b6e3cb46d2779c6e6f0ac083368dc13.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\33\334445b21edadd9867865655b915b6eaf9100834.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\33\334445b21edadd9867865655b915b6eaf9100834.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\aa\aa7a05da6fdc6221861110aaab6aa67fc3df60dd.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\aa\aa7a05da6fdc6221861110aaab6aa67fc3df60dd.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\3a\3aaa3f5606d9d7e313a5d3564f3f6c54ce6133a9.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\3a\3aaa3f5606d9d7e313a5d3564f3f6c54ce6133a9.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\87\875169bf919ef19b71237605a42b5ff738491031.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\87\875169bf919ef19b71237605a42b5ff738491031.js is not in module cache!
+2026-11-25 12:55:51 - debug: E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\90\903173ec703a8c3d0ee1e364d8aaa9270e9e02cc.js resolved to E:\idle-fishing\apps\game-client\temp\programming\packer-driver\targets\editor\chunks\90\903173ec703a8c3d0ee1e364d8aaa9270e9e02cc.js is not in module cache!
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/3f/3f94065498d80a2e9afc4bcc8e6064da8a8f5c13.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/82/82cc47b26e050d3cc5c07b10c78d3e44646ed8cd.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/9b/9bce45a0a3c5011b13d7c2837759a50a053ddd31.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/4b/4b6ce354115c7892f097872b06d6912d7fc6b853.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/54/548af1a00b6e3cb46d2779c6e6f0ac083368dc13.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/33/334445b21edadd9867865655b915b6eaf9100834.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/aa/aa7a05da6fdc6221861110aaab6aa67fc3df60dd.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/3a/3aaa3f5606d9d7e313a5d3564f3f6c54ce6133a9.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/87/875169bf919ef19b71237605a42b5ff738491031.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/90/903173ec703a8c3d0ee1e364d8aaa9270e9e02cc.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/4a/4ab480fb410e0d3c2d60527082db1e5bba6d3361.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/c4/c429b2bc5113a39359145ed71e0739ceb6fbf432.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/91/9177b1b7764362508e71561be47f4635398d5b51.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/50/50678fa1f5e99cb5782895e93372fbc77128a6e6.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/a2/a222298218357f6b0eb6b8156fa19767f7195c6a.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/1c/1ca2364685f0ed4e9c68b05166d961c33cc3a060.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/4e/4ef3c23329273bb44e9fa7e1098790de374e6e27.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/df/dfb88aa32e0453fbeecf2a3ae500090786852d86.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/a0/a0c91fa77fb48d32a45683eec14c39dddb6ff476.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/f8/f8c67ed455ca5add9fa4185d8b874ecc7b34f040.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/6d/6de7010fc4d6869e3488b1b1e9517a39d9561341.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/91/91503722f7310155b58114ee7fba9199973f6b3e.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/1b/1b1f37db0a45b60f2ed71f69aca8cf646fab4820.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Register BootEntry
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/ee/eeedf48b94e5bfd73504df09bbab45802cad0cca.js" loaded.
+2026-11-25 12:55:51 - debug: [[Executor]] Module "pack:///chunks/6d/6d8fd2b0177941b032ddc0733af48a561fb60657.js" loaded.
+2026-11-25 12:55:51 - groupEnd: Imports all modules
+2026-11-25 12:55:51 - debug: [[Executor]] after unlock
+2026-11-25 12:55:51 - debug: Incremental keys: regeneratorRuntime,b2jsb
+2026-11-25 12:55:51 - debug: Init bundle share assets start..., progress: 7%
+2026-11-25 12:55:51 - debug: Init bundle share assets start..., progress: 13%
+2026-11-25 12:55:52 - warn: Missing class: BootEntry
+2026-11-25 12:55:52 - error: Script "BootEntry" attached to "Canvas" in scene "Boot" is missing or invalid. Detailed information:Node path: "Canvas"Asset url: "db://assets/scenes/Boot"
+2026-11-25 12:55:52 - debug: Init bundle share assets success..., progress: 7%
+2026-11-25 12:55:52 - debug: Init bundle share assets success..., progress: 13%
+2026-11-25 12:55:52 - debug: handle json group in bundle internal
+2026-11-25 12:55:52 - debug: handle json group in bundle internal success
+2026-11-25 12:55:52 - debug: handle json group in bundle resources
+2026-11-25 12:55:52 - debug: handle json group in bundle main
+2026-11-25 12:55:52 - debug: handle json group in bundle main success
+2026-11-25 12:55:52 - debug: handle json group in bundle resources success
+2026-11-25 12:55:52 - debug: // ---- build task 查询 Asset Bundle ---- (1053ms)
+2026-11-25 12:55:52 - log: run build task 查询 Asset Bundle success in 1 s√, progress: 12%
+2026-11-25 12:55:52 - debug: [Build Memory track]: 查询 Asset Bundle start:243.76MB, end 275.84MB, increase: 32.09MB
+2026-11-25 12:55:52 - debug: 查询 Asset Bundle start, progress: 12%
+2026-11-25 12:55:52 - debug: // ---- build task 查询 Asset Bundle ----
+2026-11-25 12:55:52 - debug: // ---- build task 查询 Asset Bundle ---- (461ms)
+2026-11-25 12:55:52 - log: run build task 查询 Asset Bundle success in 461 ms√, progress: 17%
+2026-11-25 12:55:52 - debug: [Build Memory track]: 查询 Asset Bundle start:275.89MB, end 276.02MB, increase: 136.11KB
+2026-11-25 12:55:52 - debug: 打包脚本 start, progress: 17%
+2026-11-25 12:55:52 - debug: // ---- build task 打包脚本 ----
+2026-11-25 12:55:57 - log: [buildPolyfillsCommand]enter sub process 23436, 9229, see: chrome://inspect/#devices
+2026-11-25 12:56:16 - debug: execute-script-end with buildPolyfillsCommand 23362ms
+2026-11-25 12:56:16 - debug: Generate systemJs..., progress: 17%
+2026-11-25 12:56:34 - debug: execute-script-end with buildSystemJsCommand 18253ms
+2026-11-25 12:56:34 - debug: 构建项目脚本 start..., progress: 17%
+2026-11-25 12:56:34 - debug: 构建项目脚本 start..., progress: 13%
+2026-11-25 12:57:02 - log: [buildScriptCommand]Number of non-entry chunks: 3
+2026-11-25 12:57:02 - debug: execute-script-end with buildScriptCommand 27669ms
+2026-11-25 12:57:02 - debug: Copy externalScripts success!
+2026-11-25 12:57:02 - debug: 构建项目脚本 in (27725 ms) √, progress: 17%
+2026-11-25 12:57:02 - debug: 构建项目脚本 in (27725 ms) √, progress: 13%
+2026-11-25 12:57:02 - debug: 构建引擎脚本 start..., progress: 17%
+2026-11-25 12:57:02 - debug: mangleProperties is enabled, found engine-mangle-config.json, use it
+2026-11-25 12:57:02 - debug: Engine cache (C:\Users\WANGWE~1\AppData\Local\Temp\CocosCreator\3.8.8\builder\engine\54626a85e59c41d0d820e06f9a39c1d3) does not exist.
+2026-11-25 12:57:02 - debug: mangleProperties is disabled, platform: HTML5
+2026-11-25 12:57:02 - debug: Cache is invalid, start build engine with options: {  "incremental": "C:\\Users\\WANGWE~1\\AppData\\Local\\Temp\\CocosCreator\\3.8.8\\builder\\engine\\54626a85e59c41d0d820e06f9a39c1d3.watch-files.json",  "engine": "C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine",  "out": "C:\\Users\\WANGWE~1\\AppData\\Local\\Temp\\CocosCreator\\3.8.8\\builder\\engine\\54626a85e59c41d0d820e06f9a39c1d3",  "moduleFormat": "system",  "compress": true,  "nativeCodeBundleMode": "both",  "assetURLFormat": "runtime-resolved",  "sourceMap": false,  "loose": true,  "features": [    "2d",    "affine-transform",    "animation",    "audio",    "base",    "custom-pipeline",    "gfx-webgl",    "gfx-webgl2",    "graphics",    "intersection-2d",    "mask",    "profiler",    "rich-text",    "tween",    "ui",    "custom-pipeline-builtin-scripts"  ],  "platform": "HTML5",  "flags": {    "DEBUG": false,    "LOAD_BULLET_MANUALLY": false,    "LOAD_SPINE_MANUALLY": false,    "WEBGPU": false  },  "mode": "BUILD",  "metaFile": "C:\\Users\\WANGWE~1\\AppData\\Local\\Temp\\CocosCreator\\3.8.8\\builder\\engine\\54626a85e59c41d0d820e06f9a39c1d3.meta\\meta.json",  "wasmCompressionMode": false,  "inlineEnum": true,  "mangleProperties": false,  "mangleConfigJsonMtime": 0}
+2026-11-25 12:57:02 - debug: md5String: debug=false,sourceMaps=false,includeModules=["2d","affine-transform","animation","audio","base","custom-pipeline","gfx-webgl","gfx-webgl2","graphics","intersection-2d","mask","profiler","rich-text","tween","ui","custom-pipeline-builtin-scripts"],engineVersion="3.8.8",platformType="HTML5",split=false,nativeCodeBundleMode="both",targets=undefined,entry="C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine",noDeprecatedFeatures=undefined,loose=true,assetURLFormat="runtime-resolved",flags={"DEBUG":false,"LOAD_BULLET_MANUALLY":false,"LOAD_SPINE_MANUALLY":false,"WEBGPU":false},preserveType=undefined,wasmCompressionMode=false,enableNamedRegisterForSystemJSModuleFormat=undefined,mangleProperties=false,inlineEnum=true,
+2026-11-25 12:57:03 - debug: Error: Exit process with code:null, signal:SIGTERM in task build-script    at ChildProcess.<anonymous> (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\worker-pools\sub-process-manager.ccc:1:2409)    at ChildProcess.emit (node:events:519:28)    at Process.ChildProcess._handle.onexit (node:internal/child_process:294:12)
+2026-11-25 12:57:07 - log: [buildEngineCommand]enter sub process 22900, 9229, see: chrome://inspect/#devices
+2026-11-25 12:57:15 - log: [buildEngineCommand]start build engine with options: {"engine":"C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine","out":"C:\\Users\\WANGWE~1\\AppData\\Local\\Temp\\CocosCreator\\3.8.8\\builder\\engine\\54626a85e59c41d0d820e06f9a39c1d3","platform":"HTML5","moduleFormat":"system","compress":true,"split":false,"nativeCodeBundleMode":"both","assetURLFormat":"runtime-resolved","noDeprecatedFeatures":false,"sourceMap":false,"features":["2d","affine-transform","animation","audio","base","custom-pipeline","gfx-webgl","gfx-webgl2","graphics","intersection-2d","mask","profiler","rich-text","tween","ui","custom-pipeline-builtin-scripts"],"loose":true,"mode":"BUILD","flags":{"DEBUG":false,"LOAD_BULLET_MANUALLY":false,"LOAD_SPINE_MANUALLY":false,"WEBGPU":false},"metaFile":"C:\\Users\\WANGWE~1\\AppData\\Local\\Temp\\CocosCreator\\3.8.8\\builder\\engine\\54626a85e59c41d0d820e06f9a39c1d3.meta\\meta.json","mangleProperties":false,"inlineEnum":true,"incremental":"C:\\Users\\WANGWE~1\\AppData\\Local\\Temp\\CocosCreator\\3.8.8\\builder\\engine\\54626a85e59c41d0d820e06f9a39c1d3.watch-files.json","wasmCompressionMode":false,"mangleConfigJsonMtime":0}
+2026-11-25 12:57:15 - log: [buildEngineCommand]Module source "internal-constants":function tryDefineGlobal (name, value) {    const _global = typeof window === 'undefined' ? global : window;    if (typeof _global[name] === 'undefined') {        return (_global[name] = value);    } else {        // eslint-disable-next-line @typescript-eslint/no-unsafe-return        return _global[name];    }}export const HTML5 = true;export const NATIVE = false;export const ANDROID = false;export const IOS = false;export const MAC = false;export const WINDOWS = false;export const LINUX = false;export const OHOS = false;export const OPEN_HARMONY = false;export const WECHAT = false;tryDefineGlobal('CC_WECHAT', false);export const WECHAT_MINI_PROGRAM = false;export const XIAOMI = false;tryDefineGlobal('CC_XIAOMI', false);export const ALIPAY = false;tryDefineGlobal('CC_ALIPAY', false);export const TAOBAO = false;export const TAOBAO_MINIGAME = false;export const BYTEDANCE = false;tryDefineGlobal('CC_BYTEDANCE', false);export const OPPO = false;tryDefineGlobal('CC_OPPO', false);export const VIVO = false;tryDefineGlobal('CC_VIVO', false);export const HUAWEI = false;tryDefineGlobal('CC_HUAWEI', false);export const MIGU = false;tryDefineGlobal('CC_MIGU', false);export const HONOR = false;tryDefineGlobal('CC_HONOR', false);export const COCOS_RUNTIME = false;tryDefineGlobal('CC_COCOS_RUNTIME', false);export const EDITOR = false;tryDefineGlobal('CC_EDITOR', false);export const EDITOR_NOT_IN_PREVIEW = false;export const PREVIEW = false;tryDefineGlobal('CC_PREVIEW', false);export const BUILD = true;tryDefineGlobal('CC_BUILD', true);export const TEST = false;tryDefineGlobal('CC_TEST', false);export const DEBUG = false;tryDefineGlobal('CC_DEBUG', false);export const SERVER_MODE = false;export const DEV = false;tryDefineGlobal('CC_DEV', false);export const MINIGAME = false;tryDefineGlobal('CC_MINIGAME', false);export const RUNTIME_BASED = false;tryDefineGlobal('CC_RUNTIME_BASED', false);export const SUPPORT_JIT = true;tryDefineGlobal('CC_SUPPORT_JIT', true);export const JSB = false;tryDefineGlobal('CC_JSB', false);export const NOT_PACK_PHYSX_LIBS = false;export const NET_MODE = 0;export const WEBGPU = false;export const NATIVE_CODE_BUNDLE_MODE = 2;export const WASM_SUBPACKAGE = false;export const CULL_MESHOPT = true;export const LOAD_SPINE_MANUALLY = false;export const LOAD_BOX2D_MANUALLY = false;export const LOAD_BULLET_MANUALLY = false;export const LOAD_PHYSX_MANUALLY = false;export const USE_3D = false;export const USE_UI_SKEW = false;export const USE_XR = false;export const USE_SORTING_2D = false;
+2026-11-25 12:57:15 - log: [buildEngineCommand]Module source "cc":export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\2d.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\sorting.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\affine-transform.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\animation.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\audio.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\base.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\custom-pipeline.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\gfx-webgl.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\gfx-webgl2.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\graphics.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\intersection-2d.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\mask.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\profiler.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\rich-text.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\tween.ts';export * from 'C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\resources\\resources\\3d\\engine\\exports\\ui.ts';
+2026-11-25 12:59:12 - log: [buildEngineCommand]Redirect module C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\cocos\2d\renderer\native-2d.ts to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\cocos\2d\renderer\native-2d-empty.ts
+2026-11-25 12:59:15 - log: [buildEngineCommand]Redirect module pal/system-info to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\system-info\web\system-info.ts
+2026-11-25 12:59:19 - log: [buildEngineCommand]Redirect module pal/audio to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\audio\web\player.ts
+2026-11-25 12:59:23 - log: [buildEngineCommand]Redirect module pal/minigame to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\minigame\non-minigame.ts
+2026-11-25 12:59:24 - log: [buildEngineCommand]Redirect module pal/screen-adapter to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\screen-adapter\web\screen-adapter.ts
+2026-11-25 12:59:27 - log: [buildEngineCommand]Redirect module internal:native to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\cocos\native-binding\impl.ts
+2026-11-25 12:59:41 - log: [buildEngineCommand]Redirect module pal/env to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\env\web\env.ts
+2026-11-25 12:59:41 - log: [buildEngineCommand]Redirect module pal/pacer to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\pacer\pacer-web.ts
+2026-11-25 12:59:45 - log: [buildEngineCommand]Redirect module pal/input to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\input\web\index.ts
+2026-11-25 12:59:52 - log: [buildEngineCommand]Redirect module pal/wasm to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\pal\wasm\wasm-web.ts
+2026-11-25 12:59:52 - log: [buildEngineCommand]Redirect module C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\cocos\animation\marionette\runtime-exports.ts to C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\cocos\animation\marionette\index-empty.ts
+2026-11-25 13:00:02 - log: [buildEngineCommand]==== Performance ====
+2026-11-25 13:00:02 - log: [buildEngineCommand]{"# BUILD":[157162.924,1173956988,1345728040],"## initialize":[93502.4697,451448716,623225280],"- plugin 6 (node-resolve) - buildStart":[0.2760000000016589,-6428,171795764],"- plugin 8 (commonjs) - buildStart":[0.10510000000067521,3312,171799920],"- plugin 9 (@cocos/typescript) - buildStart":[93501.8498,451424544,623224868],"## generate module graph":[58113.757,671483800,1294709668],"- plugin 0 (commonjs--resolver) - resolveId":[90.10430000115593,-2907884,1292935828],"- plugin 1 (@cocos/ccbuild|external-loader) - resolveId":[36.066399999544956,1155632,1292942328],"- plugin 2 (@cocos/ccbuild|module-overrides) - resolveId":[44.951300000742776,819908,1292953732],"- plugin 3 (virtual) - resolveId":[76.14549999972223,-252764,1292960500],"- plugin 1 (@cocos/ccbuild|external-loader) - load":[13.046200000011595,273848,1293199468],"- plugin 2 (@cocos/ccbuild|module-overrides) - load":[20.260700000057113,350384,1293202536],"- plugin 3 (virtual) - load":[6.074599999759812,180616,1293203528],"- plugin 7 (json) - transform":[14.866899999731686,861004,1293256208],"- plugin 8 (commonjs) - transform":[12.439600000012433,-179932,1293258800],"- plugin 10 (babel) - transform":[752.4403999998467,11016572,1293310108],"generate ast":[2808.723900000099,142707324,1293452368],"- plugin 4 (@cocos/ccbuild|module-query-plugin) - resolveId":[54.31789999983448,2566272,1292962332],"- plugin 5 (ts-paths) - resolveId":[33.715699999491335,554332,1293263168],"- plugin 9 (@cocos/typescript) - resolveId":[6302.498299999643,64614896,1293262656],"- plugin 10 (babel) - resolveId":[5.789500000188127,80216,1293176784],"- plugin 6 (node-resolve) - resolveId":[11.319200000085402,364336,1292315848],"- plugin 6 (node-resolve) - load":[7.045000000231084,117916,1293204536],"- plugin 8 (commonjs) - load":[6.797699999806355,330248,1293205528],"- plugin 9 (@cocos/typescript) - load":[103.02050000037707,1344256,1293229588],"- plugin 10 (babel) - load":[831.3787000000011,9452764,1292353252],"## sort and bind modules":[403.75660000002244,4747408,1299457148],"## mark included statements":[5109.954400000017,45626024,1345083204],"treeshaking pass 1":[2330.0927000000083,37806744,1337451888],"treeshaking pass 2":[798.1270000000077,7559572,1345011492],"treeshaking pass 3":[323.4734999999928,-591108,1344420416],"treeshaking pass 4":[336.7676999999967,2086788,1346507236],"treeshaking pass 5":[195.85250000000815,-1683200,1344824068],"treeshaking pass 6":[175.7780999999959,-2751584,1342072516],"treeshaking pass 7":[133.54039999999804,-492748,1341579800],"treeshaking pass 8":[144.83300000001327,6465212,1348045044],"treeshaking pass 9":[212.87739999999758,-2787000,1345258076],"treeshaking pass 10":[288.1180999999924,-4145868,1341112240],"treeshaking pass 11":[167.23099999999977,3970668,1345082940],"- plugin 8 (commonjs) - buildEnd":[0.020600000018021092,244,1345085888],"- plugin 9 (@cocos/typescript) - buildEnd":[32.3631999999925,641076,1345726996]}====             ====
+2026-11-25 13:00:49 - error: [buildEngineCommand]Workers failed to exit gracefully
+2026-11-25 13:00:49 - debug: execute-script-end with buildEngineCommand 226081ms
+2026-11-25 13:00:49 - debug: build engine done: output: C:\Users\WANGWE~1\AppData\Local\Temp\CocosCreator\3.8.8\builder\engine\54626a85e59c41d0d820e06f9a39c1d3
+2026-11-25 13:00:49 - debug: 构建引擎脚本 in (226683 ms) √, progress: 17%
+2026-11-25 13:00:49 - debug: Copy plugin script ..., progress: 17%
+2026-11-25 13:00:49 - debug: Generate import-map..., progress: 17%
+2026-11-25 13:00:49 - debug: // ---- build task 打包脚本 ---- (296737ms)
+2026-11-25 13:00:49 - log: run build task 打包脚本 success in 4 min 56 s√, progress: 22%
+2026-11-25 13:00:49 - debug: [Build Memory track]: 打包脚本 start:276.14MB, end 278.70MB, increase: 2.56MB
+2026-11-25 13:00:49 - debug: Build Assets start, progress: 22%
+2026-11-25 13:00:49 - debug: // ---- build task Build Assets ----
+2026-11-25 13:00:49 - debug: Build bundles..., progress: 22%
+2026-11-25 13:00:49 - debug: Pack Images start, progress: 22%
+2026-11-25 13:00:49 - debug: Pack Images start, progress: 13%
+2026-11-25 13:00:49 - debug: Number of pac assets: 1
+2026-11-25 13:00:49 - debug: No pack results
+2026-11-25 13:00:49 - debug: Output asset in bundles start, progress: 22%
+2026-11-25 13:00:49 - debug: Output asset in bundles start, progress: 13%
+2026-11-25 13:00:49 - debug: Handle all json groups in bundle internal
+2026-11-25 13:00:49 - debug: handle json group
+2026-11-25 13:00:49 - debug: Handle all json groups in bundle resources
+2026-11-25 13:00:49 - debug: handle json group
+2026-11-25 13:00:49 - debug: Handle all json groups in bundle main
+2026-11-25 13:00:49 - debug: handle json group
+2026-11-25 13:00:49 - debug: handle single json
+2026-11-25 13:00:49 - warn: Missing class: BootEntry
+2026-11-25 13:00:49 - debug: handle single json
+2026-11-25 13:00:49 - debug: Json group(0b0f7a282) compile success，json number: 6
+2026-11-25 13:00:49 - debug: handle single json
+2026-11-25 13:00:49 - debug: Output asset in bundles success, progress: 22%
+2026-11-25 13:00:49 - debug: Output asset in bundles success, progress: 13%
+2026-11-25 13:00:49 - debug: Output asset in bundles start, progress: 22%
+2026-11-25 13:00:49 - debug: Output asset in bundles start, progress: 13%
+2026-11-25 13:00:49 - debug: compress config of bundle internal...
+2026-11-25 13:00:49 - debug: compress config of bundle internal success
+2026-11-25 13:00:49 - debug: compress config of bundle resources...
+2026-11-25 13:00:49 - debug: compress config of bundle resources success
+2026-11-25 13:00:49 - debug: compress config of bundle main...
+2026-11-25 13:00:49 - debug: compress config of bundle main success
+2026-11-25 13:00:49 - debug: output config of bundle internal
+2026-11-25 13:00:49 - debug: output config of bundle internal success
+2026-11-25 13:00:49 - debug: output config of bundle resources
+2026-11-25 13:00:49 - debug: output config of bundle resources success
+2026-11-25 13:00:49 - debug: output config of bundle main
+2026-11-25 13:00:49 - debug: output config of bundle main success
+2026-11-25 13:00:49 - debug: Output asset in bundles success, progress: 22%
+2026-11-25 13:00:49 - debug: Output asset in bundles success, progress: 13%
+2026-11-25 13:00:49 - debug: // ---- build task Build Assets ---- (493ms)
+2026-11-25 13:00:49 - log: run build task Build Assets success in 493 ms√, progress: 27%
+2026-11-25 13:00:49 - debug: [Build Memory track]: Build Assets start:278.75MB, end 260.96MB, increase: -18209.27KB
+2026-11-25 13:00:49 - debug: 整理部分构建选项内数据到 settings.json start, progress: 27%
+2026-11-25 13:00:49 - debug: // ---- build task 整理部分构建选项内数据到 settings.json ----
+2026-11-25 13:00:49 - debug: Error: Exit process with code:null, signal:SIGTERM in task build-engine    at ChildProcess.<anonymous> (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\worker-pools\sub-process-manager.ccc:1:2409)    at ChildProcess.emit (node:events:519:28)    at Process.ChildProcess._handle.onexit (node:internal/child_process:294:12)
+2026-11-25 13:00:49 - debug: // ---- build task 整理部分构建选项内数据到 settings.json ---- (37ms)
+2026-11-25 13:00:49 - log: run build task 整理部分构建选项内数据到 settings.json success in 37 ms√, progress: 29%
+2026-11-25 13:00:49 - debug: [Build Memory track]: 整理部分构建选项内数据到 settings.json start:261.06MB, end 261.14MB, increase: 79.45KB
+2026-11-25 13:00:49 - debug: 填充脚本数据到 settings.json start, progress: 29%
+2026-11-25 13:00:49 - debug: // ---- build task 填充脚本数据到 settings.json ----
+2026-11-25 13:00:49 - debug: // ---- build task 填充脚本数据到 settings.json ---- (15ms)
+2026-11-25 13:00:49 - log: run build task 填充脚本数据到 settings.json success in 15 ms√, progress: 31%
+2026-11-25 13:00:49 - debug: [Build Memory track]: 填充脚本数据到 settings.json start:261.18MB, end 260.41MB, increase: -794.98KB
+2026-11-25 13:00:49 - debug: 整理部分构建选项内数据到 settings.json start, progress: 31%
+2026-11-25 13:00:49 - debug: // ---- build task 整理部分构建选项内数据到 settings.json ----
+2026-11-25 13:00:50 - warn: 移除插屏配置失败，将使用默认插屏进行构建。激活移除插屏功能请前往 项目 -> 构建发布 -> 编辑构建项目配置 完善相关信息。
+2026-11-25 13:00:50 - debug: // ---- build task 整理部分构建选项内数据到 settings.json ---- (707ms)
+2026-11-25 13:00:50 - log: run build task 整理部分构建选项内数据到 settings.json success in 707 ms√, progress: 32%
+2026-11-25 13:00:50 - debug: [Build Memory track]: 整理部分构建选项内数据到 settings.json start:260.45MB, end 260.76MB, increase: 311.75KB
+2026-11-25 13:00:50 - debug: web-mobile:(onBeforeCompressSettings) start..., progress: 32%
+2026-11-25 13:00:50 - debug: // ---- build task web-mobile：onBeforeCompressSettings ----
+2026-11-25 13:00:50 - debug: // ---- build task web-mobile：onBeforeCompressSettings ---- (7ms)
+2026-11-25 13:00:50 - debug: web-mobile:(onBeforeCompressSettings) in 7 ms ✓, progress: 34%
+2026-11-25 13:00:50 - debug: cocos-service:(onBeforeCompressSettings) start..., progress: 34%
+2026-11-25 13:00:50 - debug: // ---- build task cocos-service：onBeforeCompressSettings ----
+2026-11-25 13:00:50 - debug: // ---- build task cocos-service：onBeforeCompressSettings ---- (10ms)
+2026-11-25 13:00:50 - debug: cocos-service:(onBeforeCompressSettings) in 10 ms ✓, progress: 36%
+2026-11-25 13:00:50 - debug: 整理静态模板文件 start, progress: 36%
+2026-11-25 13:00:50 - debug: // ---- build task 整理静态模板文件 ----
+2026-11-25 13:00:50 - debug: // ---- build task 整理静态模板文件 ---- (264ms)
+2026-11-25 13:00:50 - log: run build task 整理静态模板文件 success in 264 ms√, progress: 41%
+2026-11-25 13:00:50 - debug: [Build Memory track]: 整理静态模板文件 start:260.97MB, end 263.88MB, increase: 2.91MB
+2026-11-25 13:00:50 - debug: cocos-service:(onAfterCompressSettings) start..., progress: 41%
+2026-11-25 13:00:50 - debug: // ---- build task cocos-service：onAfterCompressSettings ----
+2026-11-25 13:00:50 - debug: // ---- build task cocos-service：onAfterCompressSettings ---- (10ms)
+2026-11-25 13:00:50 - debug: cocos-service:(onAfterCompressSettings) in 10 ms ✓, progress: 43%
+2026-11-25 13:00:50 - debug: web-mobile:(onBeforeCopyBuildTemplate) start..., progress: 43%
+2026-11-25 13:00:50 - debug: // ---- build task web-mobile：onBeforeCopyBuildTemplate ----
+2026-11-25 13:00:50 - debug: // ---- build task web-mobile：onBeforeCopyBuildTemplate ---- (72ms)
+2026-11-25 13:00:50 - debug: web-mobile:(onBeforeCopyBuildTemplate) in 72 ms ✓, progress: 45%
+2026-11-25 13:00:50 - debug: 给所有的资源加上 MD5 后缀 start, progress: 45%
+2026-11-25 13:00:50 - debug: // ---- build task 给所有的资源加上 MD5 后缀 ----
+2026-11-25 13:00:50 - debug: // ---- build task 给所有的资源加上 MD5 后缀 ---- (45ms)
+2026-11-25 13:00:50 - log: run build task 给所有的资源加上 MD5 后缀 success in 45 ms√, progress: 55%
+2026-11-25 13:00:50 - debug: [Build Memory track]: 给所有的资源加上 MD5 后缀 start:264.00MB, end 264.03MB, increase: 32.25KB
+2026-11-25 13:00:50 - debug: web-mobile:(onAfterBuild) start..., progress: 55%
+2026-11-25 13:00:50 - debug: // ---- build task web-mobile：onAfterBuild ----
+2026-11-25 13:00:50 - debug: // ---- build task web-mobile：onAfterBuild ---- (13ms)
+2026-11-25 13:00:50 - debug: web-mobile:(onAfterBuild) in 13 ms ✓, progress: 56%
+2026-11-25 13:00:50 - debug: cocos-service:(onAfterBuild) start..., progress: 56%
+2026-11-25 13:00:50 - debug: // ---- build task cocos-service：onAfterBuild ----
+2026-11-25 13:00:50 - debug: // ---- build task cocos-service：onAfterBuild ---- (8ms)
+2026-11-25 13:00:50 - debug: cocos-service:(onAfterBuild) in 8 ms ✓, progress: 58%
+2026-11-25 13:00:50 - debug: adsense-h5g-plugin:(onAfterBuild) start..., progress: 58%
+2026-11-25 13:00:50 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ----
+2026-11-25 13:00:50 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ---- (7ms)
+2026-11-25 13:00:50 - debug: adsense-h5g-plugin:(onAfterBuild) in 7 ms ✓, progress: 60%
+2026-11-25 13:00:50 - log: Asset DB is resume!
+2026-11-25 13:00:50 - debug: builder:build-project-total (300177ms)
+2026-11-25 13:00:50 - debug: build task(web-mobile) in 300177!
+2026-11-25 13:00:51 - warn: Missing class: BootEntry
+2026-11-25 13:00:51 - debug: TypeError: Cannot read properties of null (reading 'constructor')    at Function._findComponents (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\bin\.cache\dev\editor\bundled\index.js:57039:24)    at Function._findChildComponents (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\bin\.cache\dev\editor\bundled\index.js:57071:18)    at Scene.getComponentsInChildren (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\resources\3d\engine\bin\.cache\dev\editor\bundled\index.js:57678:18)    at C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:5064    at Array.forEach (<anonymous>)    at collectCompsFromScene (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:5044)    at C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:4318    at Array.forEach (<anonymous>)    at collectMetricFromScene (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:4306)    at collectMetricFromAsset (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:3672)    at C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:3373    at async Promise.all (index 0)    at collectMetricFromBundle (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:3259)    at collectMetricFromResult (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\metric.ccc:1:3053)    at BuildTask.addStatistics (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\index.ccc:1:2869)    at BuildTask.postBuild (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\index.ccc:1:7104)    at BuildTask.run (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\builder\index.ccc:1:5537)    at build (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\index.ccc:1:4763)    at Ipc.<anonymous> (C:\ProgramData\cocos\editors\Creator\3.8.8\resources\app.asar\builtin\builder\dist\worker\msg-util.ccc:1:210)
+2026-11-25 13:00:51 - debug: [Build Memory track]: builder:build-project-total start:240.89MB, end 264.91MB, increase: 24.02MB
+2026-11-25 13:00:51 - debug: ================================ build Task (web-mobile) Finished in (5 min)ms ================================

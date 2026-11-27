@@ -1,0 +1,16 @@
+CMD: node independent-guard.mjs
+[PASS] P2-05/T1 authorized allowlist entries accepted
+[PASS] P2-05/T2 rejects roots, UNC, repo, parent, protected dirs, traversal
+[PASS] P2-05/T3 build-evil sibling prefix is NOT accepted (string-prefix hole)
+[PASS] P2-05/T4 compiled sibling prefix / wrong basenames rejected
+[PASS] P2-05/T5 Windows junction escape rejected and target never deleted
+   [evidence] rm of dir containing nested junction error=none canaryExists=true
+[PASS] P2-05/T6 nested junction inside an allowed dir is not traversed by rm
+   [skip-link] cannot create file symlink: EPERM: operation not permitted, symlink 'C:\Users\WANGWENJIE10\AppData\Local\Temp\fe000-r2-snap\tests\frontend\fe-000\.compiled-r2-file-target' -> 'C:\Users\WANGWENJIE10\AppData\Local\Temp\fe000-r2-snap\tests\frontend\fe-000\.compiled-r2-file-link'
+[PASS] P2-05/T7 symlinked file candidate rejected / dangling junction behaviour
+   [evidence] case-variant build path accepted=true code=
+[PASS] P2-05/T8 relative path resolution & case-insensitivity
+[PASS] P2-05/T9 runner --out-dir traversal rejects with zero deletion
+
+===== P2-05 SUMMARY: 9/9 PASS =====
+EXIT=0

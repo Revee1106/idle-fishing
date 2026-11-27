@@ -1,0 +1,52 @@
+{
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION\\FILES.sha256": {
+    "matched": 49,
+    "total": 54,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-01\\FILES-REWORK.sha256": {
+    "matched": 37,
+    "total": 48,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-02\\FILES-REWORK.sha256": {
+    "matched": 61,
+    "total": 74,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-03\\FILES-REWORK.sha256": {
+    "matched": 60,
+    "total": 68,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-04\\FILES-REWORK.sha256": {
+    "matched": 58,
+    "total": 64,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-05\\FILES-REWORK.sha256": {
+    "matched": 67,
+    "total": 67,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-01\\EVIDENCE_MANIFEST.sha256": {
+    "matched": 37,
+    "total": 37,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-02-ASTRA\\EVIDENCE_MANIFEST.sha256": {
+    "matched": 137,
+    "total": 137,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-03-DEEPSEEK\\EVIDENCE_MANIFEST.sha256": {
+    "matched": 60,
+    "total": 60,
+    "reportsDrift": []
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-04-DEEPSEEK\\EVIDENCE_MANIFEST.sha256": {
+    "matched": 54,
+    "total": 54,
+    "reportsDrift": []
+  }
+}

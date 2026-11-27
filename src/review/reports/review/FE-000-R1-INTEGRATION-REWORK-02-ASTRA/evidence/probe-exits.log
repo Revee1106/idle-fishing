@@ -1,0 +1,5 @@
+['node', 'guard.mjs'] 0
+['node', 'wx-methods.mjs'] 0
+['node', '--test', 'runner-audit/todo-throws.mjs'] 0
+['node', '--version'] 0
+['npm.cmd', '--version'] 0

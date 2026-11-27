@@ -1,0 +1,3 @@
+CMD: node chrome-destroy-bypass.mjs
+{"seedKind":"COMMITTED","seedRev":"1","destroyed":true,"rejectedHide":false,"postKind":"COMMITTED","postRev":"2"}
+EXIT=0

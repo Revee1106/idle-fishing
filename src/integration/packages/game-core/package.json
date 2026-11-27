@@ -1,0 +1,26 @@
+{
+  "name": "@idle-fishing/game-core",
+  "version": "0.0.0-spike",
+  "private": true,
+  "type": "module",
+  "description": "SPIKE-001 experimental shared TypeScript module. Not a production game implementation.",
+  "main": "./dist/spike/index.js",
+  "types": "./dist/spike/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/spike/index.d.ts",
+      "import": "./dist/spike/index.js"
+    },
+    "./spike": {
+      "types": "./dist/spike/index.d.ts",
+      "import": "./dist/spike/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:cocos": "node scripts/emit-cocos-mjs.mjs"
+  }
+}

@@ -1,0 +1,10 @@
+COMMAND: npm --prefix apps/game-client run typecheck
+EXIT_CODE: 0
+DURATION_MS: 4362
+--- STDOUT ---
+
+> idle-fishing-client@0.0.0-spike typecheck
+> node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.typecheck.json
+
+
+--- STDERR ---

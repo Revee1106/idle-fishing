@@ -1,0 +1,1110 @@
+--- apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts
+
++++ apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts
+
+@@ -1,48 +1,50 @@
+
+ /**
+- * Application-layer Single-Writer Save Coordinator (Design Doc 11 / Interface 19 / REWORK-04).
++ * Application-layer Single-Writer Save Coordinator (Design Doc 11 / Interface 19 / REWORK-05).
+  *
+  * Distinct responsibilities (NEVER conflated):
+- * 1. Cross-Tab Shared Persistent Transaction & Recovery Barrier (REWORK-04 A02):
++ * 1. Cross-Tab Shared Persistent Transaction & Recovery Barrier (A02 / REWORK-04):
+  *    - Before ANY save slot write can mutate persistent storage, writes a durable write-ahead
+  *      `SharedTxMarker` (`state='PENDING'`) into the SAME shared persistent storage domain
+  *      (IndexedDB `${namespace}:__tx_state__` in browsers, `${rootDir}/__tx_state__.json` on WeChat,
+  *      or MemoryFilePort tx slot in tests) INSIDE the exclusive lock.
+- *    - If writing the pending marker fails, ZERO save slot writes are attempted and commit returns
+- *      `STORAGE_UNAVAILABLE`.
+- *    - Every commit entry reads the REAL persisted `SharedTxMarker` inside the exclusive lock
+- *      (never relying solely on per-realm in-memory Maps, BroadcastChannel, or storage events).
+- *      If any `PENDING` / `UNCERTAIN` / `FROZEN` marker exists — or if the marker is unreadable or
+- *      corrupt — commit fails closed with `STORAGE_UNAVAILABLE` and ZERO slot writes.
+- *    - On `COMMITTED`, the marker is cleared ONLY AFTER write + readback verification succeeds.
+- *      If clearing the marker fails, the marker remains on disk, the domain stays frozen, and
+- *      commit returns `UNCERTAIN` so explicit recovery must confirm the committed revision.
+- *    - On `UNCERTAIN`, fatal storage error, unexpected exception after marker write, or mid-write
+- *      tab crash, the durable marker remains in shared storage so ALL tabs (even after Tab A
+- *      closes, reloads, or destroys) are blocked until explicit verified recovery (`loadSafe()`).
+- * 2. Complete Verified Recovery Gate (A02 + A03):
+- *    - `loadSafe(options)` executes inside the SAME exclusive lock: re-probes storage, reads and
+- *      validates the shared tx marker, scans ALL 3 save slots individually, and verifies Envelopes
+- *      via backend `SpikeFileSaveRepository.load()`.
+- *    - Any slot IO error (`PARTIAL_IO_UNAVAILABLE` / `IO_UNAVAILABLE`), unreadable/corrupt tx
+- *      marker (`TX_STATE_UNREADABLE`), failed marker clear (`TX_STATE_CLEAR_FAILED`), probe failure,
+- *      or `CORRUPT`/`UNSUPPORTED` keeps the domain fail-closed.
+- *    - When `options?.clearPendingTxMarker === false` (used by automatic page boot/reload), an
+- *      unrecovered shared `PENDING`/`UNCERTAIN`/`FROZEN` marker is NOT silently cleared — returns
+- *      `STORAGE_UNAVAILABLE` (`PENDING_RECOVERY_REQUIRED`) so refreshing Tab A cannot let Tab B
+- *      bypass recovery. Explicit recovery (`loadSafe()` default `clearPendingTxMarker: true`)
+- *      clears the marker ONLY after full probe + 3-slot scan confirms `VALID` or `EMPTY`.
+- * 3. Task Cancellation / Ownership Boundary (P1-02 N3):
+- *    Checks `hooks.shouldCancelBeforeStart()` AFTER acquiring locks and BEFORE any read/write.
+- * 4. Cross-Tab Linearizable Mutual Exclusion (P0 A01 & P2 A05):
+- *    Acquires in-process queue + W3C Web Lock (`idle-fishing:save:${storageKey}`). Task exceptions
+- *    after acquiring the lock rethrow as `CoordinatorTaskError` (never misclassified as
+- *    `CROSS_TAB_LOCK_REJECTED`).
+- * 5. Production Safety (P1-03 A04):
+- *    No destructive `clearSlotsForTest()` method is exposed on the coordinator.
++ *    - Every commit entry reads the REAL persisted `SharedTxMarker` inside the exclusive lock.
++ * 2. Historical Save Preservation & Anti-Silent-Reset Gate (REV4-01 / REWORK-05):
++ *    - Tracks explicit `priorSaveHistory` (`'CONFIRMED_EMPTY_INITIAL_CREATE' | 'CONFIRMED_VALID' | 'UNKNOWN'`)
++ *      and `confirmedRevision` (`Nat | null`) in `SharedTxMarker`.
++ *    - NEVER interprets `expectedRevision === null` alone as an initial empty create; legacy markers
++ *      missing `priorSaveHistory` default conservatively (`CONFIRMED_VALID` when `expectedRevision !== null`,
++ *      `UNKNOWN` when `expectedRevision === null`).
++ *    - Updating or writing a `FROZEN` marker (including partial IO failure) monotonically preserves
++ *      the highest known `confirmedRevision` / prior-save evidence.
++ *    - During `loadSafe()`:
++ *      (a) If disk scans `EMPTY` and marker does NOT explicitly prove `CONFIRMED_EMPTY_INITIAL_CREATE`
++ *          with null `expectedRevision` & `confirmedRevision` -> stays FROZEN (`SAVE_DISAPPEARED_PENDING_RECOVERY`),
++ *          preserves marker, NEVER silently resets as a new empty save.
++ *      (b) If disk scans `VALID` with a revision LOWER than `max(confirmedRevision, expectedRevision)` ->
++ *          stays FROZEN (`REVISION_REGRESSION_PENDING_RECOVERY`), preserves marker, NEVER silently unfreezes.
++ * 3. Distinct Marker Fault Classification & Controlled Corrupt-Marker Recovery (REV4-03 / REWORK-05):
++ *    - Strictly distinguishes:
++ *      (a) Marker read IO failure -> `TX_STATE_UNREADABLE` (controlled discard FORBIDDEN).
++ *      (b) Marker readable but corrupt/truncated -> `TX_STATE_CORRUPT` (scans slots read-only and
++ *          exposes `corruptMarkerRecoveryPreview` ONLY when 0 slot IO errors & a VALID save exists).
++ *      (c) Marker valid & unconfirmed -> `PENDING_RECOVERY_REQUIRED` (on automatic boot/reload with
++ *          `clearPendingTxMarker: false`) or explicit `loadSafe()` verification.
++ *    - `recoverFromCorruptTxMarker(confirmation)` executes inside the SAME exclusive lock, re-reads
++ *      and re-hashes BOTH the corrupt marker AND all 3 save slots to reject concurrent mutations,
++ *      forbids recovery when slots are empty/corrupt/IO-failing, never deletes save slots, and clears
++ *      ONLY the corrupt marker upon verified match.
++ * 4. Conservative Real-Storage Failure Freeze (REV4-04 / REWORK-05):
++ *    - Real storage failures (`QUOTA_EXCEEDED`, `WRITE_IO_ERROR`, etc.) freeze conservatively with a
++ *      durable `FROZEN` marker preserving prior-save history; once space/permissions are restored,
++ *      explicit recovery via `loadSafe()` reloads the latest persisted revision and unfreezes.
++ * 5. Task Cancellation (P1-02 N3), Web Locks + A05 Error Classification, and A04 Production Safety:
++ *    - Preserved intact; no destructive `clearSlotsForTest()` method exists.
+  */
+ import {
++  isNat,
+   natFromBigInt,
+   natToBigInt,
++  sha256Hex,
+   SLOT_PATHS,
+   SpikeFileSaveRepository,
+   type Nat,
+@@ -64,8 +66,13 @@
+
+   | 'PARTIAL_IO_UNAVAILABLE'
+   | 'LOCK_UNAVAILABLE'
+   | 'TX_STATE_UNREADABLE'
++  | 'TX_STATE_CORRUPT'
+   | 'TX_STATE_CLEAR_FAILED'
+-  | 'PENDING_RECOVERY_REQUIRED';
++  | 'PENDING_RECOVERY_REQUIRED'
++  | 'SAVE_DISAPPEARED_PENDING_RECOVERY'
++  | 'REVISION_REGRESSION_PENDING_RECOVERY'
++  | 'CONCURRENT_RECOVERY_STATE_CHANGED'
++  | 'CORRUPT_MARKER_NO_VALID_SAVE';
+ 
+ export interface ReadOnlyBackupInfo {
+   readonly revision: Nat;
+@@ -74,12 +81,26 @@
+
+   readonly warnings: readonly string[];
+ }
+ 
++export interface CorruptMarkerRecoveryPreview {
++  readonly canConfirmRecovery: boolean;
++  readonly corruptMarkerSha256: string;
++  readonly verifiedRevision: Nat | null;
++  readonly slotsSnapshotSha256: string | null;
++  readonly warning: string;
++}
++
++export interface ControlledCorruptMarkerRecoveryConfirmation {
++  readonly expectedCorruptMarkerSha256: string;
++  readonly expectedValidRevision: Nat;
++  readonly expectedSlotsSnapshotSha256: string;
++}
++
+ export interface SafeLoadOptions {
+   /**
+-   * When true (default, explicit recovery), a verified complete scan (probe ok, 0 slot IO errors,
+-   * VALID or EMPTY) clears any shared pending/uncertain transaction marker and unfreezes the domain.
+-   * When false (automatic boot/reload), any existing shared pending/uncertain marker is preserved
+-   * fail-closed (`PENDING_RECOVERY_REQUIRED`) until explicit recovery is performed.
++   * When true (default, explicit recovery), a verified complete scan clears a valid pending/uncertain
++   * marker ONLY if prior-save history invariants hold (no unexplained EMPTY disappearance or revision regression).
++   * When false (automatic boot/reload), any existing shared pending/uncertain/frozen marker is preserved
++   * fail-closed (`PENDING_RECOVERY_REQUIRED`) until explicit user recovery is triggered.
+    */
+   readonly clearPendingTxMarker?: boolean;
+ }
+@@ -92,6 +113,7 @@
+
+       readonly recoveryClassification?: RecoveryFailureClassification;
+       readonly unreadableSlots?: readonly string[];
+       readonly readOnlyBackup?: ReadOnlyBackupInfo | null;
++      readonly corruptMarkerRecoveryPreview?: CorruptMarkerRecoveryPreview | null;
+     };
+ 
+ export type SafeSaveCommitResult =
+@@ -113,9 +135,12 @@
+
+   | 'STORAGE_IO_UNAVAILABLE'
+   | 'UNCERTAIN_WRITE_PENDING_RECOVERY'
+   | 'PARTIAL_IO_UNAVAILABLE'
+-  | 'CROSS_TAB_LOCK_UNAVAILABLE';
++  | 'CROSS_TAB_LOCK_UNAVAILABLE'
++  | 'TX_STATE_CORRUPT'
++  | 'SAVE_HISTORY_MISMATCH';
+ 
+ export type SharedTxMarkerState = 'PENDING' | 'UNCERTAIN' | 'FROZEN';
++export type PriorSaveHistory = 'CONFIRMED_EMPTY_INITIAL_CREATE' | 'CONFIRMED_VALID' | 'UNKNOWN';
+ 
+ export interface SharedTxMarker {
+   readonly version: 1;
+@@ -124,6 +149,8 @@
+
+   readonly state: SharedTxMarkerState;
+   readonly expectedRevision: string | null;
+   readonly targetRevision: string | null;
++  readonly priorSaveHistory: PriorSaveHistory;
++  readonly confirmedRevision: string | null;
+   readonly createdAtMs: number;
+   readonly updatedAtMs: number;
+   readonly reason: string | null;
+@@ -235,60 +262,199 @@
+
+   }
+ }
+ 
++function maxNatString(a: string | null, b: string | null): string | null {
++  const validA = a !== null && isNat(a) ? a : null;
++  const validB = b !== null && isNat(b) ? b : null;
++  if (validA === null) return validB;
++  if (validB === null) return validA;
++  return natToBigInt(validA) >= natToBigInt(validB) ? validA : validB;
++}
++
++function mergePriorHistory(
++  existing: SharedTxMarker | null,
++  observedValidRev: string | null
++): { priorSaveHistory: PriorSaveHistory; confirmedRevision: string | null } {
++  const existingMax = existing ? maxNatString(existing.confirmedRevision, existing.expectedRevision) : null;
++  const mergedRev = maxNatString(existingMax, observedValidRev);
++  if (mergedRev !== null) {
++    return { priorSaveHistory: 'CONFIRMED_VALID', confirmedRevision: mergedRev };
++  }
++  if (existing && existing.priorSaveHistory === 'CONFIRMED_VALID') {
++    return { priorSaveHistory: 'CONFIRMED_VALID', confirmedRevision: existing.confirmedRevision };
++  }
++  if (existing && existing.priorSaveHistory === 'CONFIRMED_EMPTY_INITIAL_CREATE') {
++    return { priorSaveHistory: 'CONFIRMED_EMPTY_INITIAL_CREATE', confirmedRevision: null };
++  }
++  return { priorSaveHistory: 'UNKNOWN', confirmedRevision: null };
++}
++
+ interface ParsedTxMarkerResult {
+-  readonly ok: boolean;
++  readonly status: 'ABSENT' | 'VALID' | 'READ_IO_ERROR' | 'CORRUPT';
+   readonly marker: SharedTxMarker | null;
++  readonly rawText: string | null;
++  readonly rawSha256: string | null;
+   readonly detail: string | null;
+ }
+ 
+ function parseSharedTxMarker(raw: string, expectedStorageKey: string): ParsedTxMarkerResult {
++  const rawSha256 = sha256Hex(raw);
+   let parsed: unknown;
+   try {
+     parsed = JSON.parse(raw);
+   } catch {
+-    return { ok: false, marker: null, detail: 'shared tx marker is invalid JSON' };
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON',
++    };
+   }
+   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+-    return { ok: false, marker: null, detail: 'shared tx marker must be a JSON object' };
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: shared tx marker must be a JSON object',
++    };
+   }
+   const m = parsed as Record<string, unknown>;
+   if (m.version !== 1) {
+-    return { ok: false, marker: null, detail: `unsupported tx marker version: ${String(m.version)}` };
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: `SHARED_TX_STATE_CORRUPT: unsupported tx marker version: ${String(m.version)}`,
++    };
+   }
+   if (m.storageKey !== expectedStorageKey) {
+     return {
+-      ok: false,
++      status: 'CORRUPT',
+       marker: null,
+-      detail: `tx marker storageKey mismatch (${String(m.storageKey)} !== ${expectedStorageKey})`,
++      rawText: raw,
++      rawSha256,
++      detail: `SHARED_TX_STATE_CORRUPT: tx marker storageKey mismatch (${String(m.storageKey)} !== ${expectedStorageKey})`,
+     };
+   }
+   const txId = m.txId;
+   if (typeof txId !== 'string' || txId.length === 0) {
+-    return { ok: false, marker: null, detail: 'tx marker missing valid txId' };
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: tx marker missing valid txId',
++    };
+   }
+   const state = m.state;
+   if (state !== 'PENDING' && state !== 'UNCERTAIN' && state !== 'FROZEN') {
+-    return { ok: false, marker: null, detail: `tx marker invalid state: ${String(state)}` };
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: `SHARED_TX_STATE_CORRUPT: tx marker invalid state: ${String(state)}`,
++    };
+   }
+   const expectedRevision = m.expectedRevision;
+-  if (expectedRevision !== null && typeof expectedRevision !== 'string') {
+-    return { ok: false, marker: null, detail: 'tx marker invalid expectedRevision' };
++  if (expectedRevision !== null && (typeof expectedRevision !== 'string' || !isNat(expectedRevision))) {
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: tx marker invalid expectedRevision',
++    };
+   }
+   const targetRevision = m.targetRevision;
+-  if (targetRevision !== null && typeof targetRevision !== 'string') {
+-    return { ok: false, marker: null, detail: 'tx marker invalid targetRevision' };
++  if (targetRevision !== null && (typeof targetRevision !== 'string' || !isNat(targetRevision))) {
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: tx marker invalid targetRevision',
++    };
+   }
+   const createdAtMs = m.createdAtMs;
+   const updatedAtMs = m.updatedAtMs;
+   if (typeof createdAtMs !== 'number' || typeof updatedAtMs !== 'number') {
+-    return { ok: false, marker: null, detail: 'tx marker invalid timestamps' };
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: tx marker invalid timestamps',
++    };
+   }
+   const reason = m.reason;
+   if (reason !== null && typeof reason !== 'string') {
+-    return { ok: false, marker: null, detail: 'tx marker invalid reason' };
+-  }
++    return {
++      status: 'CORRUPT',
++      marker: null,
++      rawText: raw,
++      rawSha256,
++      detail: 'SHARED_TX_STATE_CORRUPT: tx marker invalid reason',
++    };
++  }
++
++  // REV4-01 conservative parsing of priorSaveHistory & confirmedRevision:
++  // Legacy v1 markers missing these fields NEVER default to CONFIRMED_EMPTY_INITIAL_CREATE!
++  let priorSaveHistory: PriorSaveHistory;
++  let confirmedRevision: string | null;
++  if (typeof m.priorSaveHistory === 'undefined') {
++    if (expectedRevision !== null) {
++      priorSaveHistory = 'CONFIRMED_VALID';
++      confirmedRevision = String(expectedRevision);
++    } else {
++      priorSaveHistory = 'UNKNOWN';
++      confirmedRevision = null;
++    }
++  } else {
++    if (
++      m.priorSaveHistory !== 'CONFIRMED_EMPTY_INITIAL_CREATE' &&
++      m.priorSaveHistory !== 'CONFIRMED_VALID' &&
++      m.priorSaveHistory !== 'UNKNOWN'
++    ) {
++      return {
++        status: 'CORRUPT',
++        marker: null,
++        rawText: raw,
++        rawSha256,
++        detail: `SHARED_TX_STATE_CORRUPT: tx marker invalid priorSaveHistory: ${String(m.priorSaveHistory)}`,
++      };
++    }
++    priorSaveHistory = m.priorSaveHistory;
++    if (typeof m.confirmedRevision === 'undefined' || m.confirmedRevision === null) {
++      confirmedRevision = expectedRevision === null ? null : String(expectedRevision);
++    } else if (typeof m.confirmedRevision === 'string' && isNat(m.confirmedRevision)) {
++      confirmedRevision = maxNatString(String(m.confirmedRevision), expectedRevision === null ? null : String(expectedRevision));
++    } else {
++      return {
++        status: 'CORRUPT',
++        marker: null,
++        rawText: raw,
++        rawSha256,
++        detail: 'SHARED_TX_STATE_CORRUPT: tx marker invalid confirmedRevision',
++      };
++    }
++    if (priorSaveHistory === 'CONFIRMED_EMPTY_INITIAL_CREATE' && (expectedRevision !== null || confirmedRevision !== null)) {
++      return {
++        status: 'CORRUPT',
++        marker: null,
++        rawText: raw,
++        rawSha256,
++        detail: 'SHARED_TX_STATE_CORRUPT: contradictory CONFIRMED_EMPTY_INITIAL_CREATE with non-null revision',
++      };
++    }
++  }
++
+   return {
+-    ok: true,
++    status: 'VALID',
++    rawText: raw,
++    rawSha256,
+     detail: null,
+     marker: {
+       version: 1,
+@@ -297,6 +463,8 @@
+
+       state,
+       expectedRevision: expectedRevision === null ? null : String(expectedRevision),
+       targetRevision: targetRevision === null ? null : String(targetRevision),
++      priorSaveHistory,
++      confirmedRevision,
+       createdAtMs,
+       updatedAtMs,
+       reason: reason === null ? null : String(reason),
+@@ -374,16 +542,18 @@
+
+     try {
+       raw = await this.readRawTxState();
+     } catch (err) {
+-      return { ok: false, marker: null, detail: `SHARED_TX_STATE_UNREADABLE: ${errorMessage(err)}` };
++      return {
++        status: 'READ_IO_ERROR',
++        marker: null,
++        rawText: null,
++        rawSha256: null,
++        detail: `SHARED_TX_STATE_UNREADABLE: ${errorMessage(err)}`,
++      };
+     }
+     if (raw === null) {
+-      return { ok: true, marker: null, detail: null };
++      return { status: 'ABSENT', marker: null, rawText: null, rawSha256: null, detail: null };
+     }
+-    const parsed = parseSharedTxMarker(raw, this.storageKey);
+-    if (!parsed.ok) {
+-      return { ok: false, marker: null, detail: `SHARED_TX_STATE_CORRUPT: ${parsed.detail ?? 'invalid marker'}` };
+-    }
+-    return { ok: true, marker: parsed.marker, detail: null };
++    return parseSharedTxMarker(raw, this.storageKey);
+   }
+ 
+   private async writeSharedTxMarker(marker: SharedTxMarker): Promise<void> {
+@@ -392,15 +562,48 @@
+
+ 
+   private async clearSharedTxMarker(): Promise<void> {
+     await this.clearRawTxState();
++  }
++
++  /**
++   * Scans all 3 save slots through an observing FilePort, capturing per-slot IO errors AND
++   * raw slot bytes for snapshot digest verification (without modifying backend SpikeFileSaveRepository).
++   */
++  private async scanAllSlotsObserved(): Promise<{
++    res: SpikeLoadResult;
++    ioErrorSlots: { path: string; detail: string }[];
++    rawSlotTexts: (string | null)[];
++    slotsSnapshotSha256: string;
++  }> {
++    const ioErrorSlots: { path: string; detail: string }[] = [];
++    const slotMap = new Map<string, string | null>();
++    const observedPort: FilePort = {
++      kind: this.port.kind,
++      storageKey: this.port.storageKey,
++      probeStorage: this.port.probeStorage ? () => this.port.probeStorage!() : undefined,
++      read: async (p) => {
++        try {
++          const val = await this.port.read(p);
++          slotMap.set(p, val);
++          return val;
++        } catch (err) {
++          ioErrorSlots.push({ path: p, detail: errorMessage(err) });
++          throw err;
++        }
++      },
++      write: (p, text) => this.port.write(p, text),
++      remove: (p) => this.port.remove(p),
++      list: (dir) => this.port.list(dir),
++    };
++    const repo = new SpikeFileSaveRepository(observedPort);
++    const res = await repo.load();
++    const rawSlotTexts = SLOT_PATHS.map((p) => (slotMap.has(p) ? slotMap.get(p)! : null));
++    const slotsSnapshotSha256 = sha256Hex(JSON.stringify(rawSlotTexts));
++    return { res, ioErrorSlots, rawSlotTexts, slotsSnapshotSha256 };
+   }
+ 
+   /**
+    * Acquires BOTH the in-process namespace queue AND (for browser persistent storage)
+    * the cross-tab W3C Web Lock (`navigator.locks.request`).
+-   *
+-   * A05 Fix: Exceptions thrown INSIDE the locked `task()` callback are wrapped in
+-   * `CoordinatorTaskError` and rethrown as real task exceptions — NEVER misclassified
+-   * as `CROSS_TAB_LOCK_REJECTED` and NEVER falsely freezing healthy storage.
+    */
+   private async withExclusiveLock<T>(
+     task: () => Promise<T>,
+@@ -449,14 +652,14 @@
+
+    * Probes storage health, validates shared transaction marker, and scans ALL 3 save slots inside
+    * the exclusive lock.
+    *
+-   * REWORK-04 (A02 + A03) Recovery Gate:
+-   * - Unfreezes (`AVAILABLE`) and clears any shared pending/uncertain marker ONLY when:
+-   *   1. `probeStorage()` succeeds,
+-   *   2. shared tx marker is readable and valid (or absent),
+-   *   3. ALL 3 save slots are read with ZERO IO errors,
+-   *   4. `SpikeFileSaveRepository.load()` confirms `VALID` or `EMPTY`,
+-   *   5. `options?.clearPendingTxMarker !== false` (explicit recovery), AND
+-   *   6. clearing the shared tx marker succeeds durably.
++   * REWORK-05 (REV4-01 + REV4-03) Recovery Gate:
++   * - Distinguishes `TX_STATE_UNREADABLE` (IO error reading marker) vs `TX_STATE_CORRUPT` (corrupt
++   *   marker bytes, with read-only preview of any verified valid save) vs valid unconfirmed marker.
++   * - NEVER silently unfreezes when slots scan `EMPTY` unless marker explicitly proves
++   *   `CONFIRMED_EMPTY_INITIAL_CREATE` with null prior revisions (`SAVE_DISAPPEARED_PENDING_RECOVERY`).
++   * - NEVER silently unfreezes when scanned `VALID` revision is lower than confirmed historical
++   *   revision in marker (`REVISION_REGRESSION_PENDING_RECOVERY`).
++   * - Preserves/merges highest known `confirmedRevision` when writing or updating `FROZEN` markers.
+    */
+   loadSafe(options?: SafeLoadOptions): Promise<SafeSaveLoadResult> {
+     const clearPendingTxMarker = options?.clearPendingTxMarker !== false;
+@@ -475,6 +678,7 @@
+
+               recoveryClassification: 'PROBE_FAILED',
+               unreadableSlots: [...SLOT_PATHS],
+               readOnlyBackup: null,
++              corruptMarkerRecoveryPreview: null,
+             };
+           }
+           if (!probe.available) {
+@@ -486,13 +690,14 @@
+
+               recoveryClassification: 'PROBE_FAILED',
+               unreadableSlots: [...SLOT_PATHS],
+               readOnlyBackup: null,
++              corruptMarkerRecoveryPreview: null,
+             };
+           }
+         }
+ 
+-        // A02 Requirement 8: Shared transaction state MUST be readable and valid during recovery.
++        // REV4-03: Distinguish marker read IO failure vs readable-but-corrupt marker vs valid marker
+         const markerRead = await this.readSharedTxMarker();
+-        if (!markerRead.ok) {
++        if (markerRead.status === 'READ_IO_ERROR') {
+           const detail = markerRead.detail ?? 'SHARED_TX_STATE_UNREADABLE';
+           markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', detail);
+           return {
+@@ -501,31 +706,50 @@
+
+             recoveryClassification: 'TX_STATE_UNREADABLE',
+             unreadableSlots: [],
+             readOnlyBackup: null,
++            corruptMarkerRecoveryPreview: null,
+           };
+         }
++
++        const { res, ioErrorSlots, slotsSnapshotSha256 } = await this.scanAllSlotsObserved();
++
++        // REV4-03: Corrupt marker -> keep frozen, NEVER auto-clear; inspect slots read-only to build
++        // controlled recovery preview ONLY when 0 slot IO errors & a VALID Envelope exists.
++        if (markerRead.status === 'CORRUPT') {
++          const unreadablePaths = ioErrorSlots.map((s) => s.path);
++          const canConfirm = ioErrorSlots.length === 0 && res.kind === 'VALID';
++          const readOnlyBackup: ReadOnlyBackupInfo | null =
++            res.kind === 'VALID'
++              ? {
++                  revision: res.revision,
++                  schemaVersion: res.schemaVersion,
++                  epoch: res.epoch,
++                  warnings: res.warnings,
++                }
++              : null;
++          const preview: CorruptMarkerRecoveryPreview = {
++            canConfirmRecovery: canConfirm,
++            corruptMarkerSha256: markerRead.rawSha256 ?? '',
++            verifiedRevision: canConfirm && res.kind === 'VALID' ? res.revision : null,
++            slotsSnapshotSha256: canConfirm ? slotsSnapshotSha256 : null,
++            warning: canConfirm && res.kind === 'VALID'
++              ? `Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=${res.revision} (uncommitted progress may be rolled back).`
++              : ioErrorSlots.length > 0
++                ? `Controlled recovery disabled: slot IO errors present (${unreadablePaths.join(', ')}).`
++                : `Controlled recovery disabled: no verified VALID save found (disk status=${res.kind}).`,
++          };
++          const detail = `${markerRead.detail ?? 'SHARED_TX_STATE_CORRUPT'}; ${preview.warning}`;
++          markStorageUnavailable(this.storageKey, 'TX_STATE_CORRUPT', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'TX_STATE_CORRUPT',
++            unreadableSlots: unreadablePaths,
++            readOnlyBackup,
++            corruptMarkerRecoveryPreview: preview,
++          };
++        }
++
+         const existingMarker = markerRead.marker;
+-
+-        // Observe EVERY slot read so partial IO failures are never mistaken for missing/corrupt files
+-        const ioErrorSlots: { path: string; detail: string }[] = [];
+-        const observedPort: FilePort = {
+-          kind: this.port.kind,
+-          storageKey: this.port.storageKey,
+-          probeStorage: this.port.probeStorage ? () => this.port.probeStorage!() : undefined,
+-          read: async (p) => {
+-            try {
+-              return await this.port.read(p);
+-            } catch (err) {
+-              ioErrorSlots.push({ path: p, detail: errorMessage(err) });
+-              throw err;
+-            }
+-          },
+-          write: (p, text) => this.port.write(p, text),
+-          remove: (p) => this.port.remove(p),
+-          list: (dir) => this.port.list(dir),
+-        };
+-
+-        const repo = new SpikeFileSaveRepository(observedPort);
+-        const res = await repo.load();
+ 
+         if (ioErrorSlots.length > 0) {
+           const allUnreadable = ioErrorSlots.length >= SLOT_PATHS.length;
+@@ -545,18 +769,26 @@
+
+           const reason = allUnreadable
+             ? `All save slots unreadable due to storage IO error (${unreadablePaths.join(', ')}): ${ioErrorSlots.map((s) => `${s.path}: ${s.detail}`).join('; ')}`
+             : `Partial save slot IO unavailable (${unreadablePaths.join(', ')}); cannot confirm highest physical revision; writes remain frozen${readOnlyBackup ? ` (read-only backup rev=${readOnlyBackup.revision})` : ''}`;
+-          // Preserve existing pending/uncertain marker, or persist FROZEN marker best-effort
+-          if (!existingMarker) {
++
++          // REV4-01 Rules 5 & 6: Preserve highest known backup revision & never lose prior history evidence!
++          const merged = mergePriorHistory(existingMarker, readOnlyBackup ? readOnlyBackup.revision : null);
++          const shouldWriteOrUpgradeMarker =
++            !existingMarker ||
++            existingMarker.priorSaveHistory !== merged.priorSaveHistory ||
++            existingMarker.confirmedRevision !== merged.confirmedRevision;
++          if (shouldWriteOrUpgradeMarker) {
+             const now = Date.now();
+             try {
+               await this.writeSharedTxMarker({
+                 version: 1,
+                 storageKey: this.storageKey,
+-                txId: createTxId(),
+-                state: 'FROZEN',
+-                expectedRevision: null,
+-                targetRevision: null,
+-                createdAtMs: now,
++                txId: existingMarker ? existingMarker.txId : createTxId(),
++                state: existingMarker ? existingMarker.state : 'FROZEN',
++                expectedRevision: existingMarker ? existingMarker.expectedRevision : merged.confirmedRevision,
++                targetRevision: existingMarker ? existingMarker.targetRevision : null,
++                priorSaveHistory: merged.priorSaveHistory,
++                confirmedRevision: merged.confirmedRevision,
++                createdAtMs: existingMarker ? existingMarker.createdAtMs : now,
+                 updatedAtMs: now,
+                 reason,
+               });
+@@ -564,6 +796,7 @@
+
+               // Local freeze still enforces fail-closed if marker persistence fails
+             }
+           }
++
+           markStorageUnavailable(
+             this.storageKey,
+             allUnreadable ? 'STORAGE_IO_UNAVAILABLE' : 'PARTIAL_IO_UNAVAILABLE',
+@@ -575,6 +808,7 @@
+
+             recoveryClassification: classification,
+             unreadableSlots: unreadablePaths,
+             readOnlyBackup,
++            corruptMarkerRecoveryPreview: null,
+           };
+         }
+ 
+@@ -590,7 +824,7 @@
+
+                   warnings: res.warnings,
+                 }
+               : null;
+-          const reason = `PENDING_RECOVERY_REQUIRED: shared save domain has unrecovered ${existingMarker.state} transaction (${existingMarker.txId}); explicit verified recovery required before writing`;
++          const reason = `PENDING_RECOVERY_REQUIRED: shared save domain has unrecovered ${existingMarker.state} transaction (${existingMarker.txId}, priorHistory=${existingMarker.priorSaveHistory}, confirmedRev=${existingMarker.confirmedRevision ?? 'none'}); explicit user recovery required before writing`;
+           markStorageUnavailable(this.storageKey, 'UNCERTAIN_WRITE_PENDING_RECOVERY', reason);
+           return {
+             kind: 'STORAGE_UNAVAILABLE',
+@@ -598,10 +832,56 @@
+
+             recoveryClassification: 'PENDING_RECOVERY_REQUIRED',
+             unreadableSlots: [],
+             readOnlyBackup,
++            corruptMarkerRecoveryPreview: null,
+           };
+         }
+ 
+-        // Only VALID or EMPTY with 0 IO errors authorizes clearing the shared marker and unfreezing.
++        // REV4-01 Rules 1, 2, 3, 4: EMPTY scan with an existing marker is ONLY safe to unfreeze when
++        // the marker EXPLICITLY proves `CONFIRMED_EMPTY_INITIAL_CREATE` with null prior revisions!
++        if (res.kind === 'EMPTY' && existingMarker !== null) {
++          const isConfirmedInitialCreate =
++            existingMarker.priorSaveHistory === 'CONFIRMED_EMPTY_INITIAL_CREATE' &&
++            existingMarker.expectedRevision === null &&
++            existingMarker.confirmedRevision === null;
++          if (!isConfirmedInitialCreate) {
++            const reason = `SAVE_DISAPPEARED_PENDING_RECOVERY: all save slots scanned EMPTY, but shared tx marker (${existingMarker.txId}) indicates priorSaveHistory=${existingMarker.priorSaveHistory} (confirmedRev=${existingMarker.confirmedRevision ?? 'unknown'}, expectedRev=${existingMarker.expectedRevision ?? 'null'}); refusing silent unfreeze as empty save`;
++            markStorageUnavailable(this.storageKey, 'SAVE_HISTORY_MISMATCH', reason);
++            return {
++              kind: 'STORAGE_UNAVAILABLE',
++              detail: reason,
++              recoveryClassification: 'SAVE_DISAPPEARED_PENDING_RECOVERY',
++              unreadableSlots: [],
++              readOnlyBackup: null,
++              corruptMarkerRecoveryPreview: null,
++            };
++          }
++        }
++
++        // REV4-01 Rule 7: VALID scan with revision LOWER than confirmed historical revision in marker
++        // MUST NOT silently unfreeze!
++        if (res.kind === 'VALID' && existingMarker !== null) {
++          const minConfirmedRev = maxNatString(existingMarker.confirmedRevision, existingMarker.expectedRevision);
++          if (minConfirmedRev !== null && natToBigInt(res.revision) < natToBigInt(minConfirmedRev)) {
++            const readOnlyBackup: ReadOnlyBackupInfo = {
++              revision: res.revision,
++              schemaVersion: res.schemaVersion,
++              epoch: res.epoch,
++              warnings: res.warnings,
++            };
++            const reason = `REVISION_REGRESSION_PENDING_RECOVERY: scanned valid save revision (${res.revision}) is lower than confirmed historical revision (${minConfirmedRev}) in shared tx marker (${existingMarker.txId}); refusing silent unfreeze`;
++            markStorageUnavailable(this.storageKey, 'SAVE_HISTORY_MISMATCH', reason);
++            return {
++              kind: 'STORAGE_UNAVAILABLE',
++              detail: reason,
++              recoveryClassification: 'REVISION_REGRESSION_PENDING_RECOVERY',
++              unreadableSlots: [],
++              readOnlyBackup,
++              corruptMarkerRecoveryPreview: null,
++            };
++          }
++        }
++
++        // Only VALID or verified-safe EMPTY with 0 IO errors authorizes clearing the shared marker & unfreezing.
+         if (res.kind === 'VALID' || res.kind === 'EMPTY') {
+           if (existingMarker !== null) {
+             try {
+@@ -623,6 +903,7 @@
+
+                         warnings: res.warnings,
+                       }
+                     : null,
++                corruptMarkerRecoveryPreview: null,
+               };
+             }
+           }
+@@ -636,6 +917,193 @@
+
+         recoveryClassification: 'LOCK_UNAVAILABLE',
+         unreadableSlots: [...SLOT_PATHS],
+         readOnlyBackup: null,
++        corruptMarkerRecoveryPreview: null,
++      })
++    );
++  }
++
++  /**
++   * REV4-03 Controlled Corrupt-Marker Recovery:
++   * Executes inside the SAME exclusive lock. Re-probes storage, re-reads and verifies that the
++   * marker is STILL the exact corrupt marker inspected by the user (rejecting IO errors or concurrent
++   * changes), re-scans ALL 3 save slots confirming 0 IO errors and the exact verified VALID save
++   * (forbidding recovery on EMPTY/CORRUPT/UNSUPPORTED or concurrent disk changes), clears ONLY the
++   * corrupt marker (never touching save slots), and unfreezes to the verified VALID save.
++   */
++  recoverFromCorruptTxMarker(
++    confirmation: ControlledCorruptMarkerRecoveryConfirmation
++  ): Promise<SafeSaveLoadResult> {
++    return this.withExclusiveLock<SafeSaveLoadResult>(
++      async () => {
++        if (typeof this.port.probeStorage === 'function') {
++          let probe: { readonly available: boolean; readonly reason: string | null };
++          try {
++            probe = await this.port.probeStorage();
++          } catch (err) {
++            const reason = `Persistent storage probe threw during corrupt-marker recovery: ${errorMessage(err)}`;
++            markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
++            return {
++              kind: 'STORAGE_UNAVAILABLE',
++              detail: reason,
++              recoveryClassification: 'PROBE_FAILED',
++              unreadableSlots: [...SLOT_PATHS],
++              readOnlyBackup: null,
++              corruptMarkerRecoveryPreview: null,
++            };
++          }
++          if (!probe.available) {
++            const reason = probe.reason ?? 'Persistent storage probe failed during corrupt-marker recovery';
++            markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
++            return {
++              kind: 'STORAGE_UNAVAILABLE',
++              detail: reason,
++              recoveryClassification: 'PROBE_FAILED',
++              unreadableSlots: [...SLOT_PATHS],
++              readOnlyBackup: null,
++              corruptMarkerRecoveryPreview: null,
++            };
++          }
++        }
++
++        // Re-verify marker state inside lock (reject IO error, absent, valid, or concurrently altered marker)
++        const markerRead = await this.readSharedTxMarker();
++        if (markerRead.status === 'READ_IO_ERROR') {
++          const detail = markerRead.detail ?? 'SHARED_TX_STATE_UNREADABLE';
++          markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'TX_STATE_UNREADABLE',
++            unreadableSlots: [],
++            readOnlyBackup: null,
++            corruptMarkerRecoveryPreview: null,
++          };
++        }
++        if (markerRead.status !== 'CORRUPT') {
++          const detail = `CONCURRENT_RECOVERY_STATE_CHANGED: expected CORRUPT marker before discarding, but observed status=${markerRead.status}`;
++          markStorageUnavailable(this.storageKey, 'UNCERTAIN_WRITE_PENDING_RECOVERY', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'CONCURRENT_RECOVERY_STATE_CHANGED',
++            unreadableSlots: [],
++            readOnlyBackup: null,
++            corruptMarkerRecoveryPreview: null,
++          };
++        }
++        if (markerRead.rawSha256 !== confirmation.expectedCorruptMarkerSha256) {
++          const detail = `CONCURRENT_RECOVERY_STATE_CHANGED: corrupt marker digest changed between preview and confirmation`;
++          markStorageUnavailable(this.storageKey, 'TX_STATE_CORRUPT', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'CONCURRENT_RECOVERY_STATE_CHANGED',
++            unreadableSlots: [],
++            readOnlyBackup: null,
++            corruptMarkerRecoveryPreview: null,
++          };
++        }
++
++        // Re-scan ALL 3 save slots inside lock & reject IO errors, non-VALID saves, or concurrent disk changes
++        const { res, ioErrorSlots, slotsSnapshotSha256 } = await this.scanAllSlotsObserved();
++        if (ioErrorSlots.length > 0) {
++          const allUnreadable = ioErrorSlots.length >= SLOT_PATHS.length;
++          const unreadablePaths = ioErrorSlots.map((s) => s.path);
++          const detail = `Controlled corrupt-marker recovery refused: slot IO error (${unreadablePaths.join(', ')})`;
++          markStorageUnavailable(
++            this.storageKey,
++            allUnreadable ? 'STORAGE_IO_UNAVAILABLE' : 'PARTIAL_IO_UNAVAILABLE',
++            detail
++          );
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: allUnreadable ? 'IO_UNAVAILABLE' : 'PARTIAL_IO_UNAVAILABLE',
++            unreadableSlots: unreadablePaths,
++            readOnlyBackup:
++              res.kind === 'VALID'
++                ? {
++                    revision: res.revision,
++                    schemaVersion: res.schemaVersion,
++                    epoch: res.epoch,
++                    warnings: res.warnings,
++                  }
++                : null,
++            corruptMarkerRecoveryPreview: null,
++          };
++        }
++
++        if (res.kind !== 'VALID') {
++          const detail = `CORRUPT_MARKER_NO_VALID_SAVE: controlled corrupt-marker recovery requires a verified VALID save, but disk scanned ${res.kind}`;
++          markStorageUnavailable(this.storageKey, 'TX_STATE_CORRUPT', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'CORRUPT_MARKER_NO_VALID_SAVE',
++            unreadableSlots: [],
++            readOnlyBackup: null,
++            corruptMarkerRecoveryPreview: null,
++          };
++        }
++
++        if (
++          res.revision !== confirmation.expectedValidRevision ||
++          slotsSnapshotSha256 !== confirmation.expectedSlotsSnapshotSha256
++        ) {
++          const detail = `CONCURRENT_RECOVERY_STATE_CHANGED: save slots changed between preview (rev=${confirmation.expectedValidRevision}) and confirmation (rev=${res.revision}); please re-check before confirming`;
++          markStorageUnavailable(this.storageKey, 'TX_STATE_CORRUPT', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'CONCURRENT_RECOVERY_STATE_CHANGED',
++            unreadableSlots: [],
++            readOnlyBackup: {
++              revision: res.revision,
++              schemaVersion: res.schemaVersion,
++              epoch: res.epoch,
++              warnings: res.warnings,
++            },
++            corruptMarkerRecoveryPreview: {
++              canConfirmRecovery: true,
++              corruptMarkerSha256: markerRead.rawSha256 ?? '',
++              verifiedRevision: res.revision,
++              slotsSnapshotSha256,
++              warning: `Disk state changed concurrently; confirm again to recover verified save rev=${res.revision}.`,
++            },
++          };
++        }
++
++        // All invariants verified inside lock -> clear ONLY the corrupt tx marker (zero save slot modifications!)
++        try {
++          await this.clearSharedTxMarker();
++        } catch (err) {
++          const detail = `TX_STATE_CLEAR_FAILED: verified VALID save rev=${res.revision}, but failed to clear corrupt tx marker: ${errorMessage(err)}`;
++          markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', detail);
++          return {
++            kind: 'STORAGE_UNAVAILABLE',
++            detail,
++            recoveryClassification: 'TX_STATE_CLEAR_FAILED',
++            unreadableSlots: [],
++            readOnlyBackup: {
++              revision: res.revision,
++              schemaVersion: res.schemaVersion,
++              epoch: res.epoch,
++              warnings: res.warnings,
++            },
++            corruptMarkerRecoveryPreview: null,
++          };
++        }
++
++        markStorageAvailable(this.storageKey);
++        return res;
++      },
++      (detail) => ({
++        kind: 'STORAGE_UNAVAILABLE',
++        detail,
++        recoveryClassification: 'LOCK_UNAVAILABLE',
++        unreadableSlots: [...SLOT_PATHS],
++        readOnlyBackup: null,
++        corruptMarkerRecoveryPreview: null,
+       })
+     );
+   }
+@@ -672,9 +1140,14 @@
+
+ 
+         // A02 Requirement 1 & 2: Read REAL persisted shared tx marker inside the exclusive lock.
+         const markerRead = await this.readSharedTxMarker();
+-        if (!markerRead.ok) {
++        if (markerRead.status === 'READ_IO_ERROR') {
+           const detail = markerRead.detail ?? 'SHARED_TX_STATE_UNREADABLE';
+           markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', detail);
++          return { kind: 'STORAGE_UNAVAILABLE', detail };
++        }
++        if (markerRead.status === 'CORRUPT') {
++          const detail = markerRead.detail ?? 'SHARED_TX_STATE_CORRUPT';
++          markStorageUnavailable(this.storageKey, 'TX_STATE_CORRUPT', detail);
+           return { kind: 'STORAGE_UNAVAILABLE', detail };
+         }
+         if (markerRead.marker !== null) {
+@@ -713,6 +1186,7 @@
+
+         const fatalErrors: FilePortIoError[] = [];
+         let markerWritten = false;
+         let markerWriteError: unknown = null;
++        const txStateBox: { pendingMarker: SharedTxMarker | null } = { pendingMarker: null };
+ 
+         // Observe underlying FilePortIoErrors and enforce write-ahead PENDING marker right before
+         // any physical slot mutation without modifying backend SpikeFileSaveRepository.
+@@ -731,22 +1205,30 @@
+
+             }
+           },
+           write: async (p, text) => {
+-            // A02 Requirement 3: Persist durable PENDING marker BEFORE mutating any save slot.
+-            // If marker cannot be durably written, abort immediately with ZERO save slot writes.
++            // A02 Requirement 3 + REV4-01: At this point SpikeFileSaveRepository has ALREADY read all
++            // 3 slots with 0 IO errors and verified either expectedRevision===top.revision OR all 3
++            // slots are truly absent (confirmed initial create).
+             if (!markerWritten) {
++              const priorSaveHistory: PriorSaveHistory =
++                expectedRevision === null ? 'CONFIRMED_EMPTY_INITIAL_CREATE' : 'CONFIRMED_VALID';
++              const confirmedRevision: string | null = expectedRevision === null ? null : String(expectedRevision);
++              const pendingMarker: SharedTxMarker = {
++                version: 1,
++                storageKey: this.storageKey,
++                txId,
++                state: 'PENDING',
++                expectedRevision,
++                targetRevision,
++                priorSaveHistory,
++                confirmedRevision,
++                createdAtMs: txCreatedAtMs,
++                updatedAtMs: Date.now(),
++                reason: `Pending save slot write (${p})`,
++              };
+               try {
+-                await this.writeSharedTxMarker({
+-                  version: 1,
+-                  storageKey: this.storageKey,
+-                  txId,
+-                  state: 'PENDING',
+-                  expectedRevision,
+-                  targetRevision,
+-                  createdAtMs: txCreatedAtMs,
+-                  updatedAtMs: Date.now(),
+-                  reason: `Pending save slot write (${p})`,
+-                });
++                await this.writeSharedTxMarker(pendingMarker);
+                 markerWritten = true;
++                txStateBox.pendingMarker = pendingMarker;
+               } catch (err) {
+                 markerWriteError = err;
+                 throw new FilePortIoError(
+@@ -774,18 +1256,14 @@
+
+         try {
+           result = await repo.commit(state, expectedRevision);
+         } catch (unexpectedErr) {
+-          // A02 Requirement 5: Preserve durable marker on unexpected exception after marker write.
+-          if (markerWritten) {
++          // A02 Requirement 5: Preserve durable marker & prior-save history on unexpected exception.
++          const pendingSnapshot = txStateBox.pendingMarker;
++          if (markerWritten && pendingSnapshot !== null) {
+             const reason = `Unexpected commit exception after pending marker (${txId}): ${errorMessage(unexpectedErr)}`;
+             try {
+               await this.writeSharedTxMarker({
+-                version: 1,
+-                storageKey: this.storageKey,
+-                txId,
++                ...pendingSnapshot,
+                 state: 'UNCERTAIN',
+-                expectedRevision,
+-                targetRevision,
+-                createdAtMs: txCreatedAtMs,
+                 updatedAtMs: Date.now(),
+                 reason,
+               });
+@@ -804,7 +1282,7 @@
+
+           return { kind: 'STORAGE_UNAVAILABLE', detail: reason };
+         }
+ 
+-        // A02 Requirement 4 + Section 4 Scenario 7: Clear PENDING marker only AFTER COMMITTED verification.
++        // A02 Requirement 4: Clear PENDING marker only AFTER COMMITTED verification.
+         if (result.kind === 'COMMITTED') {
+           if (markerWritten) {
+             try {
+@@ -818,9 +1296,22 @@
+
+           return result;
+         }
+ 
+-        // A02 Requirement 5 & 6: UNCERTAIN MUST persist/retain durable shared marker across all tabs.
++        // A02 Requirement 5 & 6 + REV4-01: UNCERTAIN MUST persist/retain durable shared marker without losing history!
+         if (result.kind === 'UNCERTAIN') {
+           const reason = `Uncertain commit requires explicit verified loadSafe() recovery before any further write: ${result.detail}`;
++          // If marker was NOT yet written (e.g., pre-write slot read IO error), we did NOT confirm disk
++          // was empty even if expectedRevision === null -> priorSaveHistory MUST be 'UNKNOWN' (Rule 4)!
++          const pendingSnapshot = txStateBox.pendingMarker;
++          const priorSaveHistory: PriorSaveHistory = pendingSnapshot !== null
++            ? pendingSnapshot.priorSaveHistory
++            : expectedRevision !== null
++              ? 'CONFIRMED_VALID'
++              : 'UNKNOWN';
++          const confirmedRevision: string | null = pendingSnapshot !== null
++            ? pendingSnapshot.confirmedRevision
++            : expectedRevision !== null
++              ? String(expectedRevision)
++              : null;
+           try {
+             await this.writeSharedTxMarker({
+               version: 1,
+@@ -829,22 +1320,34 @@
+
+               state: 'UNCERTAIN',
+               expectedRevision,
+               targetRevision,
++              priorSaveHistory,
++              confirmedRevision,
+               createdAtMs: txCreatedAtMs,
+               updatedAtMs: Date.now(),
+               reason,
+             });
+           } catch {
+             // If markerWritten was true, the pre-written PENDING marker remains durably on disk.
+-            // Local freeze below always enforces fail-closed in this realm.
+           }
+           markStorageUnavailable(this.storageKey, 'UNCERTAIN_WRITE_PENDING_RECOVERY', reason);
+           return result;
+         }
+ 
+-        // Real storage IO error during physical write -> keep durable FROZEN/PENDING marker + freeze local.
++        // REV4-04: Conservative freeze on real storage IO/quota write failures, preserving prior-save history!
+         if (fatalErrors.length > 0 && result.kind === 'FAILED') {
+           const fatal = fatalErrors[0];
+-          const reason = `Runtime storage write failure (${fatal.code}): ${fatal.message}`;
++          const reason = `Runtime storage write failure (${fatal.code}): ${fatal.message}. Free storage space or restore permissions, then trigger explicit storage recovery.`;
++          const pendingSnapshot = txStateBox.pendingMarker;
++          const priorSaveHistory: PriorSaveHistory = pendingSnapshot !== null
++            ? pendingSnapshot.priorSaveHistory
++            : expectedRevision !== null
++              ? 'CONFIRMED_VALID'
++              : 'UNKNOWN';
++          const confirmedRevision: string | null = pendingSnapshot !== null
++            ? pendingSnapshot.confirmedRevision
++            : expectedRevision !== null
++              ? String(expectedRevision)
++              : null;
+           try {
+             await this.writeSharedTxMarker({
+               version: 1,
+@@ -853,6 +1356,8 @@
+
+               state: 'FROZEN',
+               expectedRevision,
+               targetRevision,
++              priorSaveHistory,
++              confirmedRevision,
+               createdAtMs: txCreatedAtMs,
+               updatedAtMs: Date.now(),
+               reason,

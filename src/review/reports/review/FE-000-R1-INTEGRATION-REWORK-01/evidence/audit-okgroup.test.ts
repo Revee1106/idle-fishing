@@ -1,0 +1,1 @@
+import {describe,it} from 'node:test';describe('group',()=>{it('ok1',()=>{});it('ok2',()=>{})});

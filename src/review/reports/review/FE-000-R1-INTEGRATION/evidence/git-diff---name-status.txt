@@ -1,0 +1,6 @@
+M	apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+M	apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts
+M	apps/game-client/assets/scripts/shared/SharedCoreBridge.ts
+M	apps/game-client/assets/scripts/ui/OverviewPage.ts
+M	tests/frontend/fe-000/platform-and-core.test.ts
+M	tests/frontend/fe-000/verify-web-build.mjs

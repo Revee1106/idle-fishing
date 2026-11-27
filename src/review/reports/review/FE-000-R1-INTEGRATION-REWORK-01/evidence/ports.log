@@ -1,0 +1,8 @@
+one COMMITTED CONFLICT 1
+two COMMITTED CONFLICT 1
+fail FAILED COMMITTED 1
+unavailablefs constructor threw fs unavailable
+denied STORAGE_UNAVAILABLE
+badjson CORRUPT
+empty EMPTY
+wx w/o fs; no DOM MEMORY EMPTY COMMITTED

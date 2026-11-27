@@ -1,0 +1,34 @@
+
+> idle-fishing-client@0.0.0-spike test:frontend
+> node ../../tests/frontend/fe-000/run-node-tests.mjs
+
+✔ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (122.4348ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO/quota errors, path guard & 3-slot save (87.4933ms)
+✔ [NODE-MEMORY/T04/T05/T07] MemoryFilePort 3-slot rotation, fault injection & v1->v2 migration (21.7522ms)
+✔ [MOCK-WX/I01/I05/T08] Local unsubscribe keeps siblings alive; suites dispose wx hooks on normal & fault exits (56.6865ms)
+✔ [MOCK-DOM/I05/T08] Suites dispose DOM visibilitychange listeners on normal & post-subscribe fault exits (13.2018ms)
+✔ [NODE/I03/T08] Unsupported monotonic source freezes +48h jump; rollback/recovery & deadline clamp (0.9334ms)
+✔ [MOCK-WX/I04/T09] Ad SDK single-instance guard, load/show reject cleanup, duplicate callback & 5-case stub (2.9797ms)
+✔ [NODE/COMPAT-SAVE] 5bcc9ac save protocol: UNCERTAIN, unknown slot, post-write unreadable, conflict, mixed epoch, UNSUPPORTED & lock mismatch (42.8761ms)
+✔ [NODE/COMPAT-OFFLINE-MIGRATION] 5bcc9ac offline checkpoints, overflow/allowance guards & in-progress FIGHTING/PREPARING migration (6.4295ms)
+✔ [NODE/COMPAT-LEGACY-358B111] Real pre-R1 (358b111) v2 Spike saves load & advance cleanly on 5bcc9ac (26.9115ms)
+✔ [NODE/P1-01/COMPAT-SAVE-BOOT-UNAVAILABLE] Storage probe failure returns STORAGE_UNAVAILABLE (never EMPTY or false COMMITTED) and recovers original save (4.5933ms)
+✔ [NODE/P2-04/COMPAT-SAVE-CONCURRENT-COMMIT] SingleWriterSaveCoordinator prevents double COMMITTED across same & shared-namespace callers (46.6596ms)
+✔ [NODE/P1-03/COMPAT-RUNNER-ZERO-AND-SKIP-GUARD] Supervised Node 24 runner accurately counts nested leaves and blocks early exit / unsafe out-dir (96681.0235ms)
+✔ [NODE/P1-01/TEST-01-A-B-C-D-E] Runtime storage freeze/recovery & WeChat missing-FS fail-closed (N1+N2) (12.3288ms)
+✔ [NODE/P2-05/COMPAT-SAFE-PATH-GUARD] Output dir deletion guard enforces exact allowlist and blocks traversal, roots, UNC & Windows junctions (104.9624ms)
+✔ [NODE/P1-01/A02-UNCERTAIN-CROSS-COORDINATOR-FREEZE] UNCERTAIN freezes the entire shared namespace across ALL coordinator instances until explicit verified loadSafe() (14.111ms)
+✔ [NODE/P1-02/A03-PARTIAL-IO-NO-PREMATURE-UNFREEZE] Partial slot IO unavailability stays frozen and distinguishes missing vs corrupt vs IO error (12.8943ms)
+✔ [NODE/A05/CROSS-TAB-LOCK-VS-TASK-ERROR-CLASSIFICATION] Task exception inside Web Lock is not misclassified as CROSS_TAB_LOCK_REJECTED (4.3179ms)
+✔ [NODE/REWORK-04/A02-SHARED-TX-MARKER-PROTOCOL] Persistent tx marker enforces write-ahead gate, fault isolation, crash/reload survival, recovery & domain isolation (16.541ms)
+✔ [NODE/REWORK-04/P2-IDB-UNAVAILABLE-AND-LEGACY-LOCALSTORAGE] Missing IndexedDB fails closed, never misclassifies browser as Node, and preserves/reports legacy localStorage saves (2.7144ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97348.0103
+
+[FE-000 Test Summary] total=20 pass=20 fail=0 skip=0 todo=0 containerFail=0 procErr=0

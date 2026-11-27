@@ -1,0 +1,6 @@
+CMD: node r3-runtime-failure.mjs
+[PASS] Runtime probe failure through BootEntry: STORAGE_UNAVAILABLE, halt, later HIDE skipped, zero writes :: {"rec":{"last":"STORAGE_UNAVAILABLE","halted":true,"health":"STORAGE_UNAVAILABLE"},"rec2":{"halted":true},"hist":["STORAGE_UNAVAILABLE/STORAGE_UNAVAILABLE","CANCELLED/SKIPPED_HALTED"],"slotsSame":true}
+[PASS] Runtime slot write failure through BootEntry: STORAGE_UNAVAILABLE + halt, zero writes :: {"rec":{"last":"STORAGE_UNAVAILABLE","halted":true,"health":"STORAGE_UNAVAILABLE"},"rec2":{"halted":true},"hist":["STORAGE_UNAVAILABLE/STORAGE_UNAVAILABLE","CANCELLED/SKIPPED_HALTED"],"slotsSame":true}
+
+===== RUNTIME FAILURE: PASS =====
+EXIT=0

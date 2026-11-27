@@ -1,0 +1,12 @@
+BE-D01 local vector A
+  payload_repr = '{"name":"Alice"}'
+  payload_utf8_bytes = 16
+  outer_utf8_bytes = 59
+  sha256 = 052166960a60184b98f25faadf00fc99bf6c60028c305a53e7e220fb625b92ae
+
+BE-D01 local vector B
+  payload_repr = '{"name":"He said \\"hi\\"","note":"line1\\nline2\\tend","path":"C:\\\\tmp\\\\f.txt","tail":"\u9c7c\U0001f41f"}'
+  payload_utf8_bytes = 93
+  outer_utf8_bytes = 158
+  sha256 = 2148014d02842b5d0f071476bda16004bc0e1971d4ec6264d343caa9411c7936
+

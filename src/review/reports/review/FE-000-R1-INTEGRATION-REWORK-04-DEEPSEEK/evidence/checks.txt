@@ -1,0 +1,25 @@
+[baseline] 2026-11-27T10:49:04+08:00
+HEAD=be62996fae44df24094331d670f6f0ab3741a4f2
+MERGE_HEAD=5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+merge-base=358b11105cfdee9bd076049c86a34d8f0aaa00e7
+branch=integration/fe-000-be-r1
+staged=58 unstaged=12 untracked=126
+
+[manifest] R4 FILES-REWORK
+64
+[manifest] R3 review evidence
+60
+
+[drift] backend vs 5bcc9ac lines
+0
+[drift] historical dirs vs R3 snapshot
+reports/integration/FE-000-R1-INTEGRATION OK
+reports/integration/FE-000-R1-INTEGRATION-REWORK-01 OK
+reports/integration/FE-000-R1-INTEGRATION-REWORK-02 OK
+reports/integration/FE-000-R1-INTEGRATION-REWORK-03 OK
+reports/frontend OK
+reports/review OK
+
+[candidate] diff R3 snapshot vs current
+6
+[candidate] R4 manifest code/test files: 36; same-as-R3: 28; changed: 8; missing: 0 (see candidate-diff-check.txt)

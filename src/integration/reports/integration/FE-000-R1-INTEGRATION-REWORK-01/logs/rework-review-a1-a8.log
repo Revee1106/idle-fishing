@@ -1,0 +1,22 @@
+COMMAND: node --test reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs
+EXIT_CODE: 0
+DURATION_MS: 722
+--- STDOUT ---
+✔ A1 unknown slot cannot authorize a new save (5.2655ms)
+✔ A2 durable write with unreadable target stays uncertain (9.5483ms)
+✔ A3 conflicting highest slots cannot authorize a write (1.6492ms)
+✔ A4 invalid payload in one slot still allows backup recovery (2.267ms)
+✔ A5 offline checkpoint records time already settled (3.22ms)
+✔ A6 resulting time must remain a safe millisecond (1.0821ms)
+✔ A7 exact fight completion at deadline issues one reward (1.9087ms)
+✔ A8 previously claimed reward must not be paid by restored fight (0.5316ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 478.3819
+
+--- STDERR ---

@@ -1,0 +1,25 @@
+﻿
+> idle-fishing-client@0.0.0-spike verify:web
+> node ../../tests/frontend/fe-000/verify-web-build.mjs
+
+[Web E2E] Assertions: 18/18 PASS
+[Web E2E] Saved JSON evidence: E:\idle-fishing-integration\reports\frontend\FE-000\evidence\r1-green-web-results.json
+  [PASS] web_boot_env — env=WEB
+  [PASS] web_boot_page — page=overview
+  [PASS] web_shared_core_7_of_7 — passed=7/7
+  [PASS] web_be000_1h_golden_hash — hash=bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a
+  [PASS] web_bundle_i01_lifecycle_dispatch — {"seenA":["HIDE","SHOW"],"seenB":["HIDE","SHOW","HIDE","SHOW"],"errCount":4,"remainingSubs":0,"attached":false}
+  [PASS] web_real_visibilitychange_hide_commit — {"restoredOnBoot":false,"revision":"1","gold":"31","cursorMs":1700000060000,"deadlineMs":1700028800000,"lastHideCommitAtMs":1795656360139,"lastHideTriggerSource":"document.visibilitychange","hideCommitCount":1,"showEventCount":0}
+  [PASS] web_cross_reload_persistence_recovery — {"restoredOnBoot":true,"revision":"1","gold":"31","cursorMs":1700000060000,"deadlineMs":1700028800000,"lastHideCommitAtMs":null,"lastHideTriggerSource":"boot-load","hideCommitCount":0,"showEventCount":0}
+  [PASS] web_click_modal_open_close — {"modalOpened":true,"modalClosed":true,"openCoord":{"x":101,"y":222},"closeCoord":{"x":195,"y":517}}
+  [PASS] web_click_switch_to_platform — page=platform
+  [PASS] web_platform_fs_6_of_6 — FS-CRUD=PASS, T04-ROTATE=PASS, T04-CORRUPT=PASS, T05-FAULTS=PASS, FS-SIZE-PROBE=PASS, FS-BG-RECOVERY=PASS
+  [PASS] web_platform_t08_2_of_2 — T08-MONO-PROBE=PASS, T08-LIFECYCLE-CLOCK=PASS
+  [PASS] web_platform_t09_stub_pass_real_blocked — stub=true, realBlocked=true
+  [PASS] web_t10_local_bundle_loaded — {"status":"PASS","bundleName":"spike-pack","manifestVersion":"spike-pack-v1","iconLoaded":true,"durationMs":408,"detail":"Loaded local bundle \"spike-pack\" (icon 64x64 + manifest=spike-pack-v1) in 408ms"}
+  [PASS] web_scrollview_wheel_scroll — {"before":{"y":0,"maxY":102},"after":{"y":100,"maxY":102}}
+  [PASS] web_responsive_landscape_resize — {"visibleWidth":720,"visibleHeight":333,"scale":0.26,"orientation":"LANDSCAPE"}
+  [PASS] web_t06_24h_single_equals_sliced — single=74.1ms, sliced=130ms, maxSlice=4ms, slices=60, rafMax=50.1ms, goldenMatch=true
+  [PASS] web_zero_console_errors — count=0
+  [PASS] web_zero_uncaught_exceptions — count=0
+

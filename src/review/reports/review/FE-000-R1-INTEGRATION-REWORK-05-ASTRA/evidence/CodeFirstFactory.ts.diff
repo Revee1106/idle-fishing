@@ -1,0 +1,123 @@
+--- apps/game-client/assets/scripts/ui/CodeFirstFactory.ts
+
++++ apps/game-client/assets/scripts/ui/CodeFirstFactory.ts
+
+@@ -377,6 +377,117 @@
+
+   };
+ }
+ 
++export interface StorageRecoveryOverlayViewModel {
++  readonly visible: boolean;
++  readonly title: string;
++  readonly body: string;
++  readonly recovering: boolean;
++  readonly showCorruptMarkerConfirm: boolean;
++}
++
++export interface StorageRecoveryOverlayHandle {
++  readonly overlay: Node;
++  readonly recoverBtn: ButtonHandle;
++  readonly confirmCorruptBtn: ButtonHandle;
++  update: (vm: StorageRecoveryOverlayViewModel) => void;
++  isVisible: () => boolean;
++  isCorruptConfirmVisible: () => boolean;
++}
++
++/**
++ * Minimal Code-First Storage Recovery Overlay (REV4-02 / REV4-03 / REV4-04).
++ * Visible ONLY when persistence is halted/frozen; provides normal user-triggered
++ * "Re-check & Recover Save" and separate controlled corrupt-marker confirmation
++ * without exposing any destructive save-clearing API.
++ */
++export function createStorageRecoveryOverlay(
++  parent: Node,
++  width: number,
++  height: number,
++  whiteFrame: SpriteFrame,
++  onRecoverClick: () => void,
++  onConfirmCorruptMarkerClick: () => void
++): StorageRecoveryOverlayHandle {
++  const overlay = createPanel('StorageRecoveryOverlay', width, height, new Color(10, 14, 24, 224), whiteFrame);
++  addFullStretchWidget(overlay, 0);
++  overlay.addComponent(Button);
++  overlay.active = false;
++
++  const dialogW = Math.min(640, width - 40);
++  const dialogH = 560;
++  const card = createPanel('StorageRecoveryCard', dialogW, dialogH, SPIKE_PALETTE.card, whiteFrame);
++  overlay.addChild(card);
++
++  const { node: titleNode, label: titleLabel } = createLabel('RecoveryTitle', 'Storage Recovery Required', {
++    fontSize: 24,
++    width: dialogW - 40,
++    height: 36,
++    color: SPIKE_PALETTE.warn,
++    overflow: Label.Overflow.SHRINK,
++    isBold: true,
++  });
++  titleNode.setPosition(0, dialogH / 2 - 40, 0);
++  card.addChild(titleNode);
++
++  const { node: bodyNode, label: bodyLabel } = createLabel('RecoveryBody', '', {
++    fontSize: 16,
++    lineHeight: 23,
++    width: dialogW - 44,
++    height: dialogH - 220,
++    color: SPIKE_PALETTE.text,
++    overflow: Label.Overflow.SHRINK,
++  });
++  bodyLabel.verticalAlign = Label.VerticalAlign.TOP;
++  bodyNode.setPosition(0, 34, 0);
++  card.addChild(bodyNode);
++
++  const recoverBtn = createButton(
++    'BtnRecoverStorage',
++    'Re-check & Recover Save',
++    dialogW - 60,
++    54,
++    new Color(30, 120, 96, 255),
++    whiteFrame,
++    onRecoverClick,
++    19
++  );
++  recoverBtn.node.setPosition(0, -dialogH / 2 + 116, 0);
++  card.addChild(recoverBtn.node);
++
++  const confirmCorruptBtn = createButton(
++    'BtnConfirmCorruptMarkerRecovery',
++    'Confirm Discard Corrupt Marker & Recover',
++    dialogW - 60,
++    50,
++    new Color(180, 96, 28, 255),
++    whiteFrame,
++    onConfirmCorruptMarkerClick,
++    17
++  );
++  confirmCorruptBtn.node.setPosition(0, -dialogH / 2 + 52, 0);
++  confirmCorruptBtn.node.active = false;
++  card.addChild(confirmCorruptBtn.node);
++
++  parent.addChild(overlay);
++
++  const update = (vm: StorageRecoveryOverlayViewModel) => {
++    titleLabel.string = vm.title;
++    bodyLabel.string = vm.body;
++    recoverBtn.label.string = vm.recovering ? 'Recovering...' : 'Re-check & Recover Save';
++    confirmCorruptBtn.node.active = vm.visible && vm.showCorruptMarkerConfirm && !vm.recovering;
++    overlay.active = vm.visible;
++  };
++
++  return {
++    overlay,
++    recoverBtn,
++    confirmCorruptBtn,
++    update,
++    isVisible: () => overlay.active,
++    isCorruptConfirmVisible: () => overlay.active && confirmCorruptBtn.node.active,
++  };
++}
++
+ export function attachPulseTween(node: Node): void {
+   tween(node)
+     .repeatForever(

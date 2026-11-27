@@ -1,0 +1,41 @@
+{
+  "failures": [
+    "A02 CROSS-TAB: Tab B without loadSafe MUST be STORAGE_UNAVAILABLE with zero writes: actual B=COMMITTED diskRev=3 (bypass=true) healthBefore=AVAILABLE/NONE"
+  ],
+  "uncertain": {
+    "kind": "UNCERTAIN",
+    "detail": "write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json)",
+    "health1": "STORAGE_UNAVAILABLE",
+    "freeze1": "UNCERTAIN_WRITE_PENDING_RECOVERY",
+    "health2": "STORAGE_UNAVAILABLE",
+    "disk": {
+      "rev": "2",
+      "gold": "84"
+    }
+  },
+  "samePage": {
+    "kind": "STORAGE_UNAVAILABLE",
+    "disk": {
+      "rev": "2",
+      "gold": "84"
+    }
+  },
+  "crossTab": {
+    "healthBefore": "AVAILABLE",
+    "freezeBefore": "NONE",
+    "kind": "COMMITTED",
+    "revision": "3",
+    "detail": null,
+    "healthAfter": "AVAILABLE",
+    "disk": {
+      "rev": "3",
+      "gold": "129"
+    }
+  },
+  "recover": {
+    "kind": "VALID",
+    "rev": "3",
+    "health": "AVAILABLE",
+    "health2": "AVAILABLE"
+  }
+}

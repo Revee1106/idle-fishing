@@ -1,0 +1,419 @@
+[
+  {
+    "label": "seed",
+    "state": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "recoveryClassification": null,
+      "readOnlyBackup": null,
+      "corruptMarkerRecoveryPreview": null,
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 0,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": null,
+      "lastRecoveryDetail": null,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795758714280,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 1,
+      "showEventCount": 1
+    },
+    "overlay": false,
+    "marker": null,
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "quota",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "recoveryClassification": "PENDING_RECOVERY_REQUIRED",
+      "readOnlyBackup": null,
+      "corruptMarkerRecoveryPreview": null,
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 0,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": null,
+      "lastRecoveryDetail": null,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795758714280,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "hideCommitCount": 1,
+      "showEventCount": 2
+    },
+    "overlay": true,
+    "marker": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795758715187_2_912281\",\"state\":\"FROZEN\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"priorSaveHistory\":\"CONFIRMED_VALID\",\"confirmedRevision\":\"1\",\"createdAtMs\":1795758715187,\"updatedAtMs\":1795758715972,\"reason\":\"Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.\"}",
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "clicked recovery with fault still enabled",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "recoveryClassification": "PENDING_RECOVERY_REQUIRED",
+      "readOnlyBackup": null,
+      "corruptMarkerRecoveryPreview": null,
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "recoveryInProgress": true,
+      "recoveryAttemptCount": 1,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": null,
+      "lastRecoveryDetail": null,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795758714280,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "hideCommitCount": 1,
+      "showEventCount": 2
+    },
+    "overlay": true,
+    "marker": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795758715187_2_912281\",\"state\":\"FROZEN\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"priorSaveHistory\":\"CONFIRMED_VALID\",\"confirmedRevision\":\"1\",\"createdAtMs\":1795758715187,\"updatedAtMs\":1795758715972,\"reason\":\"Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.\"}",
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "next HIDE same fault",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "recoveryClassification": "PENDING_RECOVERY_REQUIRED",
+      "readOnlyBackup": null,
+      "corruptMarkerRecoveryPreview": null,
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 1,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": "RECOVERED_VALID",
+      "lastRecoveryDetail": "Recovered verified save rev=1 (gold=31)",
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795758714280,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "hideCommitCount": 1,
+      "showEventCount": 3
+    },
+    "overlay": true,
+    "marker": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795758718789_3_896048\",\"state\":\"FROZEN\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"priorSaveHistory\":\"CONFIRMED_VALID\",\"confirmedRevision\":\"1\",\"createdAtMs\":1795758718789,\"updatedAtMs\":1795758719620,\"reason\":\"Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.\"}",
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "capacity restored",
+    "state": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "recoveryClassification": null,
+      "readOnlyBackup": null,
+      "corruptMarkerRecoveryPreview": null,
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 2,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": "RECOVERED_VALID",
+      "lastRecoveryDetail": "Recovered verified save rev=1 (gold=31)",
+      "restoredOnBoot": false,
+      "revision": "2",
+      "gold": "84",
+      "cursorMs": 1700000120000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795758721825,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 2,
+      "showEventCount": 4
+    },
+    "overlay": false,
+    "marker": null,
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.18028175210429753,\\\"claimKey\\\":\\\"fish:4\\\",\\\"fightMs\\\":13364,\\\"seq\\\":4,\\\"speciesU\\\":0.5095025301723276},\\\"big\\\":\\\"370370367037037036703703703670\\\",\\\"claims\\\":[\\\"fish:1\\\",\\\"fish:2\\\",\\\"fish:3\\\"],\\\"counters\\\":{\\\"attempts\\\":4,\\\"casts\\\":4,\\\"cycles\\\":3,\\\"envChecks\\\":0,\\\"events\\\":3,\\\"fights\\\":4,\\\"prepares\\\":3,\\\"waits\\\":4},\\\"cursorMs\\\":1700000120000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"84\\\",\\\"lastTerminalAttemptSeq\\\":\\\"3\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000120000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3205581217,1980569442,4181317099,3332318031],\\\"individual\\\":[899463051,3569043273,819158940,1312552944],\\\"species\\\":[1732286730,2661920002,2419132755,1559291852],\\\"wait\\\":[2019278767,4266330727,1022809557,1572741852]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"11947000000\\\",\\\"stageRequired\\\":\\\"13364000000\\\",\\\"stageStartMs\\\":1700000108053}\",\"revision\":\"2\",\"sha256\":\"c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f\"}",
+      null
+    ]
+  },
+  {
+    "label": "request succeeded then transaction aborted",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "Runtime storage write failure (WRITE_IO_ERROR): [WRITE_IO_ERROR] save_slot_2.json: IndexedDB write tx aborted. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "recoveryClassification": "PENDING_RECOVERY_REQUIRED",
+      "readOnlyBackup": null,
+      "corruptMarkerRecoveryPreview": null,
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 2,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": "RECOVERED_VALID",
+      "lastRecoveryDetail": "Recovered verified save rev=1 (gold=31)",
+      "restoredOnBoot": false,
+      "revision": "2",
+      "gold": "84",
+      "cursorMs": 1700000120000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795758721825,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "Runtime storage write failure (WRITE_IO_ERROR): [WRITE_IO_ERROR] save_slot_2.json: IndexedDB write tx aborted. Free storage space or restore permissions, then trigger explicit storage recovery.",
+      "hideCommitCount": 2,
+      "showEventCount": 5
+    },
+    "overlay": true,
+    "marker": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795758722934_5_904143\",\"state\":\"FROZEN\",\"expectedRevision\":\"2\",\"targetRevision\":\"3\",\"priorSaveHistory\":\"CONFIRMED_VALID\",\"confirmedRevision\":\"2\",\"createdAtMs\":1795758722934,\"updatedAtMs\":1795758723808,\"reason\":\"Runtime storage write failure (WRITE_IO_ERROR): [WRITE_IO_ERROR] save_slot_2.json: IndexedDB write tx aborted. Free storage space or restore permissions, then trigger explicit storage recovery.\"}",
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.18028175210429753,\\\"claimKey\\\":\\\"fish:4\\\",\\\"fightMs\\\":13364,\\\"seq\\\":4,\\\"speciesU\\\":0.5095025301723276},\\\"big\\\":\\\"370370367037037036703703703670\\\",\\\"claims\\\":[\\\"fish:1\\\",\\\"fish:2\\\",\\\"fish:3\\\"],\\\"counters\\\":{\\\"attempts\\\":4,\\\"casts\\\":4,\\\"cycles\\\":3,\\\"envChecks\\\":0,\\\"events\\\":3,\\\"fights\\\":4,\\\"prepares\\\":3,\\\"waits\\\":4},\\\"cursorMs\\\":1700000120000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"84\\\",\\\"lastTerminalAttemptSeq\\\":\\\"3\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000120000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3205581217,1980569442,4181317099,3332318031],\\\"individual\\\":[899463051,3569043273,819158940,1312552944],\\\"species\\\":[1732286730,2661920002,2419132755,1559291852],\\\"wait\\\":[2019278767,4266330727,1022809557,1572741852]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"11947000000\\\",\\\"stageRequired\\\":\\\"13364000000\\\",\\\"stageStartMs\\\":1700000108053}\",\"revision\":\"2\",\"sha256\":\"c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f\"}",
+      null
+    ]
+  },
+  {
+    "label": "preview",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON; Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back).",
+      "recoveryClassification": "TX_STATE_CORRUPT",
+      "readOnlyBackup": {
+        "revision": "2",
+        "schemaVersion": 2,
+        "epoch": "fe000-lifecycle-epoch",
+        "warnings": [
+          "selected slot 1 at revision 2"
+        ]
+      },
+      "corruptMarkerRecoveryPreview": {
+        "canConfirmRecovery": true,
+        "corruptMarkerSha256": "17eed55d881c0dd5fe0935a98d89dd9e52d62aed941f3fb7d17bd490e5aa3e8f",
+        "verifiedRevision": "2",
+        "slotsSnapshotSha256": "3d6544d418ed652d18a4ad24aaf1b7c790d067aa8302cb56446739098aa12afa",
+        "warning": "Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back)."
+      },
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "STORAGE_UNAVAILABLE",
+      "loadDetail": "SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON; Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back).",
+      "persistenceHalted": true,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 0,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": null,
+      "lastRecoveryDetail": null,
+      "restoredOnBoot": false,
+      "revision": null,
+      "gold": "0",
+      "cursorMs": 0,
+      "deadlineMs": null,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": null,
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "overlay": true,
+    "marker": "{bad",
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.18028175210429753,\\\"claimKey\\\":\\\"fish:4\\\",\\\"fightMs\\\":13364,\\\"seq\\\":4,\\\"speciesU\\\":0.5095025301723276},\\\"big\\\":\\\"370370367037037036703703703670\\\",\\\"claims\\\":[\\\"fish:1\\\",\\\"fish:2\\\",\\\"fish:3\\\"],\\\"counters\\\":{\\\"attempts\\\":4,\\\"casts\\\":4,\\\"cycles\\\":3,\\\"envChecks\\\":0,\\\"events\\\":3,\\\"fights\\\":4,\\\"prepares\\\":3,\\\"waits\\\":4},\\\"cursorMs\\\":1700000120000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"84\\\",\\\"lastTerminalAttemptSeq\\\":\\\"3\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000120000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3205581217,1980569442,4181317099,3332318031],\\\"individual\\\":[899463051,3569043273,819158940,1312552944],\\\"species\\\":[1732286730,2661920002,2419132755,1559291852],\\\"wait\\\":[2019278767,4266330727,1022809557,1572741852]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"11947000000\\\",\\\"stageRequired\\\":\\\"13364000000\\\",\\\"stageStartMs\\\":1700000108053}\",\"revision\":\"2\",\"sha256\":\"c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f\"}",
+      null
+    ]
+  },
+  {
+    "label": "destroyed while waiting",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON; Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back).",
+      "recoveryClassification": "TX_STATE_CORRUPT",
+      "readOnlyBackup": {
+        "revision": "2",
+        "schemaVersion": 2,
+        "epoch": "fe000-lifecycle-epoch",
+        "warnings": [
+          "selected slot 1 at revision 2"
+        ]
+      },
+      "corruptMarkerRecoveryPreview": {
+        "canConfirmRecovery": true,
+        "corruptMarkerSha256": "17eed55d881c0dd5fe0935a98d89dd9e52d62aed941f3fb7d17bd490e5aa3e8f",
+        "verifiedRevision": "2",
+        "slotsSnapshotSha256": "3d6544d418ed652d18a4ad24aaf1b7c790d067aa8302cb56446739098aa12afa",
+        "warning": "Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back)."
+      },
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "STORAGE_UNAVAILABLE",
+      "loadDetail": "SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON; Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back).",
+      "persistenceHalted": true,
+      "recoveryInProgress": true,
+      "recoveryAttemptCount": 1,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": null,
+      "lastRecoveryDetail": null,
+      "restoredOnBoot": false,
+      "revision": null,
+      "gold": "0",
+      "cursorMs": 0,
+      "deadlineMs": null,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": null,
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "overlay": false,
+    "marker": "{bad",
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.18028175210429753,\\\"claimKey\\\":\\\"fish:4\\\",\\\"fightMs\\\":13364,\\\"seq\\\":4,\\\"speciesU\\\":0.5095025301723276},\\\"big\\\":\\\"370370367037037036703703703670\\\",\\\"claims\\\":[\\\"fish:1\\\",\\\"fish:2\\\",\\\"fish:3\\\"],\\\"counters\\\":{\\\"attempts\\\":4,\\\"casts\\\":4,\\\"cycles\\\":3,\\\"envChecks\\\":0,\\\"events\\\":3,\\\"fights\\\":4,\\\"prepares\\\":3,\\\"waits\\\":4},\\\"cursorMs\\\":1700000120000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"84\\\",\\\"lastTerminalAttemptSeq\\\":\\\"3\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000120000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3205581217,1980569442,4181317099,3332318031],\\\"individual\\\":[899463051,3569043273,819158940,1312552944],\\\"species\\\":[1732286730,2661920002,2419132755,1559291852],\\\"wait\\\":[2019278767,4266330727,1022809557,1572741852]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"11947000000\\\",\\\"stageRequired\\\":\\\"13364000000\\\",\\\"stageStartMs\\\":1700000108053}\",\"revision\":\"2\",\"sha256\":\"c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f\"}",
+      null
+    ]
+  },
+  {
+    "label": "released after destroy",
+    "state": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON; Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back).",
+      "recoveryClassification": "TX_STATE_CORRUPT",
+      "readOnlyBackup": {
+        "revision": "2",
+        "schemaVersion": 2,
+        "epoch": "fe000-lifecycle-epoch",
+        "warnings": [
+          "selected slot 1 at revision 2"
+        ]
+      },
+      "corruptMarkerRecoveryPreview": {
+        "canConfirmRecovery": true,
+        "corruptMarkerSha256": "17eed55d881c0dd5fe0935a98d89dd9e52d62aed941f3fb7d17bd490e5aa3e8f",
+        "verifiedRevision": "2",
+        "slotsSnapshotSha256": "3d6544d418ed652d18a4ad24aaf1b7c790d067aa8302cb56446739098aa12afa",
+        "warning": "Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back)."
+      },
+      "legacyExperimentalSave": {
+        "detected": false,
+        "keys": [],
+        "policy": "NONE",
+        "detail": null
+      },
+      "loadStatus": "STORAGE_UNAVAILABLE",
+      "loadDetail": "SHARED_TX_STATE_CORRUPT: shared tx marker is invalid JSON; Shared transaction marker is corrupt; prior transaction history cannot be confirmed. Confirming will discard ONLY the corrupt marker and recover verified save rev=2 (uncommitted progress may be rolled back).",
+      "persistenceHalted": true,
+      "recoveryInProgress": false,
+      "recoveryAttemptCount": 1,
+      "recoveryDuplicateClicksIgnored": 0,
+      "lastRecoveryOutcome": "CANCELLED_DESTROYED",
+      "lastRecoveryDetail": "BootEntry destroyed during async recovery; instance remained inactive",
+      "restoredOnBoot": false,
+      "revision": null,
+      "gold": "0",
+      "cursorMs": 0,
+      "deadlineMs": null,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": null,
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "overlay": false,
+    "marker": null,
+    "slots": [
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+      "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.18028175210429753,\\\"claimKey\\\":\\\"fish:4\\\",\\\"fightMs\\\":13364,\\\"seq\\\":4,\\\"speciesU\\\":0.5095025301723276},\\\"big\\\":\\\"370370367037037036703703703670\\\",\\\"claims\\\":[\\\"fish:1\\\",\\\"fish:2\\\",\\\"fish:3\\\"],\\\"counters\\\":{\\\"attempts\\\":4,\\\"casts\\\":4,\\\"cycles\\\":3,\\\"envChecks\\\":0,\\\"events\\\":3,\\\"fights\\\":4,\\\"prepares\\\":3,\\\"waits\\\":4},\\\"cursorMs\\\":1700000120000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"84\\\",\\\"lastTerminalAttemptSeq\\\":\\\"3\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000120000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3205581217,1980569442,4181317099,3332318031],\\\"individual\\\":[899463051,3569043273,819158940,1312552944],\\\"species\\\":[1732286730,2661920002,2419132755,1559291852],\\\"wait\\\":[2019278767,4266330727,1022809557,1572741852]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"11947000000\\\",\\\"stageRequired\\\":\\\"13364000000\\\",\\\"stageStartMs\\\":1700000108053}\",\"revision\":\"2\",\"sha256\":\"c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f\"}",
+      null
+    ]
+  }
+]

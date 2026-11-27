@@ -1,0 +1,12 @@
+[REV3-04 original evidence]
+--- r3-t2-a09.log ---
+[stage] T2
+[PASS] T2 queued destroy: both tasks CANCELLED, zero writes :: {"calls":1,"hist":["CANCELLED/SKIPPED_DESTROYED","CANCELLED/SKIPPED_DESTROYED"],"slotsSame":true}
+[stage] A09
+[WATCHDOG] abort
+EXIT=3
+--- r3-a09-only.log ---
+[stage] A09-only
+[PASS] A09 concurrent FS diagnostics in two tabs both pass (unique ephemeral namespaces) :: {"a":["FS-CRUD:PASS","T04-ROTATE:PASS","T04-CORRUPT:PASS","T05-FAULTS:PASS","FS-SIZE-PROBE:PASS","FS-BG-RECOVERY:PASS"],"b":["FS-CRUD:PASS","T04-ROTATE:PASS","T04-CORRUPT:PASS","T05-FAULTS:PASS","FS-SIZE-PROBE:PASS","FS-BG-RECOVERY:PASS"]}
+===== T2/A09: PASS =====
+EXIT=0

@@ -1,0 +1,10 @@
+✔ passing test in mixed fixture (6.9158ms)
+﹣ skipped test in mixed fixture (0.6014ms) # SKIP
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 50.1428

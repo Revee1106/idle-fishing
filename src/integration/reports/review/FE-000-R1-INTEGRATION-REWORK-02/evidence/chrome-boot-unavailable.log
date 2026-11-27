@@ -1,0 +1,4 @@
+CMD: node chrome-boot-unavailable.mjs
+[PASS] chrome/T13 boot with failing storage probe is fail-closed, zero writes, then recovers exact save
+{"seededRev":"1","faultedStatus":"STORAGE_UNAVAILABLE","health":"STORAGE_UNAVAILABLE","halted":true,"hideCommits":0,"slotsUnchanged":true,"recoveredRev":"1","recoveredStatus":"VALID"}
+EXIT=0

@@ -1,0 +1,1 @@
+import test from 'node:test';test('pending',async()=>{setInterval(()=>{},100);await new Promise(()=>{})})

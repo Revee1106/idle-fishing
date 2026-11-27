@@ -1,0 +1,188 @@
+{
+  "buildDir": "E:\\idle-fishing-integration\\apps\\game-client\\build\\web-mobile",
+  "totalFiles": 36,
+  "totalBytes": 2092368,
+  "totalKB": 2043.33,
+  "files": [
+    {
+      "rel": "application.js",
+      "bytes": 3302,
+      "mtime": "2026-11-26T02:31:56.752Z"
+    },
+    {
+      "rel": "assets/internal/config.json",
+      "bytes": 1925,
+      "mtime": "2026-11-26T02:31:55.897Z"
+    },
+    {
+      "rel": "assets/internal/import/0b/0b0f7a282.json",
+      "bytes": 183708,
+      "mtime": "2026-11-26T02:31:55.859Z"
+    },
+    {
+      "rel": "assets/internal/index.js",
+      "bytes": 45110,
+      "mtime": "2026-11-26T02:31:55.286Z"
+    },
+    {
+      "rel": "assets/main/config.json",
+      "bytes": 580,
+      "mtime": "2026-11-26T02:31:55.902Z"
+    },
+    {
+      "rel": "assets/main/import/1f/1f0e2d3c-4b5a-4678-9abc-def012345678.json",
+      "bytes": 1869,
+      "mtime": "2026-11-26T02:31:55.772Z"
+    },
+    {
+      "rel": "assets/main/import/ba/ba21476f-2866-4f81-9c4d-6e359316e448.json",
+      "bytes": 192,
+      "mtime": "2026-11-26T02:31:55.785Z"
+    },
+    {
+      "rel": "assets/main/import/fd/fd8ec536-a354-4a17-9c74-4f3883c378c8.json",
+      "bytes": 480,
+      "mtime": "2026-11-26T02:31:55.802Z"
+    },
+    {
+      "rel": "assets/main/index.js",
+      "bytes": 81158,
+      "mtime": "2026-11-26T02:31:55.286Z"
+    },
+    {
+      "rel": "assets/resources/config.json",
+      "bytes": 823,
+      "mtime": "2026-11-26T02:31:55.900Z"
+    },
+    {
+      "rel": "assets/resources/import/04/048311957.json",
+      "bytes": 119,
+      "mtime": "2026-11-26T02:31:55.767Z"
+    },
+    {
+      "rel": "assets/resources/import/24/24dc2624-8d16-4599-8a21-f0bd4be94c0e.json",
+      "bytes": 72,
+      "mtime": "2026-11-26T02:31:55.776Z"
+    },
+    {
+      "rel": "assets/resources/import/24/24dc2624-8d16-4599-8a21-f0bd4be94c0e@f9941.json",
+      "bytes": 523,
+      "mtime": "2026-11-26T02:31:55.786Z"
+    },
+    {
+      "rel": "assets/resources/import/5f/5fb4e05a-39ab-4e9a-95f2-b038a3580d40.json",
+      "bytes": 823,
+      "mtime": "2026-11-26T02:31:55.802Z"
+    },
+    {
+      "rel": "assets/resources/import/fe/fe0b8f98-3829-4857-89ac-2fd2b27111a0.json",
+      "bytes": 72,
+      "mtime": "2026-11-26T02:31:55.809Z"
+    },
+    {
+      "rel": "assets/resources/import/fe/fe0b8f98-3829-4857-89ac-2fd2b27111a0@f9941.json",
+      "bytes": 591,
+      "mtime": "2026-11-26T02:31:55.816Z"
+    },
+    {
+      "rel": "assets/resources/index.js",
+      "bytes": 605,
+      "mtime": "2026-11-26T02:31:55.286Z"
+    },
+    {
+      "rel": "assets/resources/native/24/24dc2624-8d16-4599-8a21-f0bd4be94c0e.png",
+      "bytes": 72,
+      "mtime": "2026-11-26T01:25:01.455Z"
+    },
+    {
+      "rel": "assets/resources/native/fe/fe0b8f98-3829-4857-89ac-2fd2b27111a0.png",
+      "bytes": 441,
+      "mtime": "2026-11-26T01:25:01.455Z"
+    },
+    {
+      "rel": "assets/spike-pack/config.json",
+      "bytes": 563,
+      "mtime": "2026-11-26T02:31:55.904Z"
+    },
+    {
+      "rel": "assets/spike-pack/import/47/47cd4a6d-1822-4566-8f1f-d589e3abc836.json",
+      "bytes": 292,
+      "mtime": "2026-11-26T02:31:55.767Z"
+    },
+    {
+      "rel": "assets/spike-pack/import/99/99611724-5348-4028-858a-4fc3a5c16d90.json",
+      "bytes": 72,
+      "mtime": "2026-11-26T02:31:55.776Z"
+    },
+    {
+      "rel": "assets/spike-pack/import/99/99611724-5348-4028-858a-4fc3a5c16d90@6c48a.json",
+      "bytes": 149,
+      "mtime": "2026-11-26T02:31:55.786Z"
+    },
+    {
+      "rel": "assets/spike-pack/import/99/99611724-5348-4028-858a-4fc3a5c16d90@f9941.json",
+      "bytes": 600,
+      "mtime": "2026-11-26T02:31:55.802Z"
+    },
+    {
+      "rel": "assets/spike-pack/index.js",
+      "bytes": 608,
+      "mtime": "2026-11-26T02:31:55.286Z"
+    },
+    {
+      "rel": "assets/spike-pack/native/99/99611724-5348-4028-858a-4fc3a5c16d90.png",
+      "bytes": 313,
+      "mtime": "2026-11-26T01:25:01.457Z"
+    },
+    {
+      "rel": "cocos-js/cc.js",
+      "bytes": 1677662,
+      "mtime": "2026-11-25T05:00:49.242Z"
+    },
+    {
+      "rel": "index.html",
+      "bytes": 2158,
+      "mtime": "2026-11-26T02:31:56.818Z"
+    },
+    {
+      "rel": "index.js",
+      "bytes": 818,
+      "mtime": "2026-11-26T02:31:56.815Z"
+    },
+    {
+      "rel": "src/chunks/bundle.js",
+      "bytes": 37613,
+      "mtime": "2026-11-26T02:31:55.301Z"
+    },
+    {
+      "rel": "src/effect.bin",
+      "bytes": 5755,
+      "mtime": "2026-11-26T02:30:58.781Z"
+    },
+    {
+      "rel": "src/import-map.json",
+      "bytes": 40,
+      "mtime": "2026-11-26T02:31:55.705Z"
+    },
+    {
+      "rel": "src/polyfills.bundle.js",
+      "bytes": 8394,
+      "mtime": "2026-11-26T02:31:15.062Z"
+    },
+    {
+      "rel": "src/settings.json",
+      "bytes": 21324,
+      "mtime": "2026-11-26T02:31:56.865Z"
+    },
+    {
+      "rel": "src/system.bundle.js",
+      "bytes": 12259,
+      "mtime": "2026-11-26T02:31:30.841Z"
+    },
+    {
+      "rel": "style.css",
+      "bytes": 1283,
+      "mtime": "2026-06-12T06:59:48.298Z"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "idle-fishing-wechat",
+  "server": "",
+  "platform": "wechatgame",
+  "buildPath": "project://build",
+  "debug": false,
+  "md5Cache": false,
+  "skipCompressTexture": true,
+  "sourceMaps": false,
+  "polyfills": {
+    "asyncFunctions": false
+  },
+  "experimentalEraseModules": false,
+  "startSceneAssetBundle": false,
+  "useBuiltinServer": false,
+  "mainBundleIsRemote": false,
+  "mainBundleCompressionType": "merge_dep",
+  "useSplashScreen": false,
+  "bundleCommonChunk": false,
+  "packAutoAtlas": false,
+  "startScene": "1f0e2d3c-4b5a-4678-9abc-def012345678",
+  "outputName": "wechatgame",
+  "taskName": "wechatgame",
+  "scenes": [
+    {
+      "url": "db://assets/scenes/Boot.scene",
+      "uuid": "1f0e2d3c-4b5a-4678-9abc-def012345678"
+    }
+  ],
+  "packages": {
+    "wechatgame": {
+      "startSceneAssetBundle": false,
+      "orientation": "portrait",
+      "appid": "touristappid",
+      "buildOpenDataContextTemplate": "",
+      "separateEngine": false,
+      "highPerformanceMode": false,
+      "__version__": "1.0.4"
+    },
+    "cocos-service": {
+      "configID": "default",
+      "services": [],
+      "__version__": "3.0.9"
+    }
+  },
+  "__version__": "1.3.9"
+}

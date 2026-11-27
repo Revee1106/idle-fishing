@@ -1,0 +1,2 @@
+import {WeChatFilePort} from './tests/frontend/fe-000/.compiled/apps/game-client/assets/scripts/platform/WeChatFilePort.js';
+for(const miss of ['readFileSync','writeFileSync','ENOENT','EIO']){let fs={accessSync(){},mkdirSync(){},readFileSync(){throw Error(miss)},writeFileSync(){},unlinkSync(){},readdirSync(){return []}};if(miss.endsWith('Sync'))delete fs[miss];globalThis.wx={env:{USER_DATA_PATH:'mock://data'},getFileSystemManager:()=>fs};const p=new WeChatFilePort('audit');let r;try{r=await p.read('save_slot_0.json')}catch(e){r=e.code};console.log(miss,p.probeStorage(),r)}

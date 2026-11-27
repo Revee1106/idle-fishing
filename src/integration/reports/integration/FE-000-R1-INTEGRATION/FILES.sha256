@@ -1,0 +1,61 @@
+# FE-000-R1-INTEGRATION SHA-256 manifest (frontend integration modifications, reports, logs & evidence)
+# Branch: integration/fe-000-be-r1
+# HEAD (frontend base): be62996fae44df24094331d670f6f0ab3741a4f2
+# MERGE_HEAD (backend target, staged uncommitted): 5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+# Hash convention: SHA-256 of exact on-disk raw bytes as stored in this Windows workspace (git core.autocrlf=false; LF/CRLF preserved verbatim per file).
+# Note: Merged backend files (58 staged files) are byte-identical to commit 5bcc9ac (git diff 5bcc9ac = 0 lines).
+#
+2d516bb8937097f62ef6d570a8ff2c3c642c6d10f930498d502dd5c3b0e78542 *apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+d87329d2ae93a9158ca3676bdff9224adc1605a66b98a039d71312f1fd7ae912 *apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts
+21dd07f98ea2d69fbbbda0dc103460c8206135bbf57fd666deb621f6e42c1946 *apps/game-client/assets/scripts/shared/SharedCoreBridge.ts
+7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c *apps/game-client/assets/scripts/ui/OverviewPage.ts
+1e8aa5a13703703fa1f40931060ba22ab7da42ce9ae07de1ffd177ff979498f3 *reports/integration/FE-000-R1-INTEGRATION/IMPLEMENTATION_REPORT.md
+4d93252c5615111f5a4e7e864d2f383a88d50c4598f08edd2674088ba5de3e02 *reports/integration/FE-000-R1-INTEGRATION/INTEGRATION_HANDOFF.md
+e816b1171d2e649f57d85e8d93f28a1868cdd39dc18acc3396fed4bba2a111d4 *reports/integration/FE-000-R1-INTEGRATION/ISSUE_REPORT.md
+4824c02b8f132e629ef41d1214603f3751db1c97bdd8dab7443a04535a780a0a *reports/integration/FE-000-R1-INTEGRATION/TASK.md
+c283cbfbebcada9b09635b2f30acaf8b5d7d6eb23abae12016705a8ee1687b27 *reports/integration/FE-000-R1-INTEGRATION/TEST_REPORT.md
+49b1a8522144218a1c8469d5490486c5200cf912dfc3f96e2828bf094fbee934 *reports/integration/FE-000-R1-INTEGRATION/evidence/legacy-358b111-compat-results.json
+21c750c5c52701d29183c64fe9965798140b18cf4df4c69c32ddb2d3159e0258 *reports/integration/FE-000-R1-INTEGRATION/evidence/legacy-358b111-saves.json
+5627e5bebd61b72325c55086fec308a153320a50f58206a4552a6a97b4c2ae8c *reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-modal.png
+301aaa2c5ea129d4aed70cab422c20a8b99306e42f13b98a6193f62d81c86294 *reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-overview.png
+5b2ae93dc23de4d270d4c1f36ce8d69fd81c3ac8ac58bcd029b2fb32cfd4cc86 *reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-perf24h.png
+aca07f20cf311a4d59cbebe717411c5592bf14a454d9a669c7d6f4a6ff73d11d *reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-platform.png
+8712fbacd9d0a6a299bc72b4de1fbdc2ee16913a7eae927428474d462821baa6 *reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-web-results.json
+0df99e43ac228ec0f3455684f0c86d4021c66f70eabb679550c36feacfb63843 *reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-wechat-audit.json
+50a8e76f97585be383ff1fc2ba9dc7577c438a77e6fcb7840178273055c7dbaf *reports/integration/FE-000-R1-INTEGRATION/evidence/web-build-manifest.json
+371febcba7af9136a072dfd0740978ffad30e39e3b8db2ee867e8e3cf288ad92 *reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-modal.png
+dbf0ff866adcbcb04fa145df549b4ed8752c407f6cbdd956d7a6508eeff0777c *reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-overview.png
+ad736ad1a01505233df7d2155a0f39814f0e0c7c1a1659d08b3f22406fe3d563 *reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-perf24h.png
+23924bdd17053e3fe7a99a525e5a3d86b0e82eccc976e51ef5016e843b42e5c0 *reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-platform.png
+4b770826c005772669e2356c601d026be7e0c39924a0d36d1b18bff22e95d91d *reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-web-results.json
+96cccfb1876ee9fa64b1f673986abb069c3fce8e2a8a6d61d9bb664c1c6f740e *reports/integration/FE-000-R1-INTEGRATION/evidence/wechat-integrated-audit.json
+1ad2cced526eecdc13143b43dd3b29b698fda39c62e68e75c6f81bc7be2e96da *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-build-cocos-core.log
+a0ce14f0fbb61fefc464c8ec4ed4fb735b660a6c3acda1f1ee8ff030aa1f032b *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-build-web.log
+6340178864b70880a0ee1531293914240e606476e583b04f7110201e447a4200 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-build-wechat.log
+76a4a77e9202ed424669ca7d72565ad17577535f756795ce2f465a16248c1b43 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-module-resolution.log
+4d45751979a4116d028b45c84fae49ba5345a5cee17e7e5226067ba0bda5bb32 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-npm-ci.log
+0ae3e2ed90491469120e6838e39b54d5c1c58f3bd9647e68f1e4a69607cfd679 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-test-frontend.log
+6e4cfc1227ffa86d28db526e2f3c59984f4fbb84fe781be332b3dfa8fda5ccc8 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-typecheck-after-build.log
+aef0854e4dc70c70165c24761947e526817196ef09685eaea9c0c9c3dd74c707 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-typecheck.log
+04044599af36bd319f39fafc0f9988ccfb4ebb6b2bbef0097117d4c32e228501 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-verify-web.log
+e68d7e8c12178f2baa02a611612076fbb22a81c722c56df83e446df94e4fc132 *reports/integration/FE-000-R1-INTEGRATION/logs/phase1-verify-wechat.log
+0bf70deddda45f0e0108e81b2c8cde8483a3f61230e16021cc33cb42073b1106 *reports/integration/FE-000-R1-INTEGRATION/logs/phase2-backend-diff.log
+8d49629981f0a219c7a30699fae56f8deb2040706a8df28c31ac1c5f7ac79610 *reports/integration/FE-000-R1-INTEGRATION/logs/phase2-git-merge.log
+2131311b3586f235f92efc805cca3345b5213c72954fd62f133711f5f6c153ac *reports/integration/FE-000-R1-INTEGRATION/logs/phase3-backend-verify.log
+c2d3ec35307e3c103ce6dad845b5bb3cc043fc6c4802ebfb96eb3c7a11ed7f20 *reports/integration/FE-000-R1-INTEGRATION/logs/phase3-pre-adapt-frontend-test.log
+b56de78f476b0b9e28439b746cecce785e31d4eb18b5e1c4beb77b292131fbe7 *reports/integration/FE-000-R1-INTEGRATION/logs/phase4-legacy-probe.log
+630855f434352b959f44c436d41d75c1053e8b5db12d2c3fe49e6b6aff89c490 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-backend-perf.log
+ba179d1289c146a0eeddb95ad3950cb8542f999a179eddac1ca07b9a0499dd9b *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-backend-verify.log
+2815acbf021eeac39767066f6013fa353fc14e446cb0b1de2d37ede15a073b17 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-build-web.log
+74c977ebb64fa82c99470b69976ec7556218dd33587a6e7e343c7e795e2213a0 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-build-wechat.log
+035e2159e05da97f97348c9940e5988554afa3e8fce068170b3657b3621fb54d *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-frontend-tests.log
+6e4cfc1227ffa86d28db526e2f3c59984f4fbb84fe781be332b3dfa8fda5ccc8 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-frontend-typecheck.log
+5e318ecb3059e9fba1ed62869c03026037314b3290ba8702fa5b5c18ed39911b *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-review-a1-a8.log
+9fb61a7f93688248ef1f41ca44733a025cc0ae33ab7b165c19416f3e05ec0ae3 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-typecheck-cocos.log
+46284bfefe3458156b91c3516fc67a4d6cac01405d806461839e7287f990a317 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-verify-web.log
+7d45788512f85c4ef2f0ceb1c543736d8544ec38f2a5d9ecfbe696f5643f8b13 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-verify-wechat.log
+63a46f568405c222bbfeb93ee8cb0216403ee9b7d70489a934bb5a9a3b81a654 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-wechat-cli-check.log
+f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-zero-test-empty.log
+f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295 *reports/integration/FE-000-R1-INTEGRATION/logs/phase7-zero-test-missing.log
+2a996c0180766b00998baa8d4bd309ca50e82c3e1818ada2338c62ee4dc60b5e *tests/frontend/fe-000/platform-and-core.test.ts
+208e9a817d16f3da7c7bdff8369dbd14ecac6c08b3af250b341c2d5ac3e22d5d *tests/frontend/fe-000/verify-web-build.mjs

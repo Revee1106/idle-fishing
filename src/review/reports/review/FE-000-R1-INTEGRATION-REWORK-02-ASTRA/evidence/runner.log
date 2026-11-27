@@ -1,0 +1,76 @@
+body-exit.mjs {'rc': 0} NO_SENTINEL
+child-throw.mjs {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\runner-audit\\child-throw.mjs",
+  "passed": 0,
+  "f
+exit-one.mjs {'rc': 1} NO_SENTINEL
+hanging.mjs {'timeout': 2.5, 'rc': None} NO_SENTINEL
+todo-throws.mjs {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\runner-audit\\todo-throws.mjs",
+  "passed": 1,
+  "f
+fixture-deep-nested.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-early-exit.test.js {'rc': 0} NO_SENTINEL
+fixture-empty.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-failed.test.js {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-load-crash.test.js {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-mixed-fail.test.js {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-mixed.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-multi-fail.test.js {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-multi-nested.test.js {'rc': 1} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-parent-one-pass.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-parent-only-skip.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-parent-only-todo.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-passed.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-skipped.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-terminated.test.js {'rc': 1} NO_SENTINEL
+fixture-todo.test.js {'rc': 0} {
+  "completed": true,
+  "file": "C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled\\tests\\frontend
+fixture-uncaught.test.js {'rc': 1} NO_SENTINEL
+['node', 'tests\\frontend\\fe-000\\run-node-tests.mjs', '--files=fixtures/fixture-deep-nested.test.ts,fixtures/astra-exit.test.ts', '--out-dir=C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\astra02-sr6tbrsx\\tests\\frontend\\fe-000\\.compiled-astra'] 1 
+      ✔ deep leaf 2 (0.1975ms)
+    ✔ nested parent (0.6942ms)
+  ✔ inner suite (3.481ms)
+✔ outer suite (4.5641ms)
+ℹ tests 3
+ℹ suites 2
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19.7527
+
+[FE-000 Test Summary] total=2 pass=2 fail=0 skip=0 todo=0 containerFail=0 procErr=1
+[FE-000 Test Runner] FAIL: Test process exited (code=0) WITHOUT completing test runner (possible premature process.exit() or module crash): C:\Users\WANGWENJIE10\AppData\Local\Temp\astra02-sr6tbrsx\tests\frontend\fe-000\.compiled-astra\tests\frontend\fe-000\fixtures\astra-exit.test.js
+[FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected.
+

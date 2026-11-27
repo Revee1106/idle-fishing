@@ -1,0 +1,61 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-multi-fail.test.ts --out-dir=.compiled-r2-log
+EXIT_CODE: 1
+DURATION_MS: 2565
+--- STDOUT ---
+✖ fail leaf 1 (1.9816ms)
+✖ fail leaf 2 (0.2987ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12.578
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-multi-fail.test.js:3:1
+✖ fail leaf 1 (1.9816ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'a' !== 'b'
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-integration/tests/frontend/fe-000/.compiled-r2-log/tests/frontend/fe-000/fixtures/fixture-multi-fail.test.js:4:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'a',
+    expected: 'b',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-multi-fail.test.js:6:1
+✖ fail leaf 2 (0.2987ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  100 !== 200
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-integration/tests/frontend/fe-000/.compiled-r2-log/tests/frontend/fe-000/fixtures/fixture-multi-fail.test.js:7:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 100,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+[FE-000 Test Summary] total=2 pass=0 fail=2 skip=0 todo=0 containerFail=0 procErr=0
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: 0 leaf tests passed (total=2, skip=0, todo=0, fail=2).

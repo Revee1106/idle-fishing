@@ -1,0 +1,30 @@
+✖ intentional failing test case (4.7119ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25.8008
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled\tests\frontend\fe-000\fixtures\fixture-failed.test.js:3:1
+✖ intentional failing test case (4.7119ms)
+  AssertionError [ERR_ASSERTION]: expected failure for P1-03 runner guard verification
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/astra02-sr6tbrsx/tests/frontend/fe-000/.compiled/tests/frontend/fe-000/fixtures/fixture-failed.test.js:4:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

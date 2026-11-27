@@ -1,0 +1,11 @@
+CMD: node r3-a08.mjs
+[PASS] A08/1 allowlist accepted :: all accepted
+[PASS] A08/2 dangerous paths rejected in every mode :: 33 x3 rejected
+[PASS] A08/3 build prefix siblings rejected without deletion :: rmCalls=0
+[PASS] A08/4 lstat/realpath EACCES fail-closed (incl. pre-delete lstat), zero rm :: {"lstat":{"ok":false,"code":"METADATA_UNVERIFIABLE","reason":"lstatSync failed for C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\fe000-r3-snap\\tests\\frontend\\fe-000\\.compiled-metadata-audit (EACCES): EACCES: denied"},"real":{"ok":false,"code":"REALPATH_UNVERIFIABLE","reason":"realpathSync failed for C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\fe000-r3-snap\\tests\\frontend\\fe-000\\.compiled-metadata-audit (EACCES): EACCES: denied"},"repo":{"ok":false,"code":"REPO_ROOT_UNVERIFIABLE","reason":"Cannot verify canonical repoRoot (C:/Users/WANGWENJIE10/AppData/Local/Temp/fe000-r3-snap): EACCES: denied"},"tmp":{"ok":false,"code":"REALPATH_UNVERIFIABLE","reason":"realpathSync failed for C:\\Users\\WANGWE~1\\AppData\\Local\\Temp (EACCES): EACCES: denied"},"threw":true,"survived":true,"rmCalls":0}
+[PASS] A08/5 junction rejected; nested junction not traversed (canary survives) :: {"vj":"SYMLINK_OR_JUNCTION_REJECTED","vn":true,"removed":true,"canary":false}
+[PASS] A08/6 dangling junction rejected (no existsSync fallback) :: {"ok":false,"code":"REALPATH_UNVERIFIABLE","reason":"realpathSync failed for C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\fe000-r3-snap\\tests\\frontend\\fe-000\\.compiled-dangling-audit (ENOENT): ENOENT: no such file or directory, stat 'C:\\Users\\WANGWENJIE10\\AppData\\Local\\Temp\\fe000-r3-snap\\tests\\frontend\\fe-000\\.compiled-dangling-audit'"}
+[PASS] A08/7 runner rejects traversal out-dir before deletion :: status=1
+
+===== A08 SUMMARY: 7/7 PASS =====
+EXIT=0

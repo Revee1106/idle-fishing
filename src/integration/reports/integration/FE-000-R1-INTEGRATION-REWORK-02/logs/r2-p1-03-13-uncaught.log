@@ -1,0 +1,14 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-uncaught.test.ts --out-dir=.compiled-r2-log
+EXIT_CODE: 1
+DURATION_MS: 3252
+--- STDOUT ---
+
+[FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1
+
+--- STDERR ---
+[FE-000 Test Worker] uncaughtException: Error: Intentional uncaught async exception for P1-03 verification
+    at Timeout._onTimeout (file:///E:/idle-fishing-integration/tests/frontend/fe-000/.compiled-r2-log/tests/frontend/fe-000/fixtures/fixture-uncaught.test.js:4:15)
+    at listOnTimeout (node:internal/timers:685:17)
+    at process.processTimers (node:internal/timers:618:7)
+[FE-000 Test Runner] FAIL: Test process exited (code=1) WITHOUT completing test runner (possible premature process.exit() or module crash): E:\idle-fishing-integration\tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-uncaught.test.js
+[FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected.

@@ -1,0 +1,86 @@
+{
+  "failures": [],
+  "evidence": {
+    "seed": {
+      "rev": "1"
+    },
+    "bBoot": {
+      "status": "VALID",
+      "rev": "1"
+    },
+    "aUnc": {
+      "rev": "1",
+      "last": "UNCERTAIN",
+      "halted": true,
+      "health": "STORAGE_UNAVAILABLE",
+      "detail": "write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json)"
+    },
+    "markerAfterA": {
+      "state": "UNCERTAIN"
+    },
+    "bHide": {
+      "rev": "1",
+      "last": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "health": "STORAGE_UNAVAILABLE",
+      "diskRev": "1",
+      "marker": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795746609272_2_412844\",\"state\":\"UNCERTAIN\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"createdAtMs\":1795746609272,\"updatedAtMs\":1795746609305,\"reason\":\"Uncertain commit requires explicit verified loadSafe() recovery before any further write: write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json)\"}"
+    },
+    "bDirect": {
+      "kind": "STORAGE_UNAVAILABLE",
+      "detail": "SHARED_FREEZE_PENDING_RECOVERY: shared save domain has unrecovered UNCERTAIN marker (tx_1795746609272_2_412844, targetRev=2); explicit verified loadSafe() required (Uncertain commit requires explicit verified loadSafe() recovery before any further write: write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json))",
+      "writes": 0
+    },
+    "bAfterDestroy": {
+      "kind": "STORAGE_UNAVAILABLE",
+      "detail": "SHARED_FREEZE_PENDING_RECOVERY: shared save domain has unrecovered UNCERTAIN marker (tx_1795746609272_2_412844, targetRev=2); explicit verified loadSafe() required (Uncertain commit requires explicit verified loadSafe() recovery before any further write: write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json))",
+      "writes": 0
+    },
+    "aReload": {
+      "status": "STORAGE_UNAVAILABLE",
+      "halted": true
+    },
+    "bAfterReload": {
+      "kind": "STORAGE_UNAVAILABLE",
+      "detail": "SHARED_FREEZE_PENDING_RECOVERY: shared save domain has unrecovered UNCERTAIN marker (tx_1795746609272_2_412844, targetRev=2); explicit verified loadSafe() required (Uncertain commit requires explicit verified loadSafe() recovery before any further write: write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json))",
+      "writes": 0
+    },
+    "bAfterClose": {
+      "kind": "STORAGE_UNAVAILABLE",
+      "detail": "SHARED_FREEZE_PENDING_RECOVERY: shared save domain has unrecovered UNCERTAIN marker (tx_1795746609272_2_412844, targetRev=2); explicit verified loadSafe() required (Uncertain commit requires explicit verified loadSafe() recovery before any further write: write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json))",
+      "writes": 0
+    },
+    "recover": {
+      "loadKind": "VALID",
+      "loadRev": "1",
+      "markerAfter": null,
+      "commitKind": "COMMITTED",
+      "commitRev": "2",
+      "diskRev": "2"
+    },
+    "appAfterExternalRecovery": {
+      "last": "STORAGE_UNAVAILABLE",
+      "halted": true,
+      "health": "STORAGE_UNAVAILABLE"
+    },
+    "harnessActions": {
+      "keys": [
+        "ready",
+        "env",
+        "getCurrentPage",
+        "switchPage",
+        "runCoreChecks",
+        "run24hPerf",
+        "openOverviewModal",
+        "closeModal",
+        "isModalVisible",
+        "runAllPlatformChecks",
+        "awaitPendingHideSave",
+        "getCommitHistory",
+        "getLifecycleLog",
+        "getSnapshot"
+      ],
+      "recoverLike": []
+    }
+  }
+}

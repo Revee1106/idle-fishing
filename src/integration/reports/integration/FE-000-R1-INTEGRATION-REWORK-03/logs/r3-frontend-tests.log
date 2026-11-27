@@ -1,0 +1,38 @@
+COMMAND: npm.cmd --prefix apps/game-client run test:frontend
+EXIT_CODE: 0
+DURATION_MS: 106843
+--- STDOUT ---
+
+> idle-fishing-client@0.0.0-spike test:frontend
+> node ../../tests/frontend/fe-000/run-node-tests.mjs
+
+✔ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (161.9805ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO/quota errors, path guard & 3-slot save (38.4346ms)
+✔ [NODE-MEMORY/T04/T05/T07] MemoryFilePort 3-slot rotation, fault injection & v1->v2 migration (4.6004ms)
+✔ [MOCK-WX/I01/I05/T08] Local unsubscribe keeps siblings alive; suites dispose wx hooks on normal & fault exits (15.5427ms)
+✔ [MOCK-DOM/I05/T08] Suites dispose DOM visibilitychange listeners on normal & post-subscribe fault exits (8.677ms)
+✔ [NODE/I03/T08] Unsupported monotonic source freezes +48h jump; rollback/recovery & deadline clamp (0.3944ms)
+✔ [MOCK-WX/I04/T09] Ad SDK single-instance guard, load/show reject cleanup, duplicate callback & 5-case stub (1.6953ms)
+✔ [NODE/COMPAT-SAVE] 5bcc9ac save protocol: UNCERTAIN, unknown slot, post-write unreadable, conflict, mixed epoch, UNSUPPORTED & lock mismatch (39.4115ms)
+✔ [NODE/COMPAT-OFFLINE-MIGRATION] 5bcc9ac offline checkpoints, overflow/allowance guards & in-progress FIGHTING/PREPARING migration (7.3776ms)
+✔ [NODE/COMPAT-LEGACY-358B111] Real pre-R1 (358b111) v2 Spike saves load & advance cleanly on 5bcc9ac (27.0432ms)
+✔ [NODE/P1-01/COMPAT-SAVE-BOOT-UNAVAILABLE] Storage probe failure returns STORAGE_UNAVAILABLE (never EMPTY or false COMMITTED) and recovers original save (4.0389ms)
+✔ [NODE/P2-04/COMPAT-SAVE-CONCURRENT-COMMIT] SingleWriterSaveCoordinator prevents double COMMITTED across same & shared-namespace callers (36.988ms)
+✔ [NODE/P1-03/COMPAT-RUNNER-ZERO-AND-SKIP-GUARD] Supervised Node 24 runner accurately counts nested leaves and blocks early exit / unsafe out-dir (101073.5977ms)
+✔ [NODE/P1-01/TEST-01-A-B-C-D-E] Runtime storage freeze/recovery & WeChat missing-FS fail-closed (N1+N2) (3.3738ms)
+✔ [NODE/P2-05/COMPAT-SAFE-PATH-GUARD] Output dir deletion guard enforces exact allowlist and blocks traversal, roots, UNC & Windows junctions (28.7846ms)
+✔ [NODE/P1-01/A02-UNCERTAIN-CROSS-COORDINATOR-FREEZE] UNCERTAIN freezes the entire shared namespace across ALL coordinator instances until explicit verified loadSafe() (4.6458ms)
+✔ [NODE/P1-02/A03-PARTIAL-IO-NO-PREMATURE-UNFREEZE] Partial slot IO unavailability stays frozen and distinguishes missing vs corrupt vs IO error (6.9041ms)
+✔ [NODE/A05/CROSS-TAB-LOCK-VS-TASK-ERROR-CLASSIFICATION] Task exception inside Web Lock is not misclassified as CROSS_TAB_LOCK_REJECTED (1.3967ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101524.27
+
+[FE-000 Test Summary] total=18 pass=18 fail=0 skip=0 todo=0 containerFail=0 procErr=0
+
+--- STDERR ---

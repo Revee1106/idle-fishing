@@ -1,0 +1,8 @@
+[PASS] pre-write crash: durable PENDING marker remains :: {"ns":"r4_audit_crash_prewrite_1795747103259","seed":{"kind":"COMMITTED","rev":"1","disk":{"rev":"1","gold":"31","marker":null}},"afterCrash":{"rev":"1","gold":"31"},"markerState":"PENDING","markerStorageKey":"browser:r4_audit_crash_prewrite_1795747103259","blocked":{"kind":"STORAGE_UNAVAILABLE","writes":0},"recovery":{"loadKind":"VALID","loadRev":"1","markerAfter":null,"staleKind":"SKIPPED_NEW_SAVE","freshKind":"COMMITTED","freshRev":"2"}}
+[PASS] pre-write crash: other realm blocked with 0 writes :: {"kind":"STORAGE_UNAVAILABLE","writes":0}
+[PASS] pre-write crash: explicit recovery -> VALID rev1, marker cleared, commit rev2 :: {"loadKind":"VALID","loadRev":"1","markerAfter":null,"staleKind":"SKIPPED_NEW_SAVE","freshKind":"COMMITTED","freshRev":"2"}
+[PASS] pre-readback crash: slot rev2 written, PENDING marker remains :: {"ns":"r4_audit_crash_prereadback_1795747107203","seed":{"kind":"COMMITTED","rev":"1","disk":{"rev":"1","gold":"31","marker":null}},"afterCrash":{"rev":"2","gold":"84"},"markerState":"PENDING","markerStorageKey":"browser:r4_audit_crash_prereadback_1795747107203","blocked":{"kind":"STORAGE_UNAVAILABLE","writes":0},"recovery":{"loadKind":"VALID","loadRev":"2","markerAfter":null,"staleKind":"CONFLICT","freshKind":"COMMITTED","freshRev":"3"}}
+[PASS] pre-readback crash: other realm blocked with 0 writes :: {"kind":"STORAGE_UNAVAILABLE","writes":0}
+[PASS] pre-readback crash: recovery discovers rev2; stale conf; fresh rev3 :: {"loadKind":"VALID","loadRev":"2","markerAfter":null,"staleKind":"CONFLICT","freshKind":"COMMITTED","freshRev":"3"}
+
+===== A02 CRASH R4: PASS =====

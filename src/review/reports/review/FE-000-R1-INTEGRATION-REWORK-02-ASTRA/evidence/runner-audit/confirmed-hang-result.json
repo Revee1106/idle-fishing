@@ -1,0 +1,13 @@
+{
+  "cmd": [
+    "node",
+    "tests/frontend/fe-000/node-test-worker.mjs",
+    "runner-audit\\confirmed-hang.mjs",
+    "runner-audit\\confirmed-hang.sentinel"
+  ],
+  "enteredBody": true,
+  "finishedUnaided": false,
+  "externalWaitAfterEntrySec": 3,
+  "observedExitAfterExternalTermination": 1,
+  "sentinel": false
+}

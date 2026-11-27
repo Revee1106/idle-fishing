@@ -1,0 +1,118 @@
+{
+  "IDLE": {
+    "validateIssues": [],
+    "loadResultKind": "VALID",
+    "loadDetail": {
+      "revision": "1",
+      "recovered": false,
+      "warnings": []
+    },
+    "advanceInfo": {
+      "ok": true,
+      "beforeStage": "IDLE",
+      "afterStage": "FIGHTING",
+      "beforeGold": "0",
+      "afterGold": "31",
+      "beforeSettledUntilMs": 1700000000000,
+      "afterSettledUntilMs": 1700000060000,
+      "hasAttemptLockAfter": true,
+      "processedNodes": 8
+    },
+    "commitInfo": {
+      "kind": "COMMITTED",
+      "revision": "2",
+      "slot": 1,
+      "recoveredFromUncertainWrite": false
+    }
+  },
+  "FIGHTING": {
+    "validateIssues": [],
+    "loadResultKind": "VALID",
+    "loadDetail": {
+      "revision": "1",
+      "recovered": false,
+      "warnings": []
+    },
+    "advanceInfo": {
+      "ok": true,
+      "beforeStage": "FIGHTING",
+      "afterStage": "WAITING",
+      "beforeGold": "27911",
+      "afterGold": "27974",
+      "beforeSettledUntilMs": 1700000000000,
+      "afterSettledUntilMs": 1700028860000,
+      "hasAttemptLockAfter": false,
+      "processedNodes": 9
+    },
+    "commitInfo": {
+      "kind": "COMMITTED",
+      "revision": "2",
+      "slot": 1,
+      "recoveredFromUncertainWrite": false
+    }
+  },
+  "PREPARING": {
+    "validateIssues": [],
+    "loadResultKind": "VALID",
+    "loadDetail": {
+      "revision": "1",
+      "recovered": false,
+      "warnings": []
+    },
+    "advanceInfo": {
+      "ok": true,
+      "beforeStage": "PREPARING",
+      "afterStage": "PREPARING",
+      "beforeGold": "31",
+      "afterGold": "84",
+      "beforeSettledUntilMs": 1700000000000,
+      "afterSettledUntilMs": 1700000087000,
+      "hasAttemptLockAfter": false,
+      "processedNodes": 10
+    },
+    "commitInfo": {
+      "kind": "COMMITTED",
+      "revision": "2",
+      "slot": 1,
+      "recoveredFromUncertainWrite": false
+    }
+  },
+  "POST_DEADLINE": {
+    "validateIssues": [],
+    "loadResultKind": "VALID",
+    "loadDetail": {
+      "revision": "1",
+      "recovered": false,
+      "warnings": []
+    },
+    "advanceInfo": {
+      "ok": true,
+      "beforeStage": "WAITING",
+      "afterStage": "WAITING",
+      "beforeGold": "85366",
+      "afterGold": "85366",
+      "beforeSettledUntilMs": 1700000000000,
+      "afterSettledUntilMs": 1700086400000,
+      "hasAttemptLockAfter": false,
+      "processedNodes": 0
+    },
+    "commitInfo": {
+      "kind": "COMMITTED",
+      "revision": "2",
+      "slot": 1,
+      "recoveredFromUncertainWrite": false
+    }
+  },
+  "CORRUPT_WITH_VALID_BACKUP": {
+    "loadResultKind": "VALID",
+    "detail": {
+      "revision": "1",
+      "recovered": true,
+      "warnings": [
+        "save_slot_1.json: invalid JSON"
+      ],
+      "gold": "0",
+      "stage": "IDLE"
+    }
+  }
+}

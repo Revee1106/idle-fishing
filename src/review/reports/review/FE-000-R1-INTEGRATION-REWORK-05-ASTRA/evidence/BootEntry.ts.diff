@@ -1,0 +1,700 @@
+--- apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+
++++ apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+
+@@ -2,24 +2,21 @@
+
+  * FE-000 Minimal BootEntry component attached to Canvas in Boot.scene.
+  * Everything below Canvas is generated dynamically in TypeScript (Code First).
+  *
+- * Persistence & Lifecycle Guarantees (FE-000-R1-INTEGRATION-REWORK-03):
++ * Persistence, Recovery & Lifecycle Guarantees (FE-000-R1-INTEGRATION-REWORK-05):
+  * - P0 (A01): All commits execute through SingleWriterSaveCoordinator over linearizable
+  *   IndexedDB (BrowserFilePort) + W3C Web Locks cross-tab exclusivity (fail-closed).
+- * - P1-01 (N1+N2+A02): Strictly separates StorageHealthState (AVAILABLE | STORAGE_UNAVAILABLE)
+- *   from SaveState (EMPTY | VALID | CORRUPT | UNSUPPORTED). Any runtime storage failure OR
+- *   UNCERTAIN commit freezes the ENTIRE shared storage namespace across all coordinator instances
+- *   until explicit complete loadSafe() recovery succeeds.
+- * - P1-02 (A03): Partial slot IO failure stays frozen (STORAGE_UNAVAILABLE) and never promotes
+- *   an older backup to writable AVAILABLE state.
+- * - P1-03 (N3+A04+A06):
+- *   - Production Web build exposes ONLY read-only observation & normal UI controls on
+- *     globalThis.__SPIKE_HARNESS__ — ZERO destructive save-clearing, raw coordinator, or
+- *     owner-bypassing commit methods exist on the production harness.
+- *   - onDestroy() marks destroyed, severs coordinator/port/state references, cancels QUEUED
+- *     tasks before physical execution, allows in-flight STARTED writes to finish cleanly,
+- *     and rejects all subsequent tasks.
+- *   - Pending save queue catches per-task errors without poisoning subsequent HIDE tasks or
+- *     explicit recovery (A06).
++ * - A02 + REV4-01 + REV4-02 + REV4-03 + REV4-04:
++ *   - Automatic boot, reload, SHOW, and HIDE NEVER silently clear a shared pending/uncertain/frozen
++ *     tx marker (`clearPendingTxMarker: false` on boot).
++ *   - When storage is halted/frozen, displays the minimal Code-First StorageRecoveryOverlay showing
++ *     status, freeze cause, read-only backup info, and user guidance (including quota recovery).
++ *   - User-triggered "Re-check & Recover Save" (`BtnRecoverStorage`) and separate controlled
++ *     corrupt-marker confirmation (`BtnConfirmCorruptMarkerRecovery`) serialize on the SAME queue as
++ *     HIDE saves, deduplicate duplicate clicks, update `persistState`/`persistRevision` strictly from
++ *     verified persisted state (never stale frozen memory), clear `persistenceHalted` ONLY on complete
++ *     recovery, and NEVER reactivate a destroyed BootEntry on async callback completion.
++ * - P1-03 (A04): Production Web build keeps the EXACT 14 read-only/UI keys on `__SPIKE_HARNESS__` —
++ *   ZERO destructive save-clearing, raw coordinator, or owner-bypassing methods exposed.
+  */
+ import { _decorator, Component, JsonAsset, resources, SpriteFrame } from 'cc';
+ import { advanceOffline, createInitialState, type SpikeGameState } from '@idle-fishing/game-core';
+@@ -32,11 +29,22 @@
+
+ import { createRuntimeFilePort } from '../platform/PlatformVerificationSuite';
+ import {
+   SingleWriterSaveCoordinator,
++  type CorruptMarkerRecoveryPreview,
++  type ReadOnlyBackupInfo,
++  type RecoveryFailureClassification,
+   type SafeSaveCommitResult,
++  type SafeSaveLoadResult,
+ } from '../platform/SingleWriterSaveCoordinator';
+ import { UnavailableFilePort } from '../platform/WeChatFilePort';
+ import { RuntimeLifecycleProvider } from '../platform/WeChatLifecycleProvider';
+-import { createModal, createUiNode, type ModalHandle, type UiAssets } from '../ui/CodeFirstFactory';
++import {
++  createModal,
++  createStorageRecoveryOverlay,
++  createUiNode,
++  type ModalHandle,
++  type StorageRecoveryOverlayHandle,
++  type UiAssets,
++} from '../ui/CodeFirstFactory';
+ import { OverviewPage } from '../ui/OverviewPage';
+ import { PageRouter, type SpikePageId } from '../ui/PageRouter';
+ import { PlatformPage } from '../ui/PlatformPage';
+@@ -89,10 +97,18 @@
+
+ export interface BootPersistenceRecord {
+   readonly storageHealth: StorageHealthState;
+   readonly storageUnavailableReason: string | null;
++  readonly recoveryClassification: RecoveryFailureClassification | null;
++  readonly readOnlyBackup: ReadOnlyBackupInfo | null;
++  readonly corruptMarkerRecoveryPreview: CorruptMarkerRecoveryPreview | null;
+   readonly legacyExperimentalSave: LegacyLocalStorageStatus | null;
+   readonly loadStatus: 'EMPTY' | 'VALID' | 'CORRUPT' | 'UNSUPPORTED' | 'STORAGE_UNAVAILABLE';
+   readonly loadDetail: string | null;
+   readonly persistenceHalted: boolean;
++  readonly recoveryInProgress: boolean;
++  readonly recoveryAttemptCount: number;
++  readonly recoveryDuplicateClicksIgnored: number;
++  readonly lastRecoveryOutcome: 'RECOVERED_VALID' | 'RECOVERED_EMPTY' | 'FAILED' | 'CANCELLED_DESTROYED' | null;
++  readonly lastRecoveryDetail: string | null;
+   readonly restoredOnBoot: boolean;
+   readonly revision: string | null;
+   readonly gold: string;
+@@ -120,11 +136,13 @@
+
+   private overviewPage: OverviewPage | null = null;
+   private platformPage: PlatformPage | null = null;
+   private modal: ModalHandle | null = null;
++  private recoveryOverlay: StorageRecoveryOverlayHandle | null = null;
+   private lifecycle: RuntimeLifecycleProvider | null = null;
+   private lifecycleUnsub: (() => void) | null = null;
+   private persistPort: FilePort | null = null;
+   private persistCoordinator: SingleWriterSaveCoordinator | null = null;
+   private pendingHideSave: Promise<void> = Promise.resolve();
++  private activeRecoveryPromise: Promise<BootPersistenceRecord> | null = null;
+   private persistState: SpikeGameState | null = null;
+   private persistRevision: string | null = null;
+   private persistenceHalted = false;
+@@ -134,10 +152,18 @@
+
+   private persistRecord: BootPersistenceRecord = {
+     storageHealth: 'AVAILABLE',
+     storageUnavailableReason: null,
++    recoveryClassification: null,
++    readOnlyBackup: null,
++    corruptMarkerRecoveryPreview: null,
+     legacyExperimentalSave: null,
+     loadStatus: 'EMPTY',
+     loadDetail: null,
+     persistenceHalted: false,
++    recoveryInProgress: false,
++    recoveryAttemptCount: 0,
++    recoveryDuplicateClicksIgnored: 0,
++    lastRecoveryOutcome: null,
++    lastRecoveryDetail: null,
+     restoredOnBoot: false,
+     revision: null,
+     gold: '0',
+@@ -160,22 +186,22 @@
+
+   }
+ 
+   onDestroy(): void {
+-    // P1-02 (N3) + P1-03 (A04): Synchronously mark destroyed in WeakSet (immune to Cocos
+-    // CCObject._destroyImmediate() property nulling) and sever live storage references
+-    // so queued tasks cancel before physical execution and NO entry point on this destroyed
+-    // instance can ever dispatch new storage I/O. In-flight STARTED tasks retain their local
+-    // coordinator reference and complete cleanly.
++    // P1-02 (N3) + P1-03 (A04) + REV4-02: Synchronously mark destroyed in WeakSet (immune to Cocos
++    // CCObject._destroyImmediate() property nulling) and sever live storage references so queued
++    // saves and async recovery callbacks NEVER reactivate or dispatch new storage I/O.
+     destroyedBootEntries.add(this);
+     this.isDestroyed = true;
+     this.persistCoordinator = null;
+     this.persistPort = null;
+     this.persistState = null;
++    this.activeRecoveryPromise = null;
+     this.lifecycleUnsub?.();
+     this.lifecycleUnsub = null;
+     this.lifecycle?.dispose();
+     this.lifecycle = null;
+     this.responsive?.dispose();
+     this.responsive = null;
++    this.recoveryOverlay = null;
+   }
+ 
+   private loadResource<T>(path: string, type: new (...args: never[]) => T): Promise<T> {
+@@ -187,41 +213,45 @@
+
+     });
+   }
+ 
+-  private async initializePersistence(coordinator: SingleWriterSaveCoordinator): Promise<BootPersistenceRecord> {
+-    if (this.isComponentDestroyed()) return this.persistRecord;
+-    const legacyExperimentalSave = coordinator.port.getLegacyStorageStatus
+-      ? coordinator.port.getLegacyStorageStatus()
+-      : null;
+-    // REWORK-04 A02: Automatic startup/reload MUST NOT silently clear an unrecovered cross-tab
+-    // pending/uncertain transaction marker (`clearPendingTxMarker: false`).
+-    const existing = await coordinator.loadSafe({ clearPendingTxMarker: false });
+-    if (this.isComponentDestroyed()) return this.persistRecord;
+-
++  private buildRecordFromLoadResult(
++    prev: BootPersistenceRecord,
++    coordinator: SingleWriterSaveCoordinator,
++    existing: SafeSaveLoadResult,
++    legacyExperimentalSave: LegacyLocalStorageStatus | null,
++    sourceLabel: 'boot-load' | 'explicit-recovery' | 'corrupt-marker-recovery'
++  ): BootPersistenceRecord {
+     if (existing.kind === 'VALID' && existing.schemaVersion === 2) {
+       const restored = existing.raw as SpikeGameState;
+       this.persistState = restored;
+       this.persistRevision = existing.revision;
+       this.persistenceHalted = false;
+-      this.persistRecord = {
++      return {
++        ...prev,
+         storageHealth: 'AVAILABLE',
+         storageUnavailableReason: null,
++        recoveryClassification: null,
++        readOnlyBackup: null,
++        corruptMarkerRecoveryPreview: null,
+         legacyExperimentalSave,
+         loadStatus: 'VALID',
+         loadDetail: existing.warnings.length > 0 ? existing.warnings.join('; ') : null,
+         persistenceHalted: false,
+-        restoredOnBoot: true,
++        recoveryInProgress: false,
++        lastRecoveryOutcome: sourceLabel === 'boot-load' ? prev.lastRecoveryOutcome : 'RECOVERED_VALID',
++        lastRecoveryDetail:
++          sourceLabel === 'boot-load'
++            ? prev.lastRecoveryDetail
++            : `Recovered verified save rev=${existing.revision} (gold=${restored.gold})`,
++        restoredOnBoot: sourceLabel === 'boot-load' ? true : prev.restoredOnBoot,
+         revision: existing.revision,
+         gold: restored.gold,
+         cursorMs: restored.cursorMs,
+         deadlineMs: restored.offline?.deadlineMs ?? null,
+-        lastHideCommitAtMs: null,
+-        lastHideTriggerSource: 'boot-load',
+-        lastCommitKind: null,
+-        lastCommitDetail: null,
+-        hideCommitCount: 0,
+-        showEventCount: 0,
++        lastHideTriggerSource: sourceLabel === 'boot-load' ? 'boot-load' : prev.lastHideTriggerSource,
+       };
+-    } else if (existing.kind === 'EMPTY') {
++    }
++
++    if (existing.kind === 'EMPTY') {
+       const fresh = createInitialState({
+         saveEpoch: 'fe000-lifecycle-epoch',
+         startMs: 1_700_000_000_000,
+@@ -230,83 +260,147 @@
+
+       this.persistState = fresh;
+       this.persistRevision = null;
+       this.persistenceHalted = false;
+-      this.persistRecord = {
++      return {
++        ...prev,
+         storageHealth: 'AVAILABLE',
+         storageUnavailableReason: null,
++        recoveryClassification: null,
++        readOnlyBackup: null,
++        corruptMarkerRecoveryPreview: null,
+         legacyExperimentalSave,
+         loadStatus: 'EMPTY',
+         loadDetail: null,
+         persistenceHalted: false,
++        recoveryInProgress: false,
++        lastRecoveryOutcome: sourceLabel === 'boot-load' ? prev.lastRecoveryOutcome : 'RECOVERED_EMPTY',
++        lastRecoveryDetail:
++          sourceLabel === 'boot-load' ? prev.lastRecoveryDetail : 'Verified clean empty save domain',
+         restoredOnBoot: false,
+         revision: null,
+         gold: fresh.gold,
+         cursorMs: fresh.cursorMs,
+         deadlineMs: fresh.offline?.deadlineMs ?? null,
+-        lastHideCommitAtMs: null,
+-        lastHideTriggerSource: null,
+-        lastCommitKind: null,
+-        lastCommitDetail: null,
+-        hideCommitCount: 0,
+-        showEventCount: 0,
+       };
+-    } else if (existing.kind === 'STORAGE_UNAVAILABLE') {
+-      // P1-01 & P1-02 (A02/A03/P2): Persistent storage unavailable, unrecovered pending tx marker,
+-      // or partial slot IO error MUST stay frozen, MUST NOT be treated as EMPTY/new player, and
+-      // MUST NOT promote older backups as writable or resurrect legacy localStorage saves.
++    }
++
++    if (existing.kind === 'STORAGE_UNAVAILABLE') {
++      // Fail-closed: NEVER treat unavailable/frozen/partial-IO/disappeared/corrupt-marker as EMPTY,
++      // and NEVER retain stale pre-freeze memory candidate as writable.
+       this.persistState = null;
+       this.persistRevision = null;
+       this.persistenceHalted = true;
+-      this.persistRecord = {
++      return {
++        ...prev,
+         storageHealth: 'STORAGE_UNAVAILABLE',
+         storageUnavailableReason: existing.detail,
++        recoveryClassification: existing.recoveryClassification ?? null,
++        readOnlyBackup: existing.readOnlyBackup ?? null,
++        corruptMarkerRecoveryPreview: existing.corruptMarkerRecoveryPreview ?? null,
+         legacyExperimentalSave,
+         loadStatus: 'STORAGE_UNAVAILABLE',
+         loadDetail: existing.detail,
+         persistenceHalted: true,
++        recoveryInProgress: false,
++        lastRecoveryOutcome: sourceLabel === 'boot-load' ? prev.lastRecoveryOutcome : 'FAILED',
++        lastRecoveryDetail: sourceLabel === 'boot-load' ? prev.lastRecoveryDetail : existing.detail,
+         restoredOnBoot: false,
+         revision: null,
+         gold: '0',
+         cursorMs: 0,
+         deadlineMs: null,
+-        lastHideCommitAtMs: null,
+-        lastHideTriggerSource: null,
+-        lastCommitKind: null,
+-        lastCommitDetail: null,
+-        hideCommitCount: 0,
+-        showEventCount: 0,
+-      };
+-    } else {
+-      // Fail-closed: NEVER treat CORRUPT / UNSUPPORTED / unmigrated saves as a new player,
+-      // and NEVER delete or overwrite slots to work around incompatibility.
+-      const loadStatus = existing.kind === 'CORRUPT' ? 'CORRUPT' : 'UNSUPPORTED';
+-      const loadDetail =
+-        existing.kind === 'VALID'
+-          ? `schemaVersion ${existing.schemaVersion} requires explicit migration`
+-          : existing.detail;
+-      this.persistState = null;
+-      this.persistRevision = null;
+-      this.persistenceHalted = true;
+-      this.persistRecord = {
+-        storageHealth: coordinator.storageHealth,
+-        storageUnavailableReason: coordinator.storageUnavailableReason,
+-        legacyExperimentalSave,
+-        loadStatus,
+-        loadDetail,
+-        persistenceHalted: true,
+-        restoredOnBoot: false,
+-        revision: null,
+-        gold: '0',
+-        cursorMs: 0,
+-        deadlineMs: null,
+-        lastHideCommitAtMs: null,
+-        lastHideTriggerSource: null,
+-        lastCommitKind: null,
+-        lastCommitDetail: null,
+-        hideCommitCount: 0,
+-        showEventCount: 0,
+       };
+     }
++
++    // CORRUPT / UNSUPPORTED / unmigrated schema -> fail-closed
++    const loadStatus = existing.kind === 'CORRUPT' ? 'CORRUPT' : 'UNSUPPORTED';
++    const loadDetail =
++      existing.kind === 'VALID'
++        ? `schemaVersion ${existing.schemaVersion} requires explicit migration`
++        : existing.detail;
++    this.persistState = null;
++    this.persistRevision = null;
++    this.persistenceHalted = true;
++    return {
++      ...prev,
++      storageHealth: coordinator.storageHealth,
++      storageUnavailableReason: coordinator.storageUnavailableReason,
++      recoveryClassification: null,
++      readOnlyBackup: null,
++      corruptMarkerRecoveryPreview: null,
++      legacyExperimentalSave,
++      loadStatus,
++      loadDetail,
++      persistenceHalted: true,
++      recoveryInProgress: false,
++      lastRecoveryOutcome: sourceLabel === 'boot-load' ? prev.lastRecoveryOutcome : 'FAILED',
++      lastRecoveryDetail: sourceLabel === 'boot-load' ? prev.lastRecoveryDetail : loadDetail,
++      restoredOnBoot: false,
++      revision: null,
++      gold: '0',
++      cursorMs: 0,
++      deadlineMs: null,
++    };
++  }
++
++  private async initializePersistence(coordinator: SingleWriterSaveCoordinator): Promise<BootPersistenceRecord> {
++    if (this.isComponentDestroyed()) return this.persistRecord;
++    const legacyExperimentalSave = coordinator.port.getLegacyStorageStatus
++      ? coordinator.port.getLegacyStorageStatus()
++      : null;
++    // REWORK-04/05 A02: Automatic startup/reload MUST NOT silently clear an unrecovered cross-tab
++    // pending/uncertain/frozen transaction marker (`clearPendingTxMarker: false`).
++    const existing = await coordinator.loadSafe({ clearPendingTxMarker: false });
++    if (this.isComponentDestroyed()) return this.persistRecord;
++
++    this.persistRecord = this.buildRecordFromLoadResult(
++      this.persistRecord,
++      coordinator,
++      existing,
++      legacyExperimentalSave,
++      'boot-load'
++    );
+     return this.persistRecord;
++  }
++
++  private formatRecoveryOverlayViewModel(rec: BootPersistenceRecord) {
++    const visible = rec.persistenceHalted;
++    const backupLine = rec.readOnlyBackup
++      ? `Read-Only Backup: rev=${rec.readOnlyBackup.revision} (epoch=${rec.readOnlyBackup.epoch}, schema=v${rec.readOnlyBackup.schemaVersion})`
++      : 'Read-Only Backup: none';
++    const guidance =
++      rec.recoveryClassification === 'TX_STATE_CORRUPT'
++        ? rec.corruptMarkerRecoveryPreview?.canConfirmRecovery
++          ? `Action: Review warning below and use "Confirm Discard Corrupt Marker & Recover" to restore rev=${rec.corruptMarkerRecoveryPreview.verifiedRevision}.`
++          : 'Action: Controlled corrupt-marker recovery unavailable without a verified VALID save.'
++        : rec.recoveryClassification === 'SAVE_DISAPPEARED_PENDING_RECOVERY' ||
++            rec.recoveryClassification === 'REVISION_REGRESSION_PENDING_RECOVERY'
++          ? 'Action: Save history mismatch detected. Writes remain frozen to prevent silent reset.'
++          : 'Action: If storage was full (QUOTA) or unavailable, free space / restore permissions, then click "Re-check & Recover Save".';
++    const lines = [
++      `Status: ${rec.loadStatus} | StorageHealth: ${rec.storageHealth}`,
++      `Classification: ${rec.recoveryClassification ?? 'NONE'}`,
++      backupLine,
++      `Reason: ${(rec.storageUnavailableReason ?? rec.loadDetail ?? 'Persistence halted').slice(0, 260)}`,
++      guidance,
++    ];
++    if (rec.corruptMarkerRecoveryPreview?.warning) {
++      lines.push(`Warning: ${rec.corruptMarkerRecoveryPreview.warning.slice(0, 200)}`);
++    }
++    if (rec.lastRecoveryDetail) {
++      lines.push(`Last Recovery: ${rec.lastRecoveryOutcome ?? '-'} — ${rec.lastRecoveryDetail.slice(0, 140)}`);
++    }
++    return {
++      visible,
++      title:
++        rec.recoveryClassification === 'TX_STATE_CORRUPT'
++          ? 'Corrupt Transaction Marker — Recovery Needed'
++          : 'Storage Frozen — Explicit Recovery Required',
++      body: lines.join('\n'),
++      recovering: rec.recoveryInProgress,
++      showCorruptMarkerConfirm:
++        rec.recoveryClassification === 'TX_STATE_CORRUPT' &&
++        Boolean(rec.corruptMarkerRecoveryPreview?.canConfirmRecovery),
++    };
+   }
+ 
+   private async bootstrap(): Promise<void> {
+@@ -370,10 +464,24 @@
+
+     // Closure-retained read-only mirrors remain safe to inspect even after Cocos _destroyImmediate() nulls fields
+     const commitHistoryLog = this.commitHistory;
+     let latestPersistRecord = this.persistRecord;
++    let latestPendingQueue: Promise<void> = this.pendingHideSave ?? Promise.resolve();
++    const setPendingQueue = (next: Promise<void>) => {
++      latestPendingQueue = next;
++      if (!this.isComponentDestroyed()) {
++        this.pendingHideSave = next;
++      }
++    };
++
++    const refreshRecoveryOverlay = () => {
++      if (this.isComponentDestroyed() || !this.recoveryOverlay) return;
++      this.recoveryOverlay.update(this.formatRecoveryOverlayViewModel(latestPersistRecord));
++    };
++
+     const updatePersistRecord = (rec: BootPersistenceRecord) => {
+       latestPersistRecord = rec;
+       if (!this.isComponentDestroyed()) {
+         this.persistRecord = rec;
++        refreshRecoveryOverlay();
+       }
+     };
+ 
+@@ -385,6 +493,8 @@
+
+         switchHistory: destroyed ? [] : (this.router?.switchHistory ?? []),
+         viewport: destroyed ? null : this.responsive?.getMetrics(),
+         modalVisible: destroyed ? false : (this.modal?.isVisible() ?? false),
++        recoveryOverlayVisible: destroyed ? false : (this.recoveryOverlay?.isVisible() ?? false),
++        corruptConfirmButtonVisible: destroyed ? false : (this.recoveryOverlay?.isCorruptConfirmVisible() ?? false),
+         coreReport: destroyed ? null : this.overviewPage?.lastCoreReport,
+         perfReport: destroyed ? null : this.overviewPage?.lastPerfReport,
+         fsResults: destroyed ? [] : (this.platformPage?.lastFsResults ?? []),
+@@ -408,13 +518,177 @@
+
+       }
+     };
+ 
++    /**
++     * REV4-02 / REV4-03 / REV4-04: User-triggered explicit recovery serialized on the SAME queue
++     * as HIDE saves (`this.pendingHideSave`). Deduplicates rapid clicks, updates state strictly from
++     * verified persisted data, keeps frozen on failure, and NEVER reactivates a destroyed BootEntry.
++     */
++    const triggerUserRecovery = (mode: 'STANDARD' | 'CONFIRM_CORRUPT_MARKER'): Promise<BootPersistenceRecord> => {
++      if (this.isComponentDestroyed()) {
++        return Promise.resolve(latestPersistRecord);
++      }
++      if (this.activeRecoveryPromise) {
++        updatePersistRecord({
++          ...latestPersistRecord,
++          recoveryDuplicateClicksIgnored: latestPersistRecord.recoveryDuplicateClicksIgnored + 1,
++        });
++        syncWebDataset();
++        return this.activeRecoveryPromise;
++      }
++
++      const previewSnapshot = latestPersistRecord.corruptMarkerRecoveryPreview;
++      if (
++        mode === 'CONFIRM_CORRUPT_MARKER' &&
++        (!previewSnapshot ||
++          !previewSnapshot.canConfirmRecovery ||
++          !previewSnapshot.verifiedRevision ||
++          !previewSnapshot.slotsSnapshotSha256)
++      ) {
++        updatePersistRecord({
++          ...latestPersistRecord,
++          lastRecoveryOutcome: 'FAILED',
++          lastRecoveryDetail: 'Controlled corrupt-marker recovery requires a verified VALID backup preview',
++        });
++        syncWebDataset();
++        return Promise.resolve(latestPersistRecord);
++      }
++
++      updatePersistRecord({
++        ...latestPersistRecord,
++        recoveryInProgress: true,
++        recoveryAttemptCount: latestPersistRecord.recoveryAttemptCount + 1,
++      });
++      syncWebDataset();
++
++      let resolveRecovery!: (rec: BootPersistenceRecord) => void;
++      const recoveryPromise = new Promise<BootPersistenceRecord>((resolve) => {
++        resolveRecovery = resolve;
++      });
++      this.activeRecoveryPromise = recoveryPromise;
++
++      setPendingQueue(latestPendingQueue.then(async () => {
++        try {
++          if (this.isComponentDestroyed()) {
++            latestPersistRecord = {
++              ...latestPersistRecord,
++              recoveryInProgress: false,
++              lastRecoveryOutcome: 'CANCELLED_DESTROYED',
++              lastRecoveryDetail: 'BootEntry destroyed before explicit recovery started',
++            };
++            resolveRecovery(latestPersistRecord);
++            return;
++          }
++          const coordinator = this.persistCoordinator;
++          if (!coordinator) {
++            updatePersistRecord({
++              ...latestPersistRecord,
++              recoveryInProgress: false,
++              persistenceHalted: true,
++              lastRecoveryOutcome: 'FAILED',
++              lastRecoveryDetail: 'Persistence coordinator unavailable',
++            });
++            syncWebDataset();
++            resolveRecovery(latestPersistRecord);
++            return;
++          }
++
++          const legacyExperimentalSave = coordinator.port.getLegacyStorageStatus
++            ? coordinator.port.getLegacyStorageStatus()
++            : latestPersistRecord.legacyExperimentalSave;
++
++          const loadRes: SafeSaveLoadResult =
++            mode === 'CONFIRM_CORRUPT_MARKER' &&
++            previewSnapshot &&
++            previewSnapshot.verifiedRevision &&
++            previewSnapshot.slotsSnapshotSha256
++              ? await coordinator.recoverFromCorruptTxMarker({
++                  expectedCorruptMarkerSha256: previewSnapshot.corruptMarkerSha256,
++                  expectedValidRevision: previewSnapshot.verifiedRevision,
++                  expectedSlotsSnapshotSha256: previewSnapshot.slotsSnapshotSha256,
++                })
++              : await coordinator.loadSafe({ clearPendingTxMarker: true });
++
++          // REV4-02 Requirement 11: Destroyed BootEntry MUST NEVER be reactivated by async recovery completion!
++          if (this.isComponentDestroyed()) {
++            latestPersistRecord = {
++              ...latestPersistRecord,
++              recoveryInProgress: false,
++              persistenceHalted: true,
++              lastRecoveryOutcome: 'CANCELLED_DESTROYED',
++              lastRecoveryDetail: 'BootEntry destroyed during async recovery; instance remained inactive',
++            };
++            resolveRecovery(latestPersistRecord);
++            return;
++          }
++
++          const updated = this.buildRecordFromLoadResult(
++            latestPersistRecord,
++            coordinator,
++            loadRes,
++            legacyExperimentalSave,
++            mode === 'CONFIRM_CORRUPT_MARKER' ? 'corrupt-marker-recovery' : 'explicit-recovery'
++          );
++          updatePersistRecord(updated);
++          syncWebDataset();
++          resolveRecovery(updated);
++        } catch (err) {
++          const detail = err instanceof Error ? err.message : String(err);
++          if (!this.isComponentDestroyed()) {
++            this.persistState = null;
++            this.persistRevision = null;
++            this.persistenceHalted = true;
++            updatePersistRecord({
++              ...latestPersistRecord,
++              storageHealth: 'STORAGE_UNAVAILABLE',
++              storageUnavailableReason: `Explicit recovery threw: ${detail}`,
++              persistenceHalted: true,
++              recoveryInProgress: false,
++              lastRecoveryOutcome: 'FAILED',
++              lastRecoveryDetail: detail,
++            });
++            syncWebDataset();
++          } else {
++            latestPersistRecord = {
++              ...latestPersistRecord,
++              recoveryInProgress: false,
++              persistenceHalted: true,
++              lastRecoveryOutcome: 'CANCELLED_DESTROYED',
++              lastRecoveryDetail: `Destroyed during failed recovery: ${detail}`,
++            };
++          }
++          resolveRecovery(latestPersistRecord);
++        } finally {
++          if (!this.isComponentDestroyed() && this.activeRecoveryPromise === recoveryPromise) {
++            this.activeRecoveryPromise = null;
++          }
++        }
++      }));
++
++      return recoveryPromise;
++    };
++
++    // Create minimal Code-First Storage Recovery Overlay (visible ONLY when persistenceHalted === true)
++    this.recoveryOverlay = createStorageRecoveryOverlay(
++      this.node,
++      720,
++      1280,
++      whiteFrame,
++      () => {
++        void triggerUserRecovery('STANDARD');
++      },
++      () => {
++        void triggerUserRecovery('CONFIRM_CORRUPT_MARKER');
++      }
++    );
++    refreshRecoveryOverlay();
++
+     const enqueueHideSave = (source: string): boolean => {
+       // P1-02 (N3): Destroyed instance strictly rejects new tasks from entering its queue.
+       if (this.isComponentDestroyed()) return false;
+       const seq = ++this.hideEnqueueSeq;
+       // A06 Fix: Isolate per-task exceptions inside try/catch so a single task error NEVER
+       // poisons `this.pendingHideSave` for subsequent HIDE events or explicit recovery.
+-      this.pendingHideSave = (this.pendingHideSave ?? Promise.resolve()).then(async () => {
++      setPendingQueue(latestPendingQueue.then(async () => {
+         try {
+           if (this.isComponentDestroyed()) {
+             commitHistoryLog.push({
+@@ -505,11 +779,17 @@
+
+           } else if (committed.kind === 'STORAGE_UNAVAILABLE') {
+             if (!this.isComponentDestroyed()) {
+               this.persistenceHalted = true;
++              this.persistState = null;
++              this.persistRevision = null;
+             }
+             updatePersistRecord({
+               ...latestPersistRecord,
+               storageHealth: 'STORAGE_UNAVAILABLE',
+               storageUnavailableReason: committed.detail,
++              recoveryClassification:
++                coordinator.freezeCode === 'TX_STATE_CORRUPT'
++                  ? 'TX_STATE_CORRUPT'
++                  : 'PENDING_RECOVERY_REQUIRED',
+               persistenceHalted: true,
+               lastHideTriggerSource: source,
+               lastCommitKind: 'STORAGE_UNAVAILABLE',
+@@ -529,11 +809,14 @@
+
+           } else if (committed.kind === 'UNCERTAIN') {
+             if (!this.isComponentDestroyed()) {
+               this.persistenceHalted = true;
++              this.persistState = null;
++              this.persistRevision = null;
+             }
+             updatePersistRecord({
+               ...latestPersistRecord,
+               storageHealth: 'STORAGE_UNAVAILABLE',
+               storageUnavailableReason: committed.detail,
++              recoveryClassification: 'PENDING_RECOVERY_REQUIRED',
+               persistenceHalted: true,
+               lastHideTriggerSource: source,
+               lastCommitKind: 'UNCERTAIN',
+@@ -591,7 +874,7 @@
+
+           });
+           syncWebDataset();
+         }
+-      });
++      }));
+       return true;
+     };
+ 
+@@ -616,9 +899,9 @@
+
+     syncWebDataset();
+     this.schedule(syncWebDataset, 0.5);
+ 
+-    // P1-03 (A04): Production build exposes ONLY read-only observation & normal UI navigation on
+-    // __SPIKE_HARNESS__. Destructive save-clearing, raw coordinator handles, and owner-bypassing
+-    // commit hooks are strictly excluded from the production bundle.
++    // P1-03 (A04) + REV4-02 Requirement 12: Production build keeps ONLY the exact 14 read-only/UI
++    // keys on __SPIKE_HARNESS__. Explicit storage recovery is triggered strictly by normal user UI
++    // buttons (BtnRecoverStorage / BtnConfirmCorruptMarkerRecovery), never destructive test hooks.
+     (globalThis as Record<string, unknown>).__SPIKE_HARNESS__ = {
+       ready: true,
+       env: detectRuntimeEnv(),
+@@ -659,7 +942,7 @@
+
+         return res;
+       },
+       awaitPendingHideSave: async () => {
+-        await (this.pendingHideSave ?? Promise.resolve());
++        await latestPendingQueue;
+         syncWebDataset();
+         return latestPersistRecord;
+       },

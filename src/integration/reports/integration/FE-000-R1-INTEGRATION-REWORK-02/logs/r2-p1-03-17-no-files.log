@@ -1,0 +1,7 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files= --out-dir=.compiled-r2-log
+EXIT_CODE: 1
+DURATION_MS: 192
+--- STDOUT ---
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: 0 test files specified.

@@ -1,0 +1,15 @@
+# Cocos Creator 3.8.8 headless web-mobile build (temporary project copy, not repo)
+# command: CocosCreator.exe --project <temp> --build 'platform=web-mobile;debug=true'
+
+## Attempt 1: ESM .js files under assets
+exit=34
+error (truncated):
+Error: [Assets] [buildScriptCommand][Error: Could not load file:///C:/Users/WANGWE~1/AppData/Local/Temp/idle-fishing-be000-cocos-1959/assets/be000/canonical-json.js (imported by file:///C:/Users/WANGWE~1/AppData/Local/Temp/idle-fishing-be000-cocos-1959/assets/be000/canonical-json.mjs?cjs=&original=.js): ENOENT: no such
+
+## Attempt 2: ESM .mjs files under assets (extensionless import also rejected first; see below)
+Warn: Error: 以 file:///C:/Users/WANGWE~1/AppData/Local/Temp/idle-fishing-be000-cocos-1959/assets/be000/probe.ts 为起点找不到模块 "../be000/index"
+exit=36 (editor CLI quit code after successful task; build output complete and app runs)
+2026-11-25 12:52:35 - debug: ================================ build Task (web-mobile) Finished in (1 min 17 s)ms ================================
+probe occurrences in built assets/main/index.js: 2
+built index.html bytes: 2151
+browser probe result: {"value":11520,"state":"[7,0,1026,12288]"}

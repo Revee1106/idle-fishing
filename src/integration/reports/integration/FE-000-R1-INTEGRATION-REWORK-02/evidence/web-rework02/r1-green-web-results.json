@@ -1,0 +1,1065 @@
+{
+  "host": {
+    "chromeExe": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "url": "http://127.0.0.1:59929/",
+    "viewportPortrait": "390x844",
+    "viewportLandscape": "844x390"
+  },
+  "consoleErrors": [],
+  "uncaughtExceptions": [],
+  "bootSnapshot": {
+    "env": "WEB",
+    "page": "overview",
+    "switchHistory": [
+      "overview"
+    ],
+    "viewport": {
+      "visibleWidth": 720,
+      "visibleHeight": 1558,
+      "scale": 1,
+      "orientation": "PORTRAIT"
+    },
+    "modalVisible": false,
+    "coreReport": {
+      "env": "WEB",
+      "backendCoreCommit": "5bcc9ac",
+      "allPassed": true,
+      "cases": [
+        {
+          "id": "T02-SHA256",
+          "name": "Canonical JSON & SHA-256 vector",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "canon ok; sha256(\"abc\")=ba7816bf8f01cfea...",
+          "durationMs": 1.2
+        },
+        {
+          "id": "T03-RNG01",
+          "name": "xoshiro128** golden vector [1,2,3,4]",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "outputs=11520,0,5927040,70819200,2031721883 final=[15224335,29364750,272377353,1125134346]",
+          "durationMs": 0.2
+        },
+        {
+          "id": "T03-RNG02/03",
+          "name": "PRNG save/restore continuity & stream isolation",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "2000 draws exact match; isolated across 100 env draws; u[1999]=0.145147152269",
+          "durationMs": 10.7
+        },
+        {
+          "id": "T02-BIGINT",
+          "name": "BigInt runtime & Nat serialization (>2^53)",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "BigInt ok; roundTrip=123456789012345678901234567890; scaled=1234567000000000000000",
+          "durationMs": 0.5
+        },
+        {
+          "id": "T02-MATH",
+          "name": "Math.pow / sqrt / imul / triangularQuantile determinism",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "q(0)=0.3, q(0.5)=0.961916848035, imul=84696351",
+          "durationMs": 0
+        },
+        {
+          "id": "T03-ADVANCE",
+          "name": "Continuous vs 60s-sliced 1h/8h & BE-000-R1-P2 golden vectors",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "1h/8h exact match vs 5bcc9ac: cycles=110, gold=3116, sha256=8a882ec894b37d2b...",
+          "durationMs": 53.3
+        },
+        {
+          "id": "T07-MIGRATE",
+          "name": "v1 -> v2 migration (IDLE, FIGHTING, PREPARING) & invalid guard",
+          "status": "PASS",
+          "env": "WEB",
+          "detail": "v1->v2 IDLE & PREPARING ok (gold=4200, fish:7 preserved); bad v1 rejected",
+          "durationMs": 2.6
+        }
+      ],
+      "summaryState": {
+        "gold": "3116",
+        "big": "13580246791358024679135802467900",
+        "cycles": 110,
+        "attempts": 111,
+        "cursorMs": 1700003600000,
+        "settledUntilMs": 1700003600000,
+        "rngPreview": "wait=[1371918276,2731703835,3549262139,2518769466]",
+        "canonicalHash": "8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63",
+        "oneHourEnvelopeInnerSha256": "183ed74c32d759e434345eb7fe152eec1192f8ea69637cf60e657d629010681a",
+        "oneHourEnvelopeTextSha256": "4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6",
+        "eightHourCanonicalHash": "91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9",
+        "eightHourHasAttemptLock": true
+      }
+    },
+    "perfReport": null,
+    "fsResults": [],
+    "platformResults": [],
+    "subpackResult": null,
+    "lifecyclePersistence": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": false,
+      "revision": null,
+      "gold": "0",
+      "cursorMs": 1700000000000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": null,
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "commitHistory": [],
+    "lifecycleLogCount": 0,
+    "destroyed": false
+  },
+  "bundledLifecycleCheck": {
+    "seenA": [
+      "HIDE",
+      "SHOW"
+    ],
+    "seenB": [
+      "HIDE",
+      "SHOW",
+      "HIDE",
+      "SHOW"
+    ],
+    "errCount": 4,
+    "remainingSubs": 0,
+    "attached": false
+  },
+  "realHideAndReloadPersistence": {
+    "beforeReload": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795668820243,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 1,
+      "showEventCount": 0
+    },
+    "afterReload": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  },
+  "modalClickCheck": {
+    "modalOpened": true,
+    "modalClosed": true,
+    "openCoord": {
+      "x": 101,
+      "y": 222
+    },
+    "closeCoord": {
+      "x": 195,
+      "y": 517
+    }
+  },
+  "platformChecks": {
+    "fsResults": [
+      {
+        "id": "FS-CRUD",
+        "name": "File CRUD & path guard (BROWSER_LOCAL_STORAGE_FALLBACK)",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "CRUD ok on BROWSER_LOCAL_STORAGE_FALLBACK; idempotent delete & path guard verified",
+        "durationMs": 0.9
+      },
+      {
+        "id": "T04-ROTATE",
+        "name": "3-slot rotation & highest revision load",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "5 commits rotated across 3 slots; loaded rev=5, gold=217",
+        "durationMs": 586.2
+      },
+      {
+        "id": "T04-CORRUPT",
+        "name": "Corrupt slot fallback & all-corrupt fail-closed",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "Single-slot corruption recovered rev=4; all-corrupt returned CORRUPT (save_slot_0.json: invalid JSON; save_slot_1.json: invalid JS)",
+        "durationMs": 148.6
+      },
+      {
+        "id": "T05-FAULTS",
+        "name": "Fault injection: pre-write / partial / uncertain / unknown-slot guard",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "Pre-write=FAILED, Partial=recovered rev 1, Unknown-slot=UNCERTAIN(0 writes), Post-write throw=claimed rev 2 once",
+        "durationMs": 510.1
+      },
+      {
+        "id": "FS-SIZE-PROBE",
+        "name": "Payload size write/readback probe (64KB / 256KB)",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "64KB & 256KB write+readback verified & cleaned on BROWSER_LOCAL_STORAGE_FALLBACK",
+        "durationMs": 3
+      },
+      {
+        "id": "FS-BG-RECOVERY",
+        "name": "HIDE callback save & same-process repo reload",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "HIDE callback committed rev=2 on BROWSER_LOCAL_STORAGE_FALLBACK; fresh repo restored deadlineMs=1700028800000 (same-process; real kill requires device)",
+        "durationMs": 283.2
+      }
+    ],
+    "platformResults": [
+      {
+        "id": "T08-MONO-PROBE",
+        "name": "Runtime ClockProvider monotonic capability",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "source=performance.now(ms), wall=1795668876129, mono=6665",
+        "durationMs": 0.2
+      },
+      {
+        "id": "T08-LIFECYCLE-CLOCK",
+        "name": "Lifecycle dispatch/isolation & clock guard boundaries",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "dispatch/dedupe/unsub/isolation ok; unsupported-mono frozen; rollback+recovery ok; +48h clamped to 8h",
+        "durationMs": 0.8
+      },
+      {
+        "id": "T09-AD-STUB-5",
+        "name": "EXPERIMENTAL_STUB Ad 5-case & duplicate callback guard",
+        "status": "PASS",
+        "env": "WEB",
+        "detail": "5/5 stub cases passed (acks=2, ignoredDuplicates=2, 0 business state mutated)",
+        "durationMs": 0.2
+      },
+      {
+        "id": "T09-REAL-AD",
+        "name": "Real WeChat RewardedVideoAd verification",
+        "status": "BLOCKED",
+        "env": "WEB",
+        "detail": "BLOCKED: no real WeChat Mini Game adUnitId / real device available in FE-000-R1",
+        "durationMs": 0
+      }
+    ],
+    "subpackResult": {
+      "status": "PASS",
+      "bundleName": "spike-pack",
+      "manifestVersion": "spike-pack-v1",
+      "iconLoaded": true,
+      "durationMs": 375.9,
+      "detail": "Loaded local bundle \"spike-pack\" (icon 64x64 + manifest=spike-pack-v1) in 375.9ms"
+    }
+  },
+  "scrollOffsetCheck": {
+    "before": {
+      "y": 0,
+      "maxY": 102
+    },
+    "after": {
+      "y": 100,
+      "maxY": 102
+    }
+  },
+  "landscapeViewport": {
+    "visibleWidth": 720,
+    "visibleHeight": 333,
+    "scale": 0.26,
+    "orientation": "LANDSCAPE"
+  },
+  "perf24h": {
+    "env": "WEB",
+    "backendCoreCommit": "5bcc9ac",
+    "singleShotMs": 79.9,
+    "slicedTotalWallMs": 2678.8,
+    "slicedComputeMs": 150.7,
+    "sliceCount": 60,
+    "maxSliceMs": 5,
+    "avgSliceMs": 2.512,
+    "processedNodes": 14935,
+    "cycles": 2929,
+    "attempts": 2930,
+    "gold": "85366",
+    "big": "361604935017160493501716049349810",
+    "singleEqualsSliced": true,
+    "canonicalHash": "2df326180ed98c4282fcfd921d328fc085517a6f2f4f299ca65496e052d061a0",
+    "envelopeInnerSha256": "9ed7cded1c1d5391691c9172e837c36915fb94605b1aaf19f2afea856e717e1d",
+    "envelopeHashRev1": "0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f",
+    "matchesBe000Golden24hEnvelopeInner": true,
+    "matchesBe000Golden24hEnvelopeText": true,
+    "matchesBe000Golden24hEnvelope": true,
+    "memorySnapshot": "jsHeap=16.54MB/42.15MB",
+    "slicedRafStats": {
+      "samples": 73,
+      "maxFrameMs": 50.1,
+      "avgFrameMs": 36.07
+    }
+  },
+  "screenshots": [
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-overview.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-modal.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-platform.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-perf24h.png"
+  ],
+  "assertions": [
+    {
+      "name": "web_boot_env",
+      "status": "PASS",
+      "detail": "env=WEB"
+    },
+    {
+      "name": "web_boot_page",
+      "status": "PASS",
+      "detail": "page=overview"
+    },
+    {
+      "name": "web_shared_core_7_of_7",
+      "status": "PASS",
+      "detail": "passed=7/7"
+    },
+    {
+      "name": "web_be000_1h_golden_hash",
+      "status": "PASS",
+      "detail": "hash=8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63"
+    },
+    {
+      "name": "web_be000_1h_envelope_digests",
+      "status": "PASS",
+      "detail": "inner=183ed74c32d759e434345eb7fe152eec1192f8ea69637cf60e657d629010681a, text=4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6"
+    },
+    {
+      "name": "web_be000_8h_golden_and_lock",
+      "status": "PASS",
+      "detail": "8hHash=91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9, lock=true, settledUntilMs=1700003600000"
+    },
+    {
+      "name": "web_bundle_i01_lifecycle_dispatch",
+      "status": "PASS",
+      "detail": "{\"seenA\":[\"HIDE\",\"SHOW\"],\"seenB\":[\"HIDE\",\"SHOW\",\"HIDE\",\"SHOW\"],\"errCount\":4,\"remainingSubs\":0,\"attached\":false}"
+    },
+    {
+      "name": "web_real_visibilitychange_hide_commit",
+      "status": "PASS",
+      "detail": "{\"storageHealth\":\"AVAILABLE\",\"storageUnavailableReason\":null,\"loadStatus\":\"EMPTY\",\"loadDetail\":null,\"persistenceHalted\":false,\"restoredOnBoot\":false,\"revision\":\"1\",\"gold\":\"31\",\"cursorMs\":1700000060000,\"deadlineMs\":1700028800000,\"lastHideCommitAtMs\":1795668820243,\"lastHideTriggerSource\":\"document.visibilitychange\",\"lastCommitKind\":\"COMMITTED\",\"lastCommitDetail\":null,\"hideCommitCount\":1,\"showEventCount\":0}"
+    },
+    {
+      "name": "web_cross_reload_persistence_recovery",
+      "status": "PASS",
+      "detail": "{\"storageHealth\":\"AVAILABLE\",\"storageUnavailableReason\":null,\"loadStatus\":\"VALID\",\"loadDetail\":null,\"persistenceHalted\":false,\"restoredOnBoot\":true,\"revision\":\"1\",\"gold\":\"31\",\"cursorMs\":1700000060000,\"deadlineMs\":1700028800000,\"lastHideCommitAtMs\":null,\"lastHideTriggerSource\":\"boot-load\",\"lastCommitKind\":null,\"lastCommitDetail\":null,\"hideCommitCount\":0,\"showEventCount\":0}"
+    },
+    {
+      "name": "web_p1_01_compat_save_boot_unavailable",
+      "status": "PASS",
+      "detail": "{\"faultStatus\":\"STORAGE_UNAVAILABLE\",\"faultHalted\":true,\"faultHideCommits\":0,\"slotsUntouchedDuringFault\":true,\"expectedRev\":\"1\",\"recoveredStatus\":\"VALID\",\"recoveredRev\":\"1\",\"recoveredGold\":\"31\",\"recoveredCursorMs\":1700000060000}"
+    },
+    {
+      "name": "web_p1_02_compat_lifecycle_hide_show_hide",
+      "status": "PASS",
+      "detail": "{\"commits\":4,\"rev\":\"4\",\"cursorMs\":1700000255000,\"historyKinds\":[\"null->1:COMMITTED\",\"1->2:COMMITTED\",\"2->3:COMMITTED\",\"3->4:COMMITTED\"],\"reloadedRev\":\"4\",\"reloadedCursorMs\":1700000255000}"
+    },
+    {
+      "name": "web_p1_02_queued_hide_after_uncertain_halts",
+      "status": "PASS",
+      "detail": "{\"lastCommitKind\":\"UNCERTAIN\",\"halted\":true,\"slotWriteCount\":0,\"history\":[\"UNCERTAIN\",\"SKIPPED_HALTED\"]}"
+    },
+    {
+      "name": "web_p1_01_runtime_failure_freeze_and_recovery",
+      "status": "PASS",
+      "detail": "{\"runtimeFaultKind\":\"STORAGE_UNAVAILABLE\",\"stayedFrozenBeforeReinit\":true,\"slotsStillRev1\":true,\"reinitRev\":\"1\",\"postReinitRev\":\"2\",\"writeIoHealth\":\"STORAGE_UNAVAILABLE\"}"
+    },
+    {
+      "name": "web_p1_02_destroy_cancels_queued_before_write",
+      "status": "PASS",
+      "detail": "{\"revBeforeDestroy\":\"8\",\"diskMaxRevAfterDestroy\":8,\"rejectedAfterDestroy\":true,\"historyTail\":[{\"seq\":9,\"triggerSource\":\"document.visibilitychange\",\"expectedRevision\":\"8\",\"taskState\":\"CANCELLED\",\"resultKind\":\"SKIPPED_DESTROYED\",\"revision\":\"8\",\"cursorMs\":1700000480000,\"gold\":\"332\",\"detail\":\"Commit cancelled before physical execution started (owner destroyed or halted)\"},{\"seq\":10,\"triggerSource\":\"document.visibilitychange\",\"expectedRevision\":\"8\",\"taskState\":\"CANCELLED\",\"resultKind\":\"SKIPPED_DESTROYED\",\"revision\":\"8\",\"cursorMs\":1700000480000,\"gold\":\"332\",\"detail\":\"BootEntry destroyed while task was QUEUED in BootEntry queue\"}]}"
+    },
+    {
+      "name": "web_p1_02_destroy_started_completes_cleanly",
+      "status": "PASS",
+      "detail": "{\"diskMaxRev\":9,\"rejectedSecond\":true,\"history\":[{\"seq\":1,\"triggerSource\":\"document.visibilitychange\",\"expectedRevision\":\"8\",\"taskState\":\"COMMITTED\",\"resultKind\":\"COMMITTED\",\"revision\":\"9\",\"cursorMs\":1700000540000,\"gold\":\"405\",\"detail\":\"Completed in-flight STARTED write during onDestroy\"}]}"
+    },
+    {
+      "name": "web_p2_04_compat_save_cross_tab_commit",
+      "status": "PASS",
+      "detail": "{\"raceA\":\"COMMITTED\",\"raceB\":\"CONFLICT\",\"reloadedMatch\":true,\"seqRev2\":\"2\",\"seqRev3\":\"3\",\"lockRejectKind\":\"STORAGE_UNAVAILABLE\",\"postTabCrashRev\":\"4\",\"reloadedRev4\":\"4\"}"
+    },
+    {
+      "name": "web_corrupt_save_fail_closed_no_overwrite",
+      "status": "PASS",
+      "detail": "{\"snapBefore\":{\"storageHealth\":\"AVAILABLE\",\"storageUnavailableReason\":null,\"loadStatus\":\"CORRUPT\",\"loadDetail\":\"save_slot_0.json: invalid JSON; save_slot_1.json: invalid JSON; save_slot_2.json: invalid JSON\",\"persistenceHalted\":true,\"restoredOnBoot\":false,\"revision\":null,\"gold\":\"0\",\"cursorMs\":0,\"deadlineMs\":null,\"lastHideCommitAtMs\":null,\"lastHideTriggerSource\":null,\"lastCommitKind\":null,\"lastCommitDetail\":null,\"hideCommitCount\":0,\"showEventCount\":0},\"slot0After\":\"CORRUPT_WEB_PROBE_0\"}"
+    },
+    {
+      "name": "web_click_modal_open_close",
+      "status": "PASS",
+      "detail": "{\"modalOpened\":true,\"modalClosed\":true,\"openCoord\":{\"x\":101,\"y\":222},\"closeCoord\":{\"x\":195,\"y\":517}}"
+    },
+    {
+      "name": "web_click_switch_to_platform",
+      "status": "PASS",
+      "detail": "page=platform"
+    },
+    {
+      "name": "web_platform_fs_6_of_6",
+      "status": "PASS",
+      "detail": "FS-CRUD=PASS, T04-ROTATE=PASS, T04-CORRUPT=PASS, T05-FAULTS=PASS, FS-SIZE-PROBE=PASS, FS-BG-RECOVERY=PASS"
+    },
+    {
+      "name": "web_platform_t08_2_of_2",
+      "status": "PASS",
+      "detail": "T08-MONO-PROBE=PASS, T08-LIFECYCLE-CLOCK=PASS"
+    },
+    {
+      "name": "web_platform_t09_stub_pass_real_blocked",
+      "status": "PASS",
+      "detail": "stub=true, realBlocked=true"
+    },
+    {
+      "name": "web_t10_local_bundle_loaded",
+      "status": "PASS",
+      "detail": "{\"status\":\"PASS\",\"bundleName\":\"spike-pack\",\"manifestVersion\":\"spike-pack-v1\",\"iconLoaded\":true,\"durationMs\":375.9,\"detail\":\"Loaded local bundle \\\"spike-pack\\\" (icon 64x64 + manifest=spike-pack-v1) in 375.9ms\"}"
+    },
+    {
+      "name": "web_scrollview_wheel_scroll",
+      "status": "PASS",
+      "detail": "{\"before\":{\"y\":0,\"maxY\":102},\"after\":{\"y\":100,\"maxY\":102}}"
+    },
+    {
+      "name": "web_responsive_landscape_resize",
+      "status": "PASS",
+      "detail": "{\"visibleWidth\":720,\"visibleHeight\":333,\"scale\":0.26,\"orientation\":\"LANDSCAPE\"}"
+    },
+    {
+      "name": "web_t06_24h_single_equals_sliced",
+      "status": "PASS",
+      "detail": "single=79.9ms, sliced=150.7ms, maxSlice=5ms, slices=60, rafMax=50.1ms, inner=9ed7cded1c1d, text=0be078f13066, goldenMatch=true"
+    },
+    {
+      "name": "web_zero_console_errors",
+      "status": "PASS",
+      "detail": "count=0"
+    },
+    {
+      "name": "web_zero_uncaught_exceptions",
+      "status": "PASS",
+      "detail": "count=0"
+    }
+  ],
+  "failures": [],
+  "compatBootUnavailable": {
+    "origSlot0Len": 1249,
+    "p101FaultSnap": {
+      "bootRec": {
+        "storageHealth": "STORAGE_UNAVAILABLE",
+        "storageUnavailableReason": "localStorage probe failed: Injected P1-01 __probe__ write failure",
+        "loadStatus": "STORAGE_UNAVAILABLE",
+        "loadDetail": "localStorage probe failed: Injected P1-01 __probe__ write failure",
+        "persistenceHalted": true,
+        "restoredOnBoot": false,
+        "revision": null,
+        "gold": "0",
+        "cursorMs": 0,
+        "deadlineMs": null,
+        "lastHideCommitAtMs": null,
+        "lastHideTriggerSource": null,
+        "lastCommitKind": null,
+        "lastCommitDetail": null,
+        "hideCommitCount": 0,
+        "showEventCount": 0
+      },
+      "afterHide": {
+        "storageHealth": "STORAGE_UNAVAILABLE",
+        "storageUnavailableReason": "localStorage probe failed: Injected P1-01 __probe__ write failure",
+        "loadStatus": "STORAGE_UNAVAILABLE",
+        "loadDetail": "localStorage probe failed: Injected P1-01 __probe__ write failure",
+        "persistenceHalted": true,
+        "restoredOnBoot": false,
+        "revision": null,
+        "gold": "0",
+        "cursorMs": 0,
+        "deadlineMs": null,
+        "lastHideCommitAtMs": null,
+        "lastHideTriggerSource": null,
+        "lastCommitKind": null,
+        "lastCommitDetail": null,
+        "hideCommitCount": 0,
+        "showEventCount": 0
+      },
+      "slotsAtFaultBoot": [
+        "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+        null,
+        null
+      ],
+      "slotsAfterFaultHide": [
+        "{\"epoch\":\"fe000-lifecycle-epoch\",\"format\":1,\"magic\":\"IDLE_FISHING\",\"payload\":\"{\\\"attemptLock\\\":{\\\"captureU\\\":0.3125558344356786,\\\"claimKey\\\":\\\"fish:2\\\",\\\"fightMs\\\":20014,\\\"seq\\\":2,\\\"speciesU\\\":0.944454692848536},\\\"big\\\":\\\"123456789012345678901234567890\\\",\\\"claims\\\":[\\\"fish:1\\\"],\\\"counters\\\":{\\\"attempts\\\":2,\\\"casts\\\":2,\\\"cycles\\\":1,\\\"envChecks\\\":0,\\\"events\\\":1,\\\"fights\\\":2,\\\"prepares\\\":1,\\\"waits\\\":2},\\\"cursorMs\\\":1700000060000,\\\"envActivityMicro\\\":1000000,\\\"envNextCheckMs\\\":1700000300000,\\\"gold\\\":\\\"31\\\",\\\"lastTerminalAttemptSeq\\\":\\\"1\\\",\\\"offline\\\":{\\\"allowanceMs\\\":28800000,\\\"deadlineMs\\\":1700028800000,\\\"settledUntilMs\\\":1700000060000,\\\"startedMs\\\":1700000000000},\\\"rng\\\":{\\\"algorithm\\\":\\\"XOSHIRO128SS_V1\\\",\\\"streams\\\":{\\\"capture\\\":[3951429580,1873850799,3985475855,4018641643],\\\"individual\\\":[146919874,2562642410,452640390,148064894],\\\"species\\\":[2290466411,2791327581,2081715074,2238547583],\\\"wait\\\":[771026996,723525524,1704469592,3999580728]}},\\\"rootSeed\\\":305441741,\\\"saveEpoch\\\":\\\"fe000-lifecycle-epoch\\\",\\\"schemaVersion\\\":2,\\\"stage\\\":\\\"FIGHTING\\\",\\\"stageDone\\\":\\\"19950000000\\\",\\\"stageRequired\\\":\\\"20014000000\\\",\\\"stageStartMs\\\":1700000040050}\",\"revision\":\"1\",\"sha256\":\"1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf\"}",
+        null,
+        null
+      ],
+      "expectedTopEnv": {
+        "epoch": "fe000-lifecycle-epoch",
+        "format": 1,
+        "magic": "IDLE_FISHING",
+        "payload": "{\"attemptLock\":{\"captureU\":0.3125558344356786,\"claimKey\":\"fish:2\",\"fightMs\":20014,\"seq\":2,\"speciesU\":0.944454692848536},\"big\":\"123456789012345678901234567890\",\"claims\":[\"fish:1\"],\"counters\":{\"attempts\":2,\"casts\":2,\"cycles\":1,\"envChecks\":0,\"events\":1,\"fights\":2,\"prepares\":1,\"waits\":2},\"cursorMs\":1700000060000,\"envActivityMicro\":1000000,\"envNextCheckMs\":1700000300000,\"gold\":\"31\",\"lastTerminalAttemptSeq\":\"1\",\"offline\":{\"allowanceMs\":28800000,\"deadlineMs\":1700028800000,\"settledUntilMs\":1700000060000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"capture\":[3951429580,1873850799,3985475855,4018641643],\"individual\":[146919874,2562642410,452640390,148064894],\"species\":[2290466411,2791327581,2081715074,2238547583],\"wait\":[771026996,723525524,1704469592,3999580728]}},\"rootSeed\":305441741,\"saveEpoch\":\"fe000-lifecycle-epoch\",\"schemaVersion\":2,\"stage\":\"FIGHTING\",\"stageDone\":\"19950000000\",\"stageRequired\":\"20014000000\",\"stageStartMs\":1700000040050}",
+        "revision": "1",
+        "sha256": "1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf"
+      },
+      "expectedTopState": {
+        "attemptLock": {
+          "captureU": 0.3125558344356786,
+          "claimKey": "fish:2",
+          "fightMs": 20014,
+          "seq": 2,
+          "speciesU": 0.944454692848536
+        },
+        "big": "123456789012345678901234567890",
+        "claims": [
+          "fish:1"
+        ],
+        "counters": {
+          "attempts": 2,
+          "casts": 2,
+          "cycles": 1,
+          "envChecks": 0,
+          "events": 1,
+          "fights": 2,
+          "prepares": 1,
+          "waits": 2
+        },
+        "cursorMs": 1700000060000,
+        "envActivityMicro": 1000000,
+        "envNextCheckMs": 1700000300000,
+        "gold": "31",
+        "lastTerminalAttemptSeq": "1",
+        "offline": {
+          "allowanceMs": 28800000,
+          "deadlineMs": 1700028800000,
+          "settledUntilMs": 1700000060000,
+          "startedMs": 1700000000000
+        },
+        "rng": {
+          "algorithm": "XOSHIRO128SS_V1",
+          "streams": {
+            "capture": [
+              3951429580,
+              1873850799,
+              3985475855,
+              4018641643
+            ],
+            "individual": [
+              146919874,
+              2562642410,
+              452640390,
+              148064894
+            ],
+            "species": [
+              2290466411,
+              2791327581,
+              2081715074,
+              2238547583
+            ],
+            "wait": [
+              771026996,
+              723525524,
+              1704469592,
+              3999580728
+            ]
+          }
+        },
+        "rootSeed": 305441741,
+        "saveEpoch": "fe000-lifecycle-epoch",
+        "schemaVersion": 2,
+        "stage": "FIGHTING",
+        "stageDone": "19950000000",
+        "stageRequired": "20014000000",
+        "stageStartMs": 1700000040050
+      }
+    },
+    "p101Recovered": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  },
+  "compatLifecycleHideShowHide": {
+    "p102Result": {
+      "finalRec": {
+        "storageHealth": "AVAILABLE",
+        "storageUnavailableReason": null,
+        "loadStatus": "EMPTY",
+        "loadDetail": null,
+        "persistenceHalted": false,
+        "restoredOnBoot": false,
+        "revision": "4",
+        "gold": "201",
+        "cursorMs": 1700000255000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": 1795668830341,
+        "lastHideTriggerSource": "document.visibilitychange",
+        "lastCommitKind": "COMMITTED",
+        "lastCommitDetail": null,
+        "hideCommitCount": 4,
+        "showEventCount": 4
+      },
+      "history": [
+        {
+          "seq": 1,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": null,
+          "taskState": "COMMITTED",
+          "resultKind": "COMMITTED",
+          "revision": "1",
+          "cursorMs": 1700000060000,
+          "gold": "31",
+          "detail": null
+        },
+        {
+          "seq": 2,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "1",
+          "taskState": "COMMITTED",
+          "resultKind": "COMMITTED",
+          "revision": "2",
+          "cursorMs": 1700000135000,
+          "gold": "112",
+          "detail": null
+        },
+        {
+          "seq": 3,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "2",
+          "taskState": "COMMITTED",
+          "resultKind": "COMMITTED",
+          "revision": "3",
+          "cursorMs": 1700000195000,
+          "gold": "150",
+          "detail": null
+        },
+        {
+          "seq": 4,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "3",
+          "taskState": "COMMITTED",
+          "resultKind": "COMMITTED",
+          "revision": "4",
+          "cursorMs": 1700000255000,
+          "gold": "201",
+          "detail": null
+        }
+      ]
+    },
+    "p102AfterReload": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 0 at revision 4",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "4",
+      "gold": "201",
+      "cursorMs": 1700000255000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  },
+  "compatLifecycleUncertainHalt": {
+    "rec": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 0 at revision 4",
+      "persistenceHalted": true,
+      "restoredOnBoot": true,
+      "revision": "4",
+      "gold": "201",
+      "cursorMs": 1700000255000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "UNCERTAIN",
+      "lastCommitDetail": "slot read unavailable (save_slot_2.json); no write attempted",
+      "hideCommitCount": 0,
+      "showEventCount": 2
+    },
+    "history": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "4",
+        "taskState": "UNCERTAIN",
+        "resultKind": "UNCERTAIN",
+        "revision": "4",
+        "cursorMs": 1700000255000,
+        "gold": "201",
+        "detail": "slot read unavailable (save_slot_2.json); no write attempted"
+      },
+      {
+        "seq": 2,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "4",
+        "taskState": "CANCELLED",
+        "resultKind": "SKIPPED_HALTED",
+        "revision": "4",
+        "cursorMs": 1700000255000,
+        "gold": "201",
+        "detail": "Persistence halted (health=AVAILABLE, loadStatus=VALID)"
+      }
+    ],
+    "slotWriteCount": 0
+  },
+  "compatRuntimeStorageFreeze": {
+    "afterSeed": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795668833882,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 1,
+      "showEventCount": 1
+    },
+    "afterRuntimeFault": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "localStorage probe failed: Runtime __probe__ failure",
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795668833882,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "localStorage probe failed: Runtime __probe__ failure",
+      "hideCommitCount": 1,
+      "showEventCount": 3
+    },
+    "frozenAfterRestoreNoReinit": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "localStorage probe failed: Runtime __probe__ failure",
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795668833882,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "localStorage probe failed: Runtime __probe__ failure",
+      "hideCommitCount": 1,
+      "showEventCount": 4
+    },
+    "slotsStillRev1": true,
+    "afterReinit": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "afterPostReinitCommit": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "2",
+      "gold": "84",
+      "cursorMs": 1700000120000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795668834204,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 1,
+      "showEventCount": 1
+    },
+    "afterWriteIoFreeze": {
+      "storageHealth": "STORAGE_UNAVAILABLE",
+      "storageUnavailableReason": "Runtime storage write failure (WRITE_IO_ERROR): [WRITE_IO_ERROR] save_slot_2.json: QuotaExceededError: runtime write IO failure",
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "restoredOnBoot": true,
+      "revision": "2",
+      "gold": "84",
+      "cursorMs": 1700000120000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795668834204,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "STORAGE_UNAVAILABLE",
+      "lastCommitDetail": "Runtime storage write failure (WRITE_IO_ERROR): [WRITE_IO_ERROR] save_slot_2.json: QuotaExceededError: runtime write IO failure",
+      "hideCommitCount": 1,
+      "showEventCount": 3
+    }
+  },
+  "compatDestroyQueued": {
+    "revBeforeDestroy": "8",
+    "diskMaxRevAfterDestroy": 8,
+    "rejectedAfterDestroy": true,
+    "historyTail": [
+      {
+        "seq": 9,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "8",
+        "taskState": "CANCELLED",
+        "resultKind": "SKIPPED_DESTROYED",
+        "revision": "8",
+        "cursorMs": 1700000480000,
+        "gold": "332",
+        "detail": "Commit cancelled before physical execution started (owner destroyed or halted)"
+      },
+      {
+        "seq": 10,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "8",
+        "taskState": "CANCELLED",
+        "resultKind": "SKIPPED_DESTROYED",
+        "revision": "8",
+        "cursorMs": 1700000480000,
+        "gold": "332",
+        "detail": "BootEntry destroyed while task was QUEUED in BootEntry queue"
+      }
+    ]
+  },
+  "compatDestroyStarted": {
+    "diskMaxRev": 9,
+    "rejectedSecond": true,
+    "history": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "8",
+        "taskState": "COMMITTED",
+        "resultKind": "COMMITTED",
+        "revision": "9",
+        "cursorMs": 1700000540000,
+        "gold": "405",
+        "detail": "Completed in-flight STARTED write during onDestroy"
+      }
+    ]
+  },
+  "compatCrossTabCommit": {
+    "tabARes": {
+      "res": {
+        "kind": "COMMITTED",
+        "revision": "1",
+        "slot": 0,
+        "recoveredFromUncertainWrite": false
+      },
+      "candidateCursorMs": 1700000060000,
+      "candidateGold": "31"
+    },
+    "tabBRes": {
+      "res": {
+        "kind": "CONFLICT",
+        "detail": "expectedRevision null but a valid slot exists"
+      },
+      "candidateCursorMs": 1700000180000,
+      "candidateGold": "129"
+    },
+    "tabAReloaded": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "tabBReloaded": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "tabACommit2": {
+      "res": {
+        "kind": "COMMITTED",
+        "revision": "2",
+        "slot": 1,
+        "recoveredFromUncertainWrite": false
+      },
+      "candidateCursorMs": 1700000120000,
+      "candidateGold": "84"
+    },
+    "tabBCommit3": {
+      "res": {
+        "kind": "COMMITTED",
+        "revision": "3",
+        "slot": 2,
+        "recoveredFromUncertainWrite": false
+      },
+      "candidateCursorMs": 1700000180000,
+      "candidateGold": "129"
+    },
+    "webLockFail": {
+      "res": {
+        "res": {
+          "kind": "STORAGE_UNAVAILABLE",
+          "detail": "CROSS_TAB_LOCK_REJECTED: Injected Web Locks rejection"
+        },
+        "candidateCursorMs": 1700000210000,
+        "candidateGold": "150"
+      },
+      "snap": {
+        "storageHealth": "STORAGE_UNAVAILABLE",
+        "storageUnavailableReason": "CROSS_TAB_LOCK_REJECTED: Injected Web Locks rejection",
+        "loadStatus": "VALID",
+        "loadDetail": "selected slot 1 at revision 2",
+        "persistenceHalted": true,
+        "restoredOnBoot": true,
+        "revision": "3",
+        "gold": "129",
+        "cursorMs": 1700000180000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": null,
+        "lastHideTriggerSource": "boot-load",
+        "lastCommitKind": "STORAGE_UNAVAILABLE",
+        "lastCommitDetail": "CROSS_TAB_LOCK_REJECTED: Injected Web Locks rejection",
+        "hideCommitCount": 0,
+        "showEventCount": 0
+      }
+    },
+    "tabARecoverAfterCrash": {
+      "re": {
+        "storageHealth": "AVAILABLE",
+        "storageUnavailableReason": null,
+        "loadStatus": "VALID",
+        "loadDetail": "selected slot 2 at revision 3",
+        "persistenceHalted": false,
+        "restoredOnBoot": true,
+        "revision": "3",
+        "gold": "129",
+        "cursorMs": 1700000180000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": null,
+        "lastHideTriggerSource": "boot-load",
+        "lastCommitKind": null,
+        "lastCommitDetail": null,
+        "hideCommitCount": 0,
+        "showEventCount": 0
+      },
+      "c4": {
+        "res": {
+          "kind": "COMMITTED",
+          "revision": "4",
+          "slot": 0,
+          "recoveredFromUncertainWrite": false
+        },
+        "candidateCursorMs": 1700000240000,
+        "candidateGold": "178"
+      }
+    },
+    "tabAAfterRev4Reload": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 0 at revision 4",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "4",
+      "gold": "178",
+      "cursorMs": 1700000240000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  }
+}

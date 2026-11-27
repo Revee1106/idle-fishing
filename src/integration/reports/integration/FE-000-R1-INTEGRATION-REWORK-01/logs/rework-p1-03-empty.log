@@ -1,0 +1,18 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-empty.test.ts
+EXIT_CODE: 1
+DURATION_MS: 6496
+--- STDOUT ---
+✔ E:\idle-fishing-integration\tests\frontend\fe-000\.compiled-p103-log\tests\frontend\fe-000\fixtures\fixture-empty.test.js (1.8232ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.3529
+
+[FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: 0 test cases registered/executed (empty test file guard triggered).

@@ -1,0 +1,331 @@
+{
+  "label": "profileA",
+  "metaA": {
+    "kind": "BROWSER_INDEXED_DB",
+    "keyEmpty": "browser:audit_p0_empty_1795683644421",
+    "keyNon": "browser:audit_p0_nonempty_1795683644421"
+  },
+  "metaB": {
+    "kind": "BROWSER_INDEXED_DB",
+    "keyEmpty": "browser:audit_p0_empty_1795683644421",
+    "keyNon": "browser:audit_p0_nonempty_1795683644421"
+  },
+  "empty": {
+    "eHeld": true,
+    "ePend": true,
+    "a": "COMMITTED",
+    "b": "CONFLICT",
+    "topA": {
+      "rev": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000
+    }
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "8",
+      "a": "COMMITTED/9/s2",
+      "b": "CONFLICT",
+      "aGold": "405",
+      "bGold": "514",
+      "postA": "9",
+      "postB": "9",
+      "postAGold": "405",
+      "postBGold": "405",
+      "topA": {
+        "rev": "9",
+        "gold": "405",
+        "cursorMs": 1700000540000
+      },
+      "topB": {
+        "rev": "9",
+        "gold": "405",
+        "cursorMs": 1700000540000
+      }
+    },
+    {
+      "round": 1,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "9",
+      "a": "COMMITTED/10/s0",
+      "b": "CONFLICT",
+      "aGold": "468",
+      "bGold": "553",
+      "postA": "10",
+      "postB": "10",
+      "postAGold": "468",
+      "postBGold": "468",
+      "topA": {
+        "rev": "10",
+        "gold": "468",
+        "cursorMs": 1700000600000
+      },
+      "topB": {
+        "rev": "10",
+        "gold": "468",
+        "cursorMs": 1700000600000
+      }
+    },
+    {
+      "round": 2,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "10",
+      "a": "COMMITTED/11/s1",
+      "b": "CONFLICT",
+      "aGold": "514",
+      "bGold": "593",
+      "postA": "11",
+      "postB": "11",
+      "postAGold": "514",
+      "postBGold": "514",
+      "topA": {
+        "rev": "11",
+        "gold": "514",
+        "cursorMs": 1700000660000
+      },
+      "topB": {
+        "rev": "11",
+        "gold": "514",
+        "cursorMs": 1700000660000
+      }
+    },
+    {
+      "round": 3,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "11",
+      "a": "COMMITTED/12/s2",
+      "b": "CONFLICT",
+      "aGold": "553",
+      "bGold": "650",
+      "postA": "12",
+      "postB": "12",
+      "postAGold": "553",
+      "postBGold": "553",
+      "topA": {
+        "rev": "12",
+        "gold": "553",
+        "cursorMs": 1700000720000
+      },
+      "topB": {
+        "rev": "12",
+        "gold": "553",
+        "cursorMs": 1700000720000
+      }
+    },
+    {
+      "round": 4,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "12",
+      "a": "COMMITTED/13/s0",
+      "b": "CONFLICT",
+      "aGold": "593",
+      "bGold": "710",
+      "postA": "13",
+      "postB": "13",
+      "postAGold": "593",
+      "postBGold": "593",
+      "topA": {
+        "rev": "13",
+        "gold": "593",
+        "cursorMs": 1700000780000
+      },
+      "topB": {
+        "rev": "13",
+        "gold": "593",
+        "cursorMs": 1700000780000
+      }
+    },
+    {
+      "round": 5,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "13",
+      "a": "COMMITTED/14/s1",
+      "b": "CONFLICT",
+      "aGold": "650",
+      "bGold": "750",
+      "postA": "14",
+      "postB": "14",
+      "postAGold": "650",
+      "postBGold": "650",
+      "topA": {
+        "rev": "14",
+        "gold": "650",
+        "cursorMs": 1700000840000
+      },
+      "topB": {
+        "rev": "14",
+        "gold": "650",
+        "cursorMs": 1700000840000
+      }
+    },
+    {
+      "round": 6,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "14",
+      "a": "COMMITTED/15/s2",
+      "b": "CONFLICT",
+      "aGold": "710",
+      "bGold": "791",
+      "postA": "15",
+      "postB": "15",
+      "postAGold": "710",
+      "postBGold": "710",
+      "topA": {
+        "rev": "15",
+        "gold": "710",
+        "cursorMs": 1700000900000
+      },
+      "topB": {
+        "rev": "15",
+        "gold": "710",
+        "cursorMs": 1700000900000
+      }
+    },
+    {
+      "round": 7,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "15",
+      "a": "COMMITTED/16/s0",
+      "b": "CONFLICT",
+      "aGold": "750",
+      "bGold": "817",
+      "postA": "16",
+      "postB": "16",
+      "postAGold": "750",
+      "postBGold": "750",
+      "topA": {
+        "rev": "16",
+        "gold": "750",
+        "cursorMs": 1700000960000
+      },
+      "topB": {
+        "rev": "16",
+        "gold": "750",
+        "cursorMs": 1700000960000
+      }
+    },
+    {
+      "round": 8,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "16",
+      "a": "COMMITTED/17/s1",
+      "b": "CONFLICT",
+      "aGold": "791",
+      "bGold": "911",
+      "postA": "17",
+      "postB": "17",
+      "postAGold": "791",
+      "postBGold": "791",
+      "topA": {
+        "rev": "17",
+        "gold": "791",
+        "cursorMs": 1700001020000
+      },
+      "topB": {
+        "rev": "17",
+        "gold": "791",
+        "cursorMs": 1700001020000
+      }
+    },
+    {
+      "round": 9,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "17",
+      "a": "COMMITTED/18/s2",
+      "b": "CONFLICT",
+      "aGold": "817",
+      "bGold": "965",
+      "postA": "18",
+      "postB": "18",
+      "postAGold": "817",
+      "postBGold": "817",
+      "topA": {
+        "rev": "18",
+        "gold": "817",
+        "cursorMs": 1700001080000
+      },
+      "topB": {
+        "rev": "18",
+        "gold": "817",
+        "cursorMs": 1700001080000
+      }
+    },
+    {
+      "round": 10,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "18",
+      "a": "COMMITTED/19/s0",
+      "b": "CONFLICT",
+      "aGold": "911",
+      "bGold": "980",
+      "postA": "19",
+      "postB": "19",
+      "postAGold": "911",
+      "postBGold": "911",
+      "topA": {
+        "rev": "19",
+        "gold": "911",
+        "cursorMs": 1700001140000
+      },
+      "topB": {
+        "rev": "19",
+        "gold": "911",
+        "cursorMs": 1700001140000
+      }
+    },
+    {
+      "round": 11,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "19",
+      "a": "COMMITTED/20/s1",
+      "b": "CONFLICT",
+      "aGold": "965",
+      "bGold": "1062",
+      "postA": "20",
+      "postB": "20",
+      "postAGold": "965",
+      "postBGold": "965",
+      "topA": {
+        "rev": "20",
+        "gold": "965",
+        "cursorMs": 1700001200000
+      },
+      "topB": {
+        "rev": "20",
+        "gold": "965",
+        "cursorMs": 1700001200000
+      }
+    }
+  ],
+  "doubles": 0,
+  "a05": {
+    "msg": "audit body throw",
+    "healthAfterTaskErr": "AVAILABLE",
+    "okAfter": "COMMITTED",
+    "rejKind": "STORAGE_UNAVAILABLE",
+    "rejDetail": "CROSS_TAB_LOCK_REJECTED: audit lock reject",
+    "missKind": "STORAGE_UNAVAILABLE",
+    "missDetail": "CROSS_TAB_LOCK_UNAVAILABLE: navigator.locks Web Locks API is unavailable in browser runtime"
+  },
+  "crash": {
+    "rev": "20",
+    "kind": "COMMITTED",
+    "newRev": "21",
+    "reload": "21"
+  },
+  "failures": []
+}

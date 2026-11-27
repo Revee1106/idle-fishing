@@ -1,0 +1,1535 @@
+diff --git a/package.json b/package.json
+index 7d4f5b2..6db4055 100644
+--- a/package.json
++++ b/package.json
+@@ -10,12 +10,13 @@
+   ],
+   "scripts": {
+     "typecheck": "tsc -p tsconfig.test.json",
++    "typecheck:cocos": "tsc -p tsconfig.cocos-consumer.json",
+     "build": "npm run build -w @idle-fishing/game-core",
+     "build:cocos": "npm run build && npm run build:cocos -w @idle-fishing/game-core",
+     "test": "node --test \"tests/backend/be-000/**/*.test.ts\"",
+     "test:perf": "node tests/backend/be-000/perf.ts",
+     "generate:vectors": "node tests/backend/be-000/generate-vectors.ts",
+-    "verify": "npm run typecheck && npm run build:cocos && npm run test"
++    "verify": "npm run typecheck && npm run build:cocos && npm run typecheck:cocos && npm run test"
+   },
+   "devDependencies": {
+     "@types/node": "24.19.2",
+diff --git a/packages/game-core/scripts/emit-cocos-mjs.mjs b/packages/game-core/scripts/emit-cocos-mjs.mjs
+index 1dad919..625db46 100644
+--- a/packages/game-core/scripts/emit-cocos-mjs.mjs
++++ b/packages/game-core/scripts/emit-cocos-mjs.mjs
+@@ -8,7 +8,7 @@
+  * reports/backend/BE-000/SHARED_MODULE_HANDOFF.md). This does not imply
+  * WeChat real-device or other platform support.
+  */
+-import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
++import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+ import { fileURLToPath } from 'node:url';
+ 
+ const SOURCE_DIR = fileURLToPath(new URL('../dist/spike/', import.meta.url));
+@@ -16,6 +16,8 @@ const OUTPUT_DIR = fileURLToPath(new URL('../dist/cocos/spike/', import.meta.url
+ 
+ const RELATIVE_SPECIFIER = /(from\s*["']|import\s*\(\s*["'])(\.{1,2}\/[^"']+)\.js(["'])/g;
+ const REMAINING_JS_SPECIFIER = /(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.js["']/;
++const DECLARATION_SPECIFIER = /(from\s*["']|import\s*\(\s*["'])(\.{1,2}\/[^"']+)\.(?:ts|js)(["'])/g;
++const REMAINING_TS_SPECIFIER = /(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.ts["']/;
+ 
+ async function main() {
+   await rm(OUTPUT_DIR, { recursive: true, force: true });
+@@ -26,7 +28,13 @@ async function main() {
+   let declarations = 0;
+   for (const name of names) {
+     if (name.endsWith('.d.ts')) {
+-      await copyFile(`${SOURCE_DIR}${name}`, `${OUTPUT_DIR}${name}`);
++      const text = await readFile(`${SOURCE_DIR}${name}`, 'utf8');
++      const outName = name.replace(/\.d\.ts$/, '.d.mts');
++      const converted = text.replace(DECLARATION_SPECIFIER, '$1$2.mjs$3');
++      if (REMAINING_TS_SPECIFIER.test(converted)) {
++        throw new Error(`unconverted relative .ts specifier remains in ${outName}`);
++      }
++      await writeFile(`${OUTPUT_DIR}${outName}`, converted, 'utf8');
+       declarations += 1;
+       continue;
+     }
+@@ -45,7 +53,7 @@ async function main() {
+   }
+ 
+   if (emitted === 0) throw new Error(`no built .js files in ${SOURCE_DIR}; run "npm run build" first`);
+-  console.log(`cocos artifacts: ${emitted} .mjs + ${declarations} .d.ts -> ${OUTPUT_DIR}`);
++  console.log(`cocos artifacts: ${emitted} .mjs + ${declarations} .d.mts -> ${OUTPUT_DIR}`);
+ }
+ 
+ await main();
+\ No newline at end of file
+diff --git a/packages/game-core/src/spike/migration.ts b/packages/game-core/src/spike/migration.ts
+index 9cef9bf..f695c9d 100644
+--- a/packages/game-core/src/spike/migration.ts
++++ b/packages/game-core/src/spike/migration.ts
+@@ -6,7 +6,8 @@
+ import { isNat } from './canonical-json.ts';
+ import { cloneRngState, validateRngState } from './prng.ts';
+ import { validateSpikeState } from './save.ts';
+-import type { SpikeGameState, SpikeGameStateV1 } from './types.ts';
++import { safeAddMs, workFromMs } from './time.ts';
++import type { SpikeGameState, SpikeGameStateV1, SpikeStage, SpikeAttemptLock } from './types.ts';
+ 
+ export class MigrationError extends Error {
+   constructor(message: string) {
+@@ -30,21 +31,29 @@ export function migrateSpikeState(raw: unknown, from: number, to: number): Spike
+   const v1 = raw as SpikeGameStateV1;
+   if (v1.schemaVersion !== 1) throw new MigrationError('expected schemaVersion 1');
+   if (!isNat(v1.gold)) throw new MigrationError('v1 gold must be Nat');
++  const attempt = readV1Attempt(v1);
++  let envNextCheckMs: number;
++  try {
++    envNextCheckMs = safeAddMs(v1.cursorMs, 300_000, 'v1 environment check time');
++  } catch (error) {
++    throw new MigrationError((error as Error).message);
++  }
++  const stageLevel = attempt === null ? 0 : ATTEMPT_DEPTH[attempt.stage];
+   return {
+     schemaVersion: 2,
+     saveEpoch: v1.saveEpoch,
+     rootSeed: v1.rootSeed,
+     cursorMs: v1.cursorMs,
+-    stage: 'IDLE',
+-    stageStartMs: 0,
+-    stageDone: '0',
+-    stageRequired: '0',
++    stage: attempt?.stage ?? 'IDLE',
++    stageStartMs: attempt?.stageStartMs ?? 0,
++    stageDone: attempt?.stageDone ?? '0',
++    stageRequired: attempt?.stageRequired ?? '0',
+     counters: {
+       attempts: v1.counter,
+-      casts: 0,
+-      waits: 0,
+-      fights: 0,
+-      prepares: 0,
++      casts: stageLevel >= 1 ? 1 : 0,
++      waits: stageLevel >= 2 ? 1 : 0,
++      fights: stageLevel >= 3 ? 1 : 0,
++      prepares: stageLevel >= 4 ? 1 : 0,
+       cycles: 0,
+       envChecks: 0,
+       events: 0,
+@@ -54,9 +63,92 @@ export function migrateSpikeState(raw: unknown, from: number, to: number): Spike
+     lastTerminalAttemptSeq: '0',
+     rng: cloneRngState(v1.rng),
+     big: '0',
+-    envNextCheckMs: v1.cursorMs + 300_000,
++    envNextCheckMs,
+     envActivityMicro: 1_000_000,
+     offline: null,
++    ...(attempt?.lock ? { attemptLock: { ...attempt.lock } } : {}),
++  };
++}
++
++const ATTEMPT_DEPTH: Record<SpikeStage, number> = {
++  IDLE: 0,
++  CASTING: 1,
++  WAITING: 2,
++  FIGHTING: 3,
++  PREPARING: 4,
++};
++
++interface V1Attempt {
++  readonly stage: Exclude<SpikeStage, 'IDLE'>;
++  readonly stageStartMs: number;
++  readonly stageDone: string;
++  readonly stageRequired: string;
++  readonly lock: SpikeAttemptLock | null;
++}
++
++function readV1Attempt(v1: SpikeGameStateV1): V1Attempt | null {
++  const raw = v1.attempt;
++  if (raw === undefined) return null;
++  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
++    throw new MigrationError('v1 attempt must be an object');
++  }
++  const a = raw as Record<string, unknown>;
++  const stage = a.stage;
++  if (stage !== 'CASTING' && stage !== 'WAITING' && stage !== 'FIGHTING' && stage !== 'PREPARING') {
++    throw new MigrationError('v1 attempt.stage is invalid');
++  }
++  if (v1.counter <= 0) throw new MigrationError('v1 in-progress attempt requires a positive counter');
++  if (typeof a.stageStartMs !== 'number' || !Number.isSafeInteger(a.stageStartMs) || a.stageStartMs < 0) {
++    throw new MigrationError('v1 attempt.stageStartMs must be a non-negative safe integer');
++  }
++  if (a.stageStartMs > v1.cursorMs) throw new MigrationError('v1 attempt.stageStartMs exceeds cursorMs');
++  if (!isNat(a.stageDone) || !isNat(a.stageRequired)) {
++    throw new MigrationError('v1 attempt work fields must be Nat strings');
++  }
++  if (BigInt(a.stageRequired) <= 0n) throw new MigrationError('v1 attempt.stageRequired must be positive');
++  if (BigInt(a.stageDone) > BigInt(a.stageRequired)) {
++    throw new MigrationError('v1 attempt.stageDone exceeds stageRequired');
++  }
++
++  const rawLock = a.lock;
++  let lock: SpikeAttemptLock | null = null;
++  if (rawLock !== undefined && rawLock !== null) {
++    if (typeof rawLock !== 'object' || Array.isArray(rawLock)) {
++      throw new MigrationError('v1 attempt.lock must be an object');
++    }
++    const l = rawLock as Record<string, unknown>;
++    if (stage !== 'FIGHTING') throw new MigrationError('v1 attempt.lock is only valid for FIGHTING');
++    if (l.seq !== v1.counter) throw new MigrationError('v1 attempt.lock sequence mismatch');
++    if (l.claimKey !== `fish:${v1.counter}`) throw new MigrationError('v1 attempt.lock claim key mismatch');
++    for (const key of ['speciesU', 'captureU'] as const) {
++      const value = l[key];
++      if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value >= 1) {
++        throw new MigrationError(`v1 attempt.lock.${key} must be a U53 in [0,1)`);
++      }
++    }
++    if (typeof l.fightMs !== 'number' || !Number.isSafeInteger(l.fightMs) || l.fightMs < 0) {
++      throw new MigrationError('v1 attempt.lock.fightMs must be a non-negative safe integer');
++    }
++    if (workFromMs(l.fightMs) !== a.stageRequired) {
++      throw new MigrationError('v1 attempt.lock.fightMs does not match stageRequired');
++    }
++    lock = {
++      seq: l.seq as number,
++      claimKey: l.claimKey as string,
++      speciesU: l.speciesU as number,
++      captureU: l.captureU as number,
++      fightMs: l.fightMs,
++    };
++  } else if (stage === 'FIGHTING') {
++    throw new MigrationError('v1 FIGHTING attempt requires a locked result');
++  }
++
++  return {
++    stage,
++    stageStartMs: a.stageStartMs,
++    stageDone: a.stageDone,
++    stageRequired: a.stageRequired,
++    lock,
+   };
+ }
+ 
+@@ -73,5 +165,8 @@ function deepCopyV2(raw: unknown): SpikeGameState {
+     claims: [...state.claims],
+     rng: cloneRngState(state.rng),
+     offline: state.offline ? { ...state.offline } : null,
++    ...(state.attemptLock !== undefined
++      ? { attemptLock: state.attemptLock === null ? null : { ...state.attemptLock } }
++      : {}),
+   };
+ }
+\ No newline at end of file
+diff --git a/packages/game-core/src/spike/offline.ts b/packages/game-core/src/spike/offline.ts
+index 6ce4c88..d3230fa 100644
+--- a/packages/game-core/src/spike/offline.ts
++++ b/packages/game-core/src/spike/offline.ts
+@@ -10,8 +10,8 @@
+  */
+ import { natFromBigInt, natToBigInt } from './canonical-json.ts';
+ import { drawU53, newRngState, cloneRngState } from './prng.ts';
+-import { assertSafeMs, workFromMs } from './time.ts';
+-import type { Nat, SpikeCounters, SpikeGameState, SpikeOfflineSession } from './types.ts';
++import { assertSafeMs, safeAddMs, workFromMs } from './time.ts';
++import type { Nat, SpikeAttemptLock, SpikeCounters, SpikeGameState, SpikeOfflineSession } from './types.ts';
+ 
+ export interface SpikeOfflineFixture {
+   readonly rootSeed: number;
+@@ -58,17 +58,20 @@ export interface CreateInitialOptions {
+   readonly saveEpoch: string;
+   readonly startMs: number;
+   readonly allowanceMs: number;
+-  readonly fixture?: SpikeOfflineFixture;
+ }
+ 
+ export function createInitialState(options: CreateInitialOptions): SpikeGameState {
+-  const fixture = options.fixture ?? DEFAULT_OFFLINE_FIXTURE;
++  const unsupported = options as CreateInitialOptions & { fixture?: unknown };
++  if (unsupported.fixture !== undefined) {
++    throw new Error('Custom offline fixtures are not supported by this experimental entry point');
++  }
++  const fixture = DEFAULT_OFFLINE_FIXTURE;
+   assertSafeMs(options.startMs, 'startMs');
+   assertSafeMs(options.allowanceMs, 'allowanceMs');
+   const session: SpikeOfflineSession = {
+     startedMs: options.startMs,
+     allowanceMs: options.allowanceMs,
+-    deadlineMs: options.startMs + options.allowanceMs,
++    deadlineMs: safeAddMs(options.startMs, options.allowanceMs, 'offline deadline'),
+     settledUntilMs: options.startMs,
+   };
+   return {
+@@ -86,7 +89,7 @@ export function createInitialState(options: CreateInitialOptions): SpikeGameStat
+     lastTerminalAttemptSeq: '0',
+     rng: newRngState(),
+     big: '0',
+-    envNextCheckMs: options.startMs + fixture.envCheckEveryMs,
++    envNextCheckMs: safeAddMs(options.startMs, fixture.envCheckEveryMs, 'initial environment check time'),
+     envActivityMicro: 1_000_000,
+     offline: session,
+   };
+@@ -111,6 +114,9 @@ export function cloneState(state: Readonly<SpikeGameState>): SpikeGameState {
+     envNextCheckMs: state.envNextCheckMs,
+     envActivityMicro: state.envActivityMicro,
+     offline: state.offline ? { ...state.offline } : null,
++    ...(state.attemptLock !== undefined
++      ? { attemptLock: state.attemptLock === null ? null : { ...state.attemptLock } }
++      : {}),
+   };
+ }
+ 
+@@ -134,6 +140,14 @@ export interface AdvanceResult {
+   readonly reachedTarget: boolean;
+ }
+ 
++function advanceSettledCheckpoint(state: SpikeGameState): void {
++  if (state.offline === null) return;
++  const effectiveUntil = Math.min(state.cursorMs, state.offline.deadlineMs);
++  if (effectiveUntil > state.offline.settledUntilMs) {
++    state.offline.settledUntilMs = effectiveUntil;
++  }
++}
++
+ function completionTime(done: Nat, required: Nat, startMs: number, rate: bigint): number | null {
+   const doneBig = natToBigInt(done);
+   const requiredBig = natToBigInt(required);
+@@ -141,7 +155,8 @@ function completionTime(done: Nat, required: Nat, startMs: number, rate: bigint)
+   if (doneBig >= requiredBig) return startMs;
+   const elapsed = Number((requiredBig - doneBig + rate - 1n) / rate);
+   if (!Number.isSafeInteger(elapsed)) return null;
+-  return startMs + elapsed;
++  const completion = startMs + elapsed;
++  return Number.isSafeInteger(completion) ? completion : null;
+ }
+ 
+ function integrateTo(
+@@ -159,8 +174,11 @@ function integrateTo(
+     return { completedAtMs: null };
+   }
+   const elapsed = Number((requiredBig - doneBig + rate - 1n) / rate);
++  if (!Number.isSafeInteger(elapsed)) return { completedAtMs: null };
++  const completion = state.cursorMs + elapsed;
++  if (!Number.isSafeInteger(completion)) return { completedAtMs: null };
+   state.stageDone = state.stageRequired;
+-  return { completedAtMs: state.cursorMs + elapsed };
++  return { completedAtMs: completion };
+ }
+ 
+ /**
+@@ -224,13 +242,14 @@ export function advanceOffline(
+ 
+     const previousCursor = s.cursorMs;
+     s.cursorMs = nextT;
++    advanceSettledCheckpoint(s);
+ 
+     if (s.envNextCheckMs <= s.cursorMs) {
+       s.counters.envChecks += 1;
+       const draw = drawU53(s.rng, s.rootSeed, ENV_STREAM_NAME);
+       s.rng = draw.state;
+       s.envActivityMicro = Math.round((0.8 + 0.4 * draw.u) * 1_000_000);
+-      s.envNextCheckMs = s.cursorMs + fixture.envCheckEveryMs;
++      s.envNextCheckMs = safeAddMs(s.cursorMs, fixture.envCheckEveryMs, 'next environment check');
+       processedNodes += 1;
+     }
+ 
+@@ -274,6 +293,15 @@ function completeStage(state: SpikeGameState, fixture: SpikeOfflineFixture): voi
+       const capture = drawU53(state.rng, state.rootSeed, 'capture');
+       state.rng = capture.state;
+       const fightMs = fixture.fightBaseMs + Math.round(fixture.fightVarianceMs * Math.pow(species.u, 1.5));
++      const seq = state.counters.attempts;
++      const lock: SpikeAttemptLock = {
++        seq,
++        claimKey: `fish:${seq}`,
++        speciesU: species.u,
++        captureU: capture.u,
++        fightMs,
++      };
++      state.attemptLock = lock;
+       state.stage = 'FIGHTING';
+       state.stageStartMs = state.cursorMs;
+       state.stageDone = '0';
+@@ -282,19 +310,38 @@ function completeStage(state: SpikeGameState, fixture: SpikeOfflineFixture): voi
+       break;
+     }
+     case 'FIGHTING': {
++      const seq = state.counters.attempts;
++      if (seq <= 0) throw new Error('FIGHTING requires a positive attempt sequence');
++      const locked = state.attemptLock;
++      let claimKey = `fish:${seq}`;
++      if (locked !== undefined && locked !== null) {
++        if (locked.seq !== seq || locked.claimKey !== claimKey) {
++          throw new Error(`Locked attempt ${locked.seq} does not match current attempt ${seq}`);
++        }
++        if (workFromMs(locked.fightMs) !== state.stageRequired) {
++          throw new Error('Locked fight duration does not match stageRequired');
++        }
++        claimKey = locked.claimKey;
++      }
++      if (
++        state.claims.includes(claimKey) ||
++        natToBigInt(state.lastTerminalAttemptSeq) >= BigInt(seq)
++      ) {
++        throw new Error(`Attempt ${seq} already settled; refusing duplicate reward ${claimKey}`);
++      }
+       state.counters.events += 1;
+       const individual = drawU53(state.rng, state.rootSeed, 'individual');
+       state.rng = individual.state;
+       const gain = fixture.fishGoldBase + BigInt(Math.floor(individual.u * Number(fixture.fishGoldRange)));
+       state.gold = natFromBigInt(natToBigInt(state.gold) + gain);
+       state.big = natFromBigInt(natToBigInt(state.big) + fixture.bigIncrement);
+-      state.lastTerminalAttemptSeq = String(state.counters.attempts);
+-      const claim = `fish:${state.counters.attempts}`;
+-      if (!state.claims.includes(claim)) state.claims.push(claim);
++      state.lastTerminalAttemptSeq = String(seq);
++      state.claims.push(claimKey);
+       state.stage = 'PREPARING';
+       state.stageStartMs = state.cursorMs;
+       state.stageDone = '0';
+       state.stageRequired = workFromMs(fixture.prepareMs);
++      delete state.attemptLock;
+       state.counters.prepares += 1;
+       break;
+     }
+@@ -323,7 +370,8 @@ export function advanceOfflineSliced(
+   let current = cloneState(state);
+   let nodes = 0;
+   while (current.cursorMs < targetMs) {
+-    const next = Math.min(current.cursorMs + sliceMs, targetMs);
++    const step = Math.min(sliceMs, targetMs - current.cursorMs);
++    const next = safeAddMs(current.cursorMs, step, 'slice target');
+     const result = advanceOffline(current, next, options);
+     nodes += result.processedNodes;
+     current = result.state;
+diff --git a/packages/game-core/src/spike/save.ts b/packages/game-core/src/spike/save.ts
+index 91704a4..e4ad942 100644
+--- a/packages/game-core/src/spike/save.ts
++++ b/packages/game-core/src/spike/save.ts
+@@ -42,6 +42,7 @@ export function validateSpikeState(raw: unknown): StateValidationIssue[] {
+     return issues;
+   }
+   const s = raw as Record<string, unknown>;
++  const cursorMs = typeof s.cursorMs === 'number' ? s.cursorMs : null;
+   const schemaVersion = s.schemaVersion;
+   if (schemaVersion !== 1 && schemaVersion !== 2) {
+     add('schemaVersion', 'unsupported schemaVersion');
+@@ -127,6 +128,115 @@ export function validateSpikeState(raw: unknown): StateValidationIssue[] {
+       ) {
+         add('offline.allowanceMs', 'must be positive');
+       }
++      const started = o.startedMs;
++      const allowance = o.allowanceMs;
++      const deadline = o.deadlineMs;
++      const settled = o.settledUntilMs;
++      if (
++        typeof started === 'number' &&
++        typeof allowance === 'number' &&
++        typeof deadline === 'number'
++      ) {
++        const sum = started + allowance;
++        if (!Number.isSafeInteger(sum) || deadline !== sum) {
++          add('offline.deadlineMs', 'must equal startedMs + allowanceMs within safe range');
++        }
++      }
++      if (typeof settled === 'number') {
++        if (typeof started === 'number' && settled < started) {
++          add('offline.settledUntilMs', 'must not precede startedMs');
++        }
++        if (typeof deadline === 'number' && settled > deadline) {
++          add('offline.settledUntilMs', 'must not pass deadlineMs');
++        }
++        if (typeof cursorMs === 'number' && Number.isSafeInteger(cursorMs) && settled > cursorMs) {
++          add('offline.settledUntilMs', 'must not pass cursorMs');
++        }
++      }
++    }
++  }
++
++  const attempts = (s.counters as Record<string, unknown> | undefined)?.attempts;
++  const lastTerminal = isNat(s.lastTerminalAttemptSeq) ? natToBigInt(s.lastTerminalAttemptSeq) : null;
++  if (typeof attempts === 'number' && Number.isSafeInteger(attempts) && lastTerminal !== null) {
++    if (lastTerminal > BigInt(attempts)) {
++      add('lastTerminalAttemptSeq', 'must not exceed counters.attempts');
++    }
++  }
++
++  if (Array.isArray(s.claims) && s.claims.every((c) => typeof c === 'string')) {
++    for (const claim of s.claims) {
++      const match = /^fish:([1-9][0-9]*)$/.exec(claim);
++      if (match === null) continue;
++      if (lastTerminal !== null && BigInt(match[1]!) > lastTerminal) {
++        add('claims', `claim ${claim} is newer than lastTerminalAttemptSeq`);
++      }
++    }
++    if (lastTerminal !== null && lastTerminal > 0n && !s.claims.includes(`fish:${lastTerminal}`)) {
++      add('claims', 'must contain the last terminal attempt key');
++    }
++  }
++
++  if (typeof s.stage === 'string' && STAGES.has(s.stage)) {
++    const inProgress = s.stage === 'CASTING' || s.stage === 'WAITING' || s.stage === 'FIGHTING';
++    if (typeof attempts === 'number' && Number.isSafeInteger(attempts)) {
++      if (inProgress && attempts <= 0) {
++        add('counters.attempts', 'an in-progress stage requires a positive attempt count');
++      }
++      if (inProgress && lastTerminal !== null && lastTerminal >= BigInt(attempts)) {
++        add('stage', 'in-progress stage cannot have its current attempt already settled');
++      }
++      if (s.stage === 'PREPARING' && lastTerminal !== null && lastTerminal !== BigInt(attempts)) {
++        add('stage', 'PREPARING requires the current attempt to be settled');
++      }
++    }
++    if (s.stage !== 'IDLE' && isNat(s.stageDone) && isNat(s.stageRequired)) {
++      const done = natToBigInt(s.stageDone);
++      const required = natToBigInt(s.stageRequired);
++      if (required <= 0n) add('stageRequired', 'in-progress stage requires positive work');
++      if (done > required) add('stageDone', 'must not exceed stageRequired');
++      if (
++        typeof s.stageStartMs === 'number' &&
++        Number.isSafeInteger(s.stageStartMs) &&
++        cursorMs !== null &&
++        s.stageStartMs > cursorMs
++      ) {
++        add('stageStartMs', 'must not exceed cursorMs');
++      }
++    }
++  }
++
++  const lock = s.attemptLock;
++  if (lock !== undefined && lock !== null) {
++    if (typeof lock !== 'object' || Array.isArray(lock)) {
++      add('attemptLock', 'must be null or an object');
++    } else {
++      const l = lock as Record<string, unknown>;
++      const seq = l.seq;
++      if (typeof seq !== 'number' || !Number.isSafeInteger(seq) || seq <= 0) {
++        add('attemptLock.seq', 'must be a positive safe integer');
++      } else {
++        if (typeof attempts === 'number' && seq !== attempts) {
++          add('attemptLock.seq', 'must equal counters.attempts');
++        }
++        if (l.claimKey !== `fish:${seq}`) add('attemptLock.claimKey', 'must match fish:<seq>');
++        if (Array.isArray(s.claims) && s.claims.includes(l.claimKey)) {
++          add('attemptLock.claimKey', 'locked attempt is already claimed');
++        }
++        if (lastTerminal !== null && lastTerminal >= BigInt(seq)) {
++          add('attemptLock.seq', 'locked attempt is already settled');
++        }
++      }
++      for (const key of ['speciesU', 'captureU'] as const) {
++        const value = l[key];
++        if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value >= 1) {
++          add(`attemptLock.${key}`, 'must be a finite U53 in [0,1)');
++        }
++      }
++      if (typeof l.fightMs !== 'number' || !Number.isSafeInteger(l.fightMs) || l.fightMs < 0) {
++        add('attemptLock.fightMs', 'must be a non-negative safe integer');
++      }
++      if (s.stage !== 'FIGHTING') add('attemptLock', 'only allowed while FIGHTING');
+     }
+   }
+   return issues;
+@@ -201,7 +311,16 @@ export function parseEnvelope(text: string): EnvelopeParse {
+   } catch {
+     return { ok: false, detail: 'payload is not JSON' };
+   }
+-  if (canonicalStringify(state) !== e.payload) {
++  if (typeof state !== 'object' || state === null || Array.isArray(state)) {
++    return { ok: false, detail: 'payload state must be an object' };
++  }
++  let canonicalPayload: string;
++  try {
++    canonicalPayload = canonicalStringify(state);
++  } catch (error) {
++    return { ok: false, detail: `payload is not canonical JSON: ${(error as Error).message}` };
++  }
++  if (canonicalPayload !== e.payload) {
+     return { ok: false, detail: 'payload is not canonical JSON' };
+   }
+   const schemaVersion = (state as { schemaVersion?: unknown }).schemaVersion;
+@@ -209,7 +328,12 @@ export function parseEnvelope(text: string): EnvelopeParse {
+     return { ok: false, detail: 'missing or invalid schemaVersion' };
+   }
+   if (SUPPORTED_SCHEMA_VERSIONS.includes(schemaVersion)) {
+-    const issues = validateSpikeState(state);
++    let issues: StateValidationIssue[];
++    try {
++      issues = validateSpikeState(state);
++    } catch (error) {
++      return { ok: false, detail: `state validation threw: ${(error as Error).message}` };
++    }
+     if (issues.length > 0) {
+       return { ok: false, detail: `state invalid: ${issues.map((i) => i.path).join(',')}` };
+     }
+@@ -229,6 +353,31 @@ interface SlotRead {
+   readonly parseIssue: string | null;
+ }
+ 
++function validSlotsDescending(slots: readonly SlotRead[]): Array<SlotRead & { parsed: ParsedEnvelope }> {
++  return slots
++    .filter((s): s is SlotRead & { parsed: ParsedEnvelope } => s.parsed !== null)
++    .sort((a, b) => {
++      const ra = natToBigInt(a.parsed.revision);
++      const rb = natToBigInt(b.parsed.revision);
++      if (ra !== rb) return rb > ra ? 1 : -1;
++      return a.slot - b.slot;
++    });
++}
++
++function slotConflict(valid: readonly (SlotRead & { parsed: ParsedEnvelope })[]): string | null {
++  if (valid.length === 0) return null;
++  const top = valid[0]!;
++  const topRevision = natToBigInt(top.parsed.revision);
++  const sameRevision = valid.filter((s) => natToBigInt(s.parsed.revision) === topRevision);
++  if (new Set(sameRevision.map((s) => s.parsed.envelope.sha256)).size > 1) {
++    return 'multiple valid slots share a revision but differ';
++  }
++  if (new Set(valid.map((s) => s.parsed.envelope.epoch)).size > 1) {
++    return 'multiple valid epochs present';
++  }
++  return null;
++}
++
+ export class SpikeFileSaveRepository implements SpikeSaveRepository {
+   private readonly port: SpikeFilePort;
+ 
+@@ -255,7 +404,12 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
+         slots.push({ slot, path, text: null, ioError: false, parsed: null, parseIssue: null });
+         continue;
+       }
+-      const parsed = parseEnvelope(text);
++      let parsed: EnvelopeParse;
++      try {
++        parsed = parseEnvelope(text);
++      } catch (error) {
++        parsed = { ok: false, detail: `envelope parse threw: ${(error as Error).message}` };
++      }
+       if (!parsed.ok) {
+         slots.push({ slot, path, text, ioError: false, parsed: null, parseIssue: parsed.detail });
+       } else {
+@@ -339,17 +493,18 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
+     }
+ 
+     const slots = await this.readSlots();
+-    const valid = slots
+-      .filter((s): s is SlotRead & { parsed: ParsedEnvelope } => s.parsed !== null)
+-      .sort((a, b) => {
+-        const ra = natToBigInt(a.parsed.revision);
+-        const rb = natToBigInt(b.parsed.revision);
+-        if (ra !== rb) return rb > ra ? 1 : -1;
+-        return a.slot - b.slot;
+-      });
++    const valid = validSlotsDescending(slots);
+ 
+-    if (slots.every((s) => s.ioError)) {
+-      return { kind: 'FAILED', detail: 'cannot determine current revision: all slot reads failed' };
++    const unreadable = slots.filter((s) => s.ioError);
++    if (unreadable.length > 0) {
++      return {
++        kind: 'UNCERTAIN',
++        detail: `slot read unavailable (${unreadable.map((s) => s.path).join(',')}); no write attempted`,
++      };
++    }
++    const conflict = slotConflict(valid);
++    if (conflict !== null) {
++      return { kind: 'FAILED', detail: `save state conflict: ${conflict}` };
+     }
+     if (valid.length === 0) {
+       const anyPresent = slots.some((s) => s.text !== null);
+@@ -432,6 +587,18 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
+     } catch {
+       return { kind: 'UNCERTAIN', detail: 'write result unknown; rescan failed' };
+     }
++    const unreadable = slots.filter((s) => s.ioError);
++    if (unreadable.length > 0) {
++      return {
++        kind: 'UNCERTAIN',
++        detail: `write result unknown; rescan unreadable (${unreadable.map((s) => s.path).join(',')})`,
++      };
++    }
++    const valid = validSlotsDescending(slots);
++    const conflict = slotConflict(valid);
++    if (conflict !== null) {
++      return { kind: 'UNCERTAIN', detail: `write result unknown; rescan conflict: ${conflict}` };
++    }
+     const claimed = slots.find(
+       (s) =>
+         s.parsed !== null &&
+@@ -446,13 +613,7 @@ export class SpikeFileSaveRepository implements SpikeSaveRepository {
+         recoveredFromUncertainWrite: true,
+       };
+     }
+-    const top = slots
+-      .filter((s): s is SlotRead & { parsed: ParsedEnvelope } => s.parsed !== null)
+-      .sort((a, b) => {
+-        const ra = natToBigInt(a.parsed.revision);
+-        const rb = natToBigInt(b.parsed.revision);
+-        return ra === rb ? a.slot - b.slot : rb > ra ? 1 : -1;
+-      })[0];
++    const top = valid[0];
+     const currentRevision = top ? natToBigInt(top.parsed.revision) : null;
+     const expectedBig = expectedRevision === null ? null : natToBigInt(expectedRevision);
+     if ((currentRevision === null && expectedBig === null) || (currentRevision !== null && currentRevision === expectedBig)) {
+diff --git a/packages/game-core/src/spike/time.ts b/packages/game-core/src/spike/time.ts
+index 5cd1fc9..9edd012 100644
+--- a/packages/game-core/src/spike/time.ts
++++ b/packages/game-core/src/spike/time.ts
+@@ -14,6 +14,17 @@ export function assertSafeMs(value: number, label: string): void {
+   }
+ }
+ 
++/** Add millisecond values only when the result remains a representable safe integer. */
++export function safeAddMs(a: number, b: number, label = 'millisecond sum'): number {
++  assertSafeMs(a, `${label} left operand`);
++  assertSafeMs(b, `${label} right operand`);
++  const sum = a + b;
++  if (!Number.isSafeInteger(sum)) {
++    throw new CanonicalJsonError(`${label} exceeds the safe millisecond range: ${a} + ${b}`);
++  }
++  return sum;
++}
++
+ /** round(ms * 1e6); a positive value that rounds to 0 becomes 1 micro-unit. */
+ export function workFromMs(ms: number): Nat {
+   if (!Number.isFinite(ms) || ms < 0) throw new CanonicalJsonError(`Invalid work ms: ${ms}`);
+@@ -70,8 +81,10 @@ export function integrateWork(
+     const needed = requiredBig - doneBig;
+     if (needed <= 0n) return { done: required, completedAtMs: startMs };
+     const elapsed = Number(ceilDiv(needed, rate));
+-    if (elapsed > dt) throw new CanonicalJsonError('Internal: completion outside interval');
+-    return { done: required, completedAtMs: startMs + elapsed };
++    if (!Number.isSafeInteger(elapsed) || elapsed > dt) {
++      throw new CanonicalJsonError('Internal: completion outside interval');
++    }
++    return { done: required, completedAtMs: safeAddMs(startMs, elapsed, 'completion time') };
+   }
+   return { done: natFromBigInt(total), completedAtMs: null };
+ }
+@@ -90,7 +103,9 @@ export function completionTimeMs(
+   const elapsed = ceilDiv(requiredBig - doneBig, rate);
+   const ms = Number(elapsed);
+   if (!Number.isSafeInteger(ms)) return null;
+-  return startMs + ms;
++  assertSafeMs(startMs, 'startMs');
++  const result = startMs + ms;
++  return Number.isSafeInteger(result) ? result : null;
+ }
+ 
+ /**
+diff --git a/packages/game-core/src/spike/types.ts b/packages/game-core/src/spike/types.ts
+index d420081..3282beb 100644
+--- a/packages/game-core/src/spike/types.ts
++++ b/packages/game-core/src/spike/types.ts
+@@ -37,6 +37,19 @@ export interface SpikeOfflineSession {
+   settledUntilMs: number;
+ }
+ 
++/**
++ * SPIKE-ONLY: result locked when a v1 attempt enters FIGHTING, so a migrated
++ * in-progress attempt can be resumed without re-drawing. Normal v2 runs do not
++ * persist this field (it is optional and absent).
++ */
++export interface SpikeAttemptLock {
++  seq: number;
++  claimKey: string;
++  speciesU: number;
++  captureU: number;
++  fightMs: number;
++}
++
+ /** Save schema v2 (current spike schema). */
+ export interface SpikeGameState {
+   schemaVersion: 2;
+@@ -56,9 +69,14 @@ export interface SpikeGameState {
+   envNextCheckMs: number;
+   envActivityMicro: number;
+   offline: SpikeOfflineSession | null;
++  attemptLock?: SpikeAttemptLock | null;
+ }
+ 
+-/** Save schema v1, only used to verify migration. */
++/**
++ * Save schema v1, only used to verify migration. The optional attempt fields
++ * are a minimal experimental extension used to prove an in-progress attempt
++ * survives migration; real v1 saves do not contain them.
++ */
+ export interface SpikeGameStateV1 {
+   schemaVersion: 1;
+   saveEpoch: string;
+@@ -67,6 +85,13 @@ export interface SpikeGameStateV1 {
+   counter: number;
+   gold: Nat;
+   rng: SpikeRngState;
++  attempt?: {
++    stage: Exclude<SpikeStage, 'IDLE'>;
++    stageStartMs: number;
++    stageDone: Nat;
++    stageRequired: Nat;
++    lock?: SpikeAttemptLock | null;
++  };
+ }
+ 
+ export interface SpikeEnvelope {
+diff --git a/tests/backend/be-000/cocos-artifact.test.ts b/tests/backend/be-000/cocos-artifact.test.ts
+index 8579b71..bc2b321 100644
+--- a/tests/backend/be-000/cocos-artifact.test.ts
++++ b/tests/backend/be-000/cocos-artifact.test.ts
+@@ -21,16 +21,22 @@ test('COCOS-01 .mjs artifact imports in Node and reproduces RNG-01', async () =>
+   assert.equal(step.value, 11520);
+ });
+ 
+-test('COCOS-02 all emitted modules use relative .mjs specifiers and no CJS/Node APIs', async () => {
++test('COCOS-02 emitted modules and .d.mts declarations use .mjs specifiers only', async () => {
+   const names = await readdir(COCOS_DIR);
+   const modules = names.filter((n) => n.endsWith('.mjs'));
++  const declarations = names.filter((n) => n.endsWith('.d.mts'));
+   assert.ok(modules.length >= 9, `expected spike modules, found ${modules.join(',')}`);
++  assert.equal(declarations.length, modules.length, 'each module needs a .d.mts declaration');
+   for (const name of modules) {
+     const text = await readFile(`${COCOS_DIR}${name}`, 'utf8');
+     assert.ok(!/(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.js["']/.test(text), `${name} still imports .js`);
+     assert.ok(!/\brequire\s*\(|\bmodule\.exports\b/.test(text), `${name} contains CJS syntax`);
+     assert.ok(!/from\s+["']node:/.test(text), `${name} imports a Node builtin`);
+   }
++  for (const name of declarations) {
++    const text = await readFile(`${COCOS_DIR}${name}`, 'utf8');
++    assert.ok(!/(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.ts["']/.test(text), `${name} still imports .ts`);
++  }
+   assert.ok(modules.includes('index.mjs'));
+-  assert.ok(names.includes('index.d.ts'), 'declarations should be copied for editor typechecking');
++  assert.ok(names.includes('index.d.mts'), 'strict consumers need a declaration next to index.mjs');
+ });
+\ No newline at end of file
+diff --git a/tests/backend/be-000/cocos-probe/probe.ts b/tests/backend/be-000/cocos-probe/probe.ts
+new file mode 100644
+index 0000000..1140812
+--- /dev/null
++++ b/tests/backend/be-000/cocos-probe/probe.ts
+@@ -0,0 +1,30 @@
++// BE-000-R1 reproducible Cocos probe source.
++// Copy this file and dist/cocos/spike into a Cocos assets folder, then import
++// this module from a scene script. See reports/backend/BE-000-R1/IMPLEMENTATION_REPORT.md.
++import {
++  advanceOffline,
++  buildEnvelope,
++  canonicalStringify,
++  createInitialState,
++  xoshiroStep,
++} from './spike/index.mjs';
++
++const step = xoshiroStep([1, 2, 3, 4]);
++const initial = createInitialState({
++  saveEpoch: 'epoch.be000',
++  startMs: 1_700_000_000_000,
++  allowanceMs: 86_400_000,
++});
++const finalState = advanceOffline(initial, initial.cursorMs + 86_400_000).state;
++const envelope = buildEnvelope(finalState, '1');
++
++export const spikeProbeValue = step.value;
++export const spikeProbeState = canonicalStringify(step.state);
++
++(globalThis as unknown as Record<string, unknown>).__BE000_PROBE__ = {
++  value: step.value,
++  state: spikeProbeState,
++  finalState,
++  sha256: envelope.sha256,
++  text: envelope.text,
++};
+\ No newline at end of file
+diff --git a/tests/backend/be-000/cocos-type-consumer.mts b/tests/backend/be-000/cocos-type-consumer.mts
+new file mode 100644
+index 0000000..c8db661
+--- /dev/null
++++ b/tests/backend/be-000/cocos-type-consumer.mts
+@@ -0,0 +1,25 @@
++// Strict TypeScript consumer for the actual Cocos .mjs entry point.
++// This file is compiled by tsconfig.cocos-consumer.json after build:cocos.
++import {
++  advanceOffline,
++  buildEnvelope,
++  createInitialState,
++  xoshiroStep,
++} from '../../../packages/game-core/dist/cocos/spike/index.mjs';
++
++const step = xoshiroStep([1, 2, 3, 4]);
++if (step.value !== 11520) throw new Error('unexpected xoshiro step');
++
++const initial = createInitialState({
++  saveEpoch: 'epoch.consumer',
++  startMs: 1_700_000_000_000,
++  allowanceMs: 3_600_000,
++});
++const advanced = advanceOffline(initial, initial.cursorMs + 1000).state;
++const envelope = buildEnvelope(advanced, '1');
++
++export const consumerProbe = {
++  value: step.value,
++  stage: advanced.stage,
++  sha256: envelope.sha256,
++};
+\ No newline at end of file
+diff --git a/tests/backend/be-000/d01-encoding.test.ts b/tests/backend/be-000/d01-encoding.test.ts
+new file mode 100644
+index 0000000..e6018cf
+--- /dev/null
++++ b/tests/backend/be-000/d01-encoding.test.ts
+@@ -0,0 +1,56 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { canonicalStringify, utf8Bytes } from '../../../packages/game-core/src/spike/canonical-json.ts';
++import { computeEnvelopeHash } from '../../../packages/game-core/src/spike/save.ts';
++
++// Local D01 vectors. Byte counts and digests were produced by an independent
++// Python 3 run (`json.dumps(..., ensure_ascii=False, separators=(',',':'))` +
++// `hashlib.sha256`, no BOM), not by this implementation.
++const VECTOR_A_PAYLOAD = '{"name":"Alice"}';
++const VECTOR_A_OUTER = '["IDLE_FISHING",1,"7","epoch.audit","{\\"name\\":\\"Alice\\"}"]';
++const VECTOR_A_BYTES = 59;
++const VECTOR_A_SHA = '052166960a60184b98f25faadf00fc99bf6c60028c305a53e7e220fb625b92ae';
++
++const VECTOR_B_PAYLOAD =
++  '{"name":"He said \\"hi\\"","note":"line1\\nline2\\tend","path":"C:\\\\tmp\\\\f.txt","tail":"\u9c7c\ud83d\udc1f"}';
++const VECTOR_B_BYTES = 158;
++const VECTOR_B_SHA = '2148014d02842b5d0f071476bda16004bc0e1971d4ec6264d343caa9411c7936';
++
++test('D01-01 envelope hash covers the fixed outer array and matches an independent UTF-8 SHA-256', () => {
++  assert.equal(canonicalStringify({ name: 'Alice' }), VECTOR_A_PAYLOAD);
++  const outer = canonicalStringify(['IDLE_FISHING', 1, '7', 'epoch.audit', VECTOR_A_PAYLOAD]);
++  assert.equal(outer, VECTOR_A_OUTER);
++  assert.equal(utf8Bytes(outer).length, VECTOR_A_BYTES);
++  assert.equal(computeEnvelopeHash('IDLE_FISHING', 1, '7', 'epoch.audit', VECTOR_A_PAYLOAD), VECTOR_A_SHA);
++});
++
++test('D01-02 quotes, backslashes, control escapes and non-ASCII match the independent vector', () => {
++  const payload = canonicalStringify({
++    tail: '\u9c7c\ud83d\udc1f',
++    path: 'C:\\tmp\\f.txt',
++    note: 'line1\nline2\tend',
++    name: 'He said "hi"',
++  });
++  assert.equal(payload, VECTOR_B_PAYLOAD);
++  assert.equal(utf8Bytes(payload).length, 93);
++  assert.equal(computeEnvelopeHash('IDLE_FISHING', 1, '7', 'epoch.audit', payload), VECTOR_B_SHA);
++  const outer = canonicalStringify(['IDLE_FISHING', 1, '7', 'epoch.audit', payload]);
++  assert.equal(utf8Bytes(outer).length, VECTOR_B_BYTES);
++});
++
++test('D01-03 object keys sort by UTF-16 code unit, arrays keep order, no Unicode normalization', () => {
++  const astralFirst = '\ud800\udc00';
++  const bmpHigh = '\ue000';
++  assert.equal(canonicalStringify({ [bmpHigh]: 1, [astralFirst]: 2 }), `{"${astralFirst}":2,"${bmpHigh}":1}`);
++  assert.equal(canonicalStringify(['b', 'a']), '["b","a"]');
++
++  const composed = 'é';
++  const decomposed = 'e\u0301';
++  assert.notEqual(canonicalStringify(composed), canonicalStringify(decomposed));
++  assert.notEqual(
++    computeEnvelopeHash('IDLE_FISHING', 1, '7', 'epoch.audit', composed),
++    computeEnvelopeHash('IDLE_FISHING', 1, '7', 'epoch.audit', decomposed)
++  );
++  assert.equal(utf8Bytes(composed).length, 2);
++  assert.equal(utf8Bytes(decomposed).length, 3);
++});
+\ No newline at end of file
+diff --git a/tests/backend/be-000/fixtures/offline-vectors.json b/tests/backend/be-000/fixtures/offline-vectors.json
+index 448c747..b55d940 100644
+--- a/tests/backend/be-000/fixtures/offline-vectors.json
++++ b/tests/backend/be-000/fixtures/offline-vectors.json
+@@ -7,8 +7,8 @@
+     "sha256": "79a773550beb088cf0462e0851b043c7b86ebd2bd0f3cbe3447dd4d6ca0a35f4"
+   },
+   "afterOneHour": {
+-    "canonical": "{\"big\":\"13580246791358024679135802467900\",\"claims\":[\"fish:1\",\"fish:2\",\"fish:3\",\"fish:4\",\"fish:5\",\"fish:6\",\"fish:7\",\"fish:8\",\"fish:9\",\"fish:10\",\"fish:11\",\"fish:12\",\"fish:13\",\"fish:14\",\"fish:15\",\"fish:16\",\"fish:17\",\"fish:18\",\"fish:19\",\"fish:20\",\"fish:21\",\"fish:22\",\"fish:23\",\"fish:24\",\"fish:25\",\"fish:26\",\"fish:27\",\"fish:28\",\"fish:29\",\"fish:30\",\"fish:31\",\"fish:32\",\"fish:33\",\"fish:34\",\"fish:35\",\"fish:36\",\"fish:37\",\"fish:38\",\"fish:39\",\"fish:40\",\"fish:41\",\"fish:42\",\"fish:43\",\"fish:44\",\"fish:45\",\"fish:46\",\"fish:47\",\"fish:48\",\"fish:49\",\"fish:50\",\"fish:51\",\"fish:52\",\"fish:53\",\"fish:54\",\"fish:55\",\"fish:56\",\"fish:57\",\"fish:58\",\"fish:59\",\"fish:60\",\"fish:61\",\"fish:62\",\"fish:63\",\"fish:64\",\"fish:65\",\"fish:66\",\"fish:67\",\"fish:68\",\"fish:69\",\"fish:70\",\"fish:71\",\"fish:72\",\"fish:73\",\"fish:74\",\"fish:75\",\"fish:76\",\"fish:77\",\"fish:78\",\"fish:79\",\"fish:80\",\"fish:81\",\"fish:82\",\"fish:83\",\"fish:84\",\"fish:85\",\"fish:86\",\"fish:87\",\"fish:88\",\"fish:89\",\"fish:90\",\"fish:91\",\"fish:92\",\"fish:93\",\"fish:94\",\"fish:95\",\"fish:96\",\"fish:97\",\"fish:98\",\"fish:99\",\"fish:100\",\"fish:101\",\"fish:102\",\"fish:103\",\"fish:104\",\"fish:105\",\"fish:106\",\"fish:107\",\"fish:108\",\"fish:109\",\"fish:110\"],\"counters\":{\"attempts\":111,\"casts\":111,\"cycles\":110,\"envChecks\":12,\"events\":110,\"fights\":110,\"prepares\":110,\"waits\":110},\"cursorMs\":1700003600000,\"envActivityMicro\":1195676,\"envNextCheckMs\":1700003900000,\"gold\":\"3116\",\"lastTerminalAttemptSeq\":\"110\",\"offline\":{\"allowanceMs\":86400000,\"deadlineMs\":1700086400000,\"settledUntilMs\":1700000000000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"[\\\"environment\\\",\\\"spike-config-v1\\\",\\\"region.pond\\\"]\":[3877052670,1235491243,3028100323,2487395095],\"capture\":[3301193441,3776249190,2683511996,2011091078],\"individual\":[2943807481,864750974,1297722287,1978834450],\"species\":[2483503850,3848802768,3146669406,3558268474],\"wait\":[1371918276,2731703835,3549262139,2518769466]}},\"rootSeed\":305441741,\"saveEpoch\":\"epoch.be000\",\"schemaVersion\":2,\"stage\":\"WAITING\",\"stageDone\":\"6567498960\",\"stageRequired\":\"13096073459\",\"stageStartMs\":1700003593264}",
+-    "sha256": "bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a",
++    "canonical": "{\"big\":\"13580246791358024679135802467900\",\"claims\":[\"fish:1\",\"fish:2\",\"fish:3\",\"fish:4\",\"fish:5\",\"fish:6\",\"fish:7\",\"fish:8\",\"fish:9\",\"fish:10\",\"fish:11\",\"fish:12\",\"fish:13\",\"fish:14\",\"fish:15\",\"fish:16\",\"fish:17\",\"fish:18\",\"fish:19\",\"fish:20\",\"fish:21\",\"fish:22\",\"fish:23\",\"fish:24\",\"fish:25\",\"fish:26\",\"fish:27\",\"fish:28\",\"fish:29\",\"fish:30\",\"fish:31\",\"fish:32\",\"fish:33\",\"fish:34\",\"fish:35\",\"fish:36\",\"fish:37\",\"fish:38\",\"fish:39\",\"fish:40\",\"fish:41\",\"fish:42\",\"fish:43\",\"fish:44\",\"fish:45\",\"fish:46\",\"fish:47\",\"fish:48\",\"fish:49\",\"fish:50\",\"fish:51\",\"fish:52\",\"fish:53\",\"fish:54\",\"fish:55\",\"fish:56\",\"fish:57\",\"fish:58\",\"fish:59\",\"fish:60\",\"fish:61\",\"fish:62\",\"fish:63\",\"fish:64\",\"fish:65\",\"fish:66\",\"fish:67\",\"fish:68\",\"fish:69\",\"fish:70\",\"fish:71\",\"fish:72\",\"fish:73\",\"fish:74\",\"fish:75\",\"fish:76\",\"fish:77\",\"fish:78\",\"fish:79\",\"fish:80\",\"fish:81\",\"fish:82\",\"fish:83\",\"fish:84\",\"fish:85\",\"fish:86\",\"fish:87\",\"fish:88\",\"fish:89\",\"fish:90\",\"fish:91\",\"fish:92\",\"fish:93\",\"fish:94\",\"fish:95\",\"fish:96\",\"fish:97\",\"fish:98\",\"fish:99\",\"fish:100\",\"fish:101\",\"fish:102\",\"fish:103\",\"fish:104\",\"fish:105\",\"fish:106\",\"fish:107\",\"fish:108\",\"fish:109\",\"fish:110\"],\"counters\":{\"attempts\":111,\"casts\":111,\"cycles\":110,\"envChecks\":12,\"events\":110,\"fights\":110,\"prepares\":110,\"waits\":110},\"cursorMs\":1700003600000,\"envActivityMicro\":1195676,\"envNextCheckMs\":1700003900000,\"gold\":\"3116\",\"lastTerminalAttemptSeq\":\"110\",\"offline\":{\"allowanceMs\":86400000,\"deadlineMs\":1700086400000,\"settledUntilMs\":1700003600000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"[\\\"environment\\\",\\\"spike-config-v1\\\",\\\"region.pond\\\"]\":[3877052670,1235491243,3028100323,2487395095],\"capture\":[3301193441,3776249190,2683511996,2011091078],\"individual\":[2943807481,864750974,1297722287,1978834450],\"species\":[2483503850,3848802768,3146669406,3558268474],\"wait\":[1371918276,2731703835,3549262139,2518769466]}},\"rootSeed\":305441741,\"saveEpoch\":\"epoch.be000\",\"schemaVersion\":2,\"stage\":\"WAITING\",\"stageDone\":\"6567498960\",\"stageRequired\":\"13096073459\",\"stageStartMs\":1700003593264}",
++    "sha256": "8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63",
+     "counters": {
+       "attempts": 111,
+       "casts": 111,
+@@ -25,8 +25,8 @@
+     "envActivityMicro": 1195676
+   },
+   "afterEightHours": {
+-    "canonical": "{\"big\":\"119629628552962962855296296285410\",\"claims\":[\"fish:1\",\"fish:2\",\"fish:3\",\"fish:4\",\"fish:5\",\"fish:6\",\"fish:7\",\"fish:8\",\"fish:9\",\"fish:10\",\"fish:11\",\"fish:12\",\"fish:13\",\"fish:14\",\"fish:15\",\"fish:16\",\"fish:17\",\"fish:18\",\"fish:19\",\"fish:20\",\"fish:21\",\"fish:22\",\"fish:23\",\"fish:24\",\"fish:25\",\"fish:26\",\"fish:27\",\"fish:28\",\"fish:29\",\"fish:30\",\"fish:31\",\"fish:32\",\"fish:33\",\"fish:34\",\"fish:35\",\"fish:36\",\"fish:37\",\"fish:38\",\"fish:39\",\"fish:40\",\"fish:41\",\"fish:42\",\"fish:43\",\"fish:44\",\"fish:45\",\"fish:46\",\"fish:47\",\"fish:48\",\"fish:49\",\"fish:50\",\"fish:51\",\"fish:52\",\"fish:53\",\"fish:54\",\"fish:55\",\"fish:56\",\"fish:57\",\"fish:58\",\"fish:59\",\"fish:60\",\"fish:61\",\"fish:62\",\"fish:63\",\"fish:64\",\"fish:65\",\"fish:66\",\"fish:67\",\"fish:68\",\"fish:69\",\"fish:70\",\"fish:71\",\"fish:72\",\"fish:73\",\"fish:74\",\"fish:75\",\"fish:76\",\"fish:77\",\"fish:78\",\"fish:79\",\"fish:80\",\"fish:81\",\"fish:82\",\"fish:83\",\"fish:84\",\"fish:85\",\"fish:86\",\"fish:87\",\"fish:88\",\"fish:89\",\"fish:90\",\"fish:91\",\"fish:92\",\"fish:93\",\"fish:94\",\"fish:95\",\"fish:96\",\"fish:97\",\"fish:98\",\"fish:99\",\"fish:100\",\"fish:101\",\"fish:102\",\"fish:103\",\"fish:104\",\"fish:105\",\"fish:106\",\"fish:107\",\"fish:108\",\"fish:109\",\"fish:110\",\"fish:111\",\"fish:112\",\"fish:113\",\"fish:114\",\"fish:115\",\"fish:116\",\"fish:117\",\"fish:118\",\"fish:119\",\"fish:120\",\"fish:121\",\"fish:122\",\"fish:123\",\"fish:124\",\"fish:125\",\"fish:126\",\"fish:127\",\"fish:128\",\"fish:129\",\"fish:130\",\"fish:131\",\"fish:132\",\"fish:133\",\"fish:134\",\"fish:135\",\"fish:136\",\"fish:137\",\"fish:138\",\"fish:139\",\"fish:140\",\"fish:141\",\"fish:142\",\"fish:143\",\"fish:144\",\"fish:145\",\"fish:146\",\"fish:147\",\"fish:148\",\"fish:149\",\"fish:150\",\"fish:151\",\"fish:152\",\"fish:153\",\"fish:154\",\"fish:155\",\"fish:156\",\"fish:157\",\"fish:158\",\"fish:159\",\"fish:160\",\"fish:161\",\"fish:162\",\"fish:163\",\"fish:164\",\"fish:165\",\"fish:166\",\"fish:167\",\"fish:168\",\"fish:169\",\"fish:170\",\"fish:171\",\"fish:172\",\"fish:173\",\"fish:174\",\"fish:175\",\"fish:176\",\"fish:177\",\"fish:178\",\"fish:179\",\"fish:180\",\"fish:181\",\"fish:182\",\"fish:183\",\"fish:184\",\"fish:185\",\"fish:186\",\"fish:187\",\"fish:188\",\"fish:189\",\"fish:190\",\"fish:191\",\"fish:192\",\"fish:193\",\"fish:194\",\"fish:195\",\"fish:196\",\"fish:197\",\"fish:198\",\"fish:199\",\"fish:200\",\"fish:201\",\"fish:202\",\"fish:203\",\"fish:204\",\"fish:205\",\"fish:206\",\"fish:207\",\"fish:208\",\"fish:209\",\"fish:210\",\"fish:211\",\"fish:212\",\"fish:213\",\"fish:214\",\"fish:215\",\"fish:216\",\"fish:217\",\"fish:218\",\"fish:219\",\"fish:220\",\"fish:221\",\"fish:222\",\"fish:223\",\"fish:224\",\"fish:225\",\"fish:226\",\"fish:227\",\"fish:228\",\"fish:229\",\"fish:230\",\"fish:231\",\"fish:232\",\"fish:233\",\"fish:234\",\"fish:235\",\"fish:236\",\"fish:237\",\"fish:238\",\"fish:239\",\"fish:240\",\"fish:241\",\"fish:242\",\"fish:243\",\"fish:244\",\"fish:245\",\"fish:246\",\"fish:247\",\"fish:248\",\"fish:249\",\"fish:250\",\"fish:251\",\"fish:252\",\"fish:253\",\"fish:254\",\"fish:255\",\"fish:256\",\"fish:257\",\"fish:258\",\"fish:259\",\"fish:260\",\"fish:261\",\"fish:262\",\"fish:263\",\"fish:264\",\"fish:265\",\"fish:266\",\"fish:267\",\"fish:268\",\"fish:269\",\"fish:270\",\"fish:271\",\"fish:272\",\"fish:273\",\"fish:274\",\"fish:275\",\"fish:276\",\"fish:277\",\"fish:278\",\"fish:279\",\"fish:280\",\"fish:281\",\"fish:282\",\"fish:283\",\"fish:284\",\"fish:285\",\"fish:286\",\"fish:287\",\"fish:288\",\"fish:289\",\"fish:290\",\"fish:291\",\"fish:292\",\"fish:293\",\"fish:294\",\"fish:295\",\"fish:296\",\"fish:297\",\"fish:298\",\"fish:299\",\"fish:300\",\"fish:301\",\"fish:302\",\"fish:303\",\"fish:304\",\"fish:305\",\"fish:306\",\"fish:307\",\"fish:308\",\"fish:309\",\"fish:310\",\"fish:311\",\"fish:312\",\"fish:313\",\"fish:314\",\"fish:315\",\"fish:316\",\"fish:317\",\"fish:318\",\"fish:319\",\"fish:320\",\"fish:321\",\"fish:322\",\"fish:323\",\"fish:324\",\"fish:325\",\"fish:326\",\"fish:327\",\"fish:328\",\"fish:329\",\"fish:330\",\"fish:331\",\"fish:332\",\"fish:333\",\"fish:334\",\"fish:335\",\"fish:336\",\"fish:337\",\"fish:338\",\"fish:339\",\"fish:340\",\"fish:341\",\"fish:342\",\"fish:343\",\"fish:344\",\"fish:345\",\"fish:346\",\"fish:347\",\"fish:348\",\"fish:349\",\"fish:350\",\"fish:351\",\"fish:352\",\"fish:353\",\"fish:354\",\"fish:355\",\"fish:356\",\"fish:357\",\"fish:358\",\"fish:359\",\"fish:360\",\"fish:361\",\"fish:362\",\"fish:363\",\"fish:364\",\"fish:365\",\"fish:366\",\"fish:367\",\"fish:368\",\"fish:369\",\"fish:370\",\"fish:371\",\"fish:372\",\"fish:373\",\"fish:374\",\"fish:375\",\"fish:376\",\"fish:377\",\"fish:378\",\"fish:379\",\"fish:380\",\"fish:381\",\"fish:382\",\"fish:383\",\"fish:384\",\"fish:385\",\"fish:386\",\"fish:387\",\"fish:388\",\"fish:389\",\"fish:390\",\"fish:391\",\"fish:392\",\"fish:393\",\"fish:394\",\"fish:395\",\"fish:396\",\"fish:397\",\"fish:398\",\"fish:399\",\"fish:400\",\"fish:401\",\"fish:402\",\"fish:403\",\"fish:404\",\"fish:405\",\"fish:406\",\"fish:407\",\"fish:408\",\"fish:409\",\"fish:410\",\"fish:411\",\"fish:412\",\"fish:413\",\"fish:414\",\"fish:415\",\"fish:416\",\"fish:417\",\"fish:418\",\"fish:419\",\"fish:420\",\"fish:421\",\"fish:422\",\"fish:423\",\"fish:424\",\"fish:425\",\"fish:426\",\"fish:427\",\"fish:428\",\"fish:429\",\"fish:430\",\"fish:431\",\"fish:432\",\"fish:433\",\"fish:434\",\"fish:435\",\"fish:436\",\"fish:437\",\"fish:438\",\"fish:439\",\"fish:440\",\"fish:441\",\"fish:442\",\"fish:443\",\"fish:444\",\"fish:445\",\"fish:446\",\"fish:447\",\"fish:448\",\"fish:449\",\"fish:450\",\"fish:451\",\"fish:452\",\"fish:453\",\"fish:454\",\"fish:455\",\"fish:456\",\"fish:457\",\"fish:458\",\"fish:459\",\"fish:460\",\"fish:461\",\"fish:462\",\"fish:463\",\"fish:464\",\"fish:465\",\"fish:466\",\"fish:467\",\"fish:468\",\"fish:469\",\"fish:470\",\"fish:471\",\"fish:472\",\"fish:473\",\"fish:474\",\"fish:475\",\"fish:476\",\"fish:477\",\"fish:478\",\"fish:479\",\"fish:480\",\"fish:481\",\"fish:482\",\"fish:483\",\"fish:484\",\"fish:485\",\"fish:486\",\"fish:487\",\"fish:488\",\"fish:489\",\"fish:490\",\"fish:491\",\"fish:492\",\"fish:493\",\"fish:494\",\"fish:495\",\"fish:496\",\"fish:497\",\"fish:498\",\"fish:499\",\"fish:500\",\"fish:501\",\"fish:502\",\"fish:503\",\"fish:504\",\"fish:505\",\"fish:506\",\"fish:507\",\"fish:508\",\"fish:509\",\"fish:510\",\"fish:511\",\"fish:512\",\"fish:513\",\"fish:514\",\"fish:515\",\"fish:516\",\"fish:517\",\"fish:518\",\"fish:519\",\"fish:520\",\"fish:521\",\"fish:522\",\"fish:523\",\"fish:524\",\"fish:525\",\"fish:526\",\"fish:527\",\"fish:528\",\"fish:529\",\"fish:530\",\"fish:531\",\"fish:532\",\"fish:533\",\"fish:534\",\"fish:535\",\"fish:536\",\"fish:537\",\"fish:538\",\"fish:539\",\"fish:540\",\"fish:541\",\"fish:542\",\"fish:543\",\"fish:544\",\"fish:545\",\"fish:546\",\"fish:547\",\"fish:548\",\"fish:549\",\"fish:550\",\"fish:551\",\"fish:552\",\"fish:553\",\"fish:554\",\"fish:555\",\"fish:556\",\"fish:557\",\"fish:558\",\"fish:559\",\"fish:560\",\"fish:561\",\"fish:562\",\"fish:563\",\"fish:564\",\"fish:565\",\"fish:566\",\"fish:567\",\"fish:568\",\"fish:569\",\"fish:570\",\"fish:571\",\"fish:572\",\"fish:573\",\"fish:574\",\"fish:575\",\"fish:576\",\"fish:577\",\"fish:578\",\"fish:579\",\"fish:580\",\"fish:581\",\"fish:582\",\"fish:583\",\"fish:584\",\"fish:585\",\"fish:586\",\"fish:587\",\"fish:588\",\"fish:589\",\"fish:590\",\"fish:591\",\"fish:592\",\"fish:593\",\"fish:594\",\"fish:595\",\"fish:596\",\"fish:597\",\"fish:598\",\"fish:599\",\"fish:600\",\"fish:601\",\"fish:602\",\"fish:603\",\"fish:604\",\"fish:605\",\"fish:606\",\"fish:607\",\"fish:608\",\"fish:609\",\"fish:610\",\"fish:611\",\"fish:612\",\"fish:613\",\"fish:614\",\"fish:615\",\"fish:616\",\"fish:617\",\"fish:618\",\"fish:619\",\"fish:620\",\"fish:621\",\"fish:622\",\"fish:623\",\"fish:624\",\"fish:625\",\"fish:626\",\"fish:627\",\"fish:628\",\"fish:629\",\"fish:630\",\"fish:631\",\"fish:632\",\"fish:633\",\"fish:634\",\"fish:635\",\"fish:636\",\"fish:637\",\"fish:638\",\"fish:639\",\"fish:640\",\"fish:641\",\"fish:642\",\"fish:643\",\"fish:644\",\"fish:645\",\"fish:646\",\"fish:647\",\"fish:648\",\"fish:649\",\"fish:650\",\"fish:651\",\"fish:652\",\"fish:653\",\"fish:654\",\"fish:655\",\"fish:656\",\"fish:657\",\"fish:658\",\"fish:659\",\"fish:660\",\"fish:661\",\"fish:662\",\"fish:663\",\"fish:664\",\"fish:665\",\"fish:666\",\"fish:667\",\"fish:668\",\"fish:669\",\"fish:670\",\"fish:671\",\"fish:672\",\"fish:673\",\"fish:674\",\"fish:675\",\"fish:676\",\"fish:677\",\"fish:678\",\"fish:679\",\"fish:680\",\"fish:681\",\"fish:682\",\"fish:683\",\"fish:684\",\"fish:685\",\"fish:686\",\"fish:687\",\"fish:688\",\"fish:689\",\"fish:690\",\"fish:691\",\"fish:692\",\"fish:693\",\"fish:694\",\"fish:695\",\"fish:696\",\"fish:697\",\"fish:698\",\"fish:699\",\"fish:700\",\"fish:701\",\"fish:702\",\"fish:703\",\"fish:704\",\"fish:705\",\"fish:706\",\"fish:707\",\"fish:708\",\"fish:709\",\"fish:710\",\"fish:711\",\"fish:712\",\"fish:713\",\"fish:714\",\"fish:715\",\"fish:716\",\"fish:717\",\"fish:718\",\"fish:719\",\"fish:720\",\"fish:721\",\"fish:722\",\"fish:723\",\"fish:724\",\"fish:725\",\"fish:726\",\"fish:727\",\"fish:728\",\"fish:729\",\"fish:730\",\"fish:731\",\"fish:732\",\"fish:733\",\"fish:734\",\"fish:735\",\"fish:736\",\"fish:737\",\"fish:738\",\"fish:739\",\"fish:740\",\"fish:741\",\"fish:742\",\"fish:743\",\"fish:744\",\"fish:745\",\"fish:746\",\"fish:747\",\"fish:748\",\"fish:749\",\"fish:750\",\"fish:751\",\"fish:752\",\"fish:753\",\"fish:754\",\"fish:755\",\"fish:756\",\"fish:757\",\"fish:758\",\"fish:759\",\"fish:760\",\"fish:761\",\"fish:762\",\"fish:763\",\"fish:764\",\"fish:765\",\"fish:766\",\"fish:767\",\"fish:768\",\"fish:769\",\"fish:770\",\"fish:771\",\"fish:772\",\"fish:773\",\"fish:774\",\"fish:775\",\"fish:776\",\"fish:777\",\"fish:778\",\"fish:779\",\"fish:780\",\"fish:781\",\"fish:782\",\"fish:783\",\"fish:784\",\"fish:785\",\"fish:786\",\"fish:787\",\"fish:788\",\"fish:789\",\"fish:790\",\"fish:791\",\"fish:792\",\"fish:793\",\"fish:794\",\"fish:795\",\"fish:796\",\"fish:797\",\"fish:798\",\"fish:799\",\"fish:800\",\"fish:801\",\"fish:802\",\"fish:803\",\"fish:804\",\"fish:805\",\"fish:806\",\"fish:807\",\"fish:808\",\"fish:809\",\"fish:810\",\"fish:811\",\"fish:812\",\"fish:813\",\"fish:814\",\"fish:815\",\"fish:816\",\"fish:817\",\"fish:818\",\"fish:819\",\"fish:820\",\"fish:821\",\"fish:822\",\"fish:823\",\"fish:824\",\"fish:825\",\"fish:826\",\"fish:827\",\"fish:828\",\"fish:829\",\"fish:830\",\"fish:831\",\"fish:832\",\"fish:833\",\"fish:834\",\"fish:835\",\"fish:836\",\"fish:837\",\"fish:838\",\"fish:839\",\"fish:840\",\"fish:841\",\"fish:842\",\"fish:843\",\"fish:844\",\"fish:845\",\"fish:846\",\"fish:847\",\"fish:848\",\"fish:849\",\"fish:850\",\"fish:851\",\"fish:852\",\"fish:853\",\"fish:854\",\"fish:855\",\"fish:856\",\"fish:857\",\"fish:858\",\"fish:859\",\"fish:860\",\"fish:861\",\"fish:862\",\"fish:863\",\"fish:864\",\"fish:865\",\"fish:866\",\"fish:867\",\"fish:868\",\"fish:869\",\"fish:870\",\"fish:871\",\"fish:872\",\"fish:873\",\"fish:874\",\"fish:875\",\"fish:876\",\"fish:877\",\"fish:878\",\"fish:879\",\"fish:880\",\"fish:881\",\"fish:882\",\"fish:883\",\"fish:884\",\"fish:885\",\"fish:886\",\"fish:887\",\"fish:888\",\"fish:889\",\"fish:890\",\"fish:891\",\"fish:892\",\"fish:893\",\"fish:894\",\"fish:895\",\"fish:896\",\"fish:897\",\"fish:898\",\"fish:899\",\"fish:900\",\"fish:901\",\"fish:902\",\"fish:903\",\"fish:904\",\"fish:905\",\"fish:906\",\"fish:907\",\"fish:908\",\"fish:909\",\"fish:910\",\"fish:911\",\"fish:912\",\"fish:913\",\"fish:914\",\"fish:915\",\"fish:916\",\"fish:917\",\"fish:918\",\"fish:919\",\"fish:920\",\"fish:921\",\"fish:922\",\"fish:923\",\"fish:924\",\"fish:925\",\"fish:926\",\"fish:927\",\"fish:928\",\"fish:929\",\"fish:930\",\"fish:931\",\"fish:932\",\"fish:933\",\"fish:934\",\"fish:935\",\"fish:936\",\"fish:937\",\"fish:938\",\"fish:939\",\"fish:940\",\"fish:941\",\"fish:942\",\"fish:943\",\"fish:944\",\"fish:945\",\"fish:946\",\"fish:947\",\"fish:948\",\"fish:949\",\"fish:950\",\"fish:951\",\"fish:952\",\"fish:953\",\"fish:954\",\"fish:955\",\"fish:956\",\"fish:957\",\"fish:958\",\"fish:959\",\"fish:960\",\"fish:961\",\"fish:962\",\"fish:963\",\"fish:964\",\"fish:965\",\"fish:966\",\"fish:967\",\"fish:968\",\"fish:969\"],\"counters\":{\"attempts\":970,\"casts\":970,\"cycles\":969,\"envChecks\":96,\"events\":969,\"fights\":970,\"prepares\":969,\"waits\":970},\"cursorMs\":1700028800000,\"envActivityMicro\":810854,\"envNextCheckMs\":1700029100000,\"gold\":\"27911\",\"lastTerminalAttemptSeq\":\"969\",\"offline\":{\"allowanceMs\":86400000,\"deadlineMs\":1700086400000,\"settledUntilMs\":1700000000000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"[\\\"environment\\\",\\\"spike-config-v1\\\",\\\"region.pond\\\"]\":[2666998067,3262533698,3819901548,778826387],\"capture\":[1156698304,825512487,3362169795,2184458986],\"individual\":[3720712960,1082323972,657017522,99925778],\"species\":[757939569,809294165,160817597,1049421866],\"wait\":[826797854,2127644087,2357132465,1867607404]}},\"rootSeed\":305441741,\"saveEpoch\":\"epoch.be000\",\"schemaVersion\":2,\"stage\":\"FIGHTING\",\"stageDone\":\"5069660820\",\"stageRequired\":\"9362000000\",\"stageStartMs\":1700028794162}",
+-    "sha256": "7da517674df168ca5f88535b949f51a072982e77a0577b362811aa21c430839f",
++    "canonical": "{\"attemptLock\":{\"captureU\":0.4494557859023359,\"claimKey\":\"fish:970\",\"fightMs\":9362,\"seq\":970,\"speciesU\":0.09688973893848996},\"big\":\"119629628552962962855296296285410\",\"claims\":[\"fish:1\",\"fish:2\",\"fish:3\",\"fish:4\",\"fish:5\",\"fish:6\",\"fish:7\",\"fish:8\",\"fish:9\",\"fish:10\",\"fish:11\",\"fish:12\",\"fish:13\",\"fish:14\",\"fish:15\",\"fish:16\",\"fish:17\",\"fish:18\",\"fish:19\",\"fish:20\",\"fish:21\",\"fish:22\",\"fish:23\",\"fish:24\",\"fish:25\",\"fish:26\",\"fish:27\",\"fish:28\",\"fish:29\",\"fish:30\",\"fish:31\",\"fish:32\",\"fish:33\",\"fish:34\",\"fish:35\",\"fish:36\",\"fish:37\",\"fish:38\",\"fish:39\",\"fish:40\",\"fish:41\",\"fish:42\",\"fish:43\",\"fish:44\",\"fish:45\",\"fish:46\",\"fish:47\",\"fish:48\",\"fish:49\",\"fish:50\",\"fish:51\",\"fish:52\",\"fish:53\",\"fish:54\",\"fish:55\",\"fish:56\",\"fish:57\",\"fish:58\",\"fish:59\",\"fish:60\",\"fish:61\",\"fish:62\",\"fish:63\",\"fish:64\",\"fish:65\",\"fish:66\",\"fish:67\",\"fish:68\",\"fish:69\",\"fish:70\",\"fish:71\",\"fish:72\",\"fish:73\",\"fish:74\",\"fish:75\",\"fish:76\",\"fish:77\",\"fish:78\",\"fish:79\",\"fish:80\",\"fish:81\",\"fish:82\",\"fish:83\",\"fish:84\",\"fish:85\",\"fish:86\",\"fish:87\",\"fish:88\",\"fish:89\",\"fish:90\",\"fish:91\",\"fish:92\",\"fish:93\",\"fish:94\",\"fish:95\",\"fish:96\",\"fish:97\",\"fish:98\",\"fish:99\",\"fish:100\",\"fish:101\",\"fish:102\",\"fish:103\",\"fish:104\",\"fish:105\",\"fish:106\",\"fish:107\",\"fish:108\",\"fish:109\",\"fish:110\",\"fish:111\",\"fish:112\",\"fish:113\",\"fish:114\",\"fish:115\",\"fish:116\",\"fish:117\",\"fish:118\",\"fish:119\",\"fish:120\",\"fish:121\",\"fish:122\",\"fish:123\",\"fish:124\",\"fish:125\",\"fish:126\",\"fish:127\",\"fish:128\",\"fish:129\",\"fish:130\",\"fish:131\",\"fish:132\",\"fish:133\",\"fish:134\",\"fish:135\",\"fish:136\",\"fish:137\",\"fish:138\",\"fish:139\",\"fish:140\",\"fish:141\",\"fish:142\",\"fish:143\",\"fish:144\",\"fish:145\",\"fish:146\",\"fish:147\",\"fish:148\",\"fish:149\",\"fish:150\",\"fish:151\",\"fish:152\",\"fish:153\",\"fish:154\",\"fish:155\",\"fish:156\",\"fish:157\",\"fish:158\",\"fish:159\",\"fish:160\",\"fish:161\",\"fish:162\",\"fish:163\",\"fish:164\",\"fish:165\",\"fish:166\",\"fish:167\",\"fish:168\",\"fish:169\",\"fish:170\",\"fish:171\",\"fish:172\",\"fish:173\",\"fish:174\",\"fish:175\",\"fish:176\",\"fish:177\",\"fish:178\",\"fish:179\",\"fish:180\",\"fish:181\",\"fish:182\",\"fish:183\",\"fish:184\",\"fish:185\",\"fish:186\",\"fish:187\",\"fish:188\",\"fish:189\",\"fish:190\",\"fish:191\",\"fish:192\",\"fish:193\",\"fish:194\",\"fish:195\",\"fish:196\",\"fish:197\",\"fish:198\",\"fish:199\",\"fish:200\",\"fish:201\",\"fish:202\",\"fish:203\",\"fish:204\",\"fish:205\",\"fish:206\",\"fish:207\",\"fish:208\",\"fish:209\",\"fish:210\",\"fish:211\",\"fish:212\",\"fish:213\",\"fish:214\",\"fish:215\",\"fish:216\",\"fish:217\",\"fish:218\",\"fish:219\",\"fish:220\",\"fish:221\",\"fish:222\",\"fish:223\",\"fish:224\",\"fish:225\",\"fish:226\",\"fish:227\",\"fish:228\",\"fish:229\",\"fish:230\",\"fish:231\",\"fish:232\",\"fish:233\",\"fish:234\",\"fish:235\",\"fish:236\",\"fish:237\",\"fish:238\",\"fish:239\",\"fish:240\",\"fish:241\",\"fish:242\",\"fish:243\",\"fish:244\",\"fish:245\",\"fish:246\",\"fish:247\",\"fish:248\",\"fish:249\",\"fish:250\",\"fish:251\",\"fish:252\",\"fish:253\",\"fish:254\",\"fish:255\",\"fish:256\",\"fish:257\",\"fish:258\",\"fish:259\",\"fish:260\",\"fish:261\",\"fish:262\",\"fish:263\",\"fish:264\",\"fish:265\",\"fish:266\",\"fish:267\",\"fish:268\",\"fish:269\",\"fish:270\",\"fish:271\",\"fish:272\",\"fish:273\",\"fish:274\",\"fish:275\",\"fish:276\",\"fish:277\",\"fish:278\",\"fish:279\",\"fish:280\",\"fish:281\",\"fish:282\",\"fish:283\",\"fish:284\",\"fish:285\",\"fish:286\",\"fish:287\",\"fish:288\",\"fish:289\",\"fish:290\",\"fish:291\",\"fish:292\",\"fish:293\",\"fish:294\",\"fish:295\",\"fish:296\",\"fish:297\",\"fish:298\",\"fish:299\",\"fish:300\",\"fish:301\",\"fish:302\",\"fish:303\",\"fish:304\",\"fish:305\",\"fish:306\",\"fish:307\",\"fish:308\",\"fish:309\",\"fish:310\",\"fish:311\",\"fish:312\",\"fish:313\",\"fish:314\",\"fish:315\",\"fish:316\",\"fish:317\",\"fish:318\",\"fish:319\",\"fish:320\",\"fish:321\",\"fish:322\",\"fish:323\",\"fish:324\",\"fish:325\",\"fish:326\",\"fish:327\",\"fish:328\",\"fish:329\",\"fish:330\",\"fish:331\",\"fish:332\",\"fish:333\",\"fish:334\",\"fish:335\",\"fish:336\",\"fish:337\",\"fish:338\",\"fish:339\",\"fish:340\",\"fish:341\",\"fish:342\",\"fish:343\",\"fish:344\",\"fish:345\",\"fish:346\",\"fish:347\",\"fish:348\",\"fish:349\",\"fish:350\",\"fish:351\",\"fish:352\",\"fish:353\",\"fish:354\",\"fish:355\",\"fish:356\",\"fish:357\",\"fish:358\",\"fish:359\",\"fish:360\",\"fish:361\",\"fish:362\",\"fish:363\",\"fish:364\",\"fish:365\",\"fish:366\",\"fish:367\",\"fish:368\",\"fish:369\",\"fish:370\",\"fish:371\",\"fish:372\",\"fish:373\",\"fish:374\",\"fish:375\",\"fish:376\",\"fish:377\",\"fish:378\",\"fish:379\",\"fish:380\",\"fish:381\",\"fish:382\",\"fish:383\",\"fish:384\",\"fish:385\",\"fish:386\",\"fish:387\",\"fish:388\",\"fish:389\",\"fish:390\",\"fish:391\",\"fish:392\",\"fish:393\",\"fish:394\",\"fish:395\",\"fish:396\",\"fish:397\",\"fish:398\",\"fish:399\",\"fish:400\",\"fish:401\",\"fish:402\",\"fish:403\",\"fish:404\",\"fish:405\",\"fish:406\",\"fish:407\",\"fish:408\",\"fish:409\",\"fish:410\",\"fish:411\",\"fish:412\",\"fish:413\",\"fish:414\",\"fish:415\",\"fish:416\",\"fish:417\",\"fish:418\",\"fish:419\",\"fish:420\",\"fish:421\",\"fish:422\",\"fish:423\",\"fish:424\",\"fish:425\",\"fish:426\",\"fish:427\",\"fish:428\",\"fish:429\",\"fish:430\",\"fish:431\",\"fish:432\",\"fish:433\",\"fish:434\",\"fish:435\",\"fish:436\",\"fish:437\",\"fish:438\",\"fish:439\",\"fish:440\",\"fish:441\",\"fish:442\",\"fish:443\",\"fish:444\",\"fish:445\",\"fish:446\",\"fish:447\",\"fish:448\",\"fish:449\",\"fish:450\",\"fish:451\",\"fish:452\",\"fish:453\",\"fish:454\",\"fish:455\",\"fish:456\",\"fish:457\",\"fish:458\",\"fish:459\",\"fish:460\",\"fish:461\",\"fish:462\",\"fish:463\",\"fish:464\",\"fish:465\",\"fish:466\",\"fish:467\",\"fish:468\",\"fish:469\",\"fish:470\",\"fish:471\",\"fish:472\",\"fish:473\",\"fish:474\",\"fish:475\",\"fish:476\",\"fish:477\",\"fish:478\",\"fish:479\",\"fish:480\",\"fish:481\",\"fish:482\",\"fish:483\",\"fish:484\",\"fish:485\",\"fish:486\",\"fish:487\",\"fish:488\",\"fish:489\",\"fish:490\",\"fish:491\",\"fish:492\",\"fish:493\",\"fish:494\",\"fish:495\",\"fish:496\",\"fish:497\",\"fish:498\",\"fish:499\",\"fish:500\",\"fish:501\",\"fish:502\",\"fish:503\",\"fish:504\",\"fish:505\",\"fish:506\",\"fish:507\",\"fish:508\",\"fish:509\",\"fish:510\",\"fish:511\",\"fish:512\",\"fish:513\",\"fish:514\",\"fish:515\",\"fish:516\",\"fish:517\",\"fish:518\",\"fish:519\",\"fish:520\",\"fish:521\",\"fish:522\",\"fish:523\",\"fish:524\",\"fish:525\",\"fish:526\",\"fish:527\",\"fish:528\",\"fish:529\",\"fish:530\",\"fish:531\",\"fish:532\",\"fish:533\",\"fish:534\",\"fish:535\",\"fish:536\",\"fish:537\",\"fish:538\",\"fish:539\",\"fish:540\",\"fish:541\",\"fish:542\",\"fish:543\",\"fish:544\",\"fish:545\",\"fish:546\",\"fish:547\",\"fish:548\",\"fish:549\",\"fish:550\",\"fish:551\",\"fish:552\",\"fish:553\",\"fish:554\",\"fish:555\",\"fish:556\",\"fish:557\",\"fish:558\",\"fish:559\",\"fish:560\",\"fish:561\",\"fish:562\",\"fish:563\",\"fish:564\",\"fish:565\",\"fish:566\",\"fish:567\",\"fish:568\",\"fish:569\",\"fish:570\",\"fish:571\",\"fish:572\",\"fish:573\",\"fish:574\",\"fish:575\",\"fish:576\",\"fish:577\",\"fish:578\",\"fish:579\",\"fish:580\",\"fish:581\",\"fish:582\",\"fish:583\",\"fish:584\",\"fish:585\",\"fish:586\",\"fish:587\",\"fish:588\",\"fish:589\",\"fish:590\",\"fish:591\",\"fish:592\",\"fish:593\",\"fish:594\",\"fish:595\",\"fish:596\",\"fish:597\",\"fish:598\",\"fish:599\",\"fish:600\",\"fish:601\",\"fish:602\",\"fish:603\",\"fish:604\",\"fish:605\",\"fish:606\",\"fish:607\",\"fish:608\",\"fish:609\",\"fish:610\",\"fish:611\",\"fish:612\",\"fish:613\",\"fish:614\",\"fish:615\",\"fish:616\",\"fish:617\",\"fish:618\",\"fish:619\",\"fish:620\",\"fish:621\",\"fish:622\",\"fish:623\",\"fish:624\",\"fish:625\",\"fish:626\",\"fish:627\",\"fish:628\",\"fish:629\",\"fish:630\",\"fish:631\",\"fish:632\",\"fish:633\",\"fish:634\",\"fish:635\",\"fish:636\",\"fish:637\",\"fish:638\",\"fish:639\",\"fish:640\",\"fish:641\",\"fish:642\",\"fish:643\",\"fish:644\",\"fish:645\",\"fish:646\",\"fish:647\",\"fish:648\",\"fish:649\",\"fish:650\",\"fish:651\",\"fish:652\",\"fish:653\",\"fish:654\",\"fish:655\",\"fish:656\",\"fish:657\",\"fish:658\",\"fish:659\",\"fish:660\",\"fish:661\",\"fish:662\",\"fish:663\",\"fish:664\",\"fish:665\",\"fish:666\",\"fish:667\",\"fish:668\",\"fish:669\",\"fish:670\",\"fish:671\",\"fish:672\",\"fish:673\",\"fish:674\",\"fish:675\",\"fish:676\",\"fish:677\",\"fish:678\",\"fish:679\",\"fish:680\",\"fish:681\",\"fish:682\",\"fish:683\",\"fish:684\",\"fish:685\",\"fish:686\",\"fish:687\",\"fish:688\",\"fish:689\",\"fish:690\",\"fish:691\",\"fish:692\",\"fish:693\",\"fish:694\",\"fish:695\",\"fish:696\",\"fish:697\",\"fish:698\",\"fish:699\",\"fish:700\",\"fish:701\",\"fish:702\",\"fish:703\",\"fish:704\",\"fish:705\",\"fish:706\",\"fish:707\",\"fish:708\",\"fish:709\",\"fish:710\",\"fish:711\",\"fish:712\",\"fish:713\",\"fish:714\",\"fish:715\",\"fish:716\",\"fish:717\",\"fish:718\",\"fish:719\",\"fish:720\",\"fish:721\",\"fish:722\",\"fish:723\",\"fish:724\",\"fish:725\",\"fish:726\",\"fish:727\",\"fish:728\",\"fish:729\",\"fish:730\",\"fish:731\",\"fish:732\",\"fish:733\",\"fish:734\",\"fish:735\",\"fish:736\",\"fish:737\",\"fish:738\",\"fish:739\",\"fish:740\",\"fish:741\",\"fish:742\",\"fish:743\",\"fish:744\",\"fish:745\",\"fish:746\",\"fish:747\",\"fish:748\",\"fish:749\",\"fish:750\",\"fish:751\",\"fish:752\",\"fish:753\",\"fish:754\",\"fish:755\",\"fish:756\",\"fish:757\",\"fish:758\",\"fish:759\",\"fish:760\",\"fish:761\",\"fish:762\",\"fish:763\",\"fish:764\",\"fish:765\",\"fish:766\",\"fish:767\",\"fish:768\",\"fish:769\",\"fish:770\",\"fish:771\",\"fish:772\",\"fish:773\",\"fish:774\",\"fish:775\",\"fish:776\",\"fish:777\",\"fish:778\",\"fish:779\",\"fish:780\",\"fish:781\",\"fish:782\",\"fish:783\",\"fish:784\",\"fish:785\",\"fish:786\",\"fish:787\",\"fish:788\",\"fish:789\",\"fish:790\",\"fish:791\",\"fish:792\",\"fish:793\",\"fish:794\",\"fish:795\",\"fish:796\",\"fish:797\",\"fish:798\",\"fish:799\",\"fish:800\",\"fish:801\",\"fish:802\",\"fish:803\",\"fish:804\",\"fish:805\",\"fish:806\",\"fish:807\",\"fish:808\",\"fish:809\",\"fish:810\",\"fish:811\",\"fish:812\",\"fish:813\",\"fish:814\",\"fish:815\",\"fish:816\",\"fish:817\",\"fish:818\",\"fish:819\",\"fish:820\",\"fish:821\",\"fish:822\",\"fish:823\",\"fish:824\",\"fish:825\",\"fish:826\",\"fish:827\",\"fish:828\",\"fish:829\",\"fish:830\",\"fish:831\",\"fish:832\",\"fish:833\",\"fish:834\",\"fish:835\",\"fish:836\",\"fish:837\",\"fish:838\",\"fish:839\",\"fish:840\",\"fish:841\",\"fish:842\",\"fish:843\",\"fish:844\",\"fish:845\",\"fish:846\",\"fish:847\",\"fish:848\",\"fish:849\",\"fish:850\",\"fish:851\",\"fish:852\",\"fish:853\",\"fish:854\",\"fish:855\",\"fish:856\",\"fish:857\",\"fish:858\",\"fish:859\",\"fish:860\",\"fish:861\",\"fish:862\",\"fish:863\",\"fish:864\",\"fish:865\",\"fish:866\",\"fish:867\",\"fish:868\",\"fish:869\",\"fish:870\",\"fish:871\",\"fish:872\",\"fish:873\",\"fish:874\",\"fish:875\",\"fish:876\",\"fish:877\",\"fish:878\",\"fish:879\",\"fish:880\",\"fish:881\",\"fish:882\",\"fish:883\",\"fish:884\",\"fish:885\",\"fish:886\",\"fish:887\",\"fish:888\",\"fish:889\",\"fish:890\",\"fish:891\",\"fish:892\",\"fish:893\",\"fish:894\",\"fish:895\",\"fish:896\",\"fish:897\",\"fish:898\",\"fish:899\",\"fish:900\",\"fish:901\",\"fish:902\",\"fish:903\",\"fish:904\",\"fish:905\",\"fish:906\",\"fish:907\",\"fish:908\",\"fish:909\",\"fish:910\",\"fish:911\",\"fish:912\",\"fish:913\",\"fish:914\",\"fish:915\",\"fish:916\",\"fish:917\",\"fish:918\",\"fish:919\",\"fish:920\",\"fish:921\",\"fish:922\",\"fish:923\",\"fish:924\",\"fish:925\",\"fish:926\",\"fish:927\",\"fish:928\",\"fish:929\",\"fish:930\",\"fish:931\",\"fish:932\",\"fish:933\",\"fish:934\",\"fish:935\",\"fish:936\",\"fish:937\",\"fish:938\",\"fish:939\",\"fish:940\",\"fish:941\",\"fish:942\",\"fish:943\",\"fish:944\",\"fish:945\",\"fish:946\",\"fish:947\",\"fish:948\",\"fish:949\",\"fish:950\",\"fish:951\",\"fish:952\",\"fish:953\",\"fish:954\",\"fish:955\",\"fish:956\",\"fish:957\",\"fish:958\",\"fish:959\",\"fish:960\",\"fish:961\",\"fish:962\",\"fish:963\",\"fish:964\",\"fish:965\",\"fish:966\",\"fish:967\",\"fish:968\",\"fish:969\"],\"counters\":{\"attempts\":970,\"casts\":970,\"cycles\":969,\"envChecks\":96,\"events\":969,\"fights\":970,\"prepares\":969,\"waits\":970},\"cursorMs\":1700028800000,\"envActivityMicro\":810854,\"envNextCheckMs\":1700029100000,\"gold\":\"27911\",\"lastTerminalAttemptSeq\":\"969\",\"offline\":{\"allowanceMs\":86400000,\"deadlineMs\":1700086400000,\"settledUntilMs\":1700028800000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"[\\\"environment\\\",\\\"spike-config-v1\\\",\\\"region.pond\\\"]\":[2666998067,3262533698,3819901548,778826387],\"capture\":[1156698304,825512487,3362169795,2184458986],\"individual\":[3720712960,1082323972,657017522,99925778],\"species\":[757939569,809294165,160817597,1049421866],\"wait\":[826797854,2127644087,2357132465,1867607404]}},\"rootSeed\":305441741,\"saveEpoch\":\"epoch.be000\",\"schemaVersion\":2,\"stage\":\"FIGHTING\",\"stageDone\":\"5069660820\",\"stageRequired\":\"9362000000\",\"stageStartMs\":1700028794162}",
++    "sha256": "91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9",
+     "counters": {
+       "attempts": 970,
+       "casts": 970,
+@@ -43,8 +43,8 @@
+   },
+   "saveEnvelope": {
+     "revision": "1",
+-    "payloadSha256": "bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a",
+-    "envelopeSha256": "2c768fc2d368faa38b841e8b94c55d1e9398c80ff4e894a49cc2644b056ed5ee",
++    "payloadSha256": "8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63",
++    "envelopeSha256": "4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6",
+     "slotPaths": [
+       "save_slot_0.json",
+       "save_slot_1.json",
+diff --git a/tests/backend/be-000/migration.test.ts b/tests/backend/be-000/migration.test.ts
+index 22fc73f..a1e8301 100644
+--- a/tests/backend/be-000/migration.test.ts
++++ b/tests/backend/be-000/migration.test.ts
+@@ -6,7 +6,8 @@ import {
+   parseEnvelope,
+ } from '../../../packages/game-core/src/spike/save.ts';
+ import { MigrationError, migrateSpikeState } from '../../../packages/game-core/src/spike/migration.ts';
+-import { canonicalStringify } from '../../../packages/game-core/src/spike/canonical-json.ts';
++import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
++import { advanceOffline } from '../../../packages/game-core/src/spike/offline.ts';
+ import type { SpikeGameState, SpikeGameStateV1 } from '../../../packages/game-core/src/spike/types.ts';
+ import { MemoryFilePort } from './helpers.ts';
+ 
+@@ -25,6 +26,25 @@ function v1Fixture(): SpikeGameStateV1 {
+   };
+ }
+ 
++function v1AttemptFixture(): SpikeGameStateV1 {
++  return {
++    ...v1Fixture(),
++    attempt: {
++      stage: 'FIGHTING',
++      stageStartMs: 1_700_000_000_000 - 4_000,
++      stageDone: '5000000000',
++      stageRequired: '9362000000',
++      lock: {
++        seq: 7,
++        claimKey: 'fish:7',
++        speciesU: 0.09688973893848996,
++        captureU: 0.4494557859023359,
++        fightMs: 9_362,
++      },
++    },
++  };
++}
++
+ test('MIG-01 v1 loads, migrates to v2 and is committed as a new revision', async () => {
+   const port = new MemoryFilePort();
+   const repo = new SpikeFileSaveRepository(port);
+@@ -85,6 +105,90 @@ test('MIG-02 invalid v1 is rejected without touching persisted data', async () =
+   if (load.kind === 'VALID') assert.equal(load.schemaVersion, 1);
+ });
+ 
++test('MIG-05 in-progress v1 attempt keeps progress, lock and RNG and settles once', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  const source = v1AttemptFixture();
++  const first = await repo.commit(source as unknown as SpikeGameState, null);
++  assert.equal(first.kind, 'COMMITTED');
++  const originalV1Text = port.files.get(SLOT_PATHS[0] as string) as string;
++
++  const loaded = await repo.load();
++  assert.equal(loaded.kind, 'VALID');
++  if (loaded.kind !== 'VALID') return;
++  assert.equal(loaded.schemaVersion, 1);
++
++  const migrated = migrateSpikeState(loaded.raw, 1, 2);
++  assert.equal(migrated.stage, 'FIGHTING');
++  assert.equal(migrated.stageStartMs, source.attempt!.stageStartMs);
++  assert.equal(migrated.stageDone, source.attempt!.stageDone);
++  assert.equal(migrated.stageRequired, source.attempt!.stageRequired);
++  assert.equal(migrated.counters.attempts, 7);
++  assert.equal(migrated.counters.casts, 1);
++  assert.equal(migrated.counters.waits, 1);
++  assert.equal(migrated.counters.fights, 1);
++  assert.deepEqual(migrated.claims, []);
++  assert.equal(migrated.lastTerminalAttemptSeq, '0');
++  assert.deepEqual(migrated.attemptLock, source.attempt!.lock);
++  assert.equal(canonicalStringify(migrated.rng), canonicalStringify(source.rng));
++  assert.equal(migrated.rng.streams.species, undefined, 'migration must not re-draw');
++  const rngBefore = canonicalStringify(migrated.rng);
++
++  const second = await repo.commit(migrated, loaded.revision);
++  assert.equal(second.kind, 'COMMITTED');
++  assert.equal(port.files.get(SLOT_PATHS[0] as string), originalV1Text, 'old v1 slot must remain readable');
++
++  const reloaded = await repo.load();
++  assert.equal(reloaded.kind, 'VALID');
++  if (reloaded.kind !== 'VALID') return;
++  assert.equal(reloaded.schemaVersion, 2);
++  const resumed = reloaded.raw as SpikeGameState;
++  assert.equal(canonicalStringify(resumed.rng), rngBefore);
++
++  const target = resumed.cursorMs + 5_000;
++  const settled = advanceOffline(resumed, target).state;
++  assert.equal(settled.stage, 'PREPARING');
++  assert.deepEqual(settled.claims, ['fish:7']);
++  assert.equal(settled.lastTerminalAttemptSeq, '7');
++  assert.equal(settled.counters.events, 1);
++  assert.equal(settled.attemptLock, undefined);
++  assert.ok(natToBigInt(settled.gold) > natToBigInt(source.gold));
++  const settledGold = settled.gold;
++  const settledBig = settled.big;
++
++  const saved = await repo.commit(settled, reloaded.revision);
++  assert.equal(saved.kind, 'COMMITTED');
++  const afterSave = await repo.load();
++  assert.equal(afterSave.kind, 'VALID');
++  if (afterSave.kind !== 'VALID') return;
++  const restored = afterSave.raw as SpikeGameState;
++  const replay = advanceOffline(restored, restored.cursorMs + 100).state;
++  assert.equal(replay.gold, settledGold, 'settlement must happen only once');
++  assert.equal(replay.big, settledBig);
++  assert.deepEqual(replay.claims.filter((key) => key === 'fish:7'), ['fish:7']);
++  assert.equal(replay.counters.events, 1);
++});
++
++test('MIG-06 invalid in-progress v1 leaves the original slot bytes untouched', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  await repo.commit(v1AttemptFixture() as unknown as SpikeGameState, null);
++  const before = new Map(port.files);
++
++  const badLock = v1AttemptFixture();
++  badLock.attempt!.lock = { ...badLock.attempt!.lock!, fightMs: 9_363 };
++  assert.throws(() => migrateSpikeState(badLock, 1, 2), /does not match stageRequired/);
++
++  const missingLock = v1AttemptFixture();
++  delete missingLock.attempt!.lock;
++  assert.throws(() => migrateSpikeState(missingLock, 1, 2), /requires a locked result/);
++
++  assert.deepEqual(port.files, before);
++  const loaded = await repo.load();
++  assert.equal(loaded.kind, 'VALID');
++  if (loaded.kind === 'VALID') assert.equal(loaded.schemaVersion, 1);
++});
++
+ test('MIG-03 unsupported migration paths are refused', () => {
+   assert.throws(() => migrateSpikeState(v1Fixture(), 2, 1), /Unsupported migration path/);
+   assert.throws(() => migrateSpikeState(v1Fixture(), 0, 2), /Unsupported migration path/);
+diff --git a/tests/backend/be-000/offline.test.ts b/tests/backend/be-000/offline.test.ts
+index 775ab4b..6c78a5d 100644
+--- a/tests/backend/be-000/offline.test.ts
++++ b/tests/backend/be-000/offline.test.ts
+@@ -130,13 +130,33 @@ test('OFF-08 attempt sequence advances monotonically and each terminal attempt i
+   assert.equal(natToBigInt(result.state.lastTerminalAttemptSeq), BigInt(c.fights));
+ });
+ 
+-test('OFF-09 same-time deadline settlement does not leave a half-finished stage', () => {
+-  const result = advanceOffline(initialState(), START_MS + DAY);
+-  assert.ok(result.state.cursorMs >= result.state.offline!.deadlineMs);
+-  if (result.state.cursorMs > result.state.offline!.deadlineMs) {
+-    assert.equal(result.state.stage, 'IDLE', 'no stage may be in progress past the deadline');
++test('OFF-09 checkpoint advances to the deadline and freezes past it', () => {
++  const deadline = START_MS + DAY;
++  const before = advanceOffline(initialState(), deadline - 1);
++  assert.equal(before.state.offline?.settledUntilMs, deadline - 1);
++  assert.equal(before.state.cursorMs, deadline - 1);
++
++  const exactly = advanceOffline(before.state, deadline);
++  assert.equal(exactly.state.cursorMs, deadline);
++  assert.equal(exactly.state.offline?.settledUntilMs, deadline);
++  assert.ok(natToBigInt(exactly.state.stageDone) <= natToBigInt(exactly.state.stageRequired));
++
++  const after = advanceOffline(exactly.state, deadline + 1);
++  assert.equal(after.state.cursorMs, deadline + 1);
++  assert.equal(after.state.offline?.settledUntilMs, deadline, 'settled checkpoint must freeze at the deadline');
++  assert.deepEqual(after.state.claims, exactly.state.claims, 'no settlement past the deadline');
++  assert.equal(after.state.gold, exactly.state.gold);
++  assert.equal(after.state.counters.attempts, exactly.state.counters.attempts);
++  if (after.state.stage !== 'IDLE') {
++    assert.ok(
++      natToBigInt(after.state.stageDone) < natToBigInt(after.state.stageRequired),
++      'no completed stage may remain unprocessed past the deadline'
++    );
+   }
+-  assert.ok(natToBigInt(result.state.stageDone) <= natToBigInt(result.state.stageRequired));
++
++  const day = advanceOffline(initialState(), deadline + HOUR);
++  assert.equal(day.state.offline?.settledUntilMs, deadline);
++  assert.equal(day.state.cursorMs, deadline + HOUR);
+ });
+ 
+ test('OFF-10 input state is never mutated', () => {
+@@ -149,6 +169,18 @@ test('OFF-10 input state is never mutated', () => {
+   assert.equal(canonicalStringify(start), before);
+ });
+ 
++test('OFF-12 custom fixture option is rejected instead of being silently ignored', () => {
++  assert.throws(
++    () => createInitialState({
++      saveEpoch: 'epoch.be000',
++      startMs: START_MS,
++      allowanceMs: DAY,
++      fixture: { ...DEFAULT_OFFLINE_FIXTURE, castMs: 17 },
++    } as never),
++    /Custom offline fixtures are not supported/
++  );
++});
++
+ test('OFF-11 triangle quantile honours bounds and approximates mean 1', () => {
+   const triangle = DEFAULT_OFFLINE_FIXTURE.waitTriangle;
+   assert.equal(triangularQuantile(0, triangle), triangle.a);
+diff --git a/tests/backend/be-000/r1-regression.test.ts b/tests/backend/be-000/r1-regression.test.ts
+new file mode 100644
+index 0000000..44df25a
+--- /dev/null
++++ b/tests/backend/be-000/r1-regression.test.ts
+@@ -0,0 +1,212 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import {
++  SAVE_MAGIC,
++  SAVE_FORMAT,
++  SLOT_PATHS,
++  SpikeFileSaveRepository,
++  buildEnvelope,
++  computeEnvelopeHash,
++  copyStateForCommit,
++} from '../../../packages/game-core/src/spike/save.ts';
++import {
++  advanceOffline,
++  advanceOfflineSliced,
++  createInitialState,
++} from '../../../packages/game-core/src/spike/offline.ts';
++import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
++import { completionTimeMs, safeAddMs } from '../../../packages/game-core/src/spike/time.ts';
++import type { SpikeGameState } from '../../../packages/game-core/src/spike/types.ts';
++import { MemoryFilePort, type WriteBehavior } from './helpers.ts';
++
++const START_MS = 1_700_000_000_000;
++const HOUR = 3_600_000;
++const DEADLINE = START_MS + 2 * HOUR;
++
++function state(gold = '0'): SpikeGameState {
++  const s = createInitialState({ saveEpoch: 'epoch.r1', startMs: START_MS, allowanceMs: 2 * HOUR });
++  s.gold = gold;
++  return s;
++}
++
++function writeEnvelope(port: MemoryFilePort, slot: number, raw: unknown, revision: string): void {
++  const payload = canonicalStringify(raw);
++  const text = canonicalStringify({
++    magic: SAVE_MAGIC,
++    format: SAVE_FORMAT,
++    revision,
++    epoch: 'epoch.r1',
++    payload,
++    sha256: computeEnvelopeHash(SAVE_MAGIC, SAVE_FORMAT, revision, 'epoch.r1', payload),
++  });
++  port.files.set(SLOT_PATHS[slot] as string, text);
++}
++
++test('R1-SAVE-01 an unreadable slot blocks commit even when an older backup is readable', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  await repo.commit(state('1'), null);
++  await repo.commit(state('2'), '1');
++
++  port.readErrors.set(SLOT_PATHS[1] as string, 'busy');
++  const before = new Map(port.files);
++  const result = await repo.commit(state('3'), '2');
++  assert.equal(result.kind, 'UNCERTAIN');
++  assert.equal(port.writeCount, 2, 'no new write may be attempted');
++  assert.deepEqual(port.files, before);
++
++  const backup = await repo.load();
++  assert.equal(backup.kind, 'VALID');
++  if (backup.kind === 'VALID') {
++    assert.equal(backup.revision, '1');
++    assert.equal(backup.recovered, true);
++  }
++
++  port.readErrors.clear();
++  const recovered = await repo.load();
++  assert.equal(recovered.kind, 'VALID');
++  if (recovered.kind === 'VALID') assert.equal(recovered.revision, '2');
++});
++
++test('R1-SAVE-02 valid checksum with a null payload is isolated and backup is recovered', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  await repo.commit(state('5'), null);
++  writeEnvelope(port, 1, null, '2');
++
++  const loaded = await repo.load();
++  assert.equal(loaded.kind, 'VALID');
++  if (loaded.kind !== 'VALID') return;
++  assert.equal(loaded.revision, '1');
++  assert.equal(loaded.recovered, true);
++  assert.ok(loaded.warnings.some((w) => w.includes('save_slot_1.json')));
++});
++
++test('R1-SAVE-03 same revision with different content blocks commit without writing', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  const a = state('7');
++  const b = state('8');
++  writeEnvelope(port, 0, a, '7');
++  writeEnvelope(port, 1, b, '7');
++
++  assert.equal((await repo.load()).kind, 'CORRUPT');
++  const before = new Map(port.files);
++  const result = await repo.commit(state('9'), '7');
++  assert.equal(result.kind, 'FAILED');
++  assert.equal(port.writeCount, 0);
++  assert.deepEqual(port.files, before);
++});
++
++test('R1-SAVE-04 a hidden higher revision forbids a new first commit', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  writeEnvelope(port, 0, state('9'), '9');
++  port.readErrors.set(SLOT_PATHS[0] as string, 'busy');
++
++  const result = await repo.commit(state('1'), null);
++  assert.equal(result.kind, 'UNCERTAIN');
++  assert.equal(port.writeCount, 0);
++
++  port.readErrors.clear();
++  const loaded = await repo.load();
++  assert.equal(loaded.kind, 'VALID');
++  if (loaded.kind === 'VALID') {
++    assert.equal(loaded.revision, '9');
++    assert.equal((loaded.raw as SpikeGameState).gold, '9');
++  }
++});
++
++test('R1-SAVE-05 durable write whose target becomes unreadable stays UNCERTAIN', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  await repo.commit(state('1'), null);
++
++  port.writeBehavior = (path: string): WriteBehavior => {
++    port.readErrors.set(path, 'busy');
++    return { kind: 'WRITE_THEN_THROW' };
++  };
++  const result = await repo.commit(state('8'), '1');
++  assert.equal(result.kind, 'UNCERTAIN');
++  assert.ok((result as { detail: string }).detail.includes('unreadable'));
++
++  port.readErrors.clear();
++  const loaded = await repo.load();
++  assert.equal(loaded.kind, 'VALID');
++  if (loaded.kind === 'VALID') {
++    assert.equal(loaded.revision, '2');
++    assert.equal((loaded.raw as SpikeGameState).gold, '8');
++  }
++});
++
++test('R1-CHK-01 persistence records cursor, rewards, RNG and checkpoint before, at and past the deadline', async () => {
++  const port = new MemoryFilePort();
++  const repo = new SpikeFileSaveRepository(port);
++  const initial = state('0');
++
++  const first = await repo.commit(initial, null);
++  assert.equal(first.kind, 'COMMITTED');
++
++  const before = advanceOffline(initial, DEADLINE - 1000).state;
++  assert.equal(before.offline?.settledUntilMs, DEADLINE - 1000);
++  assert.equal(before.cursorMs, DEADLINE - 1000);
++  const second = await repo.commit(before, '1');
++  assert.equal(second.kind, 'COMMITTED');
++
++  const exact = advanceOffline(before, DEADLINE).state;
++  assert.equal(exact.offline?.settledUntilMs, DEADLINE);
++  assert.equal(exact.cursorMs, DEADLINE);
++  const third = await repo.commit(exact, '2');
++  assert.equal(third.kind, 'COMMITTED');
++
++  const past = advanceOffline(exact, DEADLINE + 5000).state;
++  assert.equal(past.offline?.settledUntilMs, DEADLINE);
++  assert.equal(past.cursorMs, DEADLINE + 5000);
++  assert.deepEqual(past.claims, exact.claims);
++  assert.equal(past.gold, exact.gold);
++  assert.equal(past.counters.attempts, exact.counters.attempts);
++  const fourth = await repo.commit(past, '3');
++  assert.equal(fourth.kind, 'COMMITTED');
++
++  const loaded = await repo.load();
++  assert.equal(loaded.kind, 'VALID');
++  if (loaded.kind !== 'VALID') return;
++  assert.equal(loaded.revision, '4');
++  const restored = copyStateForCommit(loaded.raw as SpikeGameState);
++  assert.equal(canonicalStringify(restored), canonicalStringify(past));
++  assert.equal(restored.offline?.settledUntilMs, DEADLINE);
++  assert.equal(restored.offline?.deadlineMs, DEADLINE);
++  assert.equal(restored.cursorMs, DEADLINE + 5000);
++  assert.equal(restored.gold, past.gold);
++  assert.deepEqual(restored.claims, past.claims);
++  assert.equal(canonicalStringify(restored.rng), canonicalStringify(past.rng));
++});
++
++test('R1-TIME-01 completion and slices reject unrepresentable millisecond results', () => {
++  assert.equal(completionTimeMs('0', '1', Number.MAX_SAFE_INTEGER - 1, 1n), Number.MAX_SAFE_INTEGER);
++  assert.equal(completionTimeMs('0', '2', Number.MAX_SAFE_INTEGER - 1, 1n), null);
++  assert.equal(completionTimeMs('0', '1', Number.MAX_SAFE_INTEGER, 1n), null);
++  assert.throws(() => safeAddMs(Number.MAX_SAFE_INTEGER, 1), /safe millisecond range/);
++  assert.throws(
++    () => createInitialState({ saveEpoch: 'epoch.r1', startMs: Number.MAX_SAFE_INTEGER, allowanceMs: 1 }),
++    /safe millisecond range/
++  );
++
++  assert.throws(
++    () => createInitialState({
++      saveEpoch: 'epoch.r1',
++      startMs: Number.MAX_SAFE_INTEGER - 1000,
++      allowanceMs: 1000,
++    }),
++    /initial environment check time.*safe millisecond range/
++  );
++
++  const near = createInitialState({
++    saveEpoch: 'epoch.r1',
++    startMs: Number.MAX_SAFE_INTEGER - 400_000,
++    allowanceMs: 400_000,
++  });
++  const sliced = advanceOfflineSliced(near, Number.MAX_SAFE_INTEGER, 100, { maxNodes: 1 });
++  assert.ok(Number.isSafeInteger(sliced.state.cursorMs));
++  assert.ok(natToBigInt(sliced.state.gold) >= 0n);
++});
+\ No newline at end of file
+diff --git a/tests/backend/be-000/save.test.ts b/tests/backend/be-000/save.test.ts
+index 37005b3..0c6cdcd 100644
+--- a/tests/backend/be-000/save.test.ts
++++ b/tests/backend/be-000/save.test.ts
+@@ -10,8 +10,8 @@ import {
+   copyStateForCommit,
+   parseEnvelope,
+ } from '../../../packages/game-core/src/spike/save.ts';
+-import { createInitialState, cloneState } from '../../../packages/game-core/src/spike/offline.ts';
+-import { canonicalStringify, natFromBigInt, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
++import { createInitialState, advanceOffline } from '../../../packages/game-core/src/spike/offline.ts';
++import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
+ import type { SpikeGameState, SpikeGameStateV1 } from '../../../packages/game-core/src/spike/types.ts';
+ import { MemoryFilePort, createTempPort, type WriteBehavior } from './helpers.ts';
+ 
+@@ -197,29 +197,66 @@ test('SAVE-T04e unobservable write with a concurrent higher revision is UNCERTAI
+   port.writeBehavior = null;
+ });
+ 
+-test('SAVE-T05 committed reward is not re-applied after reload', async () => {
++test('SAVE-T05 real FIGHTING settlement is idempotent across save/load and rejects replay', async () => {
+   const port = new MemoryFilePort();
+   const repo = new SpikeFileSaveRepository(port);
+-  const grant = (state: SpikeGameState, key: string, amount: string): { state: SpikeGameState; applied: boolean } => {
+-    if (state.claims.includes(key)) return { state, applied: false };
+-    const next = cloneState(state);
+-    next.claims.push(key);
+-    next.gold = natFromBigInt(natToBigInt(next.gold) + BigInt(amount));
+-    return { state: next, applied: true };
+-  };
+-
+-  const first = grant(freshState('5'), 'fish:1', '10');
+-  assert.equal(first.applied, true);
+-  await repo.commit(first.state, null);
+-
++  const fighting = freshState('100');
++  fighting.stage = 'FIGHTING';
++  fighting.stageStartMs = fighting.cursorMs;
++  fighting.stageDone = '0';
++  fighting.stageRequired = '1000000';
++  fighting.counters.attempts = 1;
++
++  const settled = advanceOffline(fighting, fighting.cursorMs + 1).state;
++  assert.equal(settled.stage, 'PREPARING');
++  assert.deepEqual(settled.claims, ['fish:1']);
++  assert.equal(settled.lastTerminalAttemptSeq, '1');
++  assert.equal(settled.counters.events, 1);
++  assert.ok(natToBigInt(settled.gold) > 100n);
++  assert.ok(natToBigInt(settled.big) > 0n);
++  const settledGold = settled.gold;
++  const settledBig = settled.big;
++
++  const committed = await repo.commit(settled, null);
++  assert.equal(committed.kind, 'COMMITTED');
+   const loaded = await repo.load();
+   assert.equal(loaded.kind, 'VALID');
+   if (loaded.kind !== 'VALID') return;
+   const restored = copyStateForCommit(loaded.raw as SpikeGameState);
+-  const replay = grant(restored, 'fish:1', '10');
+-  assert.equal(replay.applied, false);
+-  assert.equal(replay.state.gold, '15');
+-  assert.deepEqual(replay.state.claims, ['fish:1']);
++  assert.equal(restored.gold, settledGold);
++  assert.equal(restored.big, settledBig);
++  assert.deepEqual(restored.claims, ['fish:1']);
++  assert.equal(canonicalStringify(restored.rng), canonicalStringify(settled.rng));
++
++  const replayed = advanceOffline(restored, restored.cursorMs + 1000).state;
++  assert.equal(replayed.gold, settledGold, 'restored settlement must not pay again');
++  assert.equal(replayed.big, settledBig);
++  assert.deepEqual(replayed.claims, ['fish:1']);
++  assert.equal(replayed.counters.events, 1);
++
++  const forged = copyStateForCommit(restored);
++  Object.assign(forged, {
++    stage: 'FIGHTING',
++    stageStartMs: forged.cursorMs,
++    stageDone: '999999',
++    stageRequired: '1000000',
++    counters: { ...forged.counters, attempts: 1, events: 1 },
++    claims: ['fish:1'],
++    lastTerminalAttemptSeq: '1',
++    gold: '100',
++    big: '0',
++  });
++  assert.throws(
++    () => advanceOffline(forged, forged.cursorMs + 1),
++    /already settled/
++  );
++  const beforeReject = new Map(port.files);
++  const refused = await repo.commit(forged, loaded.revision);
++  assert.equal(refused.kind, 'FAILED');
++  assert.deepEqual(port.files, beforeReject, 'invalid replay state must not be written');
++  assert.equal(natToBigInt(forged.gold), 100n);
++  assert.equal(forged.big, '0');
++  assert.deepEqual(forged.claims, ['fish:1']);
+ });
+ 
+ test('SAVE-T06 revision and epoch conflicts are rejected without writing', async () => {
+@@ -239,17 +276,21 @@ test('SAVE-T06 revision and epoch conflicts are rejected without writing', async
+   assert.deepEqual(port.files, before, 'conflicts must not touch the filesystem');
+ });
+ 
+-test('SAVE-T07 all slot reads failing is CORRUPT; commit cannot guess the revision', async () => {
++test('SAVE-T07 all slot reads failing is CORRUPT; commit stays UNCERTAIN and writes nothing', async () => {
+   const port = new MemoryFilePort();
+   const repo = new SpikeFileSaveRepository(port);
+   await commitRevision(repo, '1', null);
++  const before = new Map(port.files);
++  const writes = port.writeCount;
+   for (const path of SLOT_PATHS) port.readErrors.set(path, 'disk error');
+ 
+   const load = await repo.load();
+   assert.equal(load.kind, 'CORRUPT');
+ 
+   const commit = await repo.commit(freshState('2'), '1');
+-  assert.equal(commit.kind, 'FAILED');
++  assert.equal(commit.kind, 'UNCERTAIN');
++  assert.equal(port.writeCount, writes, 'unknown slots must not trigger a write');
++  assert.deepEqual(port.files, before);
+ });
+ 
+ test('SAVE-T08 mixed epochs across valid slots is CORRUPT', async () => {
+diff --git a/tsconfig.cocos-consumer.json b/tsconfig.cocos-consumer.json
+new file mode 100644
+index 0000000..4ffcb2a
+--- /dev/null
++++ b/tsconfig.cocos-consumer.json
+@@ -0,0 +1,9 @@
++{
++  "extends": "./tsconfig.base.json",
++  "compilerOptions": {
++    "noEmit": true,
++    "types": [],
++    "declaration": false
++  },
++  "include": ["tests/backend/be-000/cocos-type-consumer.mts"]
++}
+\ No newline at end of file
+diff --git a/tsconfig.test.json b/tsconfig.test.json
+index cf46679..2d33f7b 100644
+--- a/tsconfig.test.json
++++ b/tsconfig.test.json
+@@ -4,5 +4,6 @@
+     "noEmit": true,
+     "types": ["node"]
+   },
+-  "include": ["packages/game-core/src/**/*.ts", "tests/backend/be-000/**/*.ts"]
++  "include": ["packages/game-core/src/**/*.ts", "tests/backend/be-000/**/*.ts"],
++  "exclude": ["tests/backend/be-000/cocos-probe"]
+ }
+\ No newline at end of file

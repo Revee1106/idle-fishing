@@ -1,0 +1,57 @@
+[Independent regression totals]
+ℹ tests 82
+ℹ pass 82
+ℹ fail 0
+A1-A8:
+ℹ tests 8
+ℹ pass 8
+ℹ fail 0
+perf hash:
+"envelopeSha256": "0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f"
+frontend:
+FE-000 Test Summary] total=20 pass=20 fail=0 skip=0 todo=0 containe
+wechat verify:
+[WeChat Audit] PASS (10/10 checks passed)
+web run1:
+[Web E2E] Assertions: 31/31 PASS
+web run2:
+[Web E2E] Assertions: 31/31 PASS
+a02 engine:
+[FAIL] domain previously holding VALID rev1 + PENDING(expectedRevision=1) must NOT be silently reset by EMPTY :: {"c1":"COMMITTED","before":{"rev":"1","gold":"31"},"afterDelete":{"rev":null,"gold":null},"recKind":"EMPTY","recRev":null,"recClass":null,"markerAfter":null,"healthAfter":{"health":"AVAILABLE","freeze":"NONE"},"ns":"r4_audit_empty_1795747008346"}
+[FAIL] corrupt marker is recoverable through public loadSafe() without manual raw-port deletion :: {"l2Kind":"STORAGE_UNAVAILABLE","l2Class":"TX_STATE_UNREADABLE"}
+a02 app:
+
+a02 crash:
+
+p2:
+
+wechat marker:
+FE-000 Test Summary] total=7 pass=7 fail=0 skip=0 todo=0 containe
+a02 app:
+===== A02 APP R4: PASS =====
+===== A02 APP R4: PASS =====
+a02 crash:
+===== A02 CRASH R4: PASS =====
+p2:
+===== P2 R4: PASS =====
+a02 app key evidence:
+[PASS] Tab B normal HIDE blocked, 0 writes, marker intact :: {"rev":"1","last":"STORAGE_UNAVAILABLE","halted":true,"health":"STORAGE_UNAVAILABLE","diskRev":"1","marker":"{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795746609272_2_412844\",\"state\":\"UNCERTAIN\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"createdAtMs\":1795746609272,\"updatedAtMs\":1795746609305,\"reason\":\"Uncertain commit requires explicit verified loadSafe() recovery before any further write: write result unknown; rescan unreadable (save_slot_0.json,save_slot_1.json,save_slot_2.json)\"}"}
+[PASS] application harness exposes NO recovery-like entry :: []
+[PASS] explicit coordinator recovery clears marker & commits rev2 :: {"loadKind":"VALID","loadRev":"1","markerAfter":null,"commitKind":"COMMITTED","commitRev":"2","diskRev":"2"}
+[evidence] BootEntry after external recovery: {"last":"STORAGE_UNAVAILABLE","halted":true,"health":"STORAGE_UNAVAILABLE"}
+a02 crash key evidence:
+[PASS] pre-write crash: durable PENDING marker remains :: {"ns":"r4_audit_crash_prewrite_1795747103259","seed":{"kind":"COMMITTED","rev":"1","disk":{"rev":"1","gold":"31","marker":null}},"afterCrash":{"rev":"1","gold":"31"},"markerState":"PENDING","markerStorageKey":"browser:r4_audit_crash_prewrite_1795747103259","blocked":{"kind":"STORAGE_UNAVAILABLE","writes":0},"recovery":{"loadKind":"VALID","loadRev":"1","markerAfter":null,"staleKind":"SKIPPED_NEW_SAVE","freshKind":"COMMITTED","freshRev":"2"}}
+[PASS] pre-write crash: other realm blocked with 0 writes :: {"kind":"STORAGE_UNAVAILABLE","writes":0}
+[PASS] pre-write crash: explicit recovery -> VALID rev1, marker cleared, commit rev2 :: {"loadKind":"VALID","loadRev":"1","markerAfter":null,"staleKind":"SKIPPED_NEW_SAVE","freshKind":"COMMITTED","freshRev":"2"}
+[PASS] pre-readback crash: slot rev2 written, PENDING marker remains :: {"ns":"r4_audit_crash_prereadback_1795747107203","seed":{"kind":"COMMITTED","rev":"1","disk":{"rev":"1","gold":"31","marker":null}},"afterCrash":{"rev":"2","gold":"84"},"markerState":"PENDING","markerStorageKey":"browser:r4_audit_crash_prereadback_1795747107203","blocked":{"kind":"STORAGE_UNAVAILABLE","writes":0},"recovery":{"loadKind":"VALID","loadRev":"2","markerAfter":null,"staleKind":"CONFLICT","freshKind":"COMMITTED","freshRev":"3"}}
+[PASS] pre-readback crash: other realm blocked with 0 writes :: {"kind":"STORAGE_UNAVAILABLE","writes":0}
+[PASS] pre-readback crash: recovery discovers rev2; stale conf; fresh rev3 :: {"loadKind":"VALID","loadRev":"2","markerAfter":null,"staleKind":"CONFLICT","freshKind":"COMMITTED","freshRev":"3"}
+[Independent A01 race - audit-owned script]
+[PASS] A01/empty: exactly one COMMITTED, one CONFLICT, disk=A candidate :: {"eHeld":true,"ePend":true,"a":"COMMITTED/1","b":"CONFLICT","topA":{"rev":"1","gold":"31","cursorMs":1700000060000},"topB":{"rev":"1","gold":"31","cursorMs":1700000060000},"aGold":"31"}
+[PASS] A01/12 rounds interleaved: zero double-COMMITTED, unique winner on disk :: {"rounds":12,"doubles":0,"last":{"round":11,"mode":"post-write-pre-readback","distinctClients":true,"expectedRev":"19","a":"COMMITTED/20/s1","b":"CONFLICT","aGold":"965","bGold":"1062","postA":"20","postB":"20","postAGold":"965","postBGold":"965","topA":{"rev":"20","gold":"965","cursorMs":1700001200000},"topB":{"rev":"20","gold":"965","cursorMs":1700001200000}}}
+[PASS] A01/lock holder crash: Chrome auto-release + survivor commits :: {"rev":"20","kind":"COMMITTED","newRev":"21","reload":"21"}
+===== RACE A: PASS =====
+[PASS] A01/empty: exactly one COMMITTED, one CONFLICT, disk=A candidate :: {"eHeld":true,"ePend":true,"a":"COMMITTED/1","b":"CONFLICT","topA":{"rev":"1","gold":"31","cursorMs":1700000060000},"topB":{"rev":"1","gold":"31","cursorMs":1700000060000},"aGold":"31"}
+[PASS] A01/12 rounds interleaved: zero double-COMMITTED, unique winner on disk :: {"rounds":12,"doubles":0,"last":{"round":11,"mode":"post-write-pre-readback","distinctClients":true,"expectedRev":"19","a":"COMMITTED/20/s1","b":"CONFLICT","aGold":"965","bGold":"1062","postA":"20","postB":"20","postAGold":"965","postBGold":"965","topA":{"rev":"20","gold":"965","cursorMs":1700001200000},"topB":{"rev":"20","gold":"965","cursorMs":1700001200000}}}
+[PASS] A01/lock holder crash: Chrome auto-release + survivor commits :: {"rev":"20","kind":"COMMITTED","newRev":"21","reload":"21"}
+===== RACE B: PASS =====

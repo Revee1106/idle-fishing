@@ -1,0 +1,7 @@
+COMMAND: C:\Program Files\nodejs\node.exe tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-passed.test.ts --out-dir=../../reports
+EXIT_CODE: 1
+DURATION_MS: 168
+--- STDOUT ---
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: Unsafe --out-dir rejected: [SafePathGuard:OUTSIDE_ALLOWLIST] Compiled test output dir must be a direct child of E:\idle-fishing-integration\tests\frontend\fe-000, got E:\idle-fishing-integration\tests\reports

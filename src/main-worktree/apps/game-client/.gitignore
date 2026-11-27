@@ -1,0 +1,12 @@
+# Cocos Creator Project generated directories
+/library/
+/temp/
+/local/
+/build/
+/profiles/
+/native/engine/android/**/*/assets
+
+# Node & IDE
+node_modules/
+.vscode/
+.idea/

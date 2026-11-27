@@ -1,0 +1,65 @@
+▶ multi-file nested suite
+  ✔ pass leaf A (1.1045ms)
+  ✖ fail leaf A (1.4036ms)
+  ▶ nested group
+    ✔ pass leaf B (0.3587ms)
+    ✖ fail leaf B (0.508ms)
+    ﹣ skip leaf C (0.5292ms) # SKIP
+    ✔ todo leaf D (0.4434ms) # TODO
+  ✖ nested group (5.8451ms)
+✖ multi-file nested suite (11.289ms)
+ℹ tests 7
+ℹ suites 1
+ℹ pass 2
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 1
+ℹ duration_ms 27.8476
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled\tests\frontend\fe-000\fixtures\fixture-multi-nested.test.js:7:5
+✖ fail leaf A (1.4036ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/astra02-sr6tbrsx/tests/frontend/fe-000/.compiled/tests/frontend/fe-000/fixtures/fixture-multi-nested.test.js:8:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1889:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\frontend\fe-000\.compiled\tests\frontend\fe-000\fixtures\fixture-multi-nested.test.js:14:17
+✖ fail leaf B (0.508ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 4
+  
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/astra02-sr6tbrsx/tests/frontend/fe-000/.compiled/tests/frontend/fe-000/fixtures/fixture-multi-nested.test.js:15:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at TestContext.test (node:internal/test_runner/test:399:20)
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/astra02-sr6tbrsx/tests/frontend/fe-000/.compiled/tests/frontend/fe-000/fixtures/fixture-multi-nested.test.js:14:17)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

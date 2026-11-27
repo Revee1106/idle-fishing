@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "cc": ["./temp/declarations/cc.d.ts"]
+    }
+  },
+  "include": [
+    "assets/scripts/**/*.ts",
+    "temp/declarations/cc.d.ts"
+  ]
+}

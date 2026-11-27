@@ -1,0 +1,55 @@
+# FE-000-R1-INTEGRATION-REWORK-01 SHA-256 manifest
+# Branch: integration/fe-000-be-r1
+# HEAD (frontend base): be62996fae44df24094331d670f6f0ab3741a4f2
+# MERGE_HEAD (backend target, 58 staged files untouched): 5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+# Convention: SHA-256 of exact on-disk raw bytes (git core.autocrlf=false; LF/CRLF verbatim).
+# Historical reports/integration/FE-000-R1-INTEGRATION/ (48 files) preserved untouched (DRIFT=0).
+#
+05176cae79779f4b067c9f259288e0ebc4910766a5ca1f8ce4be8f6c82770e05 *apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+038aad7effc8f612109a2ad86173b227a751702856f31dfcf19f8de023b0be7d *apps/game-client/assets/scripts/platform/BrowserFilePort.ts
+2df346c5e2d5774b349356f761433ab268debb6bf89ca8559fa204c780205038 *apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts
+eeaae3e62440c1ef57be39c6a501a85ba69684a0ba265f4eea679471fc757259 *apps/game-client/assets/scripts/platform/PlatformTypes.ts
+de9dbba105d76b14351973d6c9c0af0bba4afbb3933d5136a2cb219a34d519bd *apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts
+9e59956c7f3c810fc27000fd63ea21657fb26d35bc38b6a62a3f16e61bf9a420 *apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts
+f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041 *apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta
+0b3c2aa3e77ca4bcfc06c488592a7e7a5ad4857f6049196cb062f8458215862f *apps/game-client/assets/scripts/platform/WeChatFilePort.ts
+21dd07f98ea2d69fbbbda0dc103460c8206135bbf57fd666deb621f6e42c1946 *apps/game-client/assets/scripts/shared/SharedCoreBridge.ts
+7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c *apps/game-client/assets/scripts/ui/OverviewPage.ts
+6b89d3aa02cfe3a6dc99c7697686aba7457bc0ae73bf2d0fc0a8676d12c215a9 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/IMPLEMENTATION_REPORT.md
+51c84c4ef5a1f694c40898aac6da4d18413201938abf368e82234c4d4566b172 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/ISSUE_REPORT.md
+71de2bdcb29dfc888159f9d5d4fe9698062ca3eee3a7db7556d3e836576ada2f *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/REWORK_HANDOFF.md
+b834ee68ca7e3e781833bbb2f140abbd126a3d81258e11cf60346bfadda5abb5 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/TASK.md
+32541f50bce2817a010e1e01adebc251082b7adf74ada1334dd14f5567c4cb19 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/TEST_REPORT.md
+9cf0982a5eb784f3f28c0623e348e7d06379aad1af73a8feb4beb876e5d91ede *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework-build-manifest.json
+fcb913dcb58597f57f63d62c400305f7030492bc0baca2773e94f0d67425e6bb *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-modal.png
+b2fdf3cd5ff0f858507a41ada33fdc561ae3d0084c6f2e7d8d10f897ed7e045b *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-overview.png
+d35faa056fa9fdd2fa68e82c7b9feb62988dd207bd824bce2be6b13c42280ea4 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-perf24h.png
+5b743509f45deafe58f4e81d416fdab5f68c76fc08ce747df3f2bced0ed7c316 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-platform.png
+d48a17bd1353092479dfdb092933e1239638e69decf28504c6a77faefb82d0d8 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-web-results.json
+e83a2f6c431fad13c207762ebd2444a8f8a6b8cdb50095c0885af81511e6e65b *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/wechat-rework-audit.json
+20e2ec42ef6db37cdde4230ea0f690b9b3ef347cd55166ee5ee0de240754eb92 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-backend-perf.log
+ff40615be5f9e81bfd8f63a4e892d3bb6c1220509b203c484165a8d33ec78a16 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-backend-verify.log
+29a3b889b06aec5b1d7627738039fd0633a20d8bc74c30f8b45e3c3bfca40acf *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-build-web.log
+9a956b2a3f19c7e3a0881201b017eb1a9be9e616e46bda7b9b393f1e287c8e13 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-build-wechat.log
+d9d716195d067a23b42fdb68cb178fc5b3bb17b45b7aa4ba584ef1e32f7e4175 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-frontend-tests.log
+c069add93e0e72850d2dd5e826f263f778b0f63de8fb81d2f83fcfe11df48bc9 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-frontend-typecheck.log
+5de02a6a928f3a4d3066a4c3f8f433c53c95e99a59e6177cb34d74806bb68cd4 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-empty.log
+2780b47000a29329ec24c7a2c23838d460e36104878647af51725bf361243640 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-failed.log
+f86819d8492b7b14324ed2e3fc73cacb1b32d1e1d584cedc9b56caca9a988d6e *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-missing.log
+1108be8d97a033b78faf1d1c57dd45dee968fb7d53eba80dba1c382ad8e29b03 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-mixed.log
+dda45851da53175a7c38f84581e5ea369a21e7f7563f066ef3a7f6995f38095f *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-no-files.log
+248e6562227a34d01fb645e05967dd7a516a8aed8b77aa511414208720103ed7 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-passed.log
+274e302e28279ff5db03b1ddd0dade8ef954200497ed4a20665dd40daeb294ac *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-skipped.log
+bf609fad01dd2e2ec545103b54fe1be4b2d8e6f1e2e412857c19b0c7391e03db *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-review-a1-a8.log
+b2c31d72c191303add87d2e1ab4438e1f1b2cf1c893c726ea0ecac2fee1d5226 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-typecheck-cocos.log
+6677f8ce34ee8047d9c298e16b98255a9f473da576c58ca6779f0e167f8c0f51 *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-verify-web.log
+b30efb88125f04eb70f1782f89a481f1c76102f1dc7f6877605d3c6d051cd78f *reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-verify-wechat.log
+8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881 *tests/frontend/fe-000/fixtures/fixture-empty.test.ts
+5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2 *tests/frontend/fe-000/fixtures/fixture-failed.test.ts
+cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc *tests/frontend/fe-000/fixtures/fixture-mixed.test.ts
+b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591 *tests/frontend/fe-000/fixtures/fixture-passed.test.ts
+3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43 *tests/frontend/fe-000/fixtures/fixture-skipped.test.ts
+5e525ce9af4f241feab1ef8dc2e9017d391f3389d17929a00b2c23cec5c20de1 *tests/frontend/fe-000/platform-and-core.test.ts
+65e3cbb52bafda383a2e352b1b588470c4c16840d1406e8e2cba901fe1c0a814 *tests/frontend/fe-000/run-node-tests.mjs
+75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce *tests/frontend/fe-000/tsconfig.json
+aae3dbad457fb18792d8be156904c72035a8148ecb467aedb69d0644213f4a12 *tests/frontend/fe-000/verify-web-build.mjs

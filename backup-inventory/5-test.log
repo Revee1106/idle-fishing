@@ -1,0 +1,106 @@
+✖ P1 unsupported monotonic source cannot grant a 48h foreground jump (2.3032ms)
+✖ P2 suite subscription must release platform hooks at end of run (1.606ms)
+✖ P3 rejected SDK load releases error and close handlers (1.1869ms)
+✖ P4 concurrent show for a single request must create at most one instance (0.6934ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13.9881
+
+✖ failing tests:
+
+test at [eval1]:6:1
+✖ P1 unsupported monotonic source cannot grant a 48h foreground jump (2.3032ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 172810000
+  - 10000
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-review/[eval1]:8:93)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 172810000,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at [eval1]:10:1
+✖ P2 suite subscription must release platform hooks at end of run (1.606ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   3,
+  +   3
+  -   0,
+  -   0
+    ]
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-review/[eval1]:12:115)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [Array],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at [eval1]:14:1
+✖ P3 rejected SDK load releases error and close handlers (1.1869ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   1,
+  +   1
+  -   0,
+  -   0
+    ]
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-review/[eval1]:16:119)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [Array],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at [eval1]:18:1
+✖ P4 concurrent show for a single request must create at most one instance (0.6934ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///E:/idle-fishing-review/[eval1]:20:195)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

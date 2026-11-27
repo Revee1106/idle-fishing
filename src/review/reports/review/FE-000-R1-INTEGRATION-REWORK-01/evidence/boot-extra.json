@@ -1,0 +1,425 @@
+{
+  "empty": {
+    "loadStatus": "EMPTY",
+    "loadDetail": null,
+    "persistenceHalted": false,
+    "restoredOnBoot": false,
+    "revision": null,
+    "gold": "0",
+    "cursorMs": 1700000000000,
+    "deadlineMs": 1700028800000,
+    "lastHideCommitAtMs": null,
+    "lastHideTriggerSource": null,
+    "lastCommitKind": null,
+    "lastCommitDetail": null,
+    "hideCommitCount": 0,
+    "showEventCount": 0
+  },
+  "burst": {
+    "rec": {
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": false,
+      "revision": "3",
+      "gold": "129",
+      "cursorMs": 1700000180000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795661561247,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 3,
+      "showEventCount": 3
+    },
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": null,
+        "resultKind": "COMMITTED",
+        "revision": "1",
+        "cursorMs": 1700000060000,
+        "gold": "31",
+        "detail": null
+      },
+      {
+        "seq": 2,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "1",
+        "resultKind": "COMMITTED",
+        "revision": "2",
+        "cursorMs": 1700000120000,
+        "gold": "84",
+        "detail": null
+      },
+      {
+        "seq": 3,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "2",
+        "resultKind": "COMMITTED",
+        "revision": "3",
+        "cursorMs": 1700000180000,
+        "gold": "129",
+        "detail": null
+      }
+    ]
+  },
+  "restored": {
+    "rec": {
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 2 at revision 3",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "3",
+      "gold": "129",
+      "cursorMs": 1700000180000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "hist": []
+  },
+  "same": true,
+  "probe": {
+    "rec": {
+      "loadStatus": "STORAGE_UNAVAILABLE",
+      "loadDetail": "localStorage probe failed: denied",
+      "persistenceHalted": true,
+      "restoredOnBoot": false,
+      "revision": null,
+      "gold": "0",
+      "cursorMs": 0,
+      "deadlineMs": null,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": null,
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 1
+    },
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": null,
+        "resultKind": "SKIPPED_HALTED",
+        "revision": null,
+        "cursorMs": 0,
+        "gold": "0",
+        "detail": "Persistence halted (STORAGE_UNAVAILABLE)"
+      },
+      {
+        "seq": 2,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": null,
+        "resultKind": "SKIPPED_HALTED",
+        "revision": null,
+        "cursorMs": 0,
+        "gold": "0",
+        "detail": "Persistence halted (STORAGE_UNAVAILABLE)"
+      }
+    ]
+  },
+  "untouched": false,
+  "recovered": {
+    "rec": {
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 0 at revision 4",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "4",
+      "gold": "178",
+      "cursorMs": 1700000240000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "hist": []
+  },
+  "allRecovered": false,
+  "strictProbe": {
+    "rec": {
+      "loadStatus": "STORAGE_UNAVAILABLE",
+      "loadDetail": "localStorage probe failed: denied",
+      "persistenceHalted": true,
+      "restoredOnBoot": false,
+      "revision": null,
+      "gold": "0",
+      "cursorMs": 0,
+      "deadlineMs": null,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": null,
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 1
+    },
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": null,
+        "resultKind": "SKIPPED_HALTED",
+        "revision": null,
+        "cursorMs": 0,
+        "gold": "0",
+        "detail": "Persistence halted (STORAGE_UNAVAILABLE)"
+      },
+      {
+        "seq": 2,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": null,
+        "resultKind": "SKIPPED_HALTED",
+        "revision": null,
+        "cursorMs": 0,
+        "gold": "0",
+        "detail": "Persistence halted (STORAGE_UNAVAILABLE)"
+      }
+    ]
+  },
+  "exactA": true,
+  "strictRecover": {
+    "rec": {
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 1 at revision 5",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "5",
+      "gold": "217",
+      "cursorMs": 1700000300000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    },
+    "hist": []
+  },
+  "exactB": true,
+  "seedRevision": 5,
+  "deleteDenied": "FilePortIoError: [REMOVE_IO_ERROR] save_slot_0.json: permission denied",
+  "readFailure": {
+    "loadStatus": "STORAGE_UNAVAILABLE",
+    "loadDetail": "All save slots unreadable due to storage IO error: save_slot_0.json: io error; save_slot_1.json: io error; save_slot_2.json: io error",
+    "persistenceHalted": true,
+    "restoredOnBoot": false,
+    "revision": null,
+    "gold": "0",
+    "cursorMs": 0,
+    "deadlineMs": null,
+    "lastHideCommitAtMs": null,
+    "lastHideTriggerSource": null,
+    "lastCommitKind": null,
+    "lastCommitDetail": null,
+    "hideCommitCount": 0,
+    "showEventCount": 0
+  },
+  "writeFailure": {
+    "rec": {
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 1 at revision 5",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "6",
+      "gold": "254",
+      "cursorMs": 1700000360000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795661591641,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "COMMITTED",
+      "lastCommitDetail": null,
+      "hideCommitCount": 1,
+      "showEventCount": 1
+    },
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "5",
+        "resultKind": "FAILED",
+        "revision": "5",
+        "cursorMs": 1700000300000,
+        "gold": "217",
+        "detail": "SAVE_IO: write not observed; persisted revision unchanged"
+      },
+      {
+        "seq": 2,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "5",
+        "resultKind": "COMMITTED",
+        "revision": "6",
+        "cursorMs": 1700000360000,
+        "gold": "254",
+        "detail": null
+      }
+    ]
+  },
+  "uncertain": {
+    "rec": {
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 2 at revision 6",
+      "persistenceHalted": true,
+      "restoredOnBoot": true,
+      "revision": "6",
+      "gold": "254",
+      "cursorMs": 1700000360000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "document.visibilitychange",
+      "lastCommitKind": "UNCERTAIN",
+      "lastCommitDetail": "slot read unavailable (save_slot_2.json); no write attempted",
+      "hideCommitCount": 0,
+      "showEventCount": 1
+    },
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "6",
+        "resultKind": "UNCERTAIN",
+        "revision": "6",
+        "cursorMs": 1700000360000,
+        "gold": "254",
+        "detail": "slot read unavailable (save_slot_2.json); no write attempted"
+      },
+      {
+        "seq": 2,
+        "triggerSource": "document.visibilitychange",
+        "expectedRevision": "6",
+        "resultKind": "SKIPPED_HALTED",
+        "revision": "6",
+        "cursorMs": 1700000360000,
+        "gold": "254",
+        "detail": "Persistence halted (VALID)"
+      }
+    ],
+    "physicalWrites": 0
+  },
+  "nochange": {
+    "a": {
+      "rec": {
+        "loadStatus": "VALID",
+        "loadDetail": "selected slot 2 at revision 6",
+        "persistenceHalted": false,
+        "restoredOnBoot": true,
+        "revision": "7",
+        "gold": "276",
+        "cursorMs": 1700000420000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": 1795661597107,
+        "lastHideTriggerSource": "document.visibilitychange",
+        "lastCommitKind": "COMMITTED",
+        "lastCommitDetail": null,
+        "hideCommitCount": 1,
+        "showEventCount": 0
+      },
+      "hist": [
+        {
+          "seq": 1,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "6",
+          "resultKind": "COMMITTED",
+          "revision": "7",
+          "cursorMs": 1700000420000,
+          "gold": "276",
+          "detail": null
+        }
+      ]
+    },
+    "b": {
+      "rec": {
+        "loadStatus": "VALID",
+        "loadDetail": "selected slot 2 at revision 6",
+        "persistenceHalted": false,
+        "restoredOnBoot": true,
+        "revision": "8",
+        "gold": "332",
+        "cursorMs": 1700000480000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": 1795661597109,
+        "lastHideTriggerSource": "document.visibilitychange",
+        "lastCommitKind": "COMMITTED",
+        "lastCommitDetail": null,
+        "hideCommitCount": 2,
+        "showEventCount": 1
+      },
+      "hist": [
+        {
+          "seq": 1,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "6",
+          "resultKind": "COMMITTED",
+          "revision": "7",
+          "cursorMs": 1700000420000,
+          "gold": "276",
+          "detail": null
+        },
+        {
+          "seq": 2,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "7",
+          "resultKind": "COMMITTED",
+          "revision": "8",
+          "cursorMs": 1700000480000,
+          "gold": "332",
+          "detail": null
+        }
+      ]
+    }
+  },
+  "destroy": {
+    "beforeEqAfter": false,
+    "rec": {
+      "rec": {
+        "loadStatus": "VALID",
+        "loadDetail": "selected slot 1 at revision 8",
+        "persistenceHalted": false,
+        "restoredOnBoot": true,
+        "revision": "9",
+        "gold": "405",
+        "cursorMs": 1700000540000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": 1795661601409,
+        "lastHideTriggerSource": "document.visibilitychange",
+        "lastCommitKind": "COMMITTED",
+        "lastCommitDetail": null,
+        "hideCommitCount": 1,
+        "showEventCount": 1
+      },
+      "hist": [
+        {
+          "seq": 1,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "8",
+          "resultKind": "COMMITTED",
+          "revision": "9",
+          "cursorMs": 1700000540000,
+          "gold": "405",
+          "detail": null
+        },
+        {
+          "seq": 2,
+          "triggerSource": "document.visibilitychange",
+          "expectedRevision": "9",
+          "resultKind": "SKIPPED_DESTROYED",
+          "revision": "9",
+          "cursorMs": 1700000540000,
+          "gold": "405",
+          "detail": "BootEntry destroyed before queued HIDE commit started"
+        }
+      ]
+    },
+    "historyAfterMore": 2
+  }
+}

@@ -1,0 +1,65 @@
+ M apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+ M apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts
+ M apps/game-client/assets/scripts/shared/SharedCoreBridge.ts
+ M apps/game-client/assets/scripts/ui/OverviewPage.ts
+M  package.json
+M  packages/game-core/scripts/emit-cocos-mjs.mjs
+M  packages/game-core/src/spike/migration.ts
+M  packages/game-core/src/spike/offline.ts
+M  packages/game-core/src/spike/save.ts
+M  packages/game-core/src/spike/time.ts
+M  packages/game-core/src/spike/types.ts
+A  reports/backend/BE-000-R1/BE-000-R1-code.patch
+A  reports/backend/BE-000-R1/FILES-P2.sha256
+A  reports/backend/BE-000-R1/FILES.sha256
+A  reports/backend/BE-000-R1/FILE_LIST.md
+A  reports/backend/BE-000-R1/IMPLEMENTATION_REPORT.md
+A  reports/backend/BE-000-R1/ISSUE_REPORT.md
+A  reports/backend/BE-000-R1/LOGS.sha256
+A  reports/backend/BE-000-R1/TASK.md
+A  reports/backend/BE-000-R1/TEST_REPORT.md
+A  reports/backend/BE-000-R1/evidence/d01-independent.py
+A  reports/backend/BE-000-R1/evidence/make-r1-vectors.mjs
+A  reports/backend/BE-000-R1/evidence/p2-g01-g02-independent.mjs
+A  reports/backend/BE-000-R1/evidence/pre/cocos-type-audit.mts
+A  reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs
+A  reports/backend/BE-000-R1/evidence/runtime-cocos-r1.mjs
+A  reports/backend/BE-000-R1/evidence/vectors/offline-vectors.pre-r1.json
+A  reports/backend/BE-000-R1/logs/p2-build-cocos.log
+A  reports/backend/BE-000-R1/logs/p2-g01-g02-independent.log
+A  reports/backend/BE-000-R1/logs/p2-perf.log
+A  reports/backend/BE-000-R1/logs/p2-review-a1-a8.log
+A  reports/backend/BE-000-R1/logs/p2-test.log
+A  reports/backend/BE-000-R1/logs/p2-typecheck-cocos.log
+A  reports/backend/BE-000-R1/logs/p2-typecheck.log
+A  reports/backend/BE-000-R1/logs/p2-verify.log
+A  reports/backend/BE-000-R1/logs/pre-cocos-type.log
+A  reports/backend/BE-000-R1/logs/pre-fixture.log
+A  reports/backend/BE-000-R1/logs/pre-review-a1-a8.log
+A  reports/backend/BE-000-R1/logs/pre-verify.log
+A  reports/backend/BE-000-R1/logs/r1-cocos-build.out
+A  reports/backend/BE-000-R1/logs/r1-cocos-runtime.log
+A  reports/backend/BE-000-R1/logs/r1-cocos-type.log
+A  reports/backend/BE-000-R1/logs/r1-d01-python.log
+A  reports/backend/BE-000-R1/logs/r1-fixture.log
+A  reports/backend/BE-000-R1/logs/r1-perf.log
+A  reports/backend/BE-000-R1/logs/r1-review-a1-a8.log
+A  reports/backend/BE-000-R1/logs/r1-vectors.log
+A  reports/backend/BE-000-R1/logs/r1-verify-final.log
+A  reports/backend/BE-000-R1/logs/r1-verify.log
+M  reports/backend/BE-000/SHARED_MODULE_HANDOFF.md
+M  reports/backend/DEVELOPMENT_STATUS.md
+M  tests/backend/be-000/cocos-artifact.test.ts
+A  tests/backend/be-000/cocos-probe/probe.ts
+A  tests/backend/be-000/cocos-type-consumer.mts
+A  tests/backend/be-000/d01-encoding.test.ts
+M  tests/backend/be-000/fixtures/offline-vectors.json
+M  tests/backend/be-000/migration.test.ts
+M  tests/backend/be-000/offline.test.ts
+A  tests/backend/be-000/r1-regression.test.ts
+M  tests/backend/be-000/save.test.ts
+ M tests/frontend/fe-000/platform-and-core.test.ts
+ M tests/frontend/fe-000/verify-web-build.mjs
+A  tsconfig.cocos-consumer.json
+M  tsconfig.test.json
+?? reports/integration/FE-000-R1-INTEGRATION/

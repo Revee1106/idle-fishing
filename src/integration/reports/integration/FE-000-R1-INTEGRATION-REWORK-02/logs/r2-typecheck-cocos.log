@@ -1,0 +1,10 @@
+COMMAND: npm run typecheck:cocos
+EXIT_CODE: 0
+DURATION_MS: 1545
+--- STDOUT ---
+
+> idle-fishing@0.1.0 typecheck:cocos
+> tsc -p tsconfig.cocos-consumer.json
+
+
+--- STDERR ---

@@ -1,0 +1,65 @@
+{
+  "failures": [],
+  "evidence": {
+    "prewrite": {
+      "ns": "r4_audit_crash_prewrite_1795747103259",
+      "seed": {
+        "kind": "COMMITTED",
+        "rev": "1",
+        "disk": {
+          "rev": "1",
+          "gold": "31",
+          "marker": null
+        }
+      },
+      "afterCrash": {
+        "rev": "1",
+        "gold": "31"
+      },
+      "markerState": "PENDING",
+      "markerStorageKey": "browser:r4_audit_crash_prewrite_1795747103259",
+      "blocked": {
+        "kind": "STORAGE_UNAVAILABLE",
+        "writes": 0
+      },
+      "recovery": {
+        "loadKind": "VALID",
+        "loadRev": "1",
+        "markerAfter": null,
+        "staleKind": "SKIPPED_NEW_SAVE",
+        "freshKind": "COMMITTED",
+        "freshRev": "2"
+      }
+    },
+    "prereadback": {
+      "ns": "r4_audit_crash_prereadback_1795747107203",
+      "seed": {
+        "kind": "COMMITTED",
+        "rev": "1",
+        "disk": {
+          "rev": "1",
+          "gold": "31",
+          "marker": null
+        }
+      },
+      "afterCrash": {
+        "rev": "2",
+        "gold": "84"
+      },
+      "markerState": "PENDING",
+      "markerStorageKey": "browser:r4_audit_crash_prereadback_1795747107203",
+      "blocked": {
+        "kind": "STORAGE_UNAVAILABLE",
+        "writes": 0
+      },
+      "recovery": {
+        "loadKind": "VALID",
+        "loadRev": "2",
+        "markerAfter": null,
+        "staleKind": "CONFLICT",
+        "freshKind": "COMMITTED",
+        "freshRev": "3"
+      }
+    }
+  }
+}

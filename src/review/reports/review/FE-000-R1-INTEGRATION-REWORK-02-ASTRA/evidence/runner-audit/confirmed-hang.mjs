@@ -1,0 +1,1 @@
+import test from 'node:test';import fs from 'node:fs';test('entered',async()=>{fs.writeFileSync('runner-audit/confirmed-hang.entered','entered');setInterval(()=>{},200);await new Promise(()=>{})});

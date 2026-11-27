@@ -1,0 +1,8 @@
+CMD: node independent-edges.mjs
+[PASS] E1 partial-slot IO: load VALID recovered + health AVAILABLE + commit UNCERTAIN 0 writes :: {"loadKind":"VALID","recovered":true,"health":"AVAILABLE","commitKind":"UNCERTAIN","writesBefore":2,"writesAfter":2}
+[PASS] E2 corrupt slots: load CORRUPT, commit FAILED (no silent first commit) :: {"loadKind":"CORRUPT","commitKind":"FAILED"}
+[PASS] E3 freeze->recovery->recurring write failure -> frozen again; final load re-reads rev1 :: {"again":"STORAGE_UNAVAILABLE","frozen":"STORAGE_UNAVAILABLE","recRev":"1","finalHealth":"AVAILABLE"}
+[PASS] E4 UnavailableFilePort fail-closed: load/commit STORAGE_UNAVAILABLE, direct read throws :: {"load":"STORAGE_UNAVAILABLE","commit":"STORAGE_UNAVAILABLE","readThrew":true,"health":"STORAGE_UNAVAILABLE"}
+
+===== EDGE SUMMARY: 4/4 PASS =====
+EXIT=0

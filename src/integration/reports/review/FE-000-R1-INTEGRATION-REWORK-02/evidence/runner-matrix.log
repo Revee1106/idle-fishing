@@ -1,0 +1,34 @@
+CMD: independent P1-03 runner matrix (29 cases) against snapshot
+DATE: 2026-11-26T05:32:03Z
+CASE 01-empty | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf test cases registered/executed (empty test file guard triggered). 
+CASE 02-skipped | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=0 fail=0 skip=1 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=1, todo=0, fail=0). 
+CASE 03-todo | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=0 fail=0 skip=0 todo=1 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=0, todo=1, fail=0). 
+CASE 04-parent-only-skip | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=0 fail=0 skip=1 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=1, todo=0, fail=0). 
+CASE 05-parent-only-todo | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=0 fail=0 skip=0 todo=1 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=0, todo=1, fail=0). 
+CASE 06-parent-one-pass | exit=0 expect=0 | [FE-000 Test Summary] total=1 pass=1 fail=0 skip=0 todo=0 containerFail=0 procErr=0 
+CASE 07-deep-nested | exit=0 expect=0 | [FE-000 Test Summary] total=2 pass=2 fail=0 skip=0 todo=0 containerFail=0 procErr=0 
+CASE 08-multi-nested | exit=1 expect=1 | [FE-000 Test Summary] total=7 pass=3 fail=2 skip=1 todo=1 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 2 leaf test(s) failed. 
+CASE 09-multi-fail | exit=1 expect=1 | [FE-000 Test Summary] total=2 pass=0 fail=2 skip=0 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=2, skip=0, todo=0, fail=2). 
+CASE 10-mixed-fail | exit=1 expect=1 | [FE-000 Test Summary] total=4 pass=1 fail=1 skip=1 todo=1 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 1 leaf test(s) failed. 
+CASE 11-load-crash | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=1 procErr=0 [FE-000 Test Runner] FAIL: 1 suite/container failure(s) detected. 
+CASE 12-early-exit | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1 [FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected. 
+CASE 13-uncaught | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1 [FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected. 
+CASE 14-terminated | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1 [FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected. 
+CASE 15-passed | exit=0 expect=0 | [FE-000 Test Summary] total=1 pass=1 fail=0 skip=0 todo=0 containerFail=0 procErr=0 
+CASE 16-mixed-pass-skip | exit=0 expect=0 | [FE-000 Test Summary] total=2 pass=1 fail=0 skip=1 todo=0 containerFail=0 procErr=0 
+CASE 17-no-files | exit=1 expect=1 | [FE-000 Test Runner] FAIL: 0 test files specified. 
+CASE 18-missing-file | exit=1 expect=1 | [FE-000 Test Runner] FAIL: Missing required test file: C:\Users\WANGWENJIE10\AppData\Local\Temp\fe000-r2-snap\tests\frontend\fe-000\fixtures\missing.test.ts 
+CASE 19-unsafe-outdir | exit=0 expect=1 | [FE-000 Test Summary] total=1 pass=1 fail=0 skip=0 todo=0 containerFail=0 procErr=0 
+CASE A1-parent-skip-todo | exit=1 expect=1 | [FE-000 Test Summary] total=2 pass=0 fail=0 skip=1 todo=1 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=2, skip=1, todo=1, fail=0). 
+CASE A2-four-level | exit=0 expect=0 | [FE-000 Test Summary] total=2 pass=2 fail=0 skip=0 todo=0 containerFail=0 procErr=0 
+CASE A3-describe-only-skip | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=0 fail=0 skip=1 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=1, todo=0, fail=0). 
+CASE A4-describe-empty | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf test cases registered/executed (empty test file guard triggered). 
+CASE A5-suite-hook-throw | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=0 fail=1 skip=0 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 0 leaf tests passed (total=1, skip=0, todo=0, fail=1). 
+CASE A6-parent-fails-after-child | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=1 fail=0 skip=0 todo=0 containerFail=1 procErr=0 [FE-000 Test Runner] FAIL: 1 suite/container failure(s) detected. 
+CASE A7-exit-after-pass | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1 [FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected. 
+CASE A8-exit1 | exit=1 expect=1 | [FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=0 procErr=1 [FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected. 
+CASE A9-multi-good-crash | exit=1 expect=1 | [FE-000 Test Summary] total=1 pass=1 fail=0 skip=0 todo=0 containerFail=0 procErr=1 [FE-000 Test Runner] FAIL: 1 test process/runtime error(s) detected. 
+CASE A10-fail-pass-suite | exit=1 expect=1 | [FE-000 Test Summary] total=2 pass=1 fail=1 skip=0 todo=0 containerFail=0 procErr=0 [FE-000 Test Runner] FAIL: 1 leaf test(s) failed. 
+MATRIX_DONE
+[FE-000 Test Runner] FAIL: Unsafe --out-dir rejected: [SafePathGuard:OUTSIDE_ALLOWLIST] Compiled test output dir must be a direct child of C:\Users\WANGWENJIE10\AppData\Local\Temp\fe000-r2-snap\tests\frontend\fe-000, got C:\Users\WANGWENJIE10\AppData\Local\Temp\fe000-r2-snap\tests\reports
+UNSAFE_OUTDIR_EXIT=1

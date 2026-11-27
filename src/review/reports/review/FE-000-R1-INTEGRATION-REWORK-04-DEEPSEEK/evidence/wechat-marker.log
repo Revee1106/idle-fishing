@@ -1,0 +1,17 @@
+✔ [MOCK-WX/REWORK-04/A02-MARKER-ROUNDTRIP] tx marker write/read/clear and list filtering (60.095ms)
+✔ [MOCK-WX/REWORK-04/A02-MARKER-WRITE-FAIL] marker write failure -> STORAGE_UNAVAILABLE, zero slot writes (88.1604ms)
+✔ [MOCK-WX/REWORK-04/A02-MARKER-READ-FAIL] marker read failure -> commit/recovery fail-closed, zero writes (85.4613ms)
+✔ [MOCK-WX/REWORK-04/A02-MARKER-CORRUPT] truncated/corrupt marker fails closed; commit blocked with zero writes (13.0482ms)
+✔ [MOCK-WX/REWORK-04/A02-MARKER-CLEAR-FAIL] committed-but-clear-failed -> UNCERTAIN, marker retained, next commit blocked (30.2621ms)
+✔ [MOCK-WX/REWORK-04/A02-DETERMINISTIC-PREWRITE] slot pre-write fault -> FAILED, no freeze, marker cleared, retry works (63.4814ms)
+✔ [MOCK-WX/REWORK-04/A02-CROSS-COORDINATOR] UNCERTAIN freezes second coordinator; explicit recovery then stale write CONFLICT (50.1089ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 864.9028
+
+[FE-000 Test Summary] total=7 pass=7 fail=0 skip=0 todo=0 containerFail=0 procErr=0

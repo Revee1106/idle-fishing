@@ -1,0 +1,10 @@
+CMD: node r3-a02-app.mjs
+[PASS] seed rev1 :: {"rev":"1","gold":"31"}
+[PASS] Tab B boot loads rev1 :: {"status":"VALID","rev":"1"}
+[PASS] Tab A normal HIDE -> UNCERTAIN and halt, disk unchanged rev1 :: {"aUnc":{"rev":"1","last":"UNCERTAIN","halted":true,"health":"STORAGE_UNAVAILABLE"},"diskAfterA":{"rev":"1","gold":"31"}}
+[FAIL] A02 APP CROSS-TAB: Tab B MUST NOT write before recovery :: {"rev":"2","last":"COMMITTED","halted":false,"disk":{"rev":"2","gold":"84"}}
+[evidence] Tab A after B write: {"aUnc":{"rev":"1","last":"UNCERTAIN","halted":true,"health":"STORAGE_UNAVAILABLE"},"diskAfterA":{"rev":"1","gold":"31"},"bHide":{"rev":"2","last":"COMMITTED","halted":false,"disk":{"rev":"2","gold":"84"}},"aStill":{"rev":"1","last":"UNCERTAIN","halted":true}}
+
+===== A02 APP: FAIL =====
+FAILED: A02 APP CROSS-TAB: Tab B MUST NOT write before recovery: {"rev":"2","last":"COMMITTED","halted":false,"disk":{"rev":"2","gold":"84"}}
+EXIT=1

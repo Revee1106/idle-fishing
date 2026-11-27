@@ -1,0 +1,13 @@
+✔ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & continuous==sliced (18.2906ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO error->throw, path guard & quota error (2.4542ms)
+✔ [MOCK-WX/T04/T05/T07] 3-slot rotation, corrupt backup recovery, fault injection & v1->v2 migration (10.7774ms)
+✔ [NODE/T08] Lifecycle dedupe, clock rollback freeze & +48h forward-jump deadline clamp (0.9146ms)
+✔ [MOCK/T09] Experimental Ad 5-case stub & empty-adUnitId real adapter guard (0.8397ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 246.2274

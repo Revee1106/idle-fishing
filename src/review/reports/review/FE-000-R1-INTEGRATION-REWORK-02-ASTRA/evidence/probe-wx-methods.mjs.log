@@ -1,0 +1,10 @@
+readFileSync {
+  available: false,
+  reason: 'wx FileSystemManager missing required method: readFileSync'
+} STORAGE_UNAVAILABLE
+writeFileSync {
+  available: false,
+  reason: 'wx FileSystemManager missing required method: writeFileSync'
+} STORAGE_UNAVAILABLE
+ENOENT { available: true, reason: null } null
+EIO { available: true, reason: null } READ_IO_ERROR

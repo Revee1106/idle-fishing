@@ -1,0 +1,30 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-load-crash.test.ts --out-dir=.compiled-r2-log
+EXIT_CODE: 1
+DURATION_MS: 2639
+--- STDOUT ---
+✖ E:\idle-fishing-integration\tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-load-crash.test.js (0.9319ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10.7877
+
+✖ failing tests:
+
+test at tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-load-crash.test.js:1:1
+✖ E:\idle-fishing-integration\tests\frontend\fe-000\.compiled-r2-log\tests\frontend\fe-000\fixtures\fixture-load-crash.test.js (0.9319ms)
+  Error: Intentional module load crash for P1-03 verification
+      at file:///E:/idle-fishing-integration/tests/frontend/fe-000/.compiled-r2-log/tests/frontend/fe-000/fixtures/fixture-load-crash.test.js:2:7
+      at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+      at async node:internal/modules/esm/loader:647:26
+      at async node:internal/test_runner/runner:1075:15
+      at async runFiles (node:internal/test_runner/runner:1041:9)
+      at async runChain (node:internal/test_runner/runner:1119:5)
+
+[FE-000 Test Summary] total=0 pass=0 fail=0 skip=0 todo=0 containerFail=1 procErr=0
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: 1 suite/container failure(s) detected.

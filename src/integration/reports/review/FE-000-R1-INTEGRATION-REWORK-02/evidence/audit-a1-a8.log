@@ -1,0 +1,17 @@
+✔ A1 unknown slot cannot authorize a new save (6.2318ms)
+✔ A2 durable write with unreadable target stays uncertain (10.5712ms)
+✔ A3 conflicting highest slots cannot authorize a write (2.6243ms)
+✔ A4 invalid payload in one slot still allows backup recovery (1.0481ms)
+✔ A5 offline checkpoint records time already settled (1.7475ms)
+✔ A6 resulting time must remain a safe millisecond (0.574ms)
+✔ A7 exact fight completion at deadline issues one reward (1.5059ms)
+✔ A8 previously claimed reward must not be paid by restored fight (0.6042ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 441.6465
+A18_EXIT=0

@@ -1,0 +1,317 @@
+{
+  "previousComparableCount": 150,
+  "drift": [],
+  "changedSourceSincePrevious": [
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts",
+    "apps/game-client/assets/scripts/platform/PlatformTypes.ts",
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts",
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts",
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts",
+    "tests/frontend/fe-000/platform-and-core.test.ts",
+    "tests/frontend/fe-000/run-node-tests.mjs",
+    "tests/frontend/fe-000/verify-web-build.mjs"
+  ],
+  "unlisted": [
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/FILES-REWORK.sha256",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/IMPLEMENTATION_REPORT.md",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/ISSUE_REPORT.md",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/REWORK_HANDOFF.md",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/TASK.md",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/TEST_REPORT.md",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework-build-manifest.json",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-modal.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-overview.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-perf24h.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-platform.png",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-web-results.json",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/wechat-rework-audit.json",
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/FILES-REWORK.sha256",
+    "reports/integration/FE-000-R1-INTEGRATION/FILES.sha256",
+    "reports/integration/FE-000-R1-INTEGRATION/IMPLEMENTATION_REPORT.md",
+    "reports/integration/FE-000-R1-INTEGRATION/INTEGRATION_HANDOFF.md",
+    "reports/integration/FE-000-R1-INTEGRATION/ISSUE_REPORT.md",
+    "reports/integration/FE-000-R1-INTEGRATION/TASK.md",
+    "reports/integration/FE-000-R1-INTEGRATION/TEST_REPORT.md",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/legacy-358b111-compat-results.json",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/legacy-358b111-saves.json",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-modal.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-overview.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-perf24h.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-platform.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-web-results.json",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-wechat-audit.json",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-build-manifest.json",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-modal.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-overview.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-perf24h.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-platform.png",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-web-results.json",
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/wechat-integrated-audit.json",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/ACCEPTANCE_CHECKLIST.md",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/CODE_REVIEW.md",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/DESIGN_ISSUES.md",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/EVIDENCE_MANIFEST.sha256",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/REVIEW_REPORT.md",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/TEST_VERIFICATION.md",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/chrome-boot-unavailable.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/chrome-destroy-bypass.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/chrome-diag.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/chrome-e2e.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/environment.txt",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/git-baseline.txt",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/independent-core.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/independent-edges.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/independent-guard.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/manifest-coverage.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/probe-a.test.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/probe-events.mjs",
+    "reports/review/FE-000-R1-INTEGRATION-REWORK-02/evidence/probe-load-crash.test.mjs"
+  ],
+  "devLogs": {
+    "r2-backend-perf.log": [
+      1524,
+      [
+        "COMMAND: npm run test:perf",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 4390"
+      ]
+    ],
+    "r2-backend-verify.log": [
+      7788,
+      [
+        "COMMAND: npm run verify",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 25858"
+      ]
+    ],
+    "r2-build-web.log": [
+      3805,
+      [
+        "COMMAND: npm --prefix apps/game-client run build:web",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 112374"
+      ]
+    ],
+    "r2-build-wechat.log": [
+      5031,
+      [
+        "COMMAND: npm --prefix apps/game-client run build:wechat",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 100037"
+      ]
+    ],
+    "r2-frontend-tests.log": [
+      2408,
+      [
+        "COMMAND: npm --prefix apps/game-client run test:frontend",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 70842"
+      ]
+    ],
+    "r2-frontend-typecheck.log": [
+      242,
+      [
+        "COMMAND: npm --prefix apps/game-client run typecheck",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 4362"
+      ]
+    ],
+    "r2-p1-03-01-empty.log": [
+      615,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-empty.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 2608"
+      ]
+    ],
+    "r2-p1-03-02-skipped.log": [
+      509,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-skipped.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 4346"
+      ]
+    ],
+    "r2-p1-03-03-todo.log": [
+      505,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-todo.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 3509"
+      ]
+    ],
+    "r2-p1-03-04-parent-only-skip.log": [
+      607,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-parent-only-skip.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 2575"
+      ]
+    ],
+    "r2-p1-03-05-parent-only-todo.log": [
+      597,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-parent-only-todo.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 3278"
+      ]
+    ],
+    "r2-p1-03-06-parent-one-pass.log": [
+      513,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-parent-one-pass.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 3839"
+      ]
+    ],
+    "r2-p1-03-07-deep-nested.log": [
+      597,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-deep-nested.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 3328"
+      ]
+    ],
+    "r2-p1-03-08-multi-file-nested.log": [
+      3106,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-passed.test.ts,fixtures/fixture-multi-nested.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 3444"
+      ]
+    ],
+    "r2-p1-03-09-multi-fail.log": [
+      2287,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-multi-fail.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 2565"
+      ]
+    ],
+    "r2-p1-03-10-mixed-fail.log": [
+      1507,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-mixed-fail.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 2946"
+      ]
+    ],
+    "r2-p1-03-11-load-crash.log": [
+      1381,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-load-crash.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 2639"
+      ]
+    ],
+    "r2-p1-03-12-early-exit.log": [
+      607,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-early-exit.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 2708"
+      ]
+    ],
+    "r2-p1-03-13-uncaught.log": [
+      983,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-uncaught.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 3252"
+      ]
+    ],
+    "r2-p1-03-14-terminated.log": [
+      607,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-terminated.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 3394"
+      ]
+    ],
+    "r2-p1-03-15-passed.log": [
+      420,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-passed.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 3137"
+      ]
+    ],
+    "r2-p1-03-16-mixed-pass-skip.log": [
+      477,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-mixed.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 2635"
+      ]
+    ],
+    "r2-p1-03-17-no-files.log": [
+      203,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files= --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 192"
+      ]
+    ],
+    "r2-p1-03-18-missing-file.log": [
+      306,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/missing.test.ts --out-dir=.compiled-r2-log",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 199"
+      ]
+    ],
+    "r2-p2-05-unsafe-outdir.log": [
+      416,
+      [
+        "COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/fixture-passed.test.ts --out-dir=../../reports",
+        "EXIT_CODE: 1",
+        "DURATION_MS: 248"
+      ]
+    ],
+    "r2-review-a1-a8.log": [
+      809,
+      [
+        "COMMAND: node --test reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 585"
+      ]
+    ],
+    "r2-typecheck-cocos.log": [
+      172,
+      [
+        "COMMAND: npm run typecheck:cocos",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 1545"
+      ]
+    ],
+    "r2-verify-web.log": [
+      5998,
+      [
+        "COMMAND: npm --prefix apps/game-client run verify:web",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 81624"
+      ]
+    ],
+    "r2-verify-wechat.log": [
+      3351,
+      [
+        "COMMAND: node tests/frontend/fe-000/verify-wechat-build.mjs apps/game-client/build/wechatgame reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/wechat-rework02-audit.json",
+        "EXIT_CODE: 0",
+        "DURATION_MS: 284"
+      ]
+    ]
+  },
+  "listedUnchangedSincePrior": [
+    "tests/frontend/fe-000/fixtures/fixture-failed.test.ts",
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts",
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta",
+    "tests/frontend/fe-000/fixtures/fixture-skipped.test.ts",
+    "tests/frontend/fe-000/fixtures/fixture-mixed.test.ts",
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts",
+    "tests/frontend/fe-000/fixtures/fixture-passed.test.ts",
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts",
+    "tests/frontend/fe-000/fixtures/fixture-empty.test.ts",
+    "tests/frontend/fe-000/tsconfig.json",
+    "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts"
+  ]
+}

@@ -1,0 +1,61 @@
+--- apps/game-client/assets/scripts/platform/BrowserFilePort.ts
+
++++ apps/game-client/assets/scripts/platform/BrowserFilePort.ts
+
+@@ -585,30 +585,40 @@
+
+           let abortedForQuota = false;
+ 
+           cursorReq.onsuccess = () => {
+-            const cursor = cursorReq.result;
+-            if (cursor) {
+-              const k = String(cursor.key);
+-              if (k.startsWith(this.prefix) && k !== key && typeof cursor.value === 'string') {
+-                const rel = k.slice(this.prefix.length);
+-                if (!INTERNAL_KEY_SUFFIXES.has(rel)) {
+-                  totalOtherBytes += cursor.value.length;
++            try {
++              const cursor = cursorReq.result;
++              if (cursor) {
++                const k = String(cursor.key);
++                if (k.startsWith(this.prefix) && k !== key && typeof cursor.value === 'string') {
++                  const rel = k.slice(this.prefix.length);
++                  if (!INTERNAL_KEY_SUFFIXES.has(rel)) {
++                    totalOtherBytes += cursor.value.length;
++                  }
+                 }
++                cursor.continue();
++                return;
+               }
+-              cursor.continue();
+-              return;
+-            }
+-            if (totalOtherBytes + text.length > this.maxBytes) {
++              if (totalOtherBytes + text.length > this.maxBytes) {
++                abortedForQuota = true;
++                try {
++                  tx.abort();
++                } catch {
++                  // ignore abort error
++                }
++                reject(new FilePortIoError('QUOTA_EXCEEDED', clean, `Exceeded experimental limit ${this.maxBytes} bytes`));
++                return;
++              }
++              const putReq = store.put(text, key);
++              putReq.onerror = () => reject(putReq.error ?? new Error('IndexedDB put failed'));
++            } catch (syncErr) {
+               abortedForQuota = true;
+               try {
+                 tx.abort();
+               } catch {
+                 // ignore abort error
+               }
+-              reject(new FilePortIoError('QUOTA_EXCEEDED', clean, `Exceeded experimental limit ${this.maxBytes} bytes`));
+-              return;
++              reject(syncErr);
+             }
+-            const putReq = store.put(text, key);
+-            putReq.onerror = () => reject(putReq.error ?? new Error('IndexedDB put failed'));
+           };
+           cursorReq.onerror = () => reject(cursorReq.error ?? new Error('IndexedDB cursor failed'));
+           tx.oncomplete = () => resolve();

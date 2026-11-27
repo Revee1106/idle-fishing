@@ -1,0 +1,24 @@
+{
+  "name": "idle-fishing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Idle Fishing Game",
+  "license": "UNLICENSED",
+  "type": "module",
+  "workspaces": [
+    "packages/game-core"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.test.json",
+    "build": "npm run build -w @idle-fishing/game-core",
+    "build:cocos": "npm run build && npm run build:cocos -w @idle-fishing/game-core",
+    "test": "node --test \"tests/backend/be-000/**/*.test.ts\"",
+    "test:perf": "node tests/backend/be-000/perf.ts",
+    "generate:vectors": "node tests/backend/be-000/generate-vectors.ts",
+    "verify": "npm run typecheck && npm run build:cocos && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3"
+  }
+}

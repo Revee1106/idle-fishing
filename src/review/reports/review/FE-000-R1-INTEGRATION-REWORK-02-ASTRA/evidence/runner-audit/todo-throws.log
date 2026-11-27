@@ -1,0 +1,23 @@
+✔ normal (4.3725ms)
+⚠ planned (2.5579ms) # TODO
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 42.0303
+
+✖ failing tests:
+
+test at runner-audit\todo-throws.mjs:1:57
+⚠ planned (2.5579ms) # TODO
+  Error: planned
+      at TestContext.<anonymous> (file:///C:/Users/WANGWENJIE10/AppData/Local/Temp/astra02-sr6tbrsx/runner-audit/todo-throws.mjs:1:83)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

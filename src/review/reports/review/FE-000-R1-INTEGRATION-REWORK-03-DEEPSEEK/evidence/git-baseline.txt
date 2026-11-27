@@ -1,0 +1,11 @@
+=== HEAD/MERGE_HEAD/merge-base ===
+be62996fae44df24094331d670f6f0ab3741a4f2
+5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+358b11105cfdee9bd076049c86a34d8f0aaa00e7
+=== counts ===
+staged=58 unstaged=12 untracked=108
+=== protected worktree/index drift vs 5bcc9ac ===
+WT_EXIT=0
+IDX_EXIT=0
+=== staged frontend (expect none) ===
+NONE

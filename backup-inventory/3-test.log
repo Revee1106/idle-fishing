@@ -1,0 +1,12 @@
+
+> idle-fishing-client@0.0.0-spike test:frontend
+> node --test ../../tests/frontend/fe-000/*.test.mjs
+
+ℹ tests 0
+ℹ suites 0
+ℹ pass 0
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13.9854

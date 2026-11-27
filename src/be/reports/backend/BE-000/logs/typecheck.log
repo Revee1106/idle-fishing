@@ -1,0 +1,6 @@
+# npm run typecheck
+
+> idle-fishing@0.1.0 typecheck
+> tsc -p tsconfig.test.json
+
+EXIT=0

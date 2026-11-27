@@ -1,0 +1,83 @@
+{
+  "candidate": "candidate/fe-000-rework06",
+  "candidateSHA": "dda015cbc5ae698f3df406ea8ffbdd7f756332bc",
+  "candidateParents": [
+    "be62996fae44df24094331d670f6f0ab3741a4f2",
+    "5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355"
+  ],
+  "archiveBranch": "archive/20261127-project-evidence",
+  "candidateManifestSHA256": "9d44bb0d492fe89ff33ee6cdbf6cf4efe4e9b6cb3d4e305d656370ec46851886",
+  "review06": "PENDING_INDEPENDENT_REVIEW",
+  "reviewEvidenceManifests": {
+    "src/integration/reports/review/FE-000-R1-INTEGRATION-REWORK-02/EVIDENCE_MANIFEST.sha256": [
+      35,
+      35
+    ],
+    "src/review/reports/review/FE-000-R1-INTEGRATION-REWORK-01/EVIDENCE_MANIFEST.sha256": [
+      37,
+      37
+    ],
+    "src/review/reports/review/FE-000-R1-INTEGRATION-REWORK-02-ASTRA/EVIDENCE_MANIFEST.sha256": [
+      137,
+      137
+    ],
+    "src/review/reports/review/FE-000-R1-INTEGRATION-REWORK-03-DEEPSEEK/EVIDENCE_MANIFEST.sha256": [
+      60,
+      60
+    ],
+    "src/review/reports/review/FE-000-R1-INTEGRATION-REWORK-04-DEEPSEEK/EVIDENCE_MANIFEST.sha256": [
+      54,
+      54
+    ],
+    "src/review/reports/review/FE-000-R1-INTEGRATION-REWORK-05-ASTRA/EVIDENCE_MANIFEST.sha256": [
+      68,
+      68
+    ]
+  },
+  "sources": {
+    "idle-fishing": {
+      "head": "2106ce19d991ec47555cdbf207454c36d8cd104a",
+      "branch": "feature/be-000",
+      "merge": "",
+      "index": "782ccf45681e6e5bd4860ba1894d854971433a0a6f589c00d27913de57db57a1",
+      "tree": "33c22a9e79dd8399a18bf62e524187b88b7bcd38"
+    },
+    "idle-fishing-backend": {
+      "head": "5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355",
+      "branch": "r1/be-000",
+      "merge": "",
+      "index": "12cb17d952778e92a1e74f85248787719f8b6f9b10ab6579d4baf1ef38e260ee",
+      "tree": "c4403cec2addb868fe260f9884927aaee5a363ac"
+    },
+    "idle-fishing-checkpoint-v2-20261126-vbcx4_lh": {
+      "head": "be62996fae44df24094331d670f6f0ab3741a4f2",
+      "branch": "codex/eod-checkpoint-20261126-vbcx4_lh",
+      "merge": "5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355",
+      "index": "183b57b996564473eb5b8e2cf8173dc19b637fdefa95cbaf80507565f530552a",
+      "tree": "f49c042c5fa2b2a0e4e19498e5ea4abb7483354b"
+    },
+    "idle-fishing-frontend": {
+      "head": "be62996fae44df24094331d670f6f0ab3741a4f2",
+      "branch": "feature/fe-000",
+      "merge": "",
+      "index": "e36d0d5a91ee6c3db9e2d3a41deefeca48ad85ceff10b3066eaba505eec523a4",
+      "tree": "1bffb1f7fbef496e57cf613fc3b0c8cf32e9de6a"
+    },
+    "idle-fishing-integration": {
+      "head": "be62996fae44df24094331d670f6f0ab3741a4f2",
+      "branch": "integration/fe-000-be-r1",
+      "merge": "5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355",
+      "index": "e08425ed6cea7e67ce90bb1ca7ac9a360fac24f2bee2d34ea07959f70bef3af3",
+      "tree": "43c55c3f054d6f8be9063942e6f1c8062440240f"
+    },
+    "idle-fishing-review": {
+      "head": "21711697994365b0dc97cf7fd7cce544b663cbef",
+      "branch": "review/000-r1",
+      "merge": "",
+      "index": "a6b05ba5a4de1e00f5fee09d1a0802e64d933daac7515972ab5865c00f336a70",
+      "tree": "9a43b4c65a0c3ff85989ae806622bf300e4f6ace"
+    }
+  },
+  "absentPaths": [],
+  "excluded": []
+}

@@ -1,0 +1,1 @@
+Independent preliminary REWORK. Fresh web: two different rev1 slot0 COMMITTED, gold31 and 129, both reload to 129. UNCERTAIN then second coordinator commits rev3 without explicit recovery. Partial VALID wrongly unfreezes. TODO failure counted as ordinary fail. No worker timeout. Public diagnostic capability reaches lifecycle namespace.

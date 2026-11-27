@@ -1,0 +1,26 @@
+integration/fe-000-be-r1
+
+be62996fae44df24094331d670f6f0ab3741a4f2
+5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+
+358b11105cfdee9bd076049c86a34d8f0aaa00e7
+
+
+M	apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+M	apps/game-client/assets/scripts/platform/BrowserFilePort.ts
+M	apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts
+M	apps/game-client/assets/scripts/platform/PlatformTypes.ts
+M	apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts
+M	apps/game-client/assets/scripts/platform/WeChatFilePort.ts
+M	apps/game-client/assets/scripts/shared/SharedCoreBridge.ts
+M	apps/game-client/assets/scripts/ui/OverviewPage.ts
+M	tests/frontend/fe-000/platform-and-core.test.ts
+M	tests/frontend/fe-000/run-node-tests.mjs
+M	tests/frontend/fe-000/tsconfig.json
+M	tests/frontend/fe-000/verify-web-build.mjs
+
+staged=58 manifest=48 mismatches=[] coverage_delta=set()
+prior report mismatches=[]
+untracked=41 ignored rework logs=17
+('diff', '--check') rc=0 lines=0
+('diff', '--cached', '--check') rc=2 lines=189

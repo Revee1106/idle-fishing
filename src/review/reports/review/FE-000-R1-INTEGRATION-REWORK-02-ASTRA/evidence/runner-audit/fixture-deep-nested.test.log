@@ -1,0 +1,16 @@
+▶ outer suite
+  ▶ inner suite
+    ✔ nested leaf 1 (2.5362ms)
+    ▶ nested parent
+      ✔ deep leaf 2 (0.8374ms)
+    ✔ nested parent (2.4686ms)
+  ✔ inner suite (13.2003ms)
+✔ outer suite (15.4623ms)
+ℹ tests 3
+ℹ suites 2
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.3216

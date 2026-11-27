@@ -1,0 +1,54 @@
+{
+  "failures": [],
+  "legacy": {
+    "seeded": {
+      "rev": "1",
+      "gold": "31"
+    },
+    "boot": {
+      "loadStatus": "EMPTY",
+      "restored": false,
+      "bootGold": "0",
+      "lsStillPresent": true,
+      "afterRev": "1",
+      "idbRev": "1",
+      "idbGold": "31",
+      "lsGoldAfter": "31"
+    }
+  },
+  "both": {
+    "idb": {
+      "rev": "2",
+      "gold": "84"
+    },
+    "boot": {
+      "loadStatus": "VALID",
+      "rev": "2",
+      "gold": "84",
+      "lsPresent": true
+    }
+  },
+  "idbFail": {
+    "patched": true,
+    "loadStatus": "STORAGE_UNAVAILABLE",
+    "halted": true,
+    "restored": false,
+    "hide": 0,
+    "last": null
+  },
+  "idbAbsent": {
+    "absent": true,
+    "portKind": "BROWSER_LOCAL_STORAGE_FALLBACK",
+    "loadStatus": "EMPTY",
+    "rev": "1",
+    "last": "COMMITTED",
+    "lsSlotKeys": 1
+  },
+  "resurrect": {
+    "loadStatus": "VALID",
+    "restored": true,
+    "rev": "1",
+    "gold": "31"
+  },
+  "uncaught": 0
+}

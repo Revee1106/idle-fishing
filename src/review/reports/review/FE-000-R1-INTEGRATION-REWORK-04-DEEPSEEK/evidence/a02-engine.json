@@ -1,0 +1,169 @@
+{
+  "failures": [
+    "domain previously holding VALID rev1 + PENDING(expectedRevision=1) must NOT be silently reset by EMPTY: {\"c1\":\"COMMITTED\",\"before\":{\"rev\":\"1\",\"gold\":\"31\"},\"afterDelete\":{\"rev\":null,\"gold\":null},\"markerBefore\":\"{\\\"version\\\":1,\\\"storageKey\\\":\\\"browser:r4_audit_empty_1795748347432\\\",\\\"txId\\\":\\\"tx_audit_lost_slots\\\",\\\"state\\\":\\\"PENDING\\\",\\\"expectedRevision\\\":\\\"1\\\",\\\"targetRevision\\\":\\\"2\\\",\\\"createdAtMs\\\":1700000000000,\\\"updatedAtMs\\\":1700000000000,\\\"reason\\\":\\\"audit simulated lost slots\\\"}\",\"recKind\":\"EMPTY\",\"recRev\":null,\"recClass\":null,\"markerAfter\":null,\"healthAfter\":{\"health\":\"AVAILABLE\",\"freeze\":\"NONE\"},\"ns\":\"r4_audit_empty_1795748347432\"}",
+    "corrupt marker is recoverable through public loadSafe() without manual raw-port deletion: {\"l2Kind\":\"STORAGE_UNAVAILABLE\",\"l2Class\":\"TX_STATE_UNREADABLE\"}"
+  ],
+  "evidence": {
+    "normal": {
+      "c1": {
+        "kind": "COMMITTED",
+        "rev": "1"
+      },
+      "markerAtSlotWrite": {
+        "version": 1,
+        "storageKey": "browser:r4_audit_normal_1795748347214",
+        "txId": "tx_1795748347234_1_618668",
+        "state": "PENDING",
+        "expectedRevision": null,
+        "targetRevision": "1",
+        "createdAtMs": 1795748347234,
+        "updatedAtMs": 1795748347237,
+        "reason": "Pending save slot write (save_slot_0.json)"
+      },
+      "markerAfter": null,
+      "conflictKind": "CONFLICT",
+      "healthAfterConflict": {
+        "health": "AVAILABLE",
+        "freeze": "NONE"
+      },
+      "detKind": "FAILED",
+      "healthAfterDet": {
+        "health": "AVAILABLE",
+        "freeze": "NONE"
+      },
+      "markerAfterDet": null,
+      "c3": {
+        "kind": "COMMITTED",
+        "rev": "2"
+      },
+      "disk": {
+        "rev": "2",
+        "gold": "84"
+      },
+      "ns": "r4_audit_normal_1795748347214"
+    },
+    "markerWriteFail": {
+      "kind": "STORAGE_UNAVAILABLE",
+      "detail": "SHARED_TX_MARKER_WRITE_FAILED: aborted before save slot write (0 slot writes): [QUOTA_EXCEEDED] __tx_state__: audit marker write failure",
+      "slotWrites": 0,
+      "before": {
+        "rev": "1",
+        "gold": "31"
+      },
+      "after": {
+        "rev": "1",
+        "gold": "31"
+      },
+      "marker": null,
+      "health": {
+        "health": "STORAGE_UNAVAILABLE",
+        "freeze": "STORAGE_IO_UNAVAILABLE"
+      },
+      "recoveredKind": "VALID",
+      "recoveredRev": "1",
+      "ns": "r4_audit_markerfail_1795748347352"
+    },
+    "emptyAfterPriorValid": {
+      "c1": "COMMITTED",
+      "before": {
+        "rev": "1",
+        "gold": "31"
+      },
+      "afterDelete": {
+        "rev": null,
+        "gold": null
+      },
+      "markerBefore": "{\"version\":1,\"storageKey\":\"browser:r4_audit_empty_1795748347432\",\"txId\":\"tx_audit_lost_slots\",\"state\":\"PENDING\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"createdAtMs\":1700000000000,\"updatedAtMs\":1700000000000,\"reason\":\"audit simulated lost slots\"}",
+      "recKind": "EMPTY",
+      "recRev": null,
+      "recClass": null,
+      "markerAfter": null,
+      "healthAfter": {
+        "health": "AVAILABLE",
+        "freeze": "NONE"
+      },
+      "ns": "r4_audit_empty_1795748347432"
+    },
+    "corruptMarker": {
+      "c1": "COMMITTED",
+      "l1Kind": "STORAGE_UNAVAILABLE",
+      "l1Class": "TX_STATE_UNREADABLE",
+      "c2Kind": "STORAGE_UNAVAILABLE",
+      "markerStill": "{broken-marker-json",
+      "l2Kind": "STORAGE_UNAVAILABLE",
+      "l2Class": "TX_STATE_UNREADABLE",
+      "ns": "r4_audit_corrupt_1795748347554"
+    },
+    "clearFail": {
+      "commitKind": "UNCERTAIN",
+      "detail": "COMMIT_TX_MARKER_CLEAR_FAILED: save slot 1 committed & readback-verified (rev=2), but failed to clear shared pending tx marker (tx_1795748347700_10_995243); explicit loadSafe() recovery required: [REMOVE_IO_ERROR] __tx_state__: audit clear failure",
+      "marker": {
+        "version": 1,
+        "storageKey": "browser:r4_audit_clear_1795748347655",
+        "txId": "tx_1795748347700_10_995243",
+        "state": "PENDING",
+        "expectedRevision": "1",
+        "targetRevision": "2",
+        "createdAtMs": 1795748347700,
+        "updatedAtMs": 1795748347702,
+        "reason": "Pending save slot write (save_slot_1.json)"
+      },
+      "recKind": "VALID",
+      "recRev": "2",
+      "disk": {
+        "rev": "2",
+        "gold": "84"
+      },
+      "markerAfter": null,
+      "ns": "r4_audit_clear_1795748347655"
+    },
+    "partialIo": {
+      "recKind": "STORAGE_UNAVAILABLE",
+      "recClass": "PARTIAL_IO_UNAVAILABLE",
+      "backupRev": "2",
+      "marker": "{\"version\":1,\"storageKey\":\"browser:r4_audit_partial_1795748347738\",\"txId\":\"tx_1795748347817_14_840704\",\"state\":\"FROZEN\",\"expectedRevision\":null,\"targetRevision\":null,\"createdAtMs\":1795748347817,\"updatedAtMs\":1795748347817,\"reason\":\"Partial save slot IO unavailable (save_slot_2.json); cannot confirm highest physical revision; writes remain frozen (read-only backup rev=2)\"}",
+      "health": {
+        "health": "STORAGE_UNAVAILABLE",
+        "freeze": "PARTIAL_IO_UNAVAILABLE"
+      },
+      "rec2Kind": "VALID",
+      "rec2Rev": "3",
+      "disk": {
+        "rev": "3",
+        "gold": "129"
+      },
+      "ns": "r4_audit_partial_1795748347738"
+    },
+    "misc": {
+      "bootKind": "STORAGE_UNAVAILABLE",
+      "bootClass": "PENDING_RECOVERY_REQUIRED",
+      "markerAfterBoot": true,
+      "recKind": "VALID",
+      "markerAfterRec": null,
+      "freshKind": "COMMITTED",
+      "freshRev": "2",
+      "staleKind": "CONFLICT",
+      "frozenOldKind": "STORAGE_UNAVAILABLE",
+      "recNewKind": "VALID",
+      "oldAfterRecoveryKind": "CONFLICT",
+      "fresh2Kind": "COMMITTED",
+      "fresh2Rev": "2",
+      "freshStaleKind": "CONFLICT",
+      "otherLoadKind": "EMPTY",
+      "otherCommitKind": "COMMITTED",
+      "currentHealth": {
+        "health": "AVAILABLE",
+        "freeze": "NONE"
+      },
+      "ns": "r4_audit_misc_1795748347839"
+    },
+    "interleave": {
+      "commitKind": "STORAGE_UNAVAILABLE",
+      "commitRev": null,
+      "loadKind": "VALID",
+      "loadRev": "1",
+      "markerAfter": null,
+      "ns": "r4_audit_inter_1795748348046"
+    }
+  }
+}

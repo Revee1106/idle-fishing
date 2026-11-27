@@ -1,0 +1,14 @@
+CMD: node r3-a04-a06-migration.mjs
+[PASS] A04/1 production harness exposes no destructive/owner-bypass API :: {"keys":["awaitPendingHideSave","closeModal","env","getCommitHistory","getCurrentPage","getLifecycleLog","getSnapshot","isModalVisible","openOverviewModal","ready","run24hPerf","runAllPlatformChecks","runCoreChecks","switchPage"],"present":[],"protoClear":false,"ownMethods":["constructor","withExclusiveLock","runExclusive","loadSafe","commit","storageHealth","freezeCode","storageUnavailableReason"]}
+[PASS] A04/seed rev1 via real HIDE :: {"storageHealth":"AVAILABLE","storageUnavailableReason":null,"loadStatus":"EMPTY","loadDetail":null,"persistenceHalted":false,"restoredOnBoot":false,"revision":"1","gold":"31","cursorMs":1700000060000,"deadlineMs":1700028800000,"lastHideCommitAtMs":1795684041795,"lastHideTriggerSource":"document.visibilitychange","lastCommitKind":"COMMITTED","lastCommitDetail":null,"hideCommitCount":1,"showEventCount":1}
+[PASS] A04/2 real Cocos destroy severs refs and yields zero writes on HIDE :: {"propsBefore":{"coord":true,"port":true,"state":true},"propsAfter":{"coord":null,"port":null,"state":null},"destroyed":true,"blockedSwitch":true,"blockedCore":true,"slotsSame":true}
+[PASS] A06: single queue task error is recorded and does not poison subsequent HIDE :: {"afterFail":{"rev":"1","halted":false,"last":"FAILED"},"hist1":["FAILED"],"afterOk":{"rev":"2","last":"COMMITTED"},"hist2len":2,"diskRev":"2"}
+[PASS] §7 old localStorage save is NOT migrated (boot EMPTY/new save) and NOT deleted :: {"legacy":{"rev":"1","gold":"31","len":1249},"legacyBoot":{"loadStatus":"EMPTY","restored":false,"bootGold":"0","lsStillPresent":true,"afterRev":"1","idbRev":"1","idbGold":"31","lsGoldAfter":"31"}}
+[PASS] §7 when both stores exist IndexedDB wins; localStorage untouched :: {"idb":{"rev":"2","gold":"84"},"boot":{"loadStatus":"VALID","rev":"2","gold":"84","lsPresent":true}}
+[PASS] §7 IndexedDB initialization failure is STORAGE_UNAVAILABLE (not EMPTY), zero HIDE commits :: {"patched":true,"loadStatus":"STORAGE_UNAVAILABLE","halted":true,"restored":false,"hide":0,"last":null}
+[PASS] §7 with IndexedDB absent: silent localStorage fallback performs writes (observed) :: {"absent":true,"portKind":"BROWSER_LOCAL_STORAGE_FALLBACK","loadStatus":"EMPTY","rev":"1","last":"COMMITTED","lsSlotKeys":1}
+[PASS] §7 fallback mode resurrects old localStorage save ignored by IndexedDB mode :: {"loadStatus":"VALID","restored":true,"rev":"1","gold":"31"}
+[PASS] no uncaught page exceptions during A04/A06/migration run :: 0
+
+===== A04/A06/MIGRATION: PASS =====
+EXIT=0

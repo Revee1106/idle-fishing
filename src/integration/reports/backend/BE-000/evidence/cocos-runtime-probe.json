@@ -1,0 +1,23 @@
+{
+  "note": "SPIKE-ONLY evidence. Captured from a temporary copy of a Cocos Creator 3.8.8 project (C:/Users/WANGWENJIE10/AppData/Local/Temp/idle-fishing-be000-cocos-mjs-2006), NOT from apps/game-client. The repo frontend was not modified.",
+  "editor": "Cocos Creator 3.8.8",
+  "buildPlatform": "web-mobile",
+  "url": "http://127.0.0.1:8077/index.html?probe=1",
+  "probe": {
+    "value": 11520,
+    "state": "[7,0,1026,12288]"
+  },
+  "canvas": {
+    "width": 754,
+    "height": 649
+  },
+  "meaning": {
+    "value": "xoshiroStep([1,2,3,4]).value = 11520; must equal the Node build result",
+    "state": "canonicalStringify(xoshiroStep([1,2,3,4]).state) = \"[7,0,1026,12288]\""
+  },
+  "artifacts": {
+    "moduleCopiesInTempProject": "assets/be000mjs/*.mjs (copies of packages/game-core/dist/cocos/spike)",
+    "buildOutput": "build/web-mobile/assets/main/index.js"
+  },
+  "screenshot": "not captured: in-app browser viewport was not visible (take_screenshot returned NATIVE_BROWSER_VIEWPORT_UNAVAILABLE); probe values were read from the live page via evaluate_script"
+}

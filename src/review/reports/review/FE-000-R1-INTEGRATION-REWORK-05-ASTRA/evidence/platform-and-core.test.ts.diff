@@ -1,0 +1,547 @@
+--- tests/frontend/fe-000/platform-and-core.test.ts
+
++++ tests/frontend/fe-000/platform-and-core.test.ts
+
+@@ -1978,7 +1978,7 @@
+
+   const recCorruptMarker = await coord3.loadSafe();
+   assert.equal(recCorruptMarker.kind, 'STORAGE_UNAVAILABLE');
+   if (recCorruptMarker.kind === 'STORAGE_UNAVAILABLE') {
+-    assert.equal(recCorruptMarker.recoveryClassification, 'TX_STATE_UNREADABLE');
++    assert.equal(recCorruptMarker.recoveryClassification, 'TX_STATE_CORRUPT');
+   }
+   await mem3.clearTxState();
+   assert.equal((await coord3.loadSafe()).kind, 'VALID');
+@@ -2045,3 +2045,531 @@
+
+     else g.indexedDB = prevIdb;
+   }
+ });
++
++test('[NODE/REWORK-05/REV4-01-RECOVERY-SAFETY-MATRIX] Prior-valid EMPTY, partial-IO FROZEN EMPTY, unknown EMPTY, initial-create EMPTY & revision regression', async () => {
++  const START = 1_700_000_000_000;
++  const s0 = createInitialState({ saveEpoch: 'epoch.r5.rev401', startMs: START, allowanceMs: 3_600_000 });
++  const s1 = advanceOffline(s0, START + 60_000).state;
++  const s2 = advanceOffline(s1, START + 120_000).state;
++  const s3 = advanceOffline(s2, START + 180_000).state;
++
++  // 1. Prior valid rev 1 + PENDING(expectedRevision='1') + all 3 slots disappear -> MUST stay frozen & keep marker!
++  const mem1 = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev401_lost_slots');
++  const coord1 = new SingleWriterSaveCoordinator(mem1);
++  assert.equal((await coord1.commit(s1, null)).kind, 'COMMITTED');
++  await mem1.writeTxState(
++    JSON.stringify({
++      version: 1,
++      storageKey: mem1.storageKey,
++      txId: 'tx_lost_slots_v1',
++      state: 'PENDING',
++      expectedRevision: '1',
++      targetRevision: '2',
++      createdAtMs: START,
++      updatedAtMs: START,
++      reason: 'Simulated in-flight commit before slots vanished (legacy v1 marker without priorSaveHistory)',
++    })
++  );
++  for (const p of SLOT_PATHS) await mem1.remove(p);
++  const resLost = await coord1.loadSafe();
++  assert.equal(resLost.kind, 'STORAGE_UNAVAILABLE');
++  if (resLost.kind === 'STORAGE_UNAVAILABLE') {
++    assert.equal(resLost.recoveryClassification, 'SAVE_DISAPPEARED_PENDING_RECOVERY');
++  }
++  assert.ok(await mem1.readTxState(), 'Marker MUST be preserved when prior valid save disappeared');
++  assert.equal(coord1.storageHealth, 'STORAGE_UNAVAILABLE');
++  assert.equal((await coord1.commit(s0, null)).kind, 'STORAGE_UNAVAILABLE');
++
++  // 2. Partial IO creates FROZEN marker preserving highest valid backup rev=2 -> slots vanish -> MUST stay frozen!
++  const mem2 = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev401_frozen_backup_lost');
++  const fault2 = new FaultInjectingFilePort(mem2);
++  const coord2 = new SingleWriterSaveCoordinator(fault2);
++  assert.equal((await coord2.commit(s1, null)).kind, 'COMMITTED');
++  assert.equal((await coord2.commit(s2, '1')).kind, 'COMMITTED');
++  assert.equal((await coord2.commit(s3, '2')).kind, 'COMMITTED');
++  fault2.setReadFault(SLOT_PATHS[2], true);
++  const partialRes = await coord2.loadSafe();
++  assert.equal(partialRes.kind, 'STORAGE_UNAVAILABLE');
++  if (partialRes.kind === 'STORAGE_UNAVAILABLE') {
++    assert.equal(partialRes.recoveryClassification, 'PARTIAL_IO_UNAVAILABLE');
++    assert.equal(partialRes.readOnlyBackup?.revision, '2');
++  }
++  const frozenRaw = await mem2.readTxState();
++  assert.ok(frozenRaw, 'Partial IO must persist FROZEN marker');
++  const frozenParsed = JSON.parse(frozenRaw!);
++  assert.equal(frozenParsed.priorSaveHistory, 'CONFIRMED_VALID');
++  assert.equal(frozenParsed.confirmedRevision, '2');
++  // Now clear IO fault and delete all 3 slots -> loadSafe() MUST NOT unfreeze as EMPTY!
++  fault2.setReadFault(SLOT_PATHS[2], false);
++  for (const p of SLOT_PATHS) await mem2.remove(p);
++  const afterFrozenLost = await coord2.loadSafe();
++  assert.equal(afterFrozenLost.kind, 'STORAGE_UNAVAILABLE');
++  if (afterFrozenLost.kind === 'STORAGE_UNAVAILABLE') {
++    assert.equal(afterFrozenLost.recoveryClassification, 'SAVE_DISAPPEARED_PENDING_RECOVERY');
++  }
++  assert.ok(await mem2.readTxState());
++
++  // 3. Unknown prior history (expectedRevision=null, priorSaveHistory='UNKNOWN' or legacy null) + EMPTY -> MUST stay frozen!
++  const mem3 = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev401_unknown_empty');
++  const coord3 = new SingleWriterSaveCoordinator(mem3);
++  await mem3.writeTxState(
++    JSON.stringify({
++      version: 1,
++      storageKey: mem3.storageKey,
++      txId: 'tx_unknown_legacy_null',
++      state: 'FROZEN',
++      expectedRevision: null,
++      targetRevision: null,
++      createdAtMs: START,
++      updatedAtMs: START,
++      reason: 'Legacy marker with expectedRevision=null and unknown history',
++    })
++  );
++  const unknownEmptyRes = await coord3.loadSafe();
++  assert.equal(unknownEmptyRes.kind, 'STORAGE_UNAVAILABLE');
++  if (unknownEmptyRes.kind === 'STORAGE_UNAVAILABLE') {
++    assert.equal(unknownEmptyRes.recoveryClassification, 'SAVE_DISAPPEARED_PENDING_RECOVERY');
++  }
++  assert.ok(await mem3.readTxState(), 'expectedRevision=null alone MUST NEVER authorize silent EMPTY unfreeze');
++
++  // 4. Explicit CONFIRMED_EMPTY_INITIAL_CREATE + EMPTY -> SAFELY recovers as EMPTY & clears marker!
++  const mem4 = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev401_confirmed_initial_create');
++  const coord4 = new SingleWriterSaveCoordinator(mem4);
++  await mem4.writeTxState(
++    JSON.stringify({
++      version: 1,
++      storageKey: mem4.storageKey,
++      txId: 'tx_initial_create_crash',
++      state: 'PENDING',
++      expectedRevision: null,
++      targetRevision: '1',
++      priorSaveHistory: 'CONFIRMED_EMPTY_INITIAL_CREATE',
++      confirmedRevision: null,
++      createdAtMs: START,
++      updatedAtMs: START,
++      reason: 'Confirmed empty initial create crashed before slot write',
++    })
++  );
++  const initialRecover = await coord4.loadSafe();
++  assert.equal(initialRecover.kind, 'EMPTY');
++  assert.equal(await mem4.readTxState(), null);
++  assert.equal(coord4.storageHealth, 'AVAILABLE');
++  assert.equal((await coord4.commit(s1, null)).kind, 'COMMITTED');
++
++  // 5. VALID save on disk with revision LOWER than confirmed historical revision in marker -> MUST NOT silently unfreeze!
++  const mem5 = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev401_rev_regression');
++  const coord5 = new SingleWriterSaveCoordinator(mem5);
++  assert.equal((await coord5.commit(s1, null)).kind, 'COMMITTED');
++  assert.equal((await coord5.commit(s2, '1')).kind, 'COMMITTED');
++  // Marker confirms rev 2 existed; now slot 1 (rev 2) vanishes leaving only rev 1 on disk!
++  await mem5.writeTxState(
++    JSON.stringify({
++      version: 1,
++      storageKey: mem5.storageKey,
++      txId: 'tx_rev2_to_rev3',
++      state: 'PENDING',
++      expectedRevision: '2',
++      targetRevision: '3',
++      priorSaveHistory: 'CONFIRMED_VALID',
++      confirmedRevision: '2',
++      createdAtMs: START,
++      updatedAtMs: START,
++      reason: 'In-flight commit from rev 2',
++    })
++  );
++  await mem5.remove(SLOT_PATHS[1]); // delete rev 2 slot, leaving only valid rev 1
++  const regRes = await coord5.loadSafe();
++  assert.equal(regRes.kind, 'STORAGE_UNAVAILABLE');
++  if (regRes.kind === 'STORAGE_UNAVAILABLE') {
++    assert.equal(regRes.recoveryClassification, 'REVISION_REGRESSION_PENDING_RECOVERY');
++    assert.equal(regRes.readOnlyBackup?.revision, '1');
++  }
++  assert.ok(await mem5.readTxState(), 'Marker MUST be preserved on revision regression');
++  assert.equal(coord5.storageHealth, 'STORAGE_UNAVAILABLE');
++});
++
++test('[NODE/REWORK-05/REV4-03-CONTROLLED-CORRUPT-MARKER-RECOVERY] Distinguishes IO vs corrupt vs valid marker and enforces controlled re-verified recovery', async () => {
++  const START = 1_700_000_000_000;
++  const s0 = createInitialState({ saveEpoch: 'epoch.r5.rev403', startMs: START, allowanceMs: 3_600_000 });
++  const s1 = advanceOffline(s0, START + 60_000).state;
++  const s2 = advanceOffline(s1, START + 120_000).state;
++
++  // 1. Corrupt marker + VALID rev 1 -> loadSafe() returns TX_STATE_CORRUPT + preview; controlled confirm recovers rev 1!
++  const mem1 = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev403_corrupt_valid');
++  const fault1 = new FaultInjectingFilePort(mem1);
++  const coord1 = new SingleWriterSaveCoordinator(fault1);
++  assert.equal((await coord1.commit(s1, null)).kind, 'COMMITTED');
++  const origSlot0 = await mem1.read(SLOT_PATHS[0]);
++  await mem1.writeTxState('{"version":1,"truncated');
++
++  const inspect1 = await coord1.loadSafe();
++  assert.equal(inspect1.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(inspect1.recoveryClassification, 'TX_STATE_CORRUPT');
++  assert.equal(inspect1.readOnlyBackup?.revision, '1');
++  assert.ok(inspect1.corruptMarkerRecoveryPreview?.canConfirmRecovery);
++  const preview = inspect1.corruptMarkerRecoveryPreview!;
++  assert.equal(preview.verifiedRevision, '1');
++  assert.ok(preview.corruptMarkerSha256.length === 64);
++  assert.ok(preview.slotsSnapshotSha256 && preview.slotsSnapshotSha256.length === 64);
++
++  // Concurrent marker mutation between preview and confirm -> REJECTED!
++  await mem1.writeTxState('{"version":1,"different_corrupt');
++  const staleConfirm = await coord1.recoverFromCorruptTxMarker({
++    expectedCorruptMarkerSha256: preview.corruptMarkerSha256,
++    expectedValidRevision: preview.verifiedRevision!,
++    expectedSlotsSnapshotSha256: preview.slotsSnapshotSha256!,
++  });
++  assert.equal(staleConfirm.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(staleConfirm.recoveryClassification, 'CONCURRENT_RECOVERY_STATE_CHANGED');
++
++  // Re-inspect & test clear failure -> TX_STATE_CLEAR_FAILED stays frozen
++  const inspect2 = await coord1.loadSafe();
++  assert.equal(inspect2.kind, 'STORAGE_UNAVAILABLE');
++  const preview2 = inspect2.corruptMarkerRecoveryPreview!;
++  fault1.setTxMarkerFault('CLEAR', true);
++  const clearFailConfirm = await coord1.recoverFromCorruptTxMarker({
++    expectedCorruptMarkerSha256: preview2.corruptMarkerSha256,
++    expectedValidRevision: preview2.verifiedRevision!,
++    expectedSlotsSnapshotSha256: preview2.slotsSnapshotSha256!,
++  });
++  fault1.setTxMarkerFault('CLEAR', false);
++  assert.equal(clearFailConfirm.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(clearFailConfirm.recoveryClassification, 'TX_STATE_CLEAR_FAILED');
++  assert.ok(await mem1.readTxState());
++
++  // Clean controlled confirmation -> recovers VALID rev 1, slot 0 untouched, corrupt marker cleared, rev 2 commits!
++  const confirmed = await coord1.recoverFromCorruptTxMarker({
++    expectedCorruptMarkerSha256: preview2.corruptMarkerSha256,
++    expectedValidRevision: preview2.verifiedRevision!,
++    expectedSlotsSnapshotSha256: preview2.slotsSnapshotSha256!,
++  });
++  assert.equal(confirmed.kind, 'VALID');
++  assert.equal(confirmed.revision, '1');
++  assert.equal(await mem1.read(SLOT_PATHS[0]), origSlot0, 'Controlled recovery MUST NOT delete or alter valid save slots');
++  assert.equal(await mem1.readTxState(), null);
++  assert.equal((await coord1.commit(s2, '1')).kind, 'COMMITTED');
++
++  // 2. Corrupt marker + EMPTY disk -> controlled recovery FORBIDDEN!
++  const memEmpty = new MemoryFilePort(10 * 1024 * 1024, 'r5_rev403_corrupt_empty');
++  const coordEmpty = new SingleWriterSaveCoordinator(memEmpty);
++  await memEmpty.writeTxState('{corrupt-empty');
++  const inspEmpty = await coordEmpty.loadSafe();
++  assert.equal(inspEmpty.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(inspEmpty.recoveryClassification, 'TX_STATE_CORRUPT');
++  assert.equal(inspEmpty.corruptMarkerRecoveryPreview?.canConfirmRecovery, false);
++  const rejEmpty = await coordEmpty.recoverFromCorruptTxMarker({
++    expectedCorruptMarkerSha256: inspEmpty.corruptMarkerRecoveryPreview!.corruptMarkerSha256,
++    expectedValidRevision: '1',
++    expectedSlotsSnapshotSha256: '0'.repeat(64),
++  });
++  assert.equal(rejEmpty.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(rejEmpty.recoveryClassification, 'CORRUPT_MARKER_NO_VALID_SAVE');
++  assert.ok(await memEmpty.readTxState());
++
++  // 3. Marker read IO error -> TX_STATE_UNREADABLE (distinct from TX_STATE_CORRUPT!), controlled recovery FORBIDDEN!
++  fault1.setTxMarkerFault('READ', true);
++  const ioLoad = await coord1.loadSafe();
++  assert.equal(ioLoad.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(ioLoad.recoveryClassification, 'TX_STATE_UNREADABLE');
++  assert.equal(ioLoad.corruptMarkerRecoveryPreview, null);
++  const ioConfirm = await coord1.recoverFromCorruptTxMarker({
++    expectedCorruptMarkerSha256: '0'.repeat(64),
++    expectedValidRevision: '2',
++    expectedSlotsSnapshotSha256: '0'.repeat(64),
++  });
++  fault1.setTxMarkerFault('READ', false);
++  assert.equal(ioConfirm.kind, 'STORAGE_UNAVAILABLE');
++  assert.equal(ioConfirm.recoveryClassification, 'TX_STATE_UNREADABLE');
++});
++
++// =========================================================================
++// REV4-08: Formal [MOCK-WX] WeChat Transaction-Marker & Recovery Regression
++// Explicitly mocked wx.getFileSystemManager() — NEVER substitutes for real WeChat DevTools/device!
++// =========================================================================
++function createMockWxWithUnlinkAndTruncate() {
++  const files = new Map<string, string>();
++  const dirs = new Set<string>(['wxfile://usr']);
++  let failReadOn: string | null = null;
++  let failWriteOn: string | null = null;
++  let failUnlinkOn: string | null = null;
++  let truncateWriteOn: string | null = null;
++  const slotWrites: string[] = [];
++  const fsObj = {
++    accessSync(p: string) {
++      if (!dirs.has(p) && !files.has(p)) throw new Error(`accessSync:fail no such file or directory ${p}`);
++    },
++    mkdirSync(p: string) {
++      dirs.add(p);
++    },
++    readFileSync(p: string) {
++      if (failReadOn && p.endsWith(failReadOn)) throw new Error(`readFileSync:fail permission denied ${p}`);
++      if (!files.has(p)) throw new Error(`readFileSync:fail no such file or directory ${p}`);
++      return files.get(p)!;
++    },
++    writeFileSync(p: string, data: string) {
++      if (failWriteOn && p.endsWith(failWriteOn)) throw new Error(`writeFileSync:fail maximum size of the file storage limit is exceeded ${p}`);
++      const stored = truncateWriteOn && p.endsWith(truncateWriteOn) ? data.slice(0, Math.max(1, Math.floor(data.length / 2))) : data;
++      files.set(p, stored);
++      if (p.includes('save_slot_')) slotWrites.push(p);
++    },
++    unlinkSync(p: string) {
++      if (failUnlinkOn && p.endsWith(failUnlinkOn)) throw new Error(`unlinkSync:fail permission denied ${p}`);
++      if (!files.has(p)) throw new Error(`unlinkSync:fail no such file or directory ${p}`);
++      files.delete(p);
++    },
++    readdirSync(dir: string) {
++      const prefix = `${dir}/`;
++      const out: string[] = [];
++      for (const key of files.keys()) if (key.startsWith(prefix)) out.push(key.slice(prefix.length));
++      return out;
++    },
++  };
++  return {
++    wx: { __FE000_MOCK__: true, env: { USER_DATA_PATH: 'wxfile://usr' }, getFileSystemManager: () => fsObj },
++    files,
++    slotWrites,
++    setFailReadOn: (v: string | null) => { failReadOn = v; },
++    setFailWriteOn: (v: string | null) => { failWriteOn = v; },
++    setFailUnlinkOn: (v: string | null) => { failUnlinkOn = v; },
++    setTruncateWriteOn: (v: string | null) => { truncateWriteOn = v; },
++  };
++}
++
++function makeWxStates() {
++  const START = 1_700_000_000_000;
++  const s0 = createInitialState({ saveEpoch: 'epoch.r5.wx', startMs: START, allowanceMs: 3_600_000 });
++  const s1 = advanceOffline(s0, START + 60_000).state;
++  const s2 = advanceOffline(s1, START + 120_000).state;
++  const s3 = advanceOffline(s2, START + 180_000).state;
++  return { s0, s1, s2, s3 };
++}
++
++test('[MOCK-WX/REV4-08/1-MARKER-ROUNDTRIP-AND-TRUNCATION] WeChat tx marker roundtrip, list filter & truncated write detection', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const port = new WeChatFilePort('r5_wx_rt_trunc');
++    assert.equal(await port.readTxState(), null);
++    await port.writeTxState('{"ok":true}');
++    assert.equal(await port.readTxState(), '{"ok":true}');
++    assert.deepEqual(await port.list(), []);
++    assert.equal(mock.files.has('wxfile://usr/r5_wx_rt_trunc/__tx_state__.json'), true);
++    await port.clearTxState();
++    assert.equal(await port.readTxState(), null);
++
++    // Truncated write on __tx_state__.json is immediately detected by writeTxState readback -> 0 slot writes!
++    const { s1, s2 } = makeWxStates();
++    const coord = new SingleWriterSaveCoordinator(port);
++    assert.equal((await coord.commit(s1, null)).kind, 'COMMITTED');
++    const writesBefore = mock.slotWrites.length;
++    mock.setTruncateWriteOn('__tx_state__.json');
++    const truncRes = await coord.commit(s2, '1');
++    mock.setTruncateWriteOn(null);
++    assert.equal(truncRes.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(mock.slotWrites.length, writesBefore, 'Truncated wx marker write must perform 0 slot writes');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});
++
++test('[MOCK-WX/REV4-08/2-MARKER-WRITE-FAIL] WeChat marker write failure -> STORAGE_UNAVAILABLE, zero slot writes, recovers rev 1', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const { s1, s2 } = makeWxStates();
++    const port = new WeChatFilePort('r5_wx_write_fail');
++    const coord = new SingleWriterSaveCoordinator(port);
++    assert.equal((await coord.loadSafe()).kind, 'EMPTY');
++    assert.equal((await coord.commit(s1, null)).kind, 'COMMITTED');
++    const before = mock.slotWrites.length;
++    mock.setFailWriteOn('__tx_state__.json');
++    const res = await coord.commit(s2, '1');
++    mock.setFailWriteOn(null);
++    assert.equal(res.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(mock.slotWrites.length, before);
++    const rec = await coord.loadSafe();
++    assert.equal(rec.kind, 'VALID');
++    assert.equal(rec.kind === 'VALID' ? rec.revision : null, '1');
++    assert.equal((await coord.commit(s2, '1')).kind, 'COMMITTED');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});
++
++test('[MOCK-WX/REV4-08/3-MARKER-READ-FAIL] WeChat marker read failure -> TX_STATE_UNREADABLE, zero slot writes', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const { s1, s2 } = makeWxStates();
++    const port = new WeChatFilePort('r5_wx_read_fail');
++    const coord = new SingleWriterSaveCoordinator(port);
++    assert.equal((await coord.commit(s1, null)).kind, 'COMMITTED');
++    const before = mock.slotWrites.length;
++    mock.setFailReadOn('__tx_state__.json');
++    const c = await coord.commit(s2, '1');
++    const l = await coord.loadSafe();
++    mock.setFailReadOn(null);
++    assert.equal(c.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(l.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(l.kind === 'STORAGE_UNAVAILABLE' ? l.recoveryClassification : null, 'TX_STATE_UNREADABLE');
++    assert.equal(mock.slotWrites.length, before);
++    assert.equal((await coord.loadSafe()).kind, 'VALID');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});
++
++test('[MOCK-WX/REV4-08/4-MARKER-CORRUPT-CONTROLLED-RECOVERY] WeChat truncated marker -> TX_STATE_CORRUPT -> controlled recovery preserves slots', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const { s1, s2 } = makeWxStates();
++    const port = new WeChatFilePort('r5_wx_corrupt_ctrl');
++    const coord = new SingleWriterSaveCoordinator(port);
++    assert.equal((await coord.commit(s1, null)).kind, 'COMMITTED');
++    await port.write('__tx_state__.json', '{"version":1,"storageKey":"wechat:');
++    const l = await coord.loadSafe();
++    assert.equal(l.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(l.recoveryClassification, 'TX_STATE_CORRUPT');
++    assert.ok(l.corruptMarkerRecoveryPreview?.canConfirmRecovery);
++    assert.equal((await coord.commit(s2, '1')).kind, 'STORAGE_UNAVAILABLE');
++    const p = l.corruptMarkerRecoveryPreview!;
++    const recovered = await coord.recoverFromCorruptTxMarker({
++      expectedCorruptMarkerSha256: p.corruptMarkerSha256,
++      expectedValidRevision: p.verifiedRevision!,
++      expectedSlotsSnapshotSha256: p.slotsSnapshotSha256!,
++    });
++    assert.equal(recovered.kind, 'VALID');
++    assert.equal(recovered.revision, '1');
++    assert.equal(await port.readTxState(), null);
++    assert.equal((await coord.commit(s2, '1')).kind, 'COMMITTED');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});
++
++test('[MOCK-WX/REV4-08/5-MARKER-CLEAR-FAIL] WeChat committed-but-unlink-failed -> UNCERTAIN, marker retained, recovers rev 2', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const { s1, s2, s3 } = makeWxStates();
++    const port = new WeChatFilePort('r5_wx_clear_fail');
++    const coord = new SingleWriterSaveCoordinator(port);
++    assert.equal((await coord.commit(s1, null)).kind, 'COMMITTED');
++    mock.setFailUnlinkOn('__tx_state__.json');
++    const r = await coord.commit(s2, '1');
++    mock.setFailUnlinkOn(null);
++    assert.equal(r.kind, 'UNCERTAIN');
++    assert.ok(await port.readTxState());
++    assert.equal((await coord.commit(s3, '2')).kind, 'STORAGE_UNAVAILABLE');
++    const rec = await coord.loadSafe();
++    assert.equal(rec.kind, 'VALID');
++    assert.equal(rec.kind === 'VALID' ? rec.revision : null, '2');
++    assert.equal(await port.readTxState(), null);
++    assert.equal((await coord.commit(s3, '2')).kind, 'COMMITTED');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});
++
++test('[MOCK-WX/REV4-08/6-PREWRITE-VS-QUOTA-RECOVERY] WeChat deterministic PRE_WRITE_ERROR vs conservative QUOTA freeze + explicit recovery', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const { s1, s2, s3 } = makeWxStates();
++    const port = new WeChatFilePort('r5_wx_prewrite_quota');
++    const fault = new FaultInjectingFilePort(port);
++    const coord = new SingleWriterSaveCoordinator(fault);
++    assert.equal((await coord.commit(s1, null)).kind, 'COMMITTED');
++
++    // Deterministic PRE_WRITE_ERROR -> FAILED, no freeze, marker cleared
++    fault.armNextWriteFault('PRE_WRITE_ERROR');
++    assert.equal((await coord.commit(s2, '1')).kind, 'FAILED');
++    assert.equal(coord.storageHealth, 'AVAILABLE');
++    assert.equal(await port.readTxState(), null);
++    assert.equal((await coord.commit(s2, '1')).kind, 'COMMITTED');
++
++    // Real QUOTA / writeFileSync failure -> conservative freeze (FROZEN marker), recovers via loadSafe after space freed
++    mock.setFailWriteOn('save_slot_2.json');
++    const quotaRes = await coord.commit(s3, '2');
++    assert.equal(quotaRes.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(coord.storageHealth, 'STORAGE_UNAVAILABLE');
++    assert.ok(await port.readTxState());
++    mock.setFailWriteOn(null);
++    // Still frozen until explicit recovery
++    assert.equal((await coord.commit(s3, '2')).kind, 'STORAGE_UNAVAILABLE');
++    const rec = await coord.loadSafe();
++    assert.equal(rec.kind, 'VALID');
++    assert.equal(rec.kind === 'VALID' ? rec.revision : null, '2');
++    assert.equal((await coord.commit(s3, '2')).kind, 'COMMITTED');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});
++
++test('[MOCK-WX/REV4-08/7-CROSS-COORDINATOR-AND-EMPTY-GUARD] WeChat cross-coordinator UNCERTAIN freeze, lost-slots EMPTY guard & stale CONFLICT', async () => {
++  const prevWx = (globalThis as Record<string, unknown>).wx;
++  const mock = createMockWxWithUnlinkAndTruncate();
++  (globalThis as Record<string, unknown>).wx = mock.wx;
++  try {
++    const { s1, s2, s3 } = makeWxStates();
++    const base = new WeChatFilePort('r5_wx_cross_empty');
++    let armed = false;
++    let afterWrite = false;
++    const wrapper: FilePort = {
++      kind: 'WECHAT_FS',
++      storageKey: base.storageKey,
++      readTxState: () => base.readTxState(),
++      writeTxState: (t) => base.writeTxState(t),
++      clearTxState: () => base.clearTxState(),
++      read: async (p) => {
++        if (armed && afterWrite) throw new Error('wx read fault');
++        return base.read(p);
++      },
++      write: async (p, t) => {
++        if (armed) {
++          afterWrite = true;
++          throw new Error('wx write fault before landing');
++        }
++        return base.write(p, t);
++      },
++      remove: (p) => base.remove(p),
++      list: (d) => base.list(d),
++    };
++    const coord1 = new SingleWriterSaveCoordinator(wrapper);
++    const coord2 = new SingleWriterSaveCoordinator(new WeChatFilePort('r5_wx_cross_empty'));
++    assert.equal((await coord1.commit(s1, null)).kind, 'COMMITTED');
++    assert.equal((await coord1.commit(s2, '1')).kind, 'COMMITTED');
++
++    armed = true;
++    const unc = await coord1.commit(s3, '2');
++    assert.equal(unc.kind, 'UNCERTAIN');
++    assert.equal((await coord2.commit(s3, '2')).kind, 'STORAGE_UNAVAILABLE');
++    armed = false;
++
++    // If slots vanish while UNCERTAIN marker exists -> MUST stay frozen (SAVE_DISAPPEARED_PENDING_RECOVERY)
++    const backupSlot0 = await base.read(SLOT_PATHS[0]);
++    const backupSlot1 = await base.read(SLOT_PATHS[1]);
++    await base.remove(SLOT_PATHS[0]);
++    await base.remove(SLOT_PATHS[1]);
++    const lost = await coord2.loadSafe();
++    assert.equal(lost.kind, 'STORAGE_UNAVAILABLE');
++    assert.equal(lost.recoveryClassification, 'SAVE_DISAPPEARED_PENDING_RECOVERY');
++    // Restore slots -> explicit recovery succeeds rev 2, then rev 3 commits, stale rev 2 -> CONFLICT
++    await base.write(SLOT_PATHS[0], backupSlot0!);
++    await base.write(SLOT_PATHS[1], backupSlot1!);
++    const rec = await coord2.loadSafe();
++    assert.equal(rec.kind, 'VALID');
++    assert.equal(rec.kind === 'VALID' ? rec.revision : null, '2');
++    assert.equal((await coord2.commit(s3, '2')).kind, 'COMMITTED');
++    assert.equal((await coord2.commit(s3, '2')).kind, 'CONFLICT');
++  } finally {
++    (globalThis as Record<string, unknown>).wx = prevWx;
++  }
++});

@@ -1,0 +1,7 @@
+COMMAND: node tests/frontend/fe-000/run-node-tests.mjs --files=fixtures/missing.test.ts
+EXIT_CODE: 1
+DURATION_MS: 267
+--- STDOUT ---
+
+--- STDERR ---
+[FE-000 Test Runner] FAIL: Missing required test file: E:\idle-fishing-integration\tests\frontend\fe-000\fixtures\missing.test.ts

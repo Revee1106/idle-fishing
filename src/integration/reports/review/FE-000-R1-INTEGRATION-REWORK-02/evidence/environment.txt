@@ -1,0 +1,11 @@
+AUDIT_DATE=2026-11-26
+AUDITOR=DeepSeek 4.1 Flash 1017 (round-1 independent reviewer)
+OS=MINGW64_NT-10.0-19045 SH-WANGWENJIE10 3.6.3-7674c51e.x86_64 2025-07-01 09:13 UTC x86_64 Msys
+NODE=v24.20.0
+TSC=Version 5.9.3
+CHROME=158.0.8127.37
+COCOS=Cocos Creator 3.8.8 (C:/ProgramData/cocos/editors/Creator/3.8.8/CocosCreator.exe)
+SNAPSHOT=C:\Users\WANGWENJIE10\AppData\Local\Temp\fe000-r2-snap
+SNAPSHOT_CREATED_BY=tar --exclude=./.git --exclude=./node_modules --exclude=./apps/game-client/build -cf - . | (cd <snapshot> && tar xf -); cp -rL <workspace>/node_modules <snapshot>/node_modules
+WORKSPACE_WRITES=only reports/review/FE-000-R1-INTEGRATION-REWORK-02 (this deliverable)
+CANDIDATE_SOURCE_UNCHANGED=true

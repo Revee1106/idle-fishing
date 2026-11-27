@@ -1,0 +1,49 @@
+
+> idle-fishing@0.1.0 test:perf
+> node tests/backend/be-000/perf.ts
+
+24h nodes=14935 attempts=2930 events=2929 envChecks=288
+state=35006 bytes continuous=134.405ms 600s-slices=138.498ms 60s-slices=217.607ms budget64=149.51ms
+checkpoint=254.192ms serialize=10.173ms
+PERF_RESULT_JSON
+{
+  "note": "SPIKE-ONLY measurements; no official performance thresholds exist in BE-000.",
+  "environment": {
+    "node": "v24.20.0",
+    "platform": "win32 x64",
+    "cpu": "Intel64 Family 6 Model 142 Stepping 10, GenuineIntel"
+  },
+  "simulatedMs": 86400000,
+  "simulatedHours": 24,
+  "eventNodes": 14935,
+  "attempts": 2930,
+  "events": 2929,
+  "envChecks": 288,
+  "finalStateBytes": 35006,
+  "compute": {
+    "continuousMs": 134.405,
+    "sliced600sMs": 138.498,
+    "sliced60sMs": 217.607,
+    "nodeBudget64Ms": 149.51,
+    "checkpointSaveLoadResumeMs": 254.192,
+    "serializeEnvelopeMs": 10.173
+  },
+  "slicedNodes": {
+    "sliced600": 14935,
+    "sliced60": 14935,
+    "budget64": 14935
+  },
+  "memory": {
+    "rssBytes": 92995584,
+    "heapUsedBytes": 15091928,
+    "note": "single-process RSS/heap after all runs; not a per-save leak measurement"
+  },
+  "checks": {
+    "continuousMatchesReference": true,
+    "sliced600MatchesReference": true,
+    "sliced60MatchesReference": true,
+    "budgetMatchesReference": true,
+    "checkpointMatchesReference": true
+  },
+  "envelopeSha256": "0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f"
+}

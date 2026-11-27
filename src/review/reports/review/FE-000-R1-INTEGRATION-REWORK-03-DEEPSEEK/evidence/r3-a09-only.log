@@ -1,0 +1,6 @@
+CMD: node r3-a09-only.mjs (standalone, two tabs, concurrent FS suites)
+[stage] A09-only
+[PASS] A09 concurrent FS diagnostics in two tabs both pass (unique ephemeral namespaces) :: {"a":["FS-CRUD:PASS","T04-ROTATE:PASS","T04-CORRUPT:PASS","T05-FAULTS:PASS","FS-SIZE-PROBE:PASS","FS-BG-RECOVERY:PASS"],"b":["FS-CRUD:PASS","T04-ROTATE:PASS","T04-CORRUPT:PASS","T05-FAULTS:PASS","FS-SIZE-PROBE:PASS","FS-BG-RECOVERY:PASS"]}
+
+===== T2/A09: PASS =====
+EXIT=0

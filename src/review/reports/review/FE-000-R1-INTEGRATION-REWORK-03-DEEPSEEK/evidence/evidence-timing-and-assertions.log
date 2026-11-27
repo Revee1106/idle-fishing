@@ -1,0 +1,56 @@
+=== final candidate file mtimes ===
+2026-11-26 15:09:41.113208400 +0800 apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+2026-11-26 14:45:05.729396000 +0800 apps/game-client/assets/scripts/platform/BrowserFilePort.ts
+2026-11-26 14:45:17.355311900 +0800 apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts
+2026-11-26 14:44:59.920455800 +0800 apps/game-client/assets/scripts/platform/PlatformTypes.ts
+2026-11-26 14:59:31.125159000 +0800 apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts
+2026-11-26 14:45:02.523287700 +0800 apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts
+2026-11-26 14:52:51.154995400 +0800 apps/game-client/assets/scripts/shared/SharedCoreBridge.ts
+2026-11-26 14:55:51.763853700 +0800 tests/frontend/fe-000/platform-and-core.test.ts
+2026-11-26 15:51:17.921613700 +0800 tests/frontend/fe-000/verify-web-build.mjs
+2026-11-26 14:46:44.652442600 +0800 tests/frontend/fe-000/run-node-tests.mjs
+2026-11-26 14:46:42.423237900 +0800 tests/frontend/fe-000/node-test-worker.mjs
+2026-11-26 14:46:46.371803400 +0800 tests/frontend/fe-000/safe-path-guard.mjs
+
+=== build artifact mtimes ===
+2026-11-26 15:23:03.189891300 +0800 apps/game-client/build/web-mobile/index.html
+2026-11-26 15:25:12.820312600 +0800 apps/game-client/build/wechatgame/game.js
+
+=== dev log mtimes ===
+2026-11-26 14:58:19.785982200 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a07-hanging-timeout.log
+2026-11-26 14:58:15.389157500 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a07-only-todo-throws.log
+2026-11-26 14:58:11.772784200 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a07-todo-throws.log
+2026-11-26 14:58:19.954275900 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a08-unsafe-outdir.log
+2026-11-26 14:54:19.960325200 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-backend-perf.log
+2026-11-26 14:54:15.884124800 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-backend-verify.log
+2026-11-26 15:23:04.128078500 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-build-web.log
+2026-11-26 15:25:14.248995000 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-build-wechat.log
+2026-11-26 15:01:39.982735800 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-frontend-tests.log
+2026-11-26 15:09:49.702363300 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-frontend-typecheck.log
+2026-11-26 14:54:23.754037400 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-review-a1-a8.log
+2026-11-26 14:54:22.693089500 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-typecheck-cocos.log
+2026-11-26 15:58:52.354053100 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-verify-web-run1.log
+2026-11-26 16:04:45.062979600 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-verify-web-run2.log
+2026-11-26 15:25:14.656040200 +0800 reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-verify-wechat.log
+
+=== stale-evidence check: test file newer than test log? ===
+platform-and-core.test.ts: 1795676151
+r3-frontend-tests.log: 1795676499
+
+=== assertions removed/added vs REWORK-02 ===
+R2=28 R3=28 kept=23
+- web_p1_02_queued_hide_after_uncertain_halts
+- web_p1_01_runtime_failure_freeze_and_recovery
+- web_p1_02_destroy_cancels_queued_before_write
+- web_p1_02_destroy_started_completes_cleanly
+- web_p2_04_compat_save_cross_tab_commit
++ web_p1_03_production_harness_no_destructive_save_api
++ web_p1_03_destroyed_boot_entry_zero_writes
++ web_p1_01_uncertain_cross_coordinator_and_partial_io_freeze
++ web_p1_02_destroy_queued_cancel_and_started_complete
++ web_p0_dual_tab_empty_and_12_round_interleaved_race
+
+=== two web runs profile/round audit ===
+run1 url http://127.0.0.1:59367/ assertions 28 rounds 12 doubles 0 empty COMMITTED/CONFLICT
+run2 url http://127.0.0.1:60388/ assertions 28 rounds 12 doubles 0 empty COMMITTED/CONFLICT
+distinctClients all rounds1 true rounds2 true

@@ -1,0 +1,292 @@
+{
+  "package.json": [
+    "6db40556d2af829d5cbd17d40979a84c1f1e61e0",
+    "6db40556d2af829d5cbd17d40979a84c1f1e61e0",
+    "6db40556d2af829d5cbd17d40979a84c1f1e61e0"
+  ],
+  "packages/game-core/scripts/emit-cocos-mjs.mjs": [
+    "625db4655f66a7a9e8cac438ad52ccbad95548b4",
+    "625db4655f66a7a9e8cac438ad52ccbad95548b4",
+    "625db4655f66a7a9e8cac438ad52ccbad95548b4"
+  ],
+  "packages/game-core/src/spike/migration.ts": [
+    "efa647d0941fed25784c77501d559907231c53fd",
+    "efa647d0941fed25784c77501d559907231c53fd",
+    "efa647d0941fed25784c77501d559907231c53fd"
+  ],
+  "packages/game-core/src/spike/offline.ts": [
+    "80e55a95d08a3fa935925d8dc339437322641a18",
+    "80e55a95d08a3fa935925d8dc339437322641a18",
+    "80e55a95d08a3fa935925d8dc339437322641a18"
+  ],
+  "packages/game-core/src/spike/save.ts": [
+    "e19f67b2340bab04a31d78360bc6d870d0a8fcdc",
+    "e19f67b2340bab04a31d78360bc6d870d0a8fcdc",
+    "e19f67b2340bab04a31d78360bc6d870d0a8fcdc"
+  ],
+  "packages/game-core/src/spike/time.ts": [
+    "9edd0124aee1a3a49e38bc0f9c52330593fc0a57",
+    "9edd0124aee1a3a49e38bc0f9c52330593fc0a57",
+    "9edd0124aee1a3a49e38bc0f9c52330593fc0a57"
+  ],
+  "packages/game-core/src/spike/types.ts": [
+    "084f9ebc14647a5c1eef3956af3c931d43468df3",
+    "084f9ebc14647a5c1eef3956af3c931d43468df3",
+    "084f9ebc14647a5c1eef3956af3c931d43468df3"
+  ],
+  "reports/backend/BE-000-R1/BE-000-R1-code.patch": [
+    "bb92d7d02fd7539a37459095552f7f26a77998df",
+    "bb92d7d02fd7539a37459095552f7f26a77998df",
+    "bb92d7d02fd7539a37459095552f7f26a77998df"
+  ],
+  "reports/backend/BE-000-R1/FILES-P2.sha256": [
+    "52baf5dbefbebc3e36dee3d1a5f5e1e0cb3845f4",
+    "52baf5dbefbebc3e36dee3d1a5f5e1e0cb3845f4",
+    "52baf5dbefbebc3e36dee3d1a5f5e1e0cb3845f4"
+  ],
+  "reports/backend/BE-000-R1/FILES.sha256": [
+    "37ed92479151158ecf228bd5cc65a63771c2930a",
+    "37ed92479151158ecf228bd5cc65a63771c2930a",
+    "37ed92479151158ecf228bd5cc65a63771c2930a"
+  ],
+  "reports/backend/BE-000-R1/FILE_LIST.md": [
+    "413eb5c7cf8eebcc71d6da8c6c5e6fb38755795d",
+    "413eb5c7cf8eebcc71d6da8c6c5e6fb38755795d",
+    "413eb5c7cf8eebcc71d6da8c6c5e6fb38755795d"
+  ],
+  "reports/backend/BE-000-R1/IMPLEMENTATION_REPORT.md": [
+    "466ffb7ae78a6c5f3bbf374151bde95f4faacc11",
+    "466ffb7ae78a6c5f3bbf374151bde95f4faacc11",
+    "466ffb7ae78a6c5f3bbf374151bde95f4faacc11"
+  ],
+  "reports/backend/BE-000-R1/ISSUE_REPORT.md": [
+    "a55b2680e918319fd97facad5fe3362bc584a581",
+    "a55b2680e918319fd97facad5fe3362bc584a581",
+    "a55b2680e918319fd97facad5fe3362bc584a581"
+  ],
+  "reports/backend/BE-000-R1/LOGS.sha256": [
+    "793a510b1adcb40fa2fdd618549f76d113208ccb",
+    "793a510b1adcb40fa2fdd618549f76d113208ccb",
+    "793a510b1adcb40fa2fdd618549f76d113208ccb"
+  ],
+  "reports/backend/BE-000-R1/TASK.md": [
+    "840deb4e079625118e980721ee3fd4e0156a1432",
+    "840deb4e079625118e980721ee3fd4e0156a1432",
+    "840deb4e079625118e980721ee3fd4e0156a1432"
+  ],
+  "reports/backend/BE-000-R1/TEST_REPORT.md": [
+    "5a854f91ec16f8f2e70bc5232ab007e3c273f11a",
+    "5a854f91ec16f8f2e70bc5232ab007e3c273f11a",
+    "5a854f91ec16f8f2e70bc5232ab007e3c273f11a"
+  ],
+  "reports/backend/BE-000-R1/evidence/d01-independent.py": [
+    "bd62144245af0f840b6e9de9b551321e2de42d7b",
+    "bd62144245af0f840b6e9de9b551321e2de42d7b",
+    "bd62144245af0f840b6e9de9b551321e2de42d7b"
+  ],
+  "reports/backend/BE-000-R1/evidence/make-r1-vectors.mjs": [
+    "4bd900907adc52726d0b698965a34244029c89c7",
+    "4bd900907adc52726d0b698965a34244029c89c7",
+    "4bd900907adc52726d0b698965a34244029c89c7"
+  ],
+  "reports/backend/BE-000-R1/evidence/p2-g01-g02-independent.mjs": [
+    "6407737ab1c650228327ecc80b8f875f48b6fa41",
+    "6407737ab1c650228327ecc80b8f875f48b6fa41",
+    "6407737ab1c650228327ecc80b8f875f48b6fa41"
+  ],
+  "reports/backend/BE-000-R1/evidence/pre/cocos-type-audit.mts": [
+    "20d636432e3e41a2672859638b5f724214c0c8a8",
+    "20d636432e3e41a2672859638b5f724214c0c8a8",
+    "20d636432e3e41a2672859638b5f724214c0c8a8"
+  ],
+  "reports/backend/BE-000-R1/evidence/pre/review-pre.test.mjs": [
+    "4b739b1065860e2bb7434f602df987c5a6562645",
+    "4b739b1065860e2bb7434f602df987c5a6562645",
+    "4b739b1065860e2bb7434f602df987c5a6562645"
+  ],
+  "reports/backend/BE-000-R1/evidence/runtime-cocos-r1.mjs": [
+    "a5bb2b4eae2bb39cebec3ffdaf126c23be46f268",
+    "a5bb2b4eae2bb39cebec3ffdaf126c23be46f268",
+    "a5bb2b4eae2bb39cebec3ffdaf126c23be46f268"
+  ],
+  "reports/backend/BE-000-R1/evidence/vectors/offline-vectors.pre-r1.json": [
+    "448c747d56716f509b81a7a2953fc029947a15ef",
+    "448c747d56716f509b81a7a2953fc029947a15ef",
+    "448c747d56716f509b81a7a2953fc029947a15ef"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-build-cocos.log": [
+    "6a86e0c3f00150b47f069a736500810f318a54ab",
+    "6a86e0c3f00150b47f069a736500810f318a54ab",
+    "6a86e0c3f00150b47f069a736500810f318a54ab"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-g01-g02-independent.log": [
+    "7924ec6d10d086a62219458341c8d5497256e8cc",
+    "7924ec6d10d086a62219458341c8d5497256e8cc",
+    "7924ec6d10d086a62219458341c8d5497256e8cc"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-perf.log": [
+    "45401f41a9b551fec0e878b8fdf5ecc4fdccd354",
+    "45401f41a9b551fec0e878b8fdf5ecc4fdccd354",
+    "45401f41a9b551fec0e878b8fdf5ecc4fdccd354"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-review-a1-a8.log": [
+    "61e0bb0b4eb80fadfe05afe37563ff4f9ecf8007",
+    "61e0bb0b4eb80fadfe05afe37563ff4f9ecf8007",
+    "61e0bb0b4eb80fadfe05afe37563ff4f9ecf8007"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-test.log": [
+    "f91c0da12a90c25e88f926343fea6ac9ba6690d3",
+    "f91c0da12a90c25e88f926343fea6ac9ba6690d3",
+    "f91c0da12a90c25e88f926343fea6ac9ba6690d3"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-typecheck-cocos.log": [
+    "3d3a64815facaa3e12e588d60a95da0668e3050a",
+    "3d3a64815facaa3e12e588d60a95da0668e3050a",
+    "3d3a64815facaa3e12e588d60a95da0668e3050a"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-typecheck.log": [
+    "83826b3c6d6d7c6bf578cafabc6a4fcc6cf40492",
+    "83826b3c6d6d7c6bf578cafabc6a4fcc6cf40492",
+    "83826b3c6d6d7c6bf578cafabc6a4fcc6cf40492"
+  ],
+  "reports/backend/BE-000-R1/logs/p2-verify.log": [
+    "50fa8893fa4d10de9b8e1646428f6c2f39365693",
+    "50fa8893fa4d10de9b8e1646428f6c2f39365693",
+    "50fa8893fa4d10de9b8e1646428f6c2f39365693"
+  ],
+  "reports/backend/BE-000-R1/logs/pre-cocos-type.log": [
+    "e737717d667fcdd19f560c04b5b478f1e11da19d",
+    "e737717d667fcdd19f560c04b5b478f1e11da19d",
+    "e737717d667fcdd19f560c04b5b478f1e11da19d"
+  ],
+  "reports/backend/BE-000-R1/logs/pre-fixture.log": [
+    "eceab6954164eba7e9b3859ce48c046205b7361e",
+    "eceab6954164eba7e9b3859ce48c046205b7361e",
+    "eceab6954164eba7e9b3859ce48c046205b7361e"
+  ],
+  "reports/backend/BE-000-R1/logs/pre-review-a1-a8.log": [
+    "fc5950baeea5e1a1af00fe97bfd521480efbd63d",
+    "fc5950baeea5e1a1af00fe97bfd521480efbd63d",
+    "fc5950baeea5e1a1af00fe97bfd521480efbd63d"
+  ],
+  "reports/backend/BE-000-R1/logs/pre-verify.log": [
+    "662a2bea70b4be2435bcd443edea1fb7d1af2f67",
+    "662a2bea70b4be2435bcd443edea1fb7d1af2f67",
+    "662a2bea70b4be2435bcd443edea1fb7d1af2f67"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-cocos-build.out": [
+    "c537d19968f5c2cb3b7f582565ea125203b909a0",
+    "c537d19968f5c2cb3b7f582565ea125203b909a0",
+    "c537d19968f5c2cb3b7f582565ea125203b909a0"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-cocos-runtime.log": [
+    "d2d7e05683b09cb7984e790a16e98f834feb9b40",
+    "d2d7e05683b09cb7984e790a16e98f834feb9b40",
+    "d2d7e05683b09cb7984e790a16e98f834feb9b40"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-cocos-type.log": [
+    "3d3a64815facaa3e12e588d60a95da0668e3050a",
+    "3d3a64815facaa3e12e588d60a95da0668e3050a",
+    "3d3a64815facaa3e12e588d60a95da0668e3050a"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-d01-python.log": [
+    "6fd14f0fb238961a4ea35c4bb4708f6b2b6341fb",
+    "6fd14f0fb238961a4ea35c4bb4708f6b2b6341fb",
+    "6fd14f0fb238961a4ea35c4bb4708f6b2b6341fb"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-fixture.log": [
+    "bb85accb28889f921b9be38aa981017834ff2af2",
+    "bb85accb28889f921b9be38aa981017834ff2af2",
+    "bb85accb28889f921b9be38aa981017834ff2af2"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-perf.log": [
+    "3714a2a2429d97d186cbd793637f5aa3f68cbe52",
+    "3714a2a2429d97d186cbd793637f5aa3f68cbe52",
+    "3714a2a2429d97d186cbd793637f5aa3f68cbe52"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-review-a1-a8.log": [
+    "ad64efb63b8730f59e00fa4beb582c84ebd5212d",
+    "ad64efb63b8730f59e00fa4beb582c84ebd5212d",
+    "ad64efb63b8730f59e00fa4beb582c84ebd5212d"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-vectors.log": [
+    "33060d8516ff04e3323ae7561e4e5b385468e1a3",
+    "33060d8516ff04e3323ae7561e4e5b385468e1a3",
+    "33060d8516ff04e3323ae7561e4e5b385468e1a3"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-verify-final.log": [
+    "0dcdf4cf5c896572de8f9a87d151978f9d689aa5",
+    "0dcdf4cf5c896572de8f9a87d151978f9d689aa5",
+    "0dcdf4cf5c896572de8f9a87d151978f9d689aa5"
+  ],
+  "reports/backend/BE-000-R1/logs/r1-verify.log": [
+    "ddc442504b564b904578c949020144f22489b13c",
+    "ddc442504b564b904578c949020144f22489b13c",
+    "ddc442504b564b904578c949020144f22489b13c"
+  ],
+  "reports/backend/BE-000/SHARED_MODULE_HANDOFF.md": [
+    "458589bf2b879c7688e6d0b927ac6f01991f46f0",
+    "458589bf2b879c7688e6d0b927ac6f01991f46f0",
+    "458589bf2b879c7688e6d0b927ac6f01991f46f0"
+  ],
+  "reports/backend/DEVELOPMENT_STATUS.md": [
+    "51bbb6b97d9e7a2a085ff2955ee84f28f10918b6",
+    "51bbb6b97d9e7a2a085ff2955ee84f28f10918b6",
+    "51bbb6b97d9e7a2a085ff2955ee84f28f10918b6"
+  ],
+  "tests/backend/be-000/cocos-artifact.test.ts": [
+    "bc2b321eaa48cba8272dd9107d3336917fff5ea2",
+    "bc2b321eaa48cba8272dd9107d3336917fff5ea2",
+    "bc2b321eaa48cba8272dd9107d3336917fff5ea2"
+  ],
+  "tests/backend/be-000/cocos-probe/probe.ts": [
+    "114081227dc2a479fb0a4df7d9d53cfb505d7e95",
+    "114081227dc2a479fb0a4df7d9d53cfb505d7e95",
+    "114081227dc2a479fb0a4df7d9d53cfb505d7e95"
+  ],
+  "tests/backend/be-000/cocos-type-consumer.mts": [
+    "c8db66102854d1226077a6aea03812ef80781a86",
+    "c8db66102854d1226077a6aea03812ef80781a86",
+    "c8db66102854d1226077a6aea03812ef80781a86"
+  ],
+  "tests/backend/be-000/d01-encoding.test.ts": [
+    "9a421cb511e4eda35cf5a03aaae2153f568c4213",
+    "9a421cb511e4eda35cf5a03aaae2153f568c4213",
+    "9a421cb511e4eda35cf5a03aaae2153f568c4213"
+  ],
+  "tests/backend/be-000/fixtures/offline-vectors.json": [
+    "b55d940ba4b6a452f067b7dae928d513ea060d89",
+    "b55d940ba4b6a452f067b7dae928d513ea060d89",
+    "b55d940ba4b6a452f067b7dae928d513ea060d89"
+  ],
+  "tests/backend/be-000/migration.test.ts": [
+    "0272b00b29a73093ecad67304fc5bec097b52d3b",
+    "0272b00b29a73093ecad67304fc5bec097b52d3b",
+    "0272b00b29a73093ecad67304fc5bec097b52d3b"
+  ],
+  "tests/backend/be-000/offline.test.ts": [
+    "387b391397a551e05c22f19d987539481dff3ea5",
+    "387b391397a551e05c22f19d987539481dff3ea5",
+    "387b391397a551e05c22f19d987539481dff3ea5"
+  ],
+  "tests/backend/be-000/r1-regression.test.ts": [
+    "44df25a36051a92c7f832b8d3e523d5bf12cd4db",
+    "44df25a36051a92c7f832b8d3e523d5bf12cd4db",
+    "44df25a36051a92c7f832b8d3e523d5bf12cd4db"
+  ],
+  "tests/backend/be-000/save.test.ts": [
+    "99c521f3e6a8e0ede0a9e922669b596cef87bfdf",
+    "99c521f3e6a8e0ede0a9e922669b596cef87bfdf",
+    "99c521f3e6a8e0ede0a9e922669b596cef87bfdf"
+  ],
+  "tsconfig.cocos-consumer.json": [
+    "4ffcb2a9fc88acc50613027475663673b8d28bd4",
+    "4ffcb2a9fc88acc50613027475663673b8d28bd4",
+    "4ffcb2a9fc88acc50613027475663673b8d28bd4"
+  ],
+  "tsconfig.test.json": [
+    "2d33f7b2f85bab0a51115ce24cb2a935f2b3b40a",
+    "2d33f7b2f85bab0a51115ce24cb2a935f2b3b40a",
+    "2d33f7b2f85bab0a51115ce24cb2a935f2b3b40a"
+  ]
+}

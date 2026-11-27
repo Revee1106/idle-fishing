@@ -1,0 +1,10 @@
+R1 vector diff accepted:
+  initial changed paths: (none)
+  1h changed paths: offline.settledUntilMs
+  8h changed paths: attemptLock, offline.settledUntilMs
+  initial sha256=79a773550beb088cf0462e0851b043c7b86ebd2bd0f3cbe3447dd4d6ca0a35f4
+  1h sha256=8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63
+  8h sha256=91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9
+  payload sha256=8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63
+  envelope sha256=4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6
+  root=E:\idle-fishing-backend\

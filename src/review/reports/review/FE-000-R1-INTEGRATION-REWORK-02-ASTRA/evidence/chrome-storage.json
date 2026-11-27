@@ -1,0 +1,296 @@
+[
+  {
+    "mode": "writeFault",
+    "before": [
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_0.json",
+        "1",
+        "1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf"
+      ]
+    ],
+    "ret": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "EMPTY",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": false,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795674112920,
+      "lastHideTriggerSource": "fault",
+      "lastCommitKind": "FAILED",
+      "lastCommitDetail": "SAVE_IO: write not observed; persisted revision unchanged",
+      "hideCommitCount": 1,
+      "showEventCount": 0
+    },
+    "health": "AVAILABLE",
+    "late": true,
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "seed",
+        "expectedRevision": null,
+        "taskState": "COMMITTED",
+        "resultKind": "COMMITTED",
+        "revision": "1",
+        "cursorMs": 1700000060000,
+        "gold": "31",
+        "detail": null
+      },
+      {
+        "seq": 2,
+        "triggerSource": "fault",
+        "expectedRevision": "1",
+        "taskState": "FAILED",
+        "resultKind": "FAILED",
+        "revision": "1",
+        "cursorMs": 1700000060000,
+        "gold": "31",
+        "detail": "SAVE_IO: write not observed; persisted revision unchanged"
+      },
+      {
+        "seq": 3,
+        "triggerSource": "later",
+        "expectedRevision": "1",
+        "taskState": "FAILED",
+        "resultKind": "FAILED",
+        "revision": "1",
+        "cursorMs": 1700000060000,
+        "gold": "31",
+        "detail": "SAVE_IO: write not observed; persisted revision unchanged"
+      }
+    ],
+    "after": [
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_0.json",
+        "1",
+        "1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf"
+      ]
+    ],
+    "reboot": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  },
+  {
+    "mode": "readback",
+    "before": [
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_1.json",
+        "2",
+        "c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_0.json",
+        "1",
+        "1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf"
+      ]
+    ],
+    "ret": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": null,
+      "persistenceHalted": true,
+      "restoredOnBoot": true,
+      "revision": "2",
+      "gold": "84",
+      "cursorMs": 1700000120000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795674118234,
+      "lastHideTriggerSource": "fault",
+      "lastCommitKind": "UNCERTAIN",
+      "lastCommitDetail": "write result unknown; rescan unreadable (save_slot_2.json)",
+      "hideCommitCount": 1,
+      "showEventCount": 0
+    },
+    "health": "AVAILABLE",
+    "late": true,
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "seed",
+        "expectedRevision": "1",
+        "taskState": "COMMITTED",
+        "resultKind": "COMMITTED",
+        "revision": "2",
+        "cursorMs": 1700000120000,
+        "gold": "84",
+        "detail": null
+      },
+      {
+        "seq": 2,
+        "triggerSource": "fault",
+        "expectedRevision": "2",
+        "taskState": "UNCERTAIN",
+        "resultKind": "UNCERTAIN",
+        "revision": "2",
+        "cursorMs": 1700000120000,
+        "gold": "84",
+        "detail": "write result unknown; rescan unreadable (save_slot_2.json)"
+      },
+      {
+        "seq": 3,
+        "triggerSource": "later",
+        "expectedRevision": "2",
+        "taskState": "CANCELLED",
+        "resultKind": "SKIPPED_HALTED",
+        "revision": "2",
+        "cursorMs": 1700000120000,
+        "gold": "84",
+        "detail": "Persistence halted (health=AVAILABLE, loadStatus=VALID)"
+      }
+    ],
+    "after": [
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_1.json",
+        "2",
+        "c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_0.json",
+        "1",
+        "1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_2.json",
+        "3",
+        "53fa7ff22ac9e7e8fe4d621283a6ccdc0d317617e3684bb5daf932b613efe9bf"
+      ]
+    ],
+    "reboot": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 2 at revision 3",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "3",
+      "gold": "129",
+      "cursorMs": 1700000180000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  },
+  {
+    "mode": "destroyAtFailedReadback",
+    "before": [
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_1.json",
+        "2",
+        "c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_0.json",
+        "4",
+        "abe4b5e21f2829ad729e9dff06aaa43cc85667512bc9a2479849df02a894271f"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_2.json",
+        "3",
+        "53fa7ff22ac9e7e8fe4d621283a6ccdc0d317617e3684bb5daf932b613efe9bf"
+      ]
+    ],
+    "ret": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 2 at revision 3",
+      "persistenceHalted": true,
+      "restoredOnBoot": true,
+      "revision": "4",
+      "gold": "178",
+      "cursorMs": 1700000240000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": 1795674123893,
+      "lastHideTriggerSource": "fault",
+      "lastCommitKind": "UNCERTAIN",
+      "lastCommitDetail": "write result unknown; rescan unreadable (save_slot_1.json)",
+      "hideCommitCount": 1,
+      "showEventCount": 0
+    },
+    "health": "AVAILABLE",
+    "late": false,
+    "hist": [
+      {
+        "seq": 1,
+        "triggerSource": "seed",
+        "expectedRevision": "3",
+        "taskState": "COMMITTED",
+        "resultKind": "COMMITTED",
+        "revision": "4",
+        "cursorMs": 1700000240000,
+        "gold": "178",
+        "detail": null
+      },
+      {
+        "seq": 2,
+        "triggerSource": "fault",
+        "expectedRevision": "4",
+        "taskState": "UNCERTAIN",
+        "resultKind": "UNCERTAIN",
+        "revision": "4",
+        "cursorMs": 1700000240000,
+        "gold": "178",
+        "detail": "write result unknown; rescan unreadable (save_slot_1.json)"
+      }
+    ],
+    "after": [
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_1.json",
+        "5",
+        "68f5afdb0245c8d02e987eb59a6717d36275fddb778cb2e594b5433d6014694e"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_0.json",
+        "4",
+        "abe4b5e21f2829ad729e9dff06aaa43cc85667512bc9a2479849df02a894271f"
+      ],
+      [
+        "idle_fishing_lifecycle_persist_fs:save_slot_2.json",
+        "3",
+        "53fa7ff22ac9e7e8fe4d621283a6ccdc0d317617e3684bb5daf932b613efe9bf"
+      ]
+    ],
+    "reboot": {
+      "storageHealth": "AVAILABLE",
+      "storageUnavailableReason": null,
+      "loadStatus": "VALID",
+      "loadDetail": "selected slot 1 at revision 5",
+      "persistenceHalted": false,
+      "restoredOnBoot": true,
+      "revision": "5",
+      "gold": "217",
+      "cursorMs": 1700000300000,
+      "deadlineMs": 1700028800000,
+      "lastHideCommitAtMs": null,
+      "lastHideTriggerSource": "boot-load",
+      "lastCommitKind": null,
+      "lastCommitDetail": null,
+      "hideCommitCount": 0,
+      "showEventCount": 0
+    }
+  }
+]

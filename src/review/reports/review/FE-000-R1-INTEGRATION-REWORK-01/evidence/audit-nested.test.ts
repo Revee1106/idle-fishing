@@ -1,0 +1,1 @@
+import {describe,it} from 'node:test';describe('group',()=>{it('ok',()=>{});it.skip('skip',()=>{});it.todo('todo');it('bad1',()=>{throw Error('1')});it('bad2',()=>{throw Error('2')})});

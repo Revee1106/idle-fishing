@@ -1,0 +1,1 @@
+throw Error('audit module load crash');

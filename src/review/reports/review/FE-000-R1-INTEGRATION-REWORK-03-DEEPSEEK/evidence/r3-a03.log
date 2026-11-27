@@ -1,0 +1,8 @@
+CMD: node r3-a03.mjs
+[PASS] A03 missing -> EMPTY/AVAILABLE :: {"empty":"EMPTY","emptyHealth":"AVAILABLE"}
+[PASS] A03 partial IO -> STORAGE_UNAVAILABLE/PARTIAL, readOnlyBackup rev2, health frozen across coordinators, 0 writes :: {"empty":"EMPTY","emptyHealth":"AVAILABLE","partialKind":"STORAGE_UNAVAILABLE","partialClass":"PARTIAL_IO_UNAVAILABLE","backup":"2","h1":"STORAGE_UNAVAILABLE","h2":"STORAGE_UNAVAILABLE","fc":"PARTIAL_IO_UNAVAILABLE","blocked":"STORAGE_UNAVAILABLE","zeroWrites":true,"fullKind":"VALID","fullRev":"3","h3":"AVAILABLE","c4":"COMMITTED/4","allClass":"IO_UNAVAILABLE"}
+[PASS] A03 all slots IO -> IO_UNAVAILABLE :: IO_UNAVAILABLE
+[PASS] A03 full recovery -> VALID rev3, AVAILABLE, commit rev4 :: {"fullKind":"VALID","fullRev":"3","h3":"AVAILABLE","c4":"COMMITTED/4"}
+
+===== A03: PASS =====
+EXIT=0

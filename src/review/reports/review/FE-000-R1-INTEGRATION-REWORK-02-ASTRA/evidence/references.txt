@@ -1,0 +1,46 @@
+SingleWriterSaveCoordinator.ts:61 const namespaceHealth = new Map<string, NamespaceHealthRecord>();
+SingleWriterSaveCoordinator.ts:153 this.requiresCrossTabLock = this.storageKey.startsWith('browser:') && isBrowserContext();
+SingleWriterSaveCoordinator.ts:186 return await locks.request(lockName, { mode: 'exclusive' }, async () => task());
+SingleWriterSaveCoordinator.ts:193 const detail = `CROSS_TAB_LOCK_REJECTED: ${msg}`;
+SingleWriterSaveCoordinator.ts:242 markStorageAvailable(this.storageKey);
+SingleWriterSaveCoordinator.ts:331 if (fatalErrors.length > 0 && result.kind === 'FAILED') {
+SingleWriterSaveCoordinator.ts:337 return result;
+SingleWriterSaveCoordinator.ts:347 clearSlotsForTest(): Promise<void> {
+SingleWriterSaveCoordinator.ts:358 markStorageAvailable(this.storageKey);
+BootEntry.ts:141 onDestroy(): void {
+BootEntry.ts:219 this.persistenceHalted = true;
+BootEntry.ts:248 this.persistenceHalted = true;
+BootEntry.ts:284 persistPort = createRuntimeFilePort('idle_fishing_lifecycle_persist');
+BootEntry.ts:288 'idle_fishing_lifecycle_persist',
+BootEntry.ts:359 this.pendingHideSave = this.pendingHideSave.then(async () => {
+BootEntry.ts:450 this.persistenceHalted = true;
+BootEntry.ts:473 this.persistenceHalted = true;
+BootEntry.ts:539 (globalThis as Record<string, unknown>).__SPIKE_HARNESS__ = {
+BootEntry.ts:574 this.pendingHideSave = this.pendingHideSave.then(async () => {
+BootEntry.ts:602 getPersistCoordinator: () => this.persistCoordinator,
+BootEntry.ts:610 commitCandidateViaCoordinator: async (
+BootEntry.ts:619 const res = await this.persistCoordinator.commit(cand, expectedRev, { beforeCommitBody });
+BootEntry.ts:633 this.persistenceHalted = true;
+BootEntry.ts:646 clearLifecyclePersistence: async () => {
+PlatformVerificationSuite.ts:29 export function createRuntimeFilePort(namespace = 'idle_fishing_spike'): FilePort {
+PlatformVerificationSuite.ts:32 return new WeChatFilePort(namespace);
+PlatformVerificationSuite.ts:35 return new BrowserFilePort(`${namespace}_fs`);
+PlatformVerificationSuite.ts:69 const basePort = customPort ?? createRuntimeFilePort();
+node-test-worker.mjs:116 stream.on('test:fail', (ev) => {
+node-test-worker.mjs:133 failed += 1;
+run-node-tests.mjs:128 const child = spawnSync(process.execPath, [workerScript, testFile, resultJsonPath], {
+verify-web-build.mjs:805 const tabARes = await cdp.evalJson(`globalThis.__TAB_A_COMMIT_P__`);
+verify-web-build.mjs:806 const tabBRes = await cdpB.evalJson(`globalThis.__TAB_B_COMMIT_P__`);
+verify-web-build.mjs:871 'web_p2_04_compat_save_cross_tab_commit',
+BrowserFilePort.ts:116 return storage.getItem(key);
+BrowserFilePort.ts:130 storage.setItem(key, text);
+safe-path-guard.mjs:51 const lst = fs.lstatSync(abs);
+safe-path-guard.mjs:64 realAncestor = probe;
+safe-path-guard.mjs:203 fs.rmSync(canonical, { recursive: true, force: true });
+docs\baseline-v0.2\11-技术架构与零成本存储.md:69 提交：构造一致候选状态 → 写非当前有效槽 → 重新读取并验证 → 确认提交 → 更新重要奖励表现。至少保留此前有效槽；不假设文件重命名具有数据库级原子性；写入失败不得将未提交的重要变更展示为已保存。崩溃后优先最高有效revision。若出现写入结果不确定，先扫描确认是否实际提交，再处理重试（实现建议，具体协议需故障注入验证）。
+docs\interfaces\19-平台适配存档广告与版本接口.md:20 保存 `cursorMs` 为逻辑业务时间，`clock.highWaterMs` 为已经接受的最高有效现实时间，`lastWallMs` 为最近接受的设备样本。应用启动先读取wall；若wall小于highWater，进入CLOCK_ERROR时间冻结（不回拨cursor，不发离线收益、不刷新日配额）；保留未完成尝试。可只读浏览，不能通过手工修改配置绕过时间异常；当wall>=highWater
+docs\interfaces\19-平台适配存档广告与版本接口.md:22 正常前台建立锚点 `anchorLogical=cursor, anchorMono=monotonicNow`；每次tick/指令用 `target=max(cursor,anchorLogical+(monoNow-anchorMono))`；若mono回退则重新建立锚点，当前差值为0并记录；读取wall检查回退及明显跳变。不得在每帧按墙钟补发时间；正常允许设备时钟采样微小误差，具体容差为cf
+docs\interfaces\19-平台适配存档广告与版本接口.md:24 业务日计算 `day=floor((acceptedUtcMs + quotaTimezoneOffsetMinutes*60000)/86400000)` 转十进制ID；UTC+8为E10建议，时区不跟随手机地区设置。day只前进不回退。广告到期和领取窗口使用同一逻辑现实时间，不受12倍世界加速。当前尝试即使时钟冻结也保留已抽样内容，恢复不重抽。应用事件必须有显式有效at，不允许核心读取系统时间
+docs\interfaces\19-平台适配存档广告与版本接口.md:67 expectedRevision为最近成功load/commit的**物理**revision；null仅首次。重新核实当前有效槽或应用独占写入锁下的已知revision，若不一致返回CONFLICT。候选状态通过Schema与I01—12，序列化、计算hash，新revision=(expected??0)+1。选槽规则：优先空/无效槽（id升序）；否则在非最高有效槽中选revision最小（i
+docs\interfaces\19-平台适配存档广告与版本接口.md:83 `requestDelete()`仅应用层发起，不清文件；返回一次性token及expiresAt（cfg.persistence.deleteConfirmMs，推荐60秒现实时间，需确认），绑定当前epoch和物理revision；CORRUPT/UNSUPPORTED状态可绑定“全档删除”与null revision。`confirmDelete(token)`需相同实例、未过期、未消费、状
+docs\interfaces\19-平台适配存档广告与版本接口.md:107 有效COMPLETED可选择先持久化完整成功记录（状态及completedAt），再在同一队列执行发奖候选；恢复发现COMPLETED必须执行一次发奖而不是重新播放。发奖候选必须将权益、配额、终止水位、REWARDED及金币/库存/属性一并提交；若最终提交不确定按第4节扫描确认，不能再次发同一请求。CANCELLED/FAILED设置终态、lastTerminalSeq、释放预留并持久化，不扣配额

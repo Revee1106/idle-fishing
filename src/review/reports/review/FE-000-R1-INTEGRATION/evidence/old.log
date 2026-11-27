@@ -1,0 +1,7 @@
+IDLE old bytes, full-state, advance, rev2 reload OK
+FIGHTING old bytes, full-state, advance, rev2 reload OK
+PREPARING old bytes, full-state, advance, rev2 reload OK
+POST_DEADLINE old bytes, full-state, advance, rev2 reload OK
+CORRUPT_WITH_VALID_BACKUP old bytes, full-state, advance, rev2 reload OK
+{"0":["79a773550beb088cf0462e0851b043c7b86ebd2bd0f3cbe3447dd4d6ca0a35f4","6e8fe48fbb5d45e126198e783684d5d94b6053b60a37c3f3294fa766e662ae94","0793be965fdb00a1ae6d3fafd44ca1c798a99b8a07c51ed71700471f94699145"],"1":["8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63","183ed74c32d759e434345eb7fe152eec1192f8ea69637cf60e657d629010681a","4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6"],"8":["91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9","eb6cd5df1d8b22bc76c426806bf45fcb5c6d4dc9ee34ed358857c397da9bd2bf","eeb0151b9cb7dbddd31cd661a7c79c7e3a6e404e41b7a4468f5beae216bbb920"],"24":["2df326180ed98c4282fcfd921d328fc085517a6f2f4f299ca65496e052d061a0","9ed7cded1c1d5391691c9172e837c36915fb94605b1aaf19f2afea856e717e1d","0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f"]}
+parallel [{"kind":"UNCERTAIN","detail":"write result could not be confirmed"},{"kind":"COMMITTED","revision":"1","slot":0,"recoveredFromUncertainWrite":false}] 1700000060000

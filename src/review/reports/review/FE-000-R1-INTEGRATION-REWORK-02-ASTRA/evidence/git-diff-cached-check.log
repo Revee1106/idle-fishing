@@ -1,0 +1,189 @@
+reports/backend/BE-000-R1/BE-000-R1-code.patch:31: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:34: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:39: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:59: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:64: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:78: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:212: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:235: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:244: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:280: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:284: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:304: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:317: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:320: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:324: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:334: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:566: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:594: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:611: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:622: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:679: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:716: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:725: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:748: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:770: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:779: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:984: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:988: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1014: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1109: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1144: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1149: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1398: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1402: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1481: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1486: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1495: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1498: trailing whitespace.
++ 
+reports/backend/BE-000-R1/BE-000-R1-code.patch:1505: trailing whitespace.
++ 
+reports/backend/BE-000-R1/TASK.md:1: trailing whitespace.
++# BE-000-R1 后端整改任务
+reports/backend/BE-000-R1/TASK.md:2: trailing whitespace.
++
+reports/backend/BE-000-R1/TASK.md:3: trailing whitespace.
++工作区 E:/idle-fishing-backend，分支 r1/be-000，整改基准 358b11105cfdee9bd076049c86a34d8f0aaa00e7。
+reports/backend/BE-000-R1/TASK.md:4: trailing whitespace.
++
+reports/backend/BE-000-R1/TASK.md:5: trailing whitespace.
++按首审 REWORK_PROMPT.md 逐条执行。设计方已明确 I01–I07 全部必改，I08 修复或收窄实验接口，V01、V02 补覆盖并纠正报告。
+reports/backend/BE-000-R1/TASK.md:6: trailing whitespace.
++
+reports/backend/BE-000-R1/TASK.md:7: trailing whitespace.
++1. 任何槽读取未知时禁止授权新写入。提交结果不确定时停止后续业务写入，恢复后重新确认。隔离单槽非法内容并验证从有效备份恢复。
+reports/backend/BE-000-R1/TASK.md:8: trailing whitespace.
++2. 以真实存档和 FIGHTING 结算入口重放已有奖励键，检查全部副作用。每次持久化将有效离线游标、奖励、随机状态和检查点同步保存，验证截止前、截止时及越过截止。
+reports/backend/BE-000-R1/TASK.md:9: trailing whitespace.
++3. 迁移进行中的尝试，保留进度、锁定结果、随机状态和可读旧槽。验证只结算一次。修复最终时间加法溢出。
+reports/backend/BE-000-R1/TASK.md:10: trailing whitespace.
++4. 严格 TypeScript 消费者须通过实际 Cocos .mjs 入口的编译。提交可重建探针。可替换夹具须在初始化、推进及恢复一致，或明确限制接口。
+reports/backend/BE-000-R1/TASK.md:11: trailing whitespace.
++5. 补真实业务链路和故障注入，运行原反例、完整测试、严格 tsc、共享构建、24h 性能与跨宿主对照。不得删测试、降标准或直接重生成向量。每项向量变化给出独立推导。
+reports/backend/BE-000-R1/TASK.md:12: trailing whitespace.
++6. BE-D01 仅限 Spike，按下述交接记录核对外层 UTF-8 字节和摘要。依赖严格化的共享模块先交复审，标明供前端接入的版本。仅后端维护任务授权的根构建配置与锁文件。
+reports/backend/BE-000-R1/TASK.md:13: trailing whitespace.
++
+reports/backend/BE-000-R1/TASK.md:14: trailing whitespace.
++按根目录及模块 AGENTS.md 执行。独立审核依据见 E:/idle-fishing-review/REVIEWER.md 和该工作区 reports/review 中本任务的四份首审报告。保留首审失败证据与修后通过证据，报告注明基准和实际 SHA、命令、退出码、实际用例数、实测宿主以及未测原因。任何测试入口运行零项均判失败。完成本轮后交由独立审核。
+reports/backend/BE-000-R1/TASK.md:15: trailing whitespace.
++
+reports/backend/BE-000-R1/TASK.md:16: trailing whitespace.
++设计实验参数与门禁见 E:/idle-fishing-review/reports/review/R1/HANDOFF.md。
+reports/backend/BE-000-R1/logs/p2-typecheck-cocos.log:4: new blank line at EOF.
+reports/backend/BE-000-R1/logs/p2-typecheck.log:4: new blank line at EOF.
+reports/backend/BE-000-R1/logs/pre-cocos-type.log:1: trailing whitespace.
++reports/backend/BE-000-R1/evidence/pre/cocos-type-audit.mts(2,29): error TS7016: Could not find a declaration file for module '../../../../../packages/game-core/dist/cocos/spike/index.mjs'. 'E:/idle-fishing-backend/packages/game-core/dist/cocos/spike/index.mjs' implicitly has an 'any' type.
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:23: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:25: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:41: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:44: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:59: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:61: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:86: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:88: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:125: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/pre-review-a1-a8.log:127: trailing whitespace.
++  
+reports/backend/BE-000-R1/logs/r1-cocos-build.out:9: trailing whitespace.
++ 
+reports/backend/BE-000-R1/logs/r1-cocos-build.out:1602: new blank line at EOF.
+reports/backend/BE-000-R1/logs/r1-cocos-type.log:4: new blank line at EOF.
+reports/backend/BE-000-R1/logs/r1-d01-python.log:1: trailing whitespace.
++BE-D01 local vector A
+reports/backend/BE-000-R1/logs/r1-d01-python.log:2: trailing whitespace.
++  payload_repr = '{"name":"Alice"}'
+reports/backend/BE-000-R1/logs/r1-d01-python.log:3: trailing whitespace.
++  payload_utf8_bytes = 16
+reports/backend/BE-000-R1/logs/r1-d01-python.log:4: trailing whitespace.
++  outer_utf8_bytes = 59
+reports/backend/BE-000-R1/logs/r1-d01-python.log:5: trailing whitespace.
++  sha256 = 052166960a60184b98f25faadf00fc99bf6c60028c305a53e7e220fb625b92ae
+reports/backend/BE-000-R1/logs/r1-d01-python.log:6: trailing whitespace.
++
+reports/backend/BE-000-R1/logs/r1-d01-python.log:7: trailing whitespace.
++BE-D01 local vector B
+reports/backend/BE-000-R1/logs/r1-d01-python.log:8: trailing whitespace.
++  payload_repr = '{"name":"He said \\"hi\\"","note":"line1\\nline2\\tend","path":"C:\\\\tmp\\\\f.txt","tail":"\u9c7c\U0001f41f"}'
+reports/backend/BE-000-R1/logs/r1-d01-python.log:9: trailing whitespace.
++  payload_utf8_bytes = 93
+reports/backend/BE-000-R1/logs/r1-d01-python.log:10: trailing whitespace.
++  outer_utf8_bytes = 158
+reports/backend/BE-000-R1/logs/r1-d01-python.log:11: trailing whitespace.
++  sha256 = 2148014d02842b5d0f071476bda16004bc0e1971d4ec6264d343caa9411c7936
+reports/backend/BE-000-R1/logs/r1-d01-python.log:12: trailing whitespace.
++
+reports/backend/BE-000-R1/logs/r1-d01-python.log:12: new blank line at EOF.
+reports/backend/BE-000-R1/logs/r1-fixture.log:1: trailing whitespace.
++file:///E:/idle-fishing-backend/packages/game-core/dist/spike/offline.js:41
+reports/backend/BE-000-R1/logs/r1-fixture.log:2: trailing whitespace.
++        throw new Error('Custom offline fixtures are not supported by this experimental entry point');
+reports/backend/BE-000-R1/logs/r1-fixture.log:3: trailing whitespace.
++              ^
+reports/backend/BE-000-R1/logs/r1-fixture.log:4: trailing whitespace.
++
+reports/backend/BE-000-R1/logs/r1-fixture.log:5: trailing whitespace.
++Error: Custom offline fixtures are not supported by this experimental entry point
+reports/backend/BE-000-R1/logs/r1-fixture.log:6: trailing whitespace.
++    at Module.createInitialState (file:///E:/idle-fishing-backend/packages/game-core/dist/spike/offline.js:41:15)
+reports/backend/BE-000-R1/logs/r1-fixture.log:7: trailing whitespace.
++    at file:///E:/idle-fishing-backend/[eval1]:1:127
+reports/backend/BE-000-R1/logs/r1-fixture.log:8: trailing whitespace.
++    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+reports/backend/BE-000-R1/logs/r1-fixture.log:9: trailing whitespace.
++    at async node:internal/modules/esm/loader:223:26
+reports/backend/BE-000-R1/logs/r1-fixture.log:10: trailing whitespace.
++    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)
+reports/backend/BE-000-R1/logs/r1-fixture.log:11: trailing whitespace.
++    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+reports/backend/BE-000-R1/logs/r1-fixture.log:12: trailing whitespace.
++
+reports/backend/BE-000-R1/logs/r1-fixture.log:13: trailing whitespace.
++Node.js v24.20.0

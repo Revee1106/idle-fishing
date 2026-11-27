@@ -1,0 +1,18 @@
+{"label":"legacyValid","kind":"STORAGE_UNAVAILABLE","freeze":"SAVE_DISAPPEARED_PENDING_RECOVERY","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"PENDING","expectedRevision":"1","targetRevision":"2","createdAtMs":1,"updatedAtMs":2,"reason":"fixture"},"slots":[]}
+{"label":"legacyUnknown","kind":"STORAGE_UNAVAILABLE","freeze":"SAVE_DISAPPEARED_PENDING_RECOVERY","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"PENDING","expectedRevision":null,"targetRevision":"1","createdAtMs":1,"updatedAtMs":2,"reason":"fixture"},"slots":[]}
+{"label":"firstCreate","kind":"EMPTY","marker":null,"slots":[]}
+{"label":"malformed","kind":"STORAGE_UNAVAILABLE","freeze":"TX_STATE_CORRUPT","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"PENDING","expectedRevision":null,"targetRevision":"1","createdAtMs":1,"updatedAtMs":2,"reason":"fixture","confirmedRevision":"1e3","priorSaveHistory":"CONFIRMED_VALID"},"slots":[]}
+{"label":"frozenValid","kind":"STORAGE_UNAVAILABLE","freeze":"SAVE_DISAPPEARED_PENDING_RECOVERY","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"FROZEN","expectedRevision":null,"targetRevision":"1","createdAtMs":1,"updatedAtMs":2,"reason":"fixture","priorSaveHistory":"CONFIRMED_VALID","confirmedRevision":"10"},"slots":[]}
+{"label":"valid lower than large Nat","kind":"STORAGE_UNAVAILABLE","freeze":"REVISION_REGRESSION_PENDING_RECOVERY","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"PENDING","expectedRevision":null,"targetRevision":"1","createdAtMs":1,"updatedAtMs":2,"reason":"fixture","confirmedRevision":"9007199254740993","priorSaveHistory":"CONFIRMED_VALID"},"slots":[["save_slot_0.json","1"]]}
+{"label":"repeat partial read","kind":"STORAGE_UNAVAILABLE","freeze":"PARTIAL_IO_UNAVAILABLE","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"PENDING","expectedRevision":null,"targetRevision":"1","createdAtMs":1,"updatedAtMs":2,"reason":"fixture","confirmedRevision":"9007199254740993","priorSaveHistory":"CONFIRMED_VALID"},"slots":[["save_slot_0.json","1"]]}
+{"label":"retry full scan","kind":"STORAGE_UNAVAILABLE","freeze":"REVISION_REGRESSION_PENDING_RECOVERY","marker":{"version":1,"storageKey":"review.history","txId":"legacy","state":"PENDING","expectedRevision":null,"targetRevision":"1","createdAtMs":1,"updatedAtMs":2,"reason":"fixture","confirmedRevision":"9007199254740993","priorSaveHistory":"CONFIRMED_VALID"},"slots":[["save_slot_0.json","1"]]}
+<anonymous_script>:1
+{different
+ ^
+
+SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+    at JSON.parse (<anonymous>)
+    at record (file:///E:/astra05-isolated-1795758360921/astra-extra.mjs:5:166)
+    at file:///E:/astra05-isolated-1795758360921/astra-extra.mjs:8:639
+
+Node.js v24.20.0

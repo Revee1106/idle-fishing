@@ -1,0 +1,8 @@
+﻿git : Automatic merge went well; stopped before committing as requested
+At line:132 char:14
++ ... mergeOut = (git merge --no-ff --no-commit 5bcc9accfe6dfd60e0da0de0fa4 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Automatic merge...ng as requested:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+

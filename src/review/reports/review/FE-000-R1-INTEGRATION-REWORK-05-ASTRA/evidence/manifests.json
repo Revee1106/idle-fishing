@@ -1,0 +1,2674 @@
+{
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION\\FILES.sha256": {
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts": [
+      "2d516bb8937097f62ef6d570a8ff2c3c642c6d10f930498d502dd5c3b0e78542",
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts": [
+      "d87329d2ae93a9158ca3676bdff9224adc1605a66b98a039d71312f1fd7ae912",
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d"
+    ],
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts": [
+      "21dd07f98ea2d69fbbbda0dc103460c8206135bbf57fd666deb621f6e42c1946",
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e"
+    ],
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts": [
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c",
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/IMPLEMENTATION_REPORT.md": [
+      "1e8aa5a13703703fa1f40931060ba22ab7da42ce9ae07de1ffd177ff979498f3",
+      "1e8aa5a13703703fa1f40931060ba22ab7da42ce9ae07de1ffd177ff979498f3"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/INTEGRATION_HANDOFF.md": [
+      "4d93252c5615111f5a4e7e864d2f383a88d50c4598f08edd2674088ba5de3e02",
+      "4d93252c5615111f5a4e7e864d2f383a88d50c4598f08edd2674088ba5de3e02"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/ISSUE_REPORT.md": [
+      "e816b1171d2e649f57d85e8d93f28a1868cdd39dc18acc3396fed4bba2a111d4",
+      "e816b1171d2e649f57d85e8d93f28a1868cdd39dc18acc3396fed4bba2a111d4"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/TASK.md": [
+      "4824c02b8f132e629ef41d1214603f3751db1c97bdd8dab7443a04535a780a0a",
+      "4824c02b8f132e629ef41d1214603f3751db1c97bdd8dab7443a04535a780a0a"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/TEST_REPORT.md": [
+      "c283cbfbebcada9b09635b2f30acaf8b5d7d6eb23abae12016705a8ee1687b27",
+      "c283cbfbebcada9b09635b2f30acaf8b5d7d6eb23abae12016705a8ee1687b27"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/legacy-358b111-compat-results.json": [
+      "49b1a8522144218a1c8469d5490486c5200cf912dfc3f96e2828bf094fbee934",
+      "49b1a8522144218a1c8469d5490486c5200cf912dfc3f96e2828bf094fbee934"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/legacy-358b111-saves.json": [
+      "21c750c5c52701d29183c64fe9965798140b18cf4df4c69c32ddb2d3159e0258",
+      "21c750c5c52701d29183c64fe9965798140b18cf4df4c69c32ddb2d3159e0258"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-modal.png": [
+      "5627e5bebd61b72325c55086fec308a153320a50f58206a4552a6a97b4c2ae8c",
+      "5627e5bebd61b72325c55086fec308a153320a50f58206a4552a6a97b4c2ae8c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-overview.png": [
+      "301aaa2c5ea129d4aed70cab422c20a8b99306e42f13b98a6193f62d81c86294",
+      "301aaa2c5ea129d4aed70cab422c20a8b99306e42f13b98a6193f62d81c86294"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-perf24h.png": [
+      "5b2ae93dc23de4d270d4c1f36ce8d69fd81c3ac8ac58bcd029b2fb32cfd4cc86",
+      "5b2ae93dc23de4d270d4c1f36ce8d69fd81c3ac8ac58bcd029b2fb32cfd4cc86"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-platform.png": [
+      "aca07f20cf311a4d59cbebe717411c5592bf14a454d9a669c7d6f4a6ff73d11d",
+      "aca07f20cf311a4d59cbebe717411c5592bf14a454d9a669c7d6f4a6ff73d11d"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-web-results.json": [
+      "8712fbacd9d0a6a299bc72b4de1fbdc2ee16913a7eae927428474d462821baa6",
+      "8712fbacd9d0a6a299bc72b4de1fbdc2ee16913a7eae927428474d462821baa6"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/phase1-baseline/phase1-wechat-audit.json": [
+      "0df99e43ac228ec0f3455684f0c86d4021c66f70eabb679550c36feacfb63843",
+      "0df99e43ac228ec0f3455684f0c86d4021c66f70eabb679550c36feacfb63843"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-build-manifest.json": [
+      "50a8e76f97585be383ff1fc2ba9dc7577c438a77e6fcb7840178273055c7dbaf",
+      "50a8e76f97585be383ff1fc2ba9dc7577c438a77e6fcb7840178273055c7dbaf"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-modal.png": [
+      "371febcba7af9136a072dfd0740978ffad30e39e3b8db2ee867e8e3cf288ad92",
+      "371febcba7af9136a072dfd0740978ffad30e39e3b8db2ee867e8e3cf288ad92"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-overview.png": [
+      "dbf0ff866adcbcb04fa145df549b4ed8752c407f6cbdd956d7a6508eeff0777c",
+      "dbf0ff866adcbcb04fa145df549b4ed8752c407f6cbdd956d7a6508eeff0777c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-perf24h.png": [
+      "ad736ad1a01505233df7d2155a0f39814f0e0c7c1a1659d08b3f22406fe3d563",
+      "ad736ad1a01505233df7d2155a0f39814f0e0c7c1a1659d08b3f22406fe3d563"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-platform.png": [
+      "23924bdd17053e3fe7a99a525e5a3d86b0e82eccc976e51ef5016e843b42e5c0",
+      "23924bdd17053e3fe7a99a525e5a3d86b0e82eccc976e51ef5016e843b42e5c0"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/web-integrated/r1-green-web-results.json": [
+      "4b770826c005772669e2356c601d026be7e0c39924a0d36d1b18bff22e95d91d",
+      "4b770826c005772669e2356c601d026be7e0c39924a0d36d1b18bff22e95d91d"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/evidence/wechat-integrated-audit.json": [
+      "96cccfb1876ee9fa64b1f673986abb069c3fce8e2a8a6d61d9bb664c1c6f740e",
+      "96cccfb1876ee9fa64b1f673986abb069c3fce8e2a8a6d61d9bb664c1c6f740e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-build-cocos-core.log": [
+      "1ad2cced526eecdc13143b43dd3b29b698fda39c62e68e75c6f81bc7be2e96da",
+      "1ad2cced526eecdc13143b43dd3b29b698fda39c62e68e75c6f81bc7be2e96da"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-build-web.log": [
+      "a0ce14f0fbb61fefc464c8ec4ed4fb735b660a6c3acda1f1ee8ff030aa1f032b",
+      "a0ce14f0fbb61fefc464c8ec4ed4fb735b660a6c3acda1f1ee8ff030aa1f032b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-build-wechat.log": [
+      "6340178864b70880a0ee1531293914240e606476e583b04f7110201e447a4200",
+      "6340178864b70880a0ee1531293914240e606476e583b04f7110201e447a4200"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-module-resolution.log": [
+      "76a4a77e9202ed424669ca7d72565ad17577535f756795ce2f465a16248c1b43",
+      "76a4a77e9202ed424669ca7d72565ad17577535f756795ce2f465a16248c1b43"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-npm-ci.log": [
+      "4d45751979a4116d028b45c84fae49ba5345a5cee17e7e5226067ba0bda5bb32",
+      "4d45751979a4116d028b45c84fae49ba5345a5cee17e7e5226067ba0bda5bb32"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-test-frontend.log": [
+      "0ae3e2ed90491469120e6838e39b54d5c1c58f3bd9647e68f1e4a69607cfd679",
+      "0ae3e2ed90491469120e6838e39b54d5c1c58f3bd9647e68f1e4a69607cfd679"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-typecheck-after-build.log": [
+      "6e4cfc1227ffa86d28db526e2f3c59984f4fbb84fe781be332b3dfa8fda5ccc8",
+      "6e4cfc1227ffa86d28db526e2f3c59984f4fbb84fe781be332b3dfa8fda5ccc8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-typecheck.log": [
+      "aef0854e4dc70c70165c24761947e526817196ef09685eaea9c0c9c3dd74c707",
+      "aef0854e4dc70c70165c24761947e526817196ef09685eaea9c0c9c3dd74c707"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-verify-web.log": [
+      "04044599af36bd319f39fafc0f9988ccfb4ebb6b2bbef0097117d4c32e228501",
+      "04044599af36bd319f39fafc0f9988ccfb4ebb6b2bbef0097117d4c32e228501"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase1-verify-wechat.log": [
+      "e68d7e8c12178f2baa02a611612076fbb22a81c722c56df83e446df94e4fc132",
+      "e68d7e8c12178f2baa02a611612076fbb22a81c722c56df83e446df94e4fc132"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase2-backend-diff.log": [
+      "0bf70deddda45f0e0108e81b2c8cde8483a3f61230e16021cc33cb42073b1106",
+      "0bf70deddda45f0e0108e81b2c8cde8483a3f61230e16021cc33cb42073b1106"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase2-git-merge.log": [
+      "8d49629981f0a219c7a30699fae56f8deb2040706a8df28c31ac1c5f7ac79610",
+      "8d49629981f0a219c7a30699fae56f8deb2040706a8df28c31ac1c5f7ac79610"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase3-backend-verify.log": [
+      "2131311b3586f235f92efc805cca3345b5213c72954fd62f133711f5f6c153ac",
+      "2131311b3586f235f92efc805cca3345b5213c72954fd62f133711f5f6c153ac"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase3-pre-adapt-frontend-test.log": [
+      "c2d3ec35307e3c103ce6dad845b5bb3cc043fc6c4802ebfb96eb3c7a11ed7f20",
+      "c2d3ec35307e3c103ce6dad845b5bb3cc043fc6c4802ebfb96eb3c7a11ed7f20"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase4-legacy-probe.log": [
+      "b56de78f476b0b9e28439b746cecce785e31d4eb18b5e1c4beb77b292131fbe7",
+      "b56de78f476b0b9e28439b746cecce785e31d4eb18b5e1c4beb77b292131fbe7"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-backend-perf.log": [
+      "630855f434352b959f44c436d41d75c1053e8b5db12d2c3fe49e6b6aff89c490",
+      "630855f434352b959f44c436d41d75c1053e8b5db12d2c3fe49e6b6aff89c490"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-backend-verify.log": [
+      "ba179d1289c146a0eeddb95ad3950cb8542f999a179eddac1ca07b9a0499dd9b",
+      "ba179d1289c146a0eeddb95ad3950cb8542f999a179eddac1ca07b9a0499dd9b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-build-web.log": [
+      "2815acbf021eeac39767066f6013fa353fc14e446cb0b1de2d37ede15a073b17",
+      "2815acbf021eeac39767066f6013fa353fc14e446cb0b1de2d37ede15a073b17"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-build-wechat.log": [
+      "74c977ebb64fa82c99470b69976ec7556218dd33587a6e7e343c7e795e2213a0",
+      "74c977ebb64fa82c99470b69976ec7556218dd33587a6e7e343c7e795e2213a0"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-frontend-tests.log": [
+      "035e2159e05da97f97348c9940e5988554afa3e8fce068170b3657b3621fb54d",
+      "035e2159e05da97f97348c9940e5988554afa3e8fce068170b3657b3621fb54d"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-frontend-typecheck.log": [
+      "6e4cfc1227ffa86d28db526e2f3c59984f4fbb84fe781be332b3dfa8fda5ccc8",
+      "6e4cfc1227ffa86d28db526e2f3c59984f4fbb84fe781be332b3dfa8fda5ccc8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-review-a1-a8.log": [
+      "5e318ecb3059e9fba1ed62869c03026037314b3290ba8702fa5b5c18ed39911b",
+      "5e318ecb3059e9fba1ed62869c03026037314b3290ba8702fa5b5c18ed39911b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-typecheck-cocos.log": [
+      "9fb61a7f93688248ef1f41ca44733a025cc0ae33ab7b165c19416f3e05ec0ae3",
+      "9fb61a7f93688248ef1f41ca44733a025cc0ae33ab7b165c19416f3e05ec0ae3"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-verify-web.log": [
+      "46284bfefe3458156b91c3516fc67a4d6cac01405d806461839e7287f990a317",
+      "46284bfefe3458156b91c3516fc67a4d6cac01405d806461839e7287f990a317"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-verify-wechat.log": [
+      "7d45788512f85c4ef2f0ceb1c543736d8544ec38f2a5d9ecfbe696f5643f8b13",
+      "7d45788512f85c4ef2f0ceb1c543736d8544ec38f2a5d9ecfbe696f5643f8b13"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-wechat-cli-check.log": [
+      "63a46f568405c222bbfeb93ee8cb0216403ee9b7d70489a934bb5a9a3b81a654",
+      "63a46f568405c222bbfeb93ee8cb0216403ee9b7d70489a934bb5a9a3b81a654"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-zero-test-empty.log": [
+      "f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295",
+      "f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION/logs/phase7-zero-test-missing.log": [
+      "f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295",
+      "f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295"
+    ],
+    "tests/frontend/fe-000/platform-and-core.test.ts": [
+      "2a996c0180766b00998baa8d4bd309ca50e82c3e1818ada2338c62ee4dc60b5e",
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7"
+    ],
+    "tests/frontend/fe-000/verify-web-build.mjs": [
+      "208e9a817d16f3da7c7bdff8369dbd14ecac6c08b3af250b341c2d5ac3e22d5d",
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12"
+    ]
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-01\\FILES-REWORK.sha256": {
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts": [
+      "05176cae79779f4b067c9f259288e0ebc4910766a5ca1f8ce4be8f6c82770e05",
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423"
+    ],
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts": [
+      "038aad7effc8f612109a2ad86173b227a751702856f31dfcf19f8de023b0be7d",
+      "6ce9912cd0bd5923cf00d7f2fd3ee7c547ca0e422e48739df99aa3f52cc826c2"
+    ],
+    "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts": [
+      "2df346c5e2d5774b349356f761433ab268debb6bf89ca8559fa204c780205038",
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformTypes.ts": [
+      "eeaae3e62440c1ef57be39c6a501a85ba69684a0ba265f4eea679471fc757259",
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts": [
+      "de9dbba105d76b14351973d6c9c0af0bba4afbb3933d5136a2cb219a34d519bd",
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts": [
+      "9e59956c7f3c810fc27000fd63ea21657fb26d35bc38b6a62a3f16e61bf9a420",
+      "d2e31d79b1419cc936f075cbb7b026a700067ea340a53bfd60f9e9f02186e8ae"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta": [
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041",
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041"
+    ],
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts": [
+      "0b3c2aa3e77ca4bcfc06c488592a7e7a5ad4857f6049196cb062f8458215862f",
+      "5222b3c39a058db375697d4e703a058e33dc60f343014dc74808f8a4b7d32870"
+    ],
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts": [
+      "21dd07f98ea2d69fbbbda0dc103460c8206135bbf57fd666deb621f6e42c1946",
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e"
+    ],
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts": [
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c",
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/IMPLEMENTATION_REPORT.md": [
+      "6b89d3aa02cfe3a6dc99c7697686aba7457bc0ae73bf2d0fc0a8676d12c215a9",
+      "6b89d3aa02cfe3a6dc99c7697686aba7457bc0ae73bf2d0fc0a8676d12c215a9"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/ISSUE_REPORT.md": [
+      "51c84c4ef5a1f694c40898aac6da4d18413201938abf368e82234c4d4566b172",
+      "51c84c4ef5a1f694c40898aac6da4d18413201938abf368e82234c4d4566b172"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/REWORK_HANDOFF.md": [
+      "71de2bdcb29dfc888159f9d5d4fe9698062ca3eee3a7db7556d3e836576ada2f",
+      "71de2bdcb29dfc888159f9d5d4fe9698062ca3eee3a7db7556d3e836576ada2f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/TASK.md": [
+      "b834ee68ca7e3e781833bbb2f140abbd126a3d81258e11cf60346bfadda5abb5",
+      "b834ee68ca7e3e781833bbb2f140abbd126a3d81258e11cf60346bfadda5abb5"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/TEST_REPORT.md": [
+      "32541f50bce2817a010e1e01adebc251082b7adf74ada1334dd14f5567c4cb19",
+      "32541f50bce2817a010e1e01adebc251082b7adf74ada1334dd14f5567c4cb19"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework-build-manifest.json": [
+      "9cf0982a5eb784f3f28c0623e348e7d06379aad1af73a8feb4beb876e5d91ede",
+      "9cf0982a5eb784f3f28c0623e348e7d06379aad1af73a8feb4beb876e5d91ede"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-modal.png": [
+      "fcb913dcb58597f57f63d62c400305f7030492bc0baca2773e94f0d67425e6bb",
+      "fcb913dcb58597f57f63d62c400305f7030492bc0baca2773e94f0d67425e6bb"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-overview.png": [
+      "b2fdf3cd5ff0f858507a41ada33fdc561ae3d0084c6f2e7d8d10f897ed7e045b",
+      "b2fdf3cd5ff0f858507a41ada33fdc561ae3d0084c6f2e7d8d10f897ed7e045b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-perf24h.png": [
+      "d35faa056fa9fdd2fa68e82c7b9feb62988dd207bd824bce2be6b13c42280ea4",
+      "d35faa056fa9fdd2fa68e82c7b9feb62988dd207bd824bce2be6b13c42280ea4"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-platform.png": [
+      "5b743509f45deafe58f4e81d416fdab5f68c76fc08ce747df3f2bced0ed7c316",
+      "5b743509f45deafe58f4e81d416fdab5f68c76fc08ce747df3f2bced0ed7c316"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/web-rework/r1-green-web-results.json": [
+      "d48a17bd1353092479dfdb092933e1239638e69decf28504c6a77faefb82d0d8",
+      "d48a17bd1353092479dfdb092933e1239638e69decf28504c6a77faefb82d0d8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/evidence/wechat-rework-audit.json": [
+      "e83a2f6c431fad13c207762ebd2444a8f8a6b8cdb50095c0885af81511e6e65b",
+      "e83a2f6c431fad13c207762ebd2444a8f8a6b8cdb50095c0885af81511e6e65b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-backend-perf.log": [
+      "20e2ec42ef6db37cdde4230ea0f690b9b3ef347cd55166ee5ee0de240754eb92",
+      "20e2ec42ef6db37cdde4230ea0f690b9b3ef347cd55166ee5ee0de240754eb92"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-backend-verify.log": [
+      "ff40615be5f9e81bfd8f63a4e892d3bb6c1220509b203c484165a8d33ec78a16",
+      "ff40615be5f9e81bfd8f63a4e892d3bb6c1220509b203c484165a8d33ec78a16"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-build-web.log": [
+      "29a3b889b06aec5b1d7627738039fd0633a20d8bc74c30f8b45e3c3bfca40acf",
+      "29a3b889b06aec5b1d7627738039fd0633a20d8bc74c30f8b45e3c3bfca40acf"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-build-wechat.log": [
+      "9a956b2a3f19c7e3a0881201b017eb1a9be9e616e46bda7b9b393f1e287c8e13",
+      "9a956b2a3f19c7e3a0881201b017eb1a9be9e616e46bda7b9b393f1e287c8e13"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-frontend-tests.log": [
+      "d9d716195d067a23b42fdb68cb178fc5b3bb17b45b7aa4ba584ef1e32f7e4175",
+      "d9d716195d067a23b42fdb68cb178fc5b3bb17b45b7aa4ba584ef1e32f7e4175"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-frontend-typecheck.log": [
+      "c069add93e0e72850d2dd5e826f263f778b0f63de8fb81d2f83fcfe11df48bc9",
+      "c069add93e0e72850d2dd5e826f263f778b0f63de8fb81d2f83fcfe11df48bc9"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-empty.log": [
+      "5de02a6a928f3a4d3066a4c3f8f433c53c95e99a59e6177cb34d74806bb68cd4",
+      "5de02a6a928f3a4d3066a4c3f8f433c53c95e99a59e6177cb34d74806bb68cd4"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-failed.log": [
+      "2780b47000a29329ec24c7a2c23838d460e36104878647af51725bf361243640",
+      "2780b47000a29329ec24c7a2c23838d460e36104878647af51725bf361243640"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-missing.log": [
+      "f86819d8492b7b14324ed2e3fc73cacb1b32d1e1d584cedc9b56caca9a988d6e",
+      "f86819d8492b7b14324ed2e3fc73cacb1b32d1e1d584cedc9b56caca9a988d6e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-mixed.log": [
+      "1108be8d97a033b78faf1d1c57dd45dee968fb7d53eba80dba1c382ad8e29b03",
+      "1108be8d97a033b78faf1d1c57dd45dee968fb7d53eba80dba1c382ad8e29b03"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-no-files.log": [
+      "dda45851da53175a7c38f84581e5ea369a21e7f7563f066ef3a7f6995f38095f",
+      "dda45851da53175a7c38f84581e5ea369a21e7f7563f066ef3a7f6995f38095f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-passed.log": [
+      "248e6562227a34d01fb645e05967dd7a516a8aed8b77aa511414208720103ed7",
+      "248e6562227a34d01fb645e05967dd7a516a8aed8b77aa511414208720103ed7"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-p1-03-skipped.log": [
+      "274e302e28279ff5db03b1ddd0dade8ef954200497ed4a20665dd40daeb294ac",
+      "274e302e28279ff5db03b1ddd0dade8ef954200497ed4a20665dd40daeb294ac"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-review-a1-a8.log": [
+      "bf609fad01dd2e2ec545103b54fe1be4b2d8e6f1e2e412857c19b0c7391e03db",
+      "bf609fad01dd2e2ec545103b54fe1be4b2d8e6f1e2e412857c19b0c7391e03db"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-typecheck-cocos.log": [
+      "b2c31d72c191303add87d2e1ab4438e1f1b2cf1c893c726ea0ecac2fee1d5226",
+      "b2c31d72c191303add87d2e1ab4438e1f1b2cf1c893c726ea0ecac2fee1d5226"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-verify-web.log": [
+      "6677f8ce34ee8047d9c298e16b98255a9f473da576c58ca6779f0e167f8c0f51",
+      "6677f8ce34ee8047d9c298e16b98255a9f473da576c58ca6779f0e167f8c0f51"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-01/logs/rework-verify-wechat.log": [
+      "b30efb88125f04eb70f1782f89a481f1c76102f1dc7f6877605d3c6d051cd78f",
+      "b30efb88125f04eb70f1782f89a481f1c76102f1dc7f6877605d3c6d051cd78f"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-empty.test.ts": [
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-failed.test.ts": [
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2",
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed.test.ts": [
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc",
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-passed.test.ts": [
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591",
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-skipped.test.ts": [
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43",
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43"
+    ],
+    "tests/frontend/fe-000/platform-and-core.test.ts": [
+      "5e525ce9af4f241feab1ef8dc2e9017d391f3389d17929a00b2c23cec5c20de1",
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7"
+    ],
+    "tests/frontend/fe-000/run-node-tests.mjs": [
+      "65e3cbb52bafda383a2e352b1b588470c4c16840d1406e8e2cba901fe1c0a814",
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3"
+    ],
+    "tests/frontend/fe-000/tsconfig.json": [
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce",
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce"
+    ],
+    "tests/frontend/fe-000/verify-web-build.mjs": [
+      "aae3dbad457fb18792d8be156904c72035a8148ecb467aedb69d0644213f4a12",
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12"
+    ]
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-02\\FILES-REWORK.sha256": {
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts": [
+      "52ab0632c840366476462df01eacb80e88e8ba9f2573776c3632ddb73fea8b70",
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423"
+    ],
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts": [
+      "038aad7effc8f612109a2ad86173b227a751702856f31dfcf19f8de023b0be7d",
+      "6ce9912cd0bd5923cf00d7f2fd3ee7c547ca0e422e48739df99aa3f52cc826c2"
+    ],
+    "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts": [
+      "2df346c5e2d5774b349356f761433ab268debb6bf89ca8559fa204c780205038",
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformTypes.ts": [
+      "37305b8df7a533faa9016984b1924a1fc8df4b93400b69029fb52191cd1249de",
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts": [
+      "721562a8a1c90261a2ce42b9e465722db6da7d69c913d36f7a182972935dcbe4",
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts": [
+      "2904af0e303d8f3599c4296fb5e148f2960997440abc27532acc11d7f5dd755f",
+      "d2e31d79b1419cc936f075cbb7b026a700067ea340a53bfd60f9e9f02186e8ae"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta": [
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041",
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041"
+    ],
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts": [
+      "729903f8d6c469ad259f26de2f85e0217db310b64956f108a88d81de0a26f361",
+      "5222b3c39a058db375697d4e703a058e33dc60f343014dc74808f8a4b7d32870"
+    ],
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts": [
+      "21dd07f98ea2d69fbbbda0dc103460c8206135bbf57fd666deb621f6e42c1946",
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e"
+    ],
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts": [
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c",
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/IMPLEMENTATION_REPORT.md": [
+      "4156c052c1fe8ad0f650d87064259780e2e4c05401c77bef8c9f6f30df4b260e",
+      "4156c052c1fe8ad0f650d87064259780e2e4c05401c77bef8c9f6f30df4b260e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/ISSUE_REPORT.md": [
+      "aa3ce9a37873f077cbcb6d3f0d31d90c83c320e853e5630718861c0deec19d99",
+      "aa3ce9a37873f077cbcb6d3f0d31d90c83c320e853e5630718861c0deec19d99"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/REWORK_HANDOFF.md": [
+      "3699014027794cbc6ef38f3b0d89239e3be3ddfb39e7590e40b0cf70ba272c43",
+      "3699014027794cbc6ef38f3b0d89239e3be3ddfb39e7590e40b0cf70ba272c43"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/TASK.md": [
+      "f678c2c95ebccc838d851453a892fd4a8a8a3980d1e0c82e8af71c000f399cbf",
+      "f678c2c95ebccc838d851453a892fd4a8a8a3980d1e0c82e8af71c000f399cbf"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/TEST_REPORT.md": [
+      "14de48d298bebb4099084453ba21ff0a2f1f5edb60ae90d18a682c385f0681ff",
+      "14de48d298bebb4099084453ba21ff0a2f1f5edb60ae90d18a682c385f0681ff"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02-build-manifest.json": [
+      "d4b46a50f427d71d7fbc465533d9a0ca849ecf46a75f796dece792c2c82c55eb",
+      "d4b46a50f427d71d7fbc465533d9a0ca849ecf46a75f796dece792c2c82c55eb"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-modal.png": [
+      "583daac807af37fd413e830907470bc9343434d04c344bac39cf8d46fceb861c",
+      "583daac807af37fd413e830907470bc9343434d04c344bac39cf8d46fceb861c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-overview.png": [
+      "921621244ca185680a0a2875f783096e6958e7b086b6794ad3a63821990e05a2",
+      "921621244ca185680a0a2875f783096e6958e7b086b6794ad3a63821990e05a2"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-perf24h.png": [
+      "ab1d7e950daf3a2852d07b3f2acf40a144b97a5610cfbf703335400453c604e9",
+      "ab1d7e950daf3a2852d07b3f2acf40a144b97a5610cfbf703335400453c604e9"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-platform.png": [
+      "ad5bd2d4142f99e86be02adc678559cea95eaae4fa99712d3b3adc46c938c0bd",
+      "ad5bd2d4142f99e86be02adc678559cea95eaae4fa99712d3b3adc46c938c0bd"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/web-rework02/r1-green-web-results.json": [
+      "018680e9558e019b033c041746e2ce5ce8e977acbf38288b84adf6b9d25ce187",
+      "018680e9558e019b033c041746e2ce5ce8e977acbf38288b84adf6b9d25ce187"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/evidence/wechat-rework02-audit.json": [
+      "86bc1865bd233c1589f62a6e1eb7fa59c2e2b749e7bbb0093ad09f63ff1a734d",
+      "86bc1865bd233c1589f62a6e1eb7fa59c2e2b749e7bbb0093ad09f63ff1a734d"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-backend-perf.log": [
+      "2a6d660c4e3cf5dadbb006e45f8adcd8588e7e4444cd50490a429f1cb05c97a2",
+      "2a6d660c4e3cf5dadbb006e45f8adcd8588e7e4444cd50490a429f1cb05c97a2"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-backend-verify.log": [
+      "e29bf670dde60de6fabe62e681fdc027fada6df47d1e0179815c2b417a85b73e",
+      "e29bf670dde60de6fabe62e681fdc027fada6df47d1e0179815c2b417a85b73e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-build-web.log": [
+      "c44f73f06db569406fb272cc935e4f2b81744ef9d4bb47920df44dcaa6b84ac1",
+      "c44f73f06db569406fb272cc935e4f2b81744ef9d4bb47920df44dcaa6b84ac1"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-build-wechat.log": [
+      "e274a21b7e2b07d62ade0fda70a7e6c9931431080a308fc0bb034128ba12abe9",
+      "e274a21b7e2b07d62ade0fda70a7e6c9931431080a308fc0bb034128ba12abe9"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-frontend-tests.log": [
+      "ac5346d81b08347ea48fafa47c3b9b6636ff475b84172acf1a9461ec106a7004",
+      "ac5346d81b08347ea48fafa47c3b9b6636ff475b84172acf1a9461ec106a7004"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-frontend-typecheck.log": [
+      "5f1e259a02bcaa51d1bb433d99035f0aaead8fb156c90f61f66cd4c441d5f2e5",
+      "5f1e259a02bcaa51d1bb433d99035f0aaead8fb156c90f61f66cd4c441d5f2e5"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-01-empty.log": [
+      "9423c8d89b61fa496f07d6427c2ee3f0b0ac067d9388319f86aa0a2cb1992252",
+      "9423c8d89b61fa496f07d6427c2ee3f0b0ac067d9388319f86aa0a2cb1992252"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-02-skipped.log": [
+      "49652cc569d0defca28f01011ccf19c9632e59db22893673f7d53b8f3be2d75c",
+      "49652cc569d0defca28f01011ccf19c9632e59db22893673f7d53b8f3be2d75c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-03-todo.log": [
+      "db58443264fd06025f337cd04d50c0e4ba7492a2cf7b59ffeb0ea30c2fbd93b9",
+      "db58443264fd06025f337cd04d50c0e4ba7492a2cf7b59ffeb0ea30c2fbd93b9"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-04-parent-only-skip.log": [
+      "851b582cfaecd8600a234c897e2fe0b883e972c85877cfc89bb71da97d2e0fd1",
+      "851b582cfaecd8600a234c897e2fe0b883e972c85877cfc89bb71da97d2e0fd1"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-05-parent-only-todo.log": [
+      "862fa47879727f474d6abb2b8b28d213b755e24f66b11a424fb9dce047b08bb8",
+      "862fa47879727f474d6abb2b8b28d213b755e24f66b11a424fb9dce047b08bb8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-06-parent-one-pass.log": [
+      "07f1e18594d0f7b2486f49eb73523f4290aa7059eb37d074c4976b4a6d19da43",
+      "07f1e18594d0f7b2486f49eb73523f4290aa7059eb37d074c4976b4a6d19da43"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-07-deep-nested.log": [
+      "7cb992c855a9eefa5419c3aa2d0d9ad23f36dd9afca313eca3fa3a94caf679e7",
+      "7cb992c855a9eefa5419c3aa2d0d9ad23f36dd9afca313eca3fa3a94caf679e7"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-08-multi-file-nested.log": [
+      "dcbdbe2c78f3053569f690d5c9a30f522c99efbc5eac1e8ade09b9c9d8b42d95",
+      "dcbdbe2c78f3053569f690d5c9a30f522c99efbc5eac1e8ade09b9c9d8b42d95"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-09-multi-fail.log": [
+      "c637f4803765b62115a64f741bc0dc9815d21fcc676bdc70efd3d606bcadcfd8",
+      "c637f4803765b62115a64f741bc0dc9815d21fcc676bdc70efd3d606bcadcfd8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-10-mixed-fail.log": [
+      "034adb98380af98aa2200ee685dbdc7b491f38c80f042b7436f2bf41d697be00",
+      "034adb98380af98aa2200ee685dbdc7b491f38c80f042b7436f2bf41d697be00"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-11-load-crash.log": [
+      "e9535f6b99882ae559a9b30cf7f2508169ebe69bb04da58f2fddf0c033542a59",
+      "e9535f6b99882ae559a9b30cf7f2508169ebe69bb04da58f2fddf0c033542a59"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-12-early-exit.log": [
+      "3ca8ae3e4a3e47f60d8f8545c8ac82c2e0c8996dc2b0a404effbfa4d97489b4e",
+      "3ca8ae3e4a3e47f60d8f8545c8ac82c2e0c8996dc2b0a404effbfa4d97489b4e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-13-uncaught.log": [
+      "e3779786c032c9afd89e0a52d3e8c24517db51aa10e58e69fdfbeb9207d5f0da",
+      "e3779786c032c9afd89e0a52d3e8c24517db51aa10e58e69fdfbeb9207d5f0da"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-14-terminated.log": [
+      "86c8c63d4f8b0da1a2860cb730c03b385ecdf8ca74df56074b66d988ea7ea137",
+      "86c8c63d4f8b0da1a2860cb730c03b385ecdf8ca74df56074b66d988ea7ea137"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-15-passed.log": [
+      "e38266c883a00eeee18f1cfef8134ef5ed4562145876421134a2ad4a7fd32fed",
+      "e38266c883a00eeee18f1cfef8134ef5ed4562145876421134a2ad4a7fd32fed"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-16-mixed-pass-skip.log": [
+      "12cf7fafaea416aed3f1b3b8abef95da4293bfe874999b063e28a334fba5f092",
+      "12cf7fafaea416aed3f1b3b8abef95da4293bfe874999b063e28a334fba5f092"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-17-no-files.log": [
+      "ace49c3556624c0ac3bd380d410a3a6602d162127af8c1e658e44f90309e0e29",
+      "ace49c3556624c0ac3bd380d410a3a6602d162127af8c1e658e44f90309e0e29"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p1-03-18-missing-file.log": [
+      "eabd9a7e99059f6e0cb208836b910617447b37b248bc87c642d884a67696a1a9",
+      "eabd9a7e99059f6e0cb208836b910617447b37b248bc87c642d884a67696a1a9"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-p2-05-unsafe-outdir.log": [
+      "bf5951495179e88bae4273a7637491e658d4bed0e86e952eebe9bbf9eab3a514",
+      "bf5951495179e88bae4273a7637491e658d4bed0e86e952eebe9bbf9eab3a514"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-review-a1-a8.log": [
+      "0d3fe263118f6b059b908a49baf5e9dcf77ac87d486ced14bf4f6e05f3cc10da",
+      "0d3fe263118f6b059b908a49baf5e9dcf77ac87d486ced14bf4f6e05f3cc10da"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-typecheck-cocos.log": [
+      "640915208634a8f025373b3b5d0421430733eb47e14890575dd9a2b39955d97f",
+      "640915208634a8f025373b3b5d0421430733eb47e14890575dd9a2b39955d97f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-verify-web.log": [
+      "f2115a4e42db5675fcf7150d9ea8140de6f14f47965a87dd8f17dfe8ef4632d8",
+      "f2115a4e42db5675fcf7150d9ea8140de6f14f47965a87dd8f17dfe8ef4632d8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-02/logs/r2-verify-wechat.log": [
+      "8f9782854dd94634b1048174fccb3f4164fadd2a2c261cf6dbdad1881733d5a1",
+      "8f9782854dd94634b1048174fccb3f4164fadd2a2c261cf6dbdad1881733d5a1"
+    ],
+    "tests/frontend/fe-000/node-test-worker.mjs": [
+      "a055482a214316cd82e71cefee89ff4481cb738f3fd1eb9e34c5b75854a20006",
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93"
+    ],
+    "tests/frontend/fe-000/platform-and-core.test.ts": [
+      "8795d6e31d4eea52977be30b2206e7e36858973d261c7da03e57a362966d2080",
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7"
+    ],
+    "tests/frontend/fe-000/run-node-tests.mjs": [
+      "c4093499984ea08198543d68e838534e900ae64aeb30349c4c115c5a125818c3",
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3"
+    ],
+    "tests/frontend/fe-000/safe-path-guard.mjs": [
+      "8b7dd80fd36951f91fc0afcb4db3811312b6927a91e147dbabdca4badc4c0068",
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92"
+    ],
+    "tests/frontend/fe-000/tsconfig.json": [
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce",
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce"
+    ],
+    "tests/frontend/fe-000/verify-web-build.mjs": [
+      "84a4b47eaf8dc187866b45668abb2030a4aec1feac56093b29e61b3eb5d04a74",
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-deep-nested.test.ts": [
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1",
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-early-exit.test.ts": [
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302",
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-empty.test.ts": [
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-failed.test.ts": [
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2",
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-load-crash.test.ts": [
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b",
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed-fail.test.ts": [
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79",
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed.test.ts": [
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc",
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-fail.test.ts": [
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984",
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-nested.test.ts": [
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4",
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-one-pass.test.ts": [
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67",
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-skip.test.ts": [
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409",
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-todo.test.ts": [
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73",
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-passed.test.ts": [
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591",
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-skipped.test.ts": [
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43",
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-terminated.test.ts": [
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d",
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo.test.ts": [
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7",
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-uncaught.test.ts": [
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604",
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604"
+    ]
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-03\\FILES-REWORK.sha256": {
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts": [
+      "1a1f910670af513834106389c998e868db024fe59130621b7c2b77751c0a299a",
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423"
+    ],
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts": [
+      "ab977ee64bc66a404fb6abc9102a6d770673fccae5d784547d4529ceda2e0e10",
+      "6ce9912cd0bd5923cf00d7f2fd3ee7c547ca0e422e48739df99aa3f52cc826c2"
+    ],
+    "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts": [
+      "fd8a0e6e06f71dc255e9e8a4b8b5a0698f2b2fbb087c93e9a32e2f66fcffea69",
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformTypes.ts": [
+      "e790f6f23bfbd501f6c2c881870d954018821685e99c1086460610747c060ead",
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts": [
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d",
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts": [
+      "ca9468272379ee7a6ac4d620ca5adb4670c589582aeec121544aa2345afcfe92",
+      "d2e31d79b1419cc936f075cbb7b026a700067ea340a53bfd60f9e9f02186e8ae"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta": [
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041",
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041"
+    ],
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts": [
+      "729903f8d6c469ad259f26de2f85e0217db310b64956f108a88d81de0a26f361",
+      "5222b3c39a058db375697d4e703a058e33dc60f343014dc74808f8a4b7d32870"
+    ],
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts": [
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e",
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e"
+    ],
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts": [
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c",
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/IMPLEMENTATION_REPORT.md": [
+      "ef03fb00084a588154efc7f574e711b06331c7eafead5452feb2a46b6209c9c1",
+      "ef03fb00084a588154efc7f574e711b06331c7eafead5452feb2a46b6209c9c1"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/ISSUE_REPORT.md": [
+      "4a4d4e1b523cfbfb358cdce80dce2f06bf1d0a866482b130549233b7f44468a5",
+      "4a4d4e1b523cfbfb358cdce80dce2f06bf1d0a866482b130549233b7f44468a5"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/REWORK_HANDOFF.md": [
+      "937060c736012137f7f2476b7a286c821f7d8bb17119677cdb57a5240907ed3a",
+      "937060c736012137f7f2476b7a286c821f7d8bb17119677cdb57a5240907ed3a"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/TASK.md": [
+      "ac3377c9b08d39aca561d5a212b0bae07046c5daab64f4a88290220b55a36d4c",
+      "ac3377c9b08d39aca561d5a212b0bae07046c5daab64f4a88290220b55a36d4c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/TEST_REPORT.md": [
+      "fc6ffbb3abe84e19b62c770f1d4e78723d93215b5b5b125d7332d1b7c37a3e9d",
+      "fc6ffbb3abe84e19b62c770f1d4e78723d93215b5b5b125d7332d1b7c37a3e9d"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03-build-manifest.json": [
+      "e596f24c55aef87cccffdd5bbb28aafd342d489fcaa040f7df675440795b6302",
+      "e596f24c55aef87cccffdd5bbb28aafd342d489fcaa040f7df675440795b6302"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03-repeat/r1-green-modal.png": [
+      "6db4cd5e7b9b1380818b977b9ff946d6b7b21d7249aad069a3323598afc32212",
+      "6db4cd5e7b9b1380818b977b9ff946d6b7b21d7249aad069a3323598afc32212"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03-repeat/r1-green-overview.png": [
+      "ddd7f47b5e04251c477d7f18b3c962c6561585944fd7b0bea6f59e2e68b5b11e",
+      "ddd7f47b5e04251c477d7f18b3c962c6561585944fd7b0bea6f59e2e68b5b11e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03-repeat/r1-green-perf24h.png": [
+      "39a57538ff02fc0379d2dd01ce797578cdcbfad93ee427cdef2b5c3a2a04872f",
+      "39a57538ff02fc0379d2dd01ce797578cdcbfad93ee427cdef2b5c3a2a04872f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03-repeat/r1-green-platform.png": [
+      "50e6bd979132f0a9f1a5b8107e5787d8545ecd1c3d4e8041b97c04d4a63fb4aa",
+      "50e6bd979132f0a9f1a5b8107e5787d8545ecd1c3d4e8041b97c04d4a63fb4aa"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03-repeat/r1-green-web-results.json": [
+      "3dd69b5e17fcba1c6a73125044b4b6d5eee0c703254f2ed3692150f4bec8eeb0",
+      "3dd69b5e17fcba1c6a73125044b4b6d5eee0c703254f2ed3692150f4bec8eeb0"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03/r1-green-modal.png": [
+      "c6a2a69d97a2eda568670f7ff4e3512d3421a347e3834abcbe3cf3b1ba7d6003",
+      "c6a2a69d97a2eda568670f7ff4e3512d3421a347e3834abcbe3cf3b1ba7d6003"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03/r1-green-overview.png": [
+      "423a38285baf4535ebc66b7635905692e6ad21f19b1cfcd109bcc679e8106c42",
+      "423a38285baf4535ebc66b7635905692e6ad21f19b1cfcd109bcc679e8106c42"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03/r1-green-perf24h.png": [
+      "1fd9d47fc53d66735faef8c6e953d42fa5ecd7313908cd635ac874c610442c41",
+      "1fd9d47fc53d66735faef8c6e953d42fa5ecd7313908cd635ac874c610442c41"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03/r1-green-platform.png": [
+      "a378eb975b861b85fbbf5c8255ae87e2bb6c4da045748d84e4c0b892f640ebb3",
+      "a378eb975b861b85fbbf5c8255ae87e2bb6c4da045748d84e4c0b892f640ebb3"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/web-rework03/r1-green-web-results.json": [
+      "fa799c1e62d844bf894b4f9f29f2190de8eb315f090275c4148a853155a87da8",
+      "fa799c1e62d844bf894b4f9f29f2190de8eb315f090275c4148a853155a87da8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/evidence/wechat-rework03-audit.json": [
+      "ac9f6edad708e4b612d99ca889c362f3add3d66e4c7766c304db13ea0daebc7a",
+      "ac9f6edad708e4b612d99ca889c362f3add3d66e4c7766c304db13ea0daebc7a"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a07-hanging-timeout.log": [
+      "2ba977ef4e4ef1ba729bc35744ca4b5193fab11d1c63e31d6863b8e36f6b8e04",
+      "2ba977ef4e4ef1ba729bc35744ca4b5193fab11d1c63e31d6863b8e36f6b8e04"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a07-only-todo-throws.log": [
+      "74beb7006d45dc055b171f7337f258f899f28e3505460938de2403289c2b6002",
+      "74beb7006d45dc055b171f7337f258f899f28e3505460938de2403289c2b6002"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a07-todo-throws.log": [
+      "74d3c20a25e69a548413470220b1ca2a473362c087fe192aa54c6c506cc08cb8",
+      "74d3c20a25e69a548413470220b1ca2a473362c087fe192aa54c6c506cc08cb8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-a08-unsafe-outdir.log": [
+      "a55fa52b3bb73d61c7b57c3d08c76942c41c804a149c015df19d667bb82e0d7f",
+      "a55fa52b3bb73d61c7b57c3d08c76942c41c804a149c015df19d667bb82e0d7f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-backend-perf.log": [
+      "1c6a07ed2c11d1fe6d36143c2dc728f951aebe33b0b6d9d29d404370950bdc51",
+      "1c6a07ed2c11d1fe6d36143c2dc728f951aebe33b0b6d9d29d404370950bdc51"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-backend-verify.log": [
+      "aacd9c6d6ef4da7fa176391dbd4d1b1ce4c557ebce3a4bd9c77be1fae83a6be2",
+      "aacd9c6d6ef4da7fa176391dbd4d1b1ce4c557ebce3a4bd9c77be1fae83a6be2"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-build-web.log": [
+      "baeb8daba8ddce3c7d08d1cf419ffc4f873ea0d5b39c2209f9250bcdc01a8aa5",
+      "baeb8daba8ddce3c7d08d1cf419ffc4f873ea0d5b39c2209f9250bcdc01a8aa5"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-build-wechat.log": [
+      "125badb28e4662dc9fe18b85601dd353a289c2b035382501cf19109c6fd23e1e",
+      "125badb28e4662dc9fe18b85601dd353a289c2b035382501cf19109c6fd23e1e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-frontend-tests.log": [
+      "2635bb68d6084890b9e06c90d26462710b2c58178ba3a79ba02ef7c9e5323c53",
+      "2635bb68d6084890b9e06c90d26462710b2c58178ba3a79ba02ef7c9e5323c53"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-frontend-typecheck.log": [
+      "2490ac44ff036165b8554568d8fb6aaae064e7eabe8220f38ad166b7b8712ad4",
+      "2490ac44ff036165b8554568d8fb6aaae064e7eabe8220f38ad166b7b8712ad4"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-review-a1-a8.log": [
+      "b83416a149d4315a26ebe39bc8d2b6903dbb89318670ca5fe2d8ef8551415695",
+      "b83416a149d4315a26ebe39bc8d2b6903dbb89318670ca5fe2d8ef8551415695"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-typecheck-cocos.log": [
+      "35b72fe9a8207d3817420db4bec16f6ef4464c49952f5bda82452e5df6ab8618",
+      "35b72fe9a8207d3817420db4bec16f6ef4464c49952f5bda82452e5df6ab8618"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-verify-web-run1.log": [
+      "07ca63954d5be6ea5c1ffd17dcb288a5d93f97e2c018c9ea9d82c9bf689999ad",
+      "07ca63954d5be6ea5c1ffd17dcb288a5d93f97e2c018c9ea9d82c9bf689999ad"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-verify-web-run2.log": [
+      "a5b0b8d6cc407f0bf2c6adc9fb1a6ed340b18e7b6b663e8cd0803317e2e7ef47",
+      "a5b0b8d6cc407f0bf2c6adc9fb1a6ed340b18e7b6b663e8cd0803317e2e7ef47"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-03/logs/r3-verify-wechat.log": [
+      "d238e1ce90a33ceef8caedb9c0bc2da6ada3ce74db59af07a50171a0fd45df7e",
+      "d238e1ce90a33ceef8caedb9c0bc2da6ada3ce74db59af07a50171a0fd45df7e"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-deep-nested.test.ts": [
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1",
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-early-exit.test.ts": [
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302",
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-empty.test.ts": [
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-failed.test.ts": [
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2",
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-hanging.test.ts": [
+      "aabe307b0145cb2301a7469e466f645d41e185dc10c45f31f189cf3fabcad650",
+      "aabe307b0145cb2301a7469e466f645d41e185dc10c45f31f189cf3fabcad650"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-load-crash.test.ts": [
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b",
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed-fail.test.ts": [
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79",
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed.test.ts": [
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc",
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-fail.test.ts": [
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984",
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-nested.test.ts": [
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4",
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-only-todo-throws.test.ts": [
+      "0680c10601a2639f661bdb015e3270aa098e9119c6f77ebc1021f54f25855361",
+      "0680c10601a2639f661bdb015e3270aa098e9119c6f77ebc1021f54f25855361"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-one-pass.test.ts": [
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67",
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-skip.test.ts": [
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409",
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-todo.test.ts": [
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73",
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-passed.test.ts": [
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591",
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-skipped.test.ts": [
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43",
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-terminated.test.ts": [
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d",
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo-throws.test.ts": [
+      "541469bf43835336a19279188600ca4bdda8036c922edc7e09edc0d9ad36ed6a",
+      "541469bf43835336a19279188600ca4bdda8036c922edc7e09edc0d9ad36ed6a"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo.test.ts": [
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7",
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-uncaught.test.ts": [
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604",
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604"
+    ],
+    "tests/frontend/fe-000/node-test-worker.mjs": [
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93",
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93"
+    ],
+    "tests/frontend/fe-000/platform-and-core.test.ts": [
+      "830deaed9bd7338aae4f874d82702340d1cc342b39b57a798072538a2c67e663",
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7"
+    ],
+    "tests/frontend/fe-000/run-node-tests.mjs": [
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3",
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3"
+    ],
+    "tests/frontend/fe-000/safe-path-guard.mjs": [
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92",
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92"
+    ],
+    "tests/frontend/fe-000/tsconfig.json": [
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce",
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce"
+    ],
+    "tests/frontend/fe-000/verify-web-build.mjs": [
+      "a77b84c57369c209514881a157938a48c1dcec849aa0f07df906fefb9c2b1dc9",
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12"
+    ]
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-04\\FILES-REWORK.sha256": {
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts": [
+      "950dfd3be00c61d0c7456d177dbe543fea900712fe317670f4389e7df3c9a4eb",
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423"
+    ],
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts": [
+      "e72468319aae250cff9e8571cb51ab2e956de61403c6f4ce779240d06e10faf6",
+      "6ce9912cd0bd5923cf00d7f2fd3ee7c547ca0e422e48739df99aa3f52cc826c2"
+    ],
+    "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts": [
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576",
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformTypes.ts": [
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16",
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts": [
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d",
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts": [
+      "42455064e3c31d567c3182d906bd1b65a47d3c4f3ea07dfed0741db0b5a14863",
+      "d2e31d79b1419cc936f075cbb7b026a700067ea340a53bfd60f9e9f02186e8ae"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta": [
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041",
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041"
+    ],
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts": [
+      "f2a75d30dd7fa07679d6c52f202203cdb6b7d27d0e6b3d3a0cb9c6a5d3af6e8d",
+      "5222b3c39a058db375697d4e703a058e33dc60f343014dc74808f8a4b7d32870"
+    ],
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts": [
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e",
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e"
+    ],
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts": [
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c",
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/IMPLEMENTATION_REPORT.md": [
+      "e0be6b6ca4f7640810a70484da83bbc8489fc9e4d9c5f3021f5a9faa22787352",
+      "e0be6b6ca4f7640810a70484da83bbc8489fc9e4d9c5f3021f5a9faa22787352"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/ISSUE_REPORT.md": [
+      "1abf94984d2e56bc957cec654873ce932d3e145dbc38d3764bccea588eb376cf",
+      "1abf94984d2e56bc957cec654873ce932d3e145dbc38d3764bccea588eb376cf"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/REWORK_HANDOFF.md": [
+      "d6a98895f2dfe7cae5de148a7502a6190a68f0c41417504828cd00399c620479",
+      "d6a98895f2dfe7cae5de148a7502a6190a68f0c41417504828cd00399c620479"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/TASK.md": [
+      "7f78a93a9bf21789f827bbb68e720a0a5d41c818ba4284f17874cdd450ff6d89",
+      "7f78a93a9bf21789f827bbb68e720a0a5d41c818ba4284f17874cdd450ff6d89"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/TEST_REPORT.md": [
+      "d32b5905cd4548a494869a9255a73d73dc0612ae154c2b27cb1f84b68814a1a8",
+      "d32b5905cd4548a494869a9255a73d73dc0612ae154c2b27cb1f84b68814a1a8"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04-build-manifest.json": [
+      "f4cf8a6ff0e01376923cdefe3e43369ee145f89604e9726f1a46c86f0f41dc1c",
+      "f4cf8a6ff0e01376923cdefe3e43369ee145f89604e9726f1a46c86f0f41dc1c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04-repeat/r1-green-modal.png": [
+      "c5240f5b44b680aa33527922474f6900ea937f48883b5f86ec1a7a7a5e75ee2c",
+      "c5240f5b44b680aa33527922474f6900ea937f48883b5f86ec1a7a7a5e75ee2c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04-repeat/r1-green-overview.png": [
+      "645f6e97749c9e1de67a64113f78dc4da2ede2d554a3ca6f86f6af2eb6f23c2b",
+      "645f6e97749c9e1de67a64113f78dc4da2ede2d554a3ca6f86f6af2eb6f23c2b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04-repeat/r1-green-perf24h.png": [
+      "6b7e53680852d9802d5bd6ab8fd16384c88b7fe97518cb1e95876b52c52c4fe5",
+      "6b7e53680852d9802d5bd6ab8fd16384c88b7fe97518cb1e95876b52c52c4fe5"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04-repeat/r1-green-platform.png": [
+      "21e085fe59125a313abf403a07c34feab3d1b81e7c24c8f0505666f5a872b055",
+      "21e085fe59125a313abf403a07c34feab3d1b81e7c24c8f0505666f5a872b055"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04-repeat/r1-green-web-results.json": [
+      "101fb5f09d3b4df98f8b4f11a81e5ffa1c14960ed3c218f403d27d5caa4107e0",
+      "101fb5f09d3b4df98f8b4f11a81e5ffa1c14960ed3c218f403d27d5caa4107e0"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04/r1-green-modal.png": [
+      "3708e93ff759985c266ca37afd5a84ccd2162329673e48d33466952fc0add777",
+      "3708e93ff759985c266ca37afd5a84ccd2162329673e48d33466952fc0add777"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04/r1-green-overview.png": [
+      "9c6863242006e0f59f7a09cde76a692b149d7ffca6654b90d58addc7836f4e29",
+      "9c6863242006e0f59f7a09cde76a692b149d7ffca6654b90d58addc7836f4e29"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04/r1-green-perf24h.png": [
+      "a46aa734feceed653329d6f412c7aa8ea801e8c39bd0d732fad26a5f8c26e810",
+      "a46aa734feceed653329d6f412c7aa8ea801e8c39bd0d732fad26a5f8c26e810"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04/r1-green-platform.png": [
+      "fcb87ba3ec3078fa63c4b28059d0c6af37712dc33e82cbeb0ce036cd23f7be31",
+      "fcb87ba3ec3078fa63c4b28059d0c6af37712dc33e82cbeb0ce036cd23f7be31"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/web-rework04/r1-green-web-results.json": [
+      "460f1ed635b9f3b2578b6a2f7f781987aeea0a05c4dc33a17037cd1235caab13",
+      "460f1ed635b9f3b2578b6a2f7f781987aeea0a05c4dc33a17037cd1235caab13"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/evidence/wechat-rework04-audit.json": [
+      "fe71e8d3a59a868dfa1c058c83abc43652f3dd97d668303ea54a38110a43f76e",
+      "fe71e8d3a59a868dfa1c058c83abc43652f3dd97d668303ea54a38110a43f76e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-backend-perf.log": [
+      "e74bd9f004623caac0691b67a5b64281f3d055155ab705670ed1b90ef496fdee",
+      "e74bd9f004623caac0691b67a5b64281f3d055155ab705670ed1b90ef496fdee"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-backend-verify.log": [
+      "1532b3eeac24953ba0e29b9d9796318f44a974fdb0aa519394f99d8a6176c0ad",
+      "1532b3eeac24953ba0e29b9d9796318f44a974fdb0aa519394f99d8a6176c0ad"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-build-web.log": [
+      "ea9c620d8a7b30dc21c2a812cc34409604fe8bcb8d8afa9f50d7068fd50ae273",
+      "ea9c620d8a7b30dc21c2a812cc34409604fe8bcb8d8afa9f50d7068fd50ae273"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-build-wechat.log": [
+      "4b8891d7a2af8b9e37278a57dd97a6691a5f3e8c1e1bf5d58f061ff19fd49036",
+      "4b8891d7a2af8b9e37278a57dd97a6691a5f3e8c1e1bf5d58f061ff19fd49036"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-frontend-tests.log": [
+      "e3bd6e586a60e3697b1ef62cb70e64615d4006e34e512ac5f53adf39b0ecacfa",
+      "e3bd6e586a60e3697b1ef62cb70e64615d4006e34e512ac5f53adf39b0ecacfa"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-frontend-typecheck.log": [
+      "cb92e588586c2ceedc45dffee272efa039e3a004a683bda22e28961302999981",
+      "cb92e588586c2ceedc45dffee272efa039e3a004a683bda22e28961302999981"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-review-a1-a8.log": [
+      "45db1f71486a8718be53cc24c6d8575fe4d2cc706a642508a8a6f6697d564070",
+      "45db1f71486a8718be53cc24c6d8575fe4d2cc706a642508a8a6f6697d564070"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-typecheck-cocos.log": [
+      "2e36f03cb21be86c1fbfce3d6f950d68c7025179b9f97880ef0beb64de787de3",
+      "2e36f03cb21be86c1fbfce3d6f950d68c7025179b9f97880ef0beb64de787de3"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-verify-web-run1.log": [
+      "15a30fe80082c023c5922a50db427f6a0b4f82d4719d1cf7c9b5ef21e9aa0544",
+      "15a30fe80082c023c5922a50db427f6a0b4f82d4719d1cf7c9b5ef21e9aa0544"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-verify-web-run2.log": [
+      "46ca4aa3c215db26cee083684d24fa838b33b0bd5098877f80403a6af77454b7",
+      "46ca4aa3c215db26cee083684d24fa838b33b0bd5098877f80403a6af77454b7"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-04/logs/r4-verify-wechat.log": [
+      "3af817c72bc92dd0b9ff82ff52d722c5d723c6c2b561e7ecd70733a2b9a858f5",
+      "3af817c72bc92dd0b9ff82ff52d722c5d723c6c2b561e7ecd70733a2b9a858f5"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-deep-nested.test.ts": [
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1",
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-early-exit.test.ts": [
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302",
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-empty.test.ts": [
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-failed.test.ts": [
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2",
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-hanging.test.ts": [
+      "aabe307b0145cb2301a7469e466f645d41e185dc10c45f31f189cf3fabcad650",
+      "aabe307b0145cb2301a7469e466f645d41e185dc10c45f31f189cf3fabcad650"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-load-crash.test.ts": [
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b",
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed-fail.test.ts": [
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79",
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed.test.ts": [
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc",
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-fail.test.ts": [
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984",
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-nested.test.ts": [
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4",
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-only-todo-throws.test.ts": [
+      "0680c10601a2639f661bdb015e3270aa098e9119c6f77ebc1021f54f25855361",
+      "0680c10601a2639f661bdb015e3270aa098e9119c6f77ebc1021f54f25855361"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-one-pass.test.ts": [
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67",
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-skip.test.ts": [
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409",
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-todo.test.ts": [
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73",
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-passed.test.ts": [
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591",
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-skipped.test.ts": [
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43",
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-terminated.test.ts": [
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d",
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo-throws.test.ts": [
+      "541469bf43835336a19279188600ca4bdda8036c922edc7e09edc0d9ad36ed6a",
+      "541469bf43835336a19279188600ca4bdda8036c922edc7e09edc0d9ad36ed6a"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo.test.ts": [
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7",
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-uncaught.test.ts": [
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604",
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604"
+    ],
+    "tests/frontend/fe-000/node-test-worker.mjs": [
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93",
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93"
+    ],
+    "tests/frontend/fe-000/platform-and-core.test.ts": [
+      "aff37bb59cad1c2e8ac4d1ebaab0c772ceb39f9a02b5d0fd499b73b9c7d86d7e",
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7"
+    ],
+    "tests/frontend/fe-000/run-node-tests.mjs": [
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3",
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3"
+    ],
+    "tests/frontend/fe-000/safe-path-guard.mjs": [
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92",
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92"
+    ],
+    "tests/frontend/fe-000/tsconfig.json": [
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce",
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce"
+    ],
+    "tests/frontend/fe-000/verify-web-build.mjs": [
+      "838d597851520d041c354edc10db152fef9fa773c05a2286400fe937d4d166ec",
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12"
+    ]
+  },
+  "E:\\idle-fishing-integration\\reports\\integration\\FE-000-R1-INTEGRATION-REWORK-05\\FILES-REWORK.sha256": {
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts": [
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423",
+      "8ec2382318cc7c63882cb1875cf6d99fab2b55228ef95f7f3c570c290ce56423"
+    ],
+    "apps/game-client/assets/scripts/platform/BrowserFilePort.ts": [
+      "6ce9912cd0bd5923cf00d7f2fd3ee7c547ca0e422e48739df99aa3f52cc826c2",
+      "6ce9912cd0bd5923cf00d7f2fd3ee7c547ca0e422e48739df99aa3f52cc826c2"
+    ],
+    "apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts": [
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576",
+      "cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformTypes.ts": [
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16",
+      "ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16"
+    ],
+    "apps/game-client/assets/scripts/platform/PlatformVerificationSuite.ts": [
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d",
+      "d0784846b266a6b6191a03dc6b51fa74661bcaf828348578326dfebdb5b2c80d"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts": [
+      "d2e31d79b1419cc936f075cbb7b026a700067ea340a53bfd60f9e9f02186e8ae",
+      "d2e31d79b1419cc936f075cbb7b026a700067ea340a53bfd60f9e9f02186e8ae"
+    ],
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts.meta": [
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041",
+      "f700ac4155a43203747b42406eeb5dc11d107986bb8215fe323da0d358e06041"
+    ],
+    "apps/game-client/assets/scripts/platform/WeChatFilePort.ts": [
+      "5222b3c39a058db375697d4e703a058e33dc60f343014dc74808f8a4b7d32870",
+      "5222b3c39a058db375697d4e703a058e33dc60f343014dc74808f8a4b7d32870"
+    ],
+    "apps/game-client/assets/scripts/shared/SharedCoreBridge.ts": [
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e",
+      "a0a4482ad885945defd07bd27d60ea6d4a7978c5a61487b86045360335a40b1e"
+    ],
+    "apps/game-client/assets/scripts/ui/CodeFirstFactory.ts": [
+      "95b1d81e843104d985a2418ce50bbe1e7a0e46ab8419cdcc12052314b7759497",
+      "95b1d81e843104d985a2418ce50bbe1e7a0e46ab8419cdcc12052314b7759497"
+    ],
+    "apps/game-client/assets/scripts/ui/OverviewPage.ts": [
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c",
+      "7cf53ef6601aa111c1f22ec3df50a6cc2c8ae2c36e8addebd9fdb2bdd2ee7c5c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/IMPLEMENTATION_REPORT.md": [
+      "29b8af50d1db0f573408e595a115b555dc4ee27e4e1f5247f31ec22e44b84ded",
+      "29b8af50d1db0f573408e595a115b555dc4ee27e4e1f5247f31ec22e44b84ded"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/ISSUE_REPORT.md": [
+      "2d9eee392db81af2ed2f73b47459a331ccbc824a9486af10dda40c008a3a4b52",
+      "2d9eee392db81af2ed2f73b47459a331ccbc824a9486af10dda40c008a3a4b52"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/REWORK_HANDOFF.md": [
+      "e50ea025d3c46eff95337bb0dfdaf6d46ae83537e2ecde480ed9f8a201e14d67",
+      "e50ea025d3c46eff95337bb0dfdaf6d46ae83537e2ecde480ed9f8a201e14d67"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/TASK.md": [
+      "b0b812cca63de538950378f47d5b40c69707e490f7b061e393886eae40218bad",
+      "b0b812cca63de538950378f47d5b40c69707e490f7b061e393886eae40218bad"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/TEST_REPORT.md": [
+      "52db93dae92906656b9aa06a1b5609fe14cb67a5f00aacfee81cfc9a60f74a88",
+      "52db93dae92906656b9aa06a1b5609fe14cb67a5f00aacfee81cfc9a60f74a88"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-build-manifest.json": [
+      "7cc91bcff5f2902af18d42622b52a89cd08d366c03da16e7e0968a0c256ab20b",
+      "7cc91bcff5f2902af18d42622b52a89cd08d366c03da16e7e0968a0c256ab20b"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-repeat/r1-green-modal.png": [
+      "f7ca59c1b32f6b87f272b56d5138bc967071d5d997f8fc8b25ba3991998e41b7",
+      "f7ca59c1b32f6b87f272b56d5138bc967071d5d997f8fc8b25ba3991998e41b7"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-repeat/r1-green-overview.png": [
+      "96d604bdcf7ca75648d40a5683cd06eb6a6c56ddbc44732fcd40bf4bf3857df4",
+      "96d604bdcf7ca75648d40a5683cd06eb6a6c56ddbc44732fcd40bf4bf3857df4"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-repeat/r1-green-perf24h.png": [
+      "593401df02b9a7224d4eb67327d6b797038d2af065d061f34e1e6694ad215c7f",
+      "593401df02b9a7224d4eb67327d6b797038d2af065d061f34e1e6694ad215c7f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-repeat/r1-green-platform.png": [
+      "a7006b6859345de3f7702ec86c2a05de52619687f505a86a4c97d91a6c155131",
+      "a7006b6859345de3f7702ec86c2a05de52619687f505a86a4c97d91a6c155131"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-repeat/r1-green-web-results.json": [
+      "bbaf81b8992c5f2ecf77f8e385b98ada7af2ca2795e1dd6bc9ee0fc73ff0b4ab",
+      "bbaf81b8992c5f2ecf77f8e385b98ada7af2ca2795e1dd6bc9ee0fc73ff0b4ab"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05-repeat/r5-recovery-overlay.png": [
+      "f075356dca9370674dbfab358e674959a887bfda7e174aa6d5d502888d13fac1",
+      "f075356dca9370674dbfab358e674959a887bfda7e174aa6d5d502888d13fac1"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05/r1-green-modal.png": [
+      "32bc8f8ba92bc4eb8916c35ad4578c6f75b8faa907d53c6c91f1710c91fb1caa",
+      "32bc8f8ba92bc4eb8916c35ad4578c6f75b8faa907d53c6c91f1710c91fb1caa"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05/r1-green-overview.png": [
+      "0ab5f1dca764de7ae889caadd343b82a9d1a4ede49c2ec9b4ad1d212ed447230",
+      "0ab5f1dca764de7ae889caadd343b82a9d1a4ede49c2ec9b4ad1d212ed447230"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05/r1-green-perf24h.png": [
+      "6a3c155c7d6ce10a194f9517061c8fb3853ba8c802dca55f9e6c0292d480f45a",
+      "6a3c155c7d6ce10a194f9517061c8fb3853ba8c802dca55f9e6c0292d480f45a"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05/r1-green-platform.png": [
+      "792f2d611c633ae29d6e61da25221da064faaafcef13c7a2d44cac087556b88e",
+      "792f2d611c633ae29d6e61da25221da064faaafcef13c7a2d44cac087556b88e"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05/r1-green-web-results.json": [
+      "7cc0d6467f3a6d29f99558fd24f14344e23cb778a00bace7543a029ae267a30c",
+      "7cc0d6467f3a6d29f99558fd24f14344e23cb778a00bace7543a029ae267a30c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/web-rework05/r5-recovery-overlay.png": [
+      "3148d4d738ea578e63928638bdc8c5e90f54e425115e48d514510943f7c5b3b2",
+      "3148d4d738ea578e63928638bdc8c5e90f54e425115e48d514510943f7c5b3b2"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/evidence/wechat-rework05-audit.json": [
+      "40060af25767a817f241d37356ec61ba8a2576ad2a92df577aa452da4b97eb03",
+      "40060af25767a817f241d37356ec61ba8a2576ad2a92df577aa452da4b97eb03"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-backend-perf.log": [
+      "650ace039e7c0214f9294638f64b57df79e5103bc20bd5311f2f018f470de22c",
+      "650ace039e7c0214f9294638f64b57df79e5103bc20bd5311f2f018f470de22c"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-backend-verify.log": [
+      "b63f171db346eac5c65627b4cb229af4a7e0b6ae74eecd2526b39c74fe4ceace",
+      "b63f171db346eac5c65627b4cb229af4a7e0b6ae74eecd2526b39c74fe4ceace"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-build-web.log": [
+      "334eb9747479b4dfa95c464fb8e6f62b9582a88302a3e80d29c07027049facd4",
+      "334eb9747479b4dfa95c464fb8e6f62b9582a88302a3e80d29c07027049facd4"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-build-wechat.log": [
+      "d64da593998aed3d7b7c2fce8da301add6d46cbf5e739446904ccdf0fa39e481",
+      "d64da593998aed3d7b7c2fce8da301add6d46cbf5e739446904ccdf0fa39e481"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-frontend-tests.log": [
+      "46909d2edd990ecfb7f4d94147c64380aa822ecbf79b9c8159537d6244b097a1",
+      "46909d2edd990ecfb7f4d94147c64380aa822ecbf79b9c8159537d6244b097a1"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-frontend-typecheck.log": [
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53",
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-review-a1-a8.log": [
+      "de7d2015d8ba0372ea75b69bd16b763b5c8db935cf80f31e6465259cdb9de366",
+      "de7d2015d8ba0372ea75b69bd16b763b5c8db935cf80f31e6465259cdb9de366"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-typecheck-cocos.log": [
+      "2e36f03cb21be86c1fbfce3d6f950d68c7025179b9f97880ef0beb64de787de3",
+      "2e36f03cb21be86c1fbfce3d6f950d68c7025179b9f97880ef0beb64de787de3"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-verify-web-run1.log": [
+      "b0fb2506ba7d0218e632b555fa33aacaa8781a1df793f3b8da5500bfe5ebab2f",
+      "b0fb2506ba7d0218e632b555fa33aacaa8781a1df793f3b8da5500bfe5ebab2f"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-verify-web-run2.log": [
+      "b305ab91c0373dd0fe86f3d42a56fde31e73599f885e2a103d1f7e739261abc5",
+      "b305ab91c0373dd0fe86f3d42a56fde31e73599f885e2a103d1f7e739261abc5"
+    ],
+    "reports/integration/FE-000-R1-INTEGRATION-REWORK-05/logs/r5-verify-wechat.log": [
+      "5b690803ce4b4c5095d51a97b35c0723ed58ed893c1247eb7fad385050d52c42",
+      "5b690803ce4b4c5095d51a97b35c0723ed58ed893c1247eb7fad385050d52c42"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-deep-nested.test.ts": [
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1",
+      "84f8dfb712b7248a961d22c5c606d365cc986a02c11b92da51771419e44067f1"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-early-exit.test.ts": [
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302",
+      "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-empty.test.ts": [
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-failed.test.ts": [
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2",
+      "5cc04ba58644e6e8a2cbc4917168ebb593188abf2550e74c7f37bb53afab66a2"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-hanging.test.ts": [
+      "aabe307b0145cb2301a7469e466f645d41e185dc10c45f31f189cf3fabcad650",
+      "aabe307b0145cb2301a7469e466f645d41e185dc10c45f31f189cf3fabcad650"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-load-crash.test.ts": [
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b",
+      "dc7056d00959e32ec5e3aebfd958f5ee4cf7c8fa1039b7cbfff4a086832b625b"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed-fail.test.ts": [
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79",
+      "4dc805c5bb0ce176fda64cef18ea57352b9d1ecc9eac603f8918fabe1ee11a79"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-mixed.test.ts": [
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc",
+      "cf427d909cf9333184803f9ff2504285809f72dd297b00ef6dd3d6230db47ecc"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-fail.test.ts": [
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984",
+      "0dfc4d86a61100b45b855edc011fd18ddbb22368ed9f3a0ba2da31698c525984"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-multi-nested.test.ts": [
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4",
+      "fb443e033bc5b78e0d3a3e9ef9b637de1f5adbdd85b6e02277a091dfaac67ab4"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-only-todo-throws.test.ts": [
+      "0680c10601a2639f661bdb015e3270aa098e9119c6f77ebc1021f54f25855361",
+      "0680c10601a2639f661bdb015e3270aa098e9119c6f77ebc1021f54f25855361"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-one-pass.test.ts": [
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67",
+      "93dc3f0f4cef106ecaffc159fa4998ff4571e40d38bbc804f2790c6634400e67"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-skip.test.ts": [
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409",
+      "7a1953541ec1b98200a2af20a4df580a267877be32ddba01eeb7abf8de7f3409"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-parent-only-todo.test.ts": [
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73",
+      "8246a69a3cfa2c3a2bf0fc2503135a85a9344b81a9aaec8a0d85c02dbb1d0a73"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-passed.test.ts": [
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591",
+      "b4e4d249704b3f7c71522c43df0bc7453e24820e320657d6d96598210d33e591"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-skipped.test.ts": [
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43",
+      "3f43fe80fda439042554e2319e272b5476656248f16ba35ae336f7ee905ffa43"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-terminated.test.ts": [
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d",
+      "f95b4df8067605907060d94196ab3444e6f76afe42ce3f6f906723f5b6c9d20d"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo-throws.test.ts": [
+      "541469bf43835336a19279188600ca4bdda8036c922edc7e09edc0d9ad36ed6a",
+      "541469bf43835336a19279188600ca4bdda8036c922edc7e09edc0d9ad36ed6a"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-todo.test.ts": [
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7",
+      "be65d912345b10dc1ed40d992c657de6a12dacb259968e0a462542ffce70ebe7"
+    ],
+    "tests/frontend/fe-000/fixtures/fixture-uncaught.test.ts": [
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604",
+      "bf5e1dfebc097af952b352aaa08244cdf806af4e718a959db6852b76d96e0604"
+    ],
+    "tests/frontend/fe-000/node-test-worker.mjs": [
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93",
+      "0f5d2ee2de78ec1da936552b6a8c4bf1958836979431162d817dfd9733e68e93"
+    ],
+    "tests/frontend/fe-000/platform-and-core.test.ts": [
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7",
+      "b9da3fae88cd12aa2ea54a6250c44c86ec8b1db8ed48e6a0013086d1e82ea9b7"
+    ],
+    "tests/frontend/fe-000/run-node-tests.mjs": [
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3",
+      "f30697020610dcf696385e40442ccfaf3b8fe7b31e674113685e13c86428a1b3"
+    ],
+    "tests/frontend/fe-000/safe-path-guard.mjs": [
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92",
+      "ec5dd3940d64707e6311ad41c967ca5dbcb5909a6f1c454003d30c53cad48e92"
+    ],
+    "tests/frontend/fe-000/tsconfig.json": [
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce",
+      "75110734863ce0234826b110f6ca493ba0060131bd52061930f1bbacdd20e2ce"
+    ],
+    "tests/frontend/fe-000/verify-web-build.mjs": [
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12",
+      "e601cf7c9a50bda40e7821442e1d09aadb7c87ead72761216c23808ba2a2eb12"
+    ]
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-01\\EVIDENCE_MANIFEST.sha256": {
+    "ACCEPTANCE_CHECKLIST.md": [
+      "b25cc35f1877f95099716ba824ad2b8b5ae01da13babcd8d6f7d981184554c93",
+      "b25cc35f1877f95099716ba824ad2b8b5ae01da13babcd8d6f7d981184554c93"
+    ],
+    "CODE_REVIEW.md": [
+      "4fee2959b5f49e29d155cdf15069f374560fd283e6178967864421298fb90d70",
+      "4fee2959b5f49e29d155cdf15069f374560fd283e6178967864421298fb90d70"
+    ],
+    "DESIGN_ISSUES.md": [
+      "e577cf7edf88cd49cae43c321d508142aab3f19c7087f307b1d700d38e5cbb02",
+      "e577cf7edf88cd49cae43c321d508142aab3f19c7087f307b1d700d38e5cbb02"
+    ],
+    "evidence/a1.log": [
+      "ac3144f061274ee7f1e22a9be6859b1f7cf2993920986fcde3312d77bb5f54ce",
+      "ac3144f061274ee7f1e22a9be6859b1f7cf2993920986fcde3312d77bb5f54ce"
+    ],
+    "evidence/audit-crash.test.ts": [
+      "9e75f4d9bb09a9d519c6427d5cf70c2d5b4d24821c19cb19f1250044bda56cb7",
+      "9e75f4d9bb09a9d519c6427d5cf70c2d5b4d24821c19cb19f1250044bda56cb7"
+    ],
+    "evidence/audit-exit.test.ts": [
+      "d3433542f3b8e7118552e348184d69f92a27ef7706c9bbf38319fbafa2e54a53",
+      "d3433542f3b8e7118552e348184d69f92a27ef7706c9bbf38319fbafa2e54a53"
+    ],
+    "evidence/audit-late.mjs": [
+      "974fd003f2721948c5e8184e793891bcff98d82afb25a241435ea1020b0077cd",
+      "974fd003f2721948c5e8184e793891bcff98d82afb25a241435ea1020b0077cd"
+    ],
+    "evidence/audit-nested.test.ts": [
+      "2fbdd122bd5aec09cb2cfa5917a8c55855992df7fced457f5b3c475bfa1f08d3",
+      "2fbdd122bd5aec09cb2cfa5917a8c55855992df7fced457f5b3c475bfa1f08d3"
+    ],
+    "evidence/audit-okgroup.test.ts": [
+      "b6e36fc14d62379e4e27472c12f86c50950d20c7b6cdff0d6bd67cb77f3e4d92",
+      "b6e36fc14d62379e4e27472c12f86c50950d20c7b6cdff0d6bd67cb77f3e4d92"
+    ],
+    "evidence/audit-only-parent.test.ts": [
+      "f856aad187e444e6d58ff9fb06d374c2990fa0f90136f11d910b82a6c01be5a0",
+      "f856aad187e444e6d58ff9fb06d374c2990fa0f90136f11d910b82a6c01be5a0"
+    ],
+    "evidence/audit-ports.mjs": [
+      "49f309b122d84d3342a16e74e2c7684554bcdf0ea847b2a92a8530a996fd442c",
+      "49f309b122d84d3342a16e74e2c7684554bcdf0ea847b2a92a8530a996fd442c"
+    ],
+    "evidence/audit-r2-final.mjs": [
+      "311354e0a48024c59fa6c87c5ff309f0a5dfb111660de0e020ca1d0e5c603379",
+      "311354e0a48024c59fa6c87c5ff309f0a5dfb111660de0e020ca1d0e5c603379"
+    ],
+    "evidence/audit-tabs.mjs": [
+      "462969c831efc4a3d8212a862af1228ec2aa67083f30452d12e5fb090a7d5ec8",
+      "462969c831efc4a3d8212a862af1228ec2aa67083f30452d12e5fb090a7d5ec8"
+    ],
+    "evidence/be.log": [
+      "03d22309fd0529dd777537b0379185aa9f03e74e7473059047a6c3c8983482eb",
+      "03d22309fd0529dd777537b0379185aa9f03e74e7473059047a6c3c8983482eb"
+    ],
+    "evidence/boot-extra.json": [
+      "81370e325165e39cdb8b002ae31975328508a6d54232b340ce4689e13156fc1b",
+      "81370e325165e39cdb8b002ae31975328508a6d54232b340ce4689e13156fc1b"
+    ],
+    "evidence/exits.txt": [
+      "a232a62e09c8725ab85aeef845dbf0663c599c3b1afa2c75034fe4755ac3a0a8",
+      "a232a62e09c8725ab85aeef845dbf0663c599c3b1afa2c75034fe4755ac3a0a8"
+    ],
+    "evidence/front.log": [
+      "b99c1c5fb4a604bd413ad922d062094e9ae5384392466c7ca926db1c3e6c2911",
+      "b99c1c5fb4a604bd413ad922d062094e9ae5384392466c7ca926db1c3e6c2911"
+    ],
+    "evidence/git-audit.txt": [
+      "022dc0b98ef83d8a3911ba7934c7a32690f27f1130b34312e51f303eb1087a42",
+      "022dc0b98ef83d8a3911ba7934c7a32690f27f1130b34312e51f303eb1087a42"
+    ],
+    "evidence/input-verification.txt": [
+      "08a08cba83789f0e4ff702e1004b8c6be7459a70fed599e0337ec2e431bff68b",
+      "08a08cba83789f0e4ff702e1004b8c6be7459a70fed599e0337ec2e431bff68b"
+    ],
+    "evidence/late.json": [
+      "dd52c6248bd539e851ad1af548fee35102e4baab6cfc8207a97d65e5ab0a6329",
+      "dd52c6248bd539e851ad1af548fee35102e4baab6cfc8207a97d65e5ab0a6329"
+    ],
+    "evidence/parent.log": [
+      "b62adc091086bbc101e54c27c4b8b7bfb5d468240aae29e92c08d7ccdc4d39fd",
+      "b62adc091086bbc101e54c27c4b8b7bfb5d468240aae29e92c08d7ccdc4d39fd"
+    ],
+    "evidence/perf.log": [
+      "19e61cb64fd6a9d732058bc8926cd9d30f314b685ce27d65f5954d655b3bee75",
+      "19e61cb64fd6a9d732058bc8926cd9d30f314b685ce27d65f5954d655b3bee75"
+    ],
+    "evidence/ports.log": [
+      "62cda381f99d87eee5f040ce0e52d64093447fddc3f203b632111a26c063a856",
+      "62cda381f99d87eee5f040ce0e52d64093447fddc3f203b632111a26c063a856"
+    ],
+    "evidence/r1-green-modal.png": [
+      "9db4be009e7ea186c2ad930b2a6daf756b037b2810b93d6d8ee670e06be7a7e2",
+      "9db4be009e7ea186c2ad930b2a6daf756b037b2810b93d6d8ee670e06be7a7e2"
+    ],
+    "evidence/r1-green-overview.png": [
+      "86b8426bcf1b13ae39843560552d3f7f795dd20ff3af404d607406ef543b5b4e",
+      "86b8426bcf1b13ae39843560552d3f7f795dd20ff3af404d607406ef543b5b4e"
+    ],
+    "evidence/r1-green-perf24h.png": [
+      "4a5a292aa07086e4133f87b87e4446c80053ed0fa0efc5f847c93a1619efc05d",
+      "4a5a292aa07086e4133f87b87e4446c80053ed0fa0efc5f847c93a1619efc05d"
+    ],
+    "evidence/r1-green-platform.png": [
+      "554d390e18b7fb8c578e5f0ecc442692c2f914e295808527bb0282a84cbcb308",
+      "554d390e18b7fb8c578e5f0ecc442692c2f914e295808527bb0282a84cbcb308"
+    ],
+    "evidence/runner.json": [
+      "2e5e4d72f98953c88bbea6a58114eb68ccd745c609f1ee459d0ba1146e3754f8",
+      "2e5e4d72f98953c88bbea6a58114eb68ccd745c609f1ee459d0ba1146e3754f8"
+    ],
+    "evidence/tabs.json": [
+      "e57245991d09310cc023986e41c31e4fb8048716823e114a860d544adbfcfc59",
+      "e57245991d09310cc023986e41c31e4fb8048716823e114a860d544adbfcfc59"
+    ],
+    "evidence/type.log": [
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53",
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53"
+    ],
+    "evidence/web-results.json": [
+      "37814305246ee0afa92657a5dd15c532d840a0ca91d5596ef7a0a94b9a73c642",
+      "37814305246ee0afa92657a5dd15c532d840a0ca91d5596ef7a0a94b9a73c642"
+    ],
+    "evidence/web.log": [
+      "f1b8b87548c69b43100a1e27757cc1a12670ff6e62b0858ec991fade76e0ce10",
+      "f1b8b87548c69b43100a1e27757cc1a12670ff6e62b0858ec991fade76e0ce10"
+    ],
+    "evidence/webbuild.log": [
+      "f58786a1022de368068d787e94c3a1d259731b4027e1618ed46f5e0db1362897",
+      "f58786a1022de368068d787e94c3a1d259731b4027e1618ed46f5e0db1362897"
+    ],
+    "evidence/wx.log": [
+      "6d906a69cecaa9dd5f7e8f9931f732ba89828979e743ff0a29ec0dc2999c0d6e",
+      "6d906a69cecaa9dd5f7e8f9931f732ba89828979e743ff0a29ec0dc2999c0d6e"
+    ],
+    "evidence/wxbuild.log": [
+      "d793555a03218d99fb7e3aa01347fd9e3f2fedef81955bea7af114de6e528528",
+      "d793555a03218d99fb7e3aa01347fd9e3f2fedef81955bea7af114de6e528528"
+    ],
+    "REVIEW_REPORT.md": [
+      "0c8bd7bad3e1c5151f9737b4bb7bc6bba2df955f5de11b2ddd60a40a78107a4c",
+      "0c8bd7bad3e1c5151f9737b4bb7bc6bba2df955f5de11b2ddd60a40a78107a4c"
+    ],
+    "TEST_VERIFICATION.md": [
+      "02e948f5a60898bab78baed11c44f7d05e894c9dd0e9298b963ac8a8c990eccb",
+      "02e948f5a60898bab78baed11c44f7d05e894c9dd0e9298b963ac8a8c990eccb"
+    ]
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-02-ASTRA\\EVIDENCE_MANIFEST.sha256": {
+    "ACCEPTANCE_CHECKLIST.md": [
+      "e102171f11cb8744df702847c4c3feb5b3a86cef6cd260be12ff7a9081df0a71",
+      "e102171f11cb8744df702847c4c3feb5b3a86cef6cd260be12ff7a9081df0a71"
+    ],
+    "CODE_REVIEW.md": [
+      "0690d5025d5c1e8e8e4beafe496170c7c1f65dee92737db33e6b389b88e23106",
+      "0690d5025d5c1e8e8e4beafe496170c7c1f65dee92737db33e6b389b88e23106"
+    ],
+    "DEEPSEEK_CROSS_REVIEW.md": [
+      "e11d630b0adfdcee273a41640ce244550cc661572994deec70a0ac7feb07df4b",
+      "e11d630b0adfdcee273a41640ce244550cc661572994deec70a0ac7feb07df4b"
+    ],
+    "DESIGN_ISSUES.md": [
+      "76b00d2f8384ccab3c439c89a2cfd7f5e93832d983300e52d0df0b9d018b0c09",
+      "76b00d2f8384ccab3c439c89a2cfd7f5e93832d983300e52d0df0b9d018b0c09"
+    ],
+    "evidence/a1.log": [
+      "8bf334e91effc75430621e015ef8308941896810345877945df992b8bb893bfb",
+      "8bf334e91effc75430621e015ef8308941896810345877945df992b8bb893bfb"
+    ],
+    "evidence/astra-browser.mjs": [
+      "ca03ec193e12f14bee62f16a3458dba7fca333f13af5556f5ff8e5f435251d6c",
+      "ca03ec193e12f14bee62f16a3458dba7fca333f13af5556f5ff8e5f435251d6c"
+    ],
+    "evidence/astra-chrome-storage.mjs": [
+      "7c613220aca41b092e57c290394b4a67f3cc46afa0b2cd0192a12cc058a9a69e",
+      "7c613220aca41b092e57c290394b4a67f3cc46afa0b2cd0192a12cc058a9a69e"
+    ],
+    "evidence/astra-owner.mjs": [
+      "d19a11eb86c3f3cd3cc06b1573031addaaf1e7eb331b37b248c34581da1ecc95",
+      "d19a11eb86c3f3cd3cc06b1573031addaaf1e7eb331b37b248c34581da1ecc95"
+    ],
+    "evidence/astra-race.mjs": [
+      "2fa151460c2b32373f5bc91e76d1f1133e42611e43a7908d99c7d74c86fa8ffc",
+      "2fa151460c2b32373f5bc91e76d1f1133e42611e43a7908d99c7d74c86fa8ffc"
+    ],
+    "evidence/bw.log": [
+      "51c2890a2a9002f75345654b68216b440e7ba2a922df92dea4b96a49f4cb063a",
+      "51c2890a2a9002f75345654b68216b440e7ba2a922df92dea4b96a49f4cb063a"
+    ],
+    "evidence/bwx.log": [
+      "cc4ae9926f2a10c3308f3f97bd53e9988a2bb5cac53ccb2b8a3719a49411faec",
+      "cc4ae9926f2a10c3308f3f97bd53e9988a2bb5cac53ccb2b8a3719a49411faec"
+    ],
+    "evidence/cached.final": [
+      "7f4a78b0eefe36343621cf8d3f58f554109739f6f8f4743c26cb907205d112e6",
+      "7f4a78b0eefe36343621cf8d3f58f554109739f6f8f4743c26cb907205d112e6"
+    ],
+    "evidence/cached.inventory": [
+      "7f4a78b0eefe36343621cf8d3f58f554109739f6f8f4743c26cb907205d112e6",
+      "7f4a78b0eefe36343621cf8d3f58f554109739f6f8f4743c26cb907205d112e6"
+    ],
+    "evidence/candidate.json": [
+      "0c1b1a84ac1ef5fec4db64092311877f6915928b8c51afc907dde5c349b8d821",
+      "0c1b1a84ac1ef5fec4db64092311877f6915928b8c51afc907dde5c349b8d821"
+    ],
+    "evidence/chrome-audit.jsonl": [
+      "6de4f9a76082d9547b441918eb02049d338dcf9eb7a63df207a309eaff040b49",
+      "6de4f9a76082d9547b441918eb02049d338dcf9eb7a63df207a309eaff040b49"
+    ],
+    "evidence/chrome-audit.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/chrome-exit.log": [
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    ],
+    "evidence/chrome-storage-exit.log": [
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    ],
+    "evidence/chrome-storage.json": [
+      "2ac24a17692a9377c5e40e2e1847ac2649354de7c9b770b95caf6f8917a996c0",
+      "2ac24a17692a9377c5e40e2e1847ac2649354de7c9b770b95caf6f8917a996c0"
+    ],
+    "evidence/chrome-storage.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/ci.log": [
+      "e1d3dce8a0c24572262491e1a685f1de0949f29fdd042a831918d3ea8b7dfefd",
+      "e1d3dce8a0c24572262491e1a685f1de0949f29fdd042a831918d3ea8b7dfefd"
+    ],
+    "evidence/coverage.json": [
+      "9a3f873f6d8d74ed96c0045265af8c95113dc34b1cec60a5a4a33d006b2cb30e",
+      "9a3f873f6d8d74ed96c0045265af8c95113dc34b1cec60a5a4a33d006b2cb30e"
+    ],
+    "evidence/cross.json": [
+      "b7e2298aa296623decf422f713baafa9db609393bf65bf23160d11eefc2468d0",
+      "b7e2298aa296623decf422f713baafa9db609393bf65bf23160d11eefc2468d0"
+    ],
+    "evidence/developer-FILES-REWORK.sha256": [
+      "7a3c8b17722584b178f2d707a5226c505322e7390fae4313b5efe1b5fd118826",
+      "7a3c8b17722584b178f2d707a5226c505322e7390fae4313b5efe1b5fd118826"
+    ],
+    "evidence/environment.json": [
+      "d904fa1e86369e3e69ab28378b76edf95599a732f724ea091b951568b931bbd8",
+      "d904fa1e86369e3e69ab28378b76edf95599a732f724ea091b951568b931bbd8"
+    ],
+    "evidence/exit.log": [
+      "3128303c9979560e11fea196790e6aa242a19836034f9281c09af0afecc89b59",
+      "3128303c9979560e11fea196790e6aa242a19836034f9281c09af0afecc89b59"
+    ],
+    "evidence/extra-exits.log": [
+      "dd39c90393b73003996e70d0230165b79d01e4124e937b78b036aeee6a45ce15",
+      "dd39c90393b73003996e70d0230165b79d01e4124e937b78b036aeee6a45ce15"
+    ],
+    "evidence/frontend.log": [
+      "dd388efe9fe793c93d18956c14d2ee24d39c8df154b1a622f052e6bd737e3661",
+      "dd388efe9fe793c93d18956c14d2ee24d39c8df154b1a622f052e6bd737e3661"
+    ],
+    "evidence/git-diff-cached-check.log": [
+      "ada14cb44e986338ceb556b6d8db0c007be769cd39bfe5604a468626da70e693",
+      "ada14cb44e986338ceb556b6d8db0c007be769cd39bfe5604a468626da70e693"
+    ],
+    "evidence/git-diff-cached-stat.log": [
+      "dcd826c048015c22ade70ba4a4f6e1d9f5ef1ef9f600388fc0cf15b5fc1c511c",
+      "dcd826c048015c22ade70ba4a4f6e1d9f5ef1ef9f600388fc0cf15b5fc1c511c"
+    ],
+    "evidence/git-diff-check.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/git-exits.log": [
+      "268bfddb1b460f24c70ccc78d1c2bb4a2b86ff0ca48ecdda0eb42ddc36938258",
+      "268bfddb1b460f24c70ccc78d1c2bb4a2b86ff0ca48ecdda0eb42ddc36938258"
+    ],
+    "evidence/git.json": [
+      "9484bdf54251e104f132cc97d35eac59e34d3298daaeb42e211322967b3419fe",
+      "9484bdf54251e104f132cc97d35eac59e34d3298daaeb42e211322967b3419fe"
+    ],
+    "evidence/guard-metadata-exit.log": [
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    ],
+    "evidence/guard-metadata.log": [
+      "af8b60e610ecaf33e61da93a9e4aa4031547466419a423855abec0025f15a721",
+      "af8b60e610ecaf33e61da93a9e4aa4031547466419a423855abec0025f15a721"
+    ],
+    "evidence/guard-metadata.mjs": [
+      "f7d1885fa88d71236cbe5afb83ffa7c2e69a8780ba792743a5add64e440413c5",
+      "f7d1885fa88d71236cbe5afb83ffa7c2e69a8780ba792743a5add64e440413c5"
+    ],
+    "evidence/guard.mjs": [
+      "51a8bebe173349f750cc85f12b5383e77c282c21c4941673e577e90055230030",
+      "51a8bebe173349f750cc85f12b5383e77c282c21c4941673e577e90055230030"
+    ],
+    "evidence/headtree.inventory": [
+      "06634d5f37a83adaf6d347e96181c1ac5f9a28eb04c34dc09937a27e837b5dea",
+      "06634d5f37a83adaf6d347e96181c1ac5f9a28eb04c34dc09937a27e837b5dea"
+    ],
+    "evidence/history.json": [
+      "adeefa775eef37de44681ca47295cbc967b3ec96b251783d2b7f30011a9b3d6b",
+      "adeefa775eef37de44681ca47295cbc967b3ec96b251783d2b7f30011a9b3d6b"
+    ],
+    "evidence/ignored.inventory": [
+      "67c602bbdf8a93ec8b11fcdc7fd3ecd4023e60103d08d722f292787867f36fb1",
+      "67c602bbdf8a93ec8b11fcdc7fd3ecd4023e60103d08d722f292787867f36fb1"
+    ],
+    "evidence/index.final": [
+      "6c41e6314813c22bbeda434cef88f4374001b67a756d4178be03fb4cb5683004",
+      "6c41e6314813c22bbeda434cef88f4374001b67a756d4178be03fb4cb5683004"
+    ],
+    "evidence/index.inventory": [
+      "6c41e6314813c22bbeda434cef88f4374001b67a756d4178be03fb4cb5683004",
+      "6c41e6314813c22bbeda434cef88f4374001b67a756d4178be03fb4cb5683004"
+    ],
+    "evidence/integrity-final.json": [
+      "b37df8a5e43b8713b4f46147dc7bb4cbcca67a727cc841fb340367744aa85d05",
+      "b37df8a5e43b8713b4f46147dc7bb4cbcca67a727cc841fb340367744aa85d05"
+    ],
+    "evidence/layers.tsv": [
+      "d5d9842269500fd3f8a9f11bb0775dc7c537277ea848ed1ecce26c58bf583b5e",
+      "d5d9842269500fd3f8a9f11bb0775dc7c537277ea848ed1ecce26c58bf583b5e"
+    ],
+    "evidence/owner-exit.log": [
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    ],
+    "evidence/owner-lifetime.json": [
+      "8da3604389c90d16344d9e909bc9e6e58927e3c2da5d67b289e04ab03b6d8b50",
+      "8da3604389c90d16344d9e909bc9e6e58927e3c2da5d67b289e04ab03b6d8b50"
+    ],
+    "evidence/owner.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/perf.log": [
+      "ab1bda99434bc1389bbd9252a4ad6a1738ac86ae6138361d14d6d0bbdcd84fe4",
+      "ab1bda99434bc1389bbd9252a4ad6a1738ac86ae6138361d14d6d0bbdcd84fe4"
+    ],
+    "evidence/preliminary.txt": [
+      "3f711292106dc86152c1da6707701bb44235732bc18525784642dae66cf85255",
+      "3f711292106dc86152c1da6707701bb44235732bc18525784642dae66cf85255"
+    ],
+    "evidence/probe---version.log": [
+      "2508078567c3ea117ab9085e7cc420e14bdc7881ffa2e35b73165858d8d35287",
+      "2508078567c3ea117ab9085e7cc420e14bdc7881ffa2e35b73165858d8d35287"
+    ],
+    "evidence/probe-exits.log": [
+      "210413e8740c56c3f3a827793895cfa30ce34d8d59266864d281af64d8c61338",
+      "210413e8740c56c3f3a827793895cfa30ce34d8d59266864d281af64d8c61338"
+    ],
+    "evidence/probe-guard.mjs.log": [
+      "6748dbee087efd1b33cbdfc0d66ac38ae9527c66bd66a3025e7f4e1ee030f5d7",
+      "6748dbee087efd1b33cbdfc0d66ac38ae9527c66bd66a3025e7f4e1ee030f5d7"
+    ],
+    "evidence/probe-todo-throws.mjs.log": [
+      "049ce5740db6101bda65374ad7971473da87ce7ce06e52d4457cb2ce53fa8ac8",
+      "049ce5740db6101bda65374ad7971473da87ce7ce06e52d4457cb2ce53fa8ac8"
+    ],
+    "evidence/probe-wx-methods.mjs.log": [
+      "c561b887a2817aa4219839932ed7354df86419113ff5cf428ca3012a1038644a",
+      "c561b887a2817aa4219839932ed7354df86419113ff5cf428ca3012a1038644a"
+    ],
+    "evidence/products.json": [
+      "a446a33de6477c90b86a9c1248f20e3e7031a0e24301bf02e1d4efceb0d7b57b",
+      "a446a33de6477c90b86a9c1248f20e3e7031a0e24301bf02e1d4efceb0d7b57b"
+    ],
+    "evidence/race-exit.log": [
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    ],
+    "evidence/race.jsonl": [
+      "656a23e280e265aeda7cc9b101e47adaee15dfb2971712d778e9b13f0db7b101",
+      "656a23e280e265aeda7cc9b101e47adaee15dfb2971712d778e9b13f0db7b101"
+    ],
+    "evidence/race.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/references.txt": [
+      "5b51d50ee249ee7c29391dedc06a9549807e8ca8b7db794431db4bc20b6a3413",
+      "5b51d50ee249ee7c29391dedc06a9549807e8ca8b7db794431db4bc20b6a3413"
+    ],
+    "evidence/runner-audit/body-exit.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/runner-audit/body-exit.mjs": [
+      "d1d2407e3d31d33ef019a2dc3f7cd71b882fd464a2d2ad0320afe8bec9020293",
+      "d1d2407e3d31d33ef019a2dc3f7cd71b882fd464a2d2ad0320afe8bec9020293"
+    ],
+    "evidence/runner-audit/child-throw.json": [
+      "dd38516c989d71fd4d9ac2d0aa6ef8467ed60ce803a1cb24cd3640662f87b839",
+      "dd38516c989d71fd4d9ac2d0aa6ef8467ed60ce803a1cb24cd3640662f87b839"
+    ],
+    "evidence/runner-audit/child-throw.log": [
+      "4f34eaf916330cba2f539aeacf54e0af32e2d185ab3d101e372a15c9294bc793",
+      "4f34eaf916330cba2f539aeacf54e0af32e2d185ab3d101e372a15c9294bc793"
+    ],
+    "evidence/runner-audit/child-throw.mjs": [
+      "77dd139f37f87a69fc7ffd81a79f48a61ad26a87d8580c3302cd2d4fd15c0d04",
+      "77dd139f37f87a69fc7ffd81a79f48a61ad26a87d8580c3302cd2d4fd15c0d04"
+    ],
+    "evidence/runner-audit/combined.log": [
+      "e6fea78d9cc8a63e4a1412e64d62d404053f21dc42accd6083ba474fca8a5347",
+      "e6fea78d9cc8a63e4a1412e64d62d404053f21dc42accd6083ba474fca8a5347"
+    ],
+    "evidence/runner-audit/confirmed-hang-result.json": [
+      "1cd75e2441fff61fc810d90bbb3f7d00f45c3b9490bfc02e4b0ed3a8d4386351",
+      "1cd75e2441fff61fc810d90bbb3f7d00f45c3b9490bfc02e4b0ed3a8d4386351"
+    ],
+    "evidence/runner-audit/confirmed-hang.entered": [
+      "e9b72a02344d78edf0dde7d94ebb8e07ddd699d602634019e0e842289c921a1e",
+      "e9b72a02344d78edf0dde7d94ebb8e07ddd699d602634019e0e842289c921a1e"
+    ],
+    "evidence/runner-audit/confirmed-hang.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/runner-audit/confirmed-hang.mjs": [
+      "ec07d9b728007fb4149445a7011758ba5130cb86a87aab8054ba19fdfb75d862",
+      "ec07d9b728007fb4149445a7011758ba5130cb86a87aab8054ba19fdfb75d862"
+    ],
+    "evidence/runner-audit/exit-one.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/runner-audit/exit-one.mjs": [
+      "3ce13638d5fd34f087700298af121e50ec802fa9adbe2edc00d93a7798a3b58c",
+      "3ce13638d5fd34f087700298af121e50ec802fa9adbe2edc00d93a7798a3b58c"
+    ],
+    "evidence/runner-audit/fixture-deep-nested.test.json": [
+      "af7fdda46068211dc8b31fceadc2098f8843fd46149bf455440a84d86977dd9c",
+      "af7fdda46068211dc8b31fceadc2098f8843fd46149bf455440a84d86977dd9c"
+    ],
+    "evidence/runner-audit/fixture-deep-nested.test.log": [
+      "59f7949a1d759f7f89ed67ee159d626db630f532b20159679eb0c001898052e3",
+      "59f7949a1d759f7f89ed67ee159d626db630f532b20159679eb0c001898052e3"
+    ],
+    "evidence/runner-audit/fixture-early-exit.test.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/runner-audit/fixture-empty.test.json": [
+      "28593c5476ca9f017b5fbc7bff71acc54b11419cc0ce5421e65f10cc37661882",
+      "28593c5476ca9f017b5fbc7bff71acc54b11419cc0ce5421e65f10cc37661882"
+    ],
+    "evidence/runner-audit/fixture-empty.test.log": [
+      "5d8133e17fb133cda57d1e135813ad33d03e8b6590a598b4cfb58f203c818091",
+      "5d8133e17fb133cda57d1e135813ad33d03e8b6590a598b4cfb58f203c818091"
+    ],
+    "evidence/runner-audit/fixture-failed.test.json": [
+      "d5ece9f636edfd6f5b9c60acc08e53a81bb48ee8180cd863dad755dc4045af55",
+      "d5ece9f636edfd6f5b9c60acc08e53a81bb48ee8180cd863dad755dc4045af55"
+    ],
+    "evidence/runner-audit/fixture-failed.test.log": [
+      "084dba92fa44102d8392d267796f784cbe4092de56303637b15a96fe8cbf0af5",
+      "084dba92fa44102d8392d267796f784cbe4092de56303637b15a96fe8cbf0af5"
+    ],
+    "evidence/runner-audit/fixture-load-crash.test.json": [
+      "31a75f7978a5b01baea057cf93b4e0e72ca6bf93e057f30d20c3c9e42d43307d",
+      "31a75f7978a5b01baea057cf93b4e0e72ca6bf93e057f30d20c3c9e42d43307d"
+    ],
+    "evidence/runner-audit/fixture-load-crash.test.log": [
+      "bc2ea62bdb734a1fb3771c32c32c8ed642c0eaa05aae2f4691b4519d9b265a33",
+      "bc2ea62bdb734a1fb3771c32c32c8ed642c0eaa05aae2f4691b4519d9b265a33"
+    ],
+    "evidence/runner-audit/fixture-mixed-fail.test.json": [
+      "44d6d20e65e73687ff637b8dcf8555fac30a6fe2c990edbd66cf9220f2771846",
+      "44d6d20e65e73687ff637b8dcf8555fac30a6fe2c990edbd66cf9220f2771846"
+    ],
+    "evidence/runner-audit/fixture-mixed-fail.test.log": [
+      "8e3ce87a9682f210855a326e1af15a7e09b7c5817722d5e4bfa49263a54741ad",
+      "8e3ce87a9682f210855a326e1af15a7e09b7c5817722d5e4bfa49263a54741ad"
+    ],
+    "evidence/runner-audit/fixture-mixed.test.json": [
+      "0c3bd3f788737746e1a4ceba4119f04343e10d9d9c827d2bef8588991731de1b",
+      "0c3bd3f788737746e1a4ceba4119f04343e10d9d9c827d2bef8588991731de1b"
+    ],
+    "evidence/runner-audit/fixture-mixed.test.log": [
+      "a298de93def074509c25d13091cc0c97f0ecd879105daf632fed8db900ac13f3",
+      "a298de93def074509c25d13091cc0c97f0ecd879105daf632fed8db900ac13f3"
+    ],
+    "evidence/runner-audit/fixture-multi-fail.test.json": [
+      "2844cc20c782f5760228e3a85dc3f850a0cadc80f9f00edf671742881bd37c72",
+      "2844cc20c782f5760228e3a85dc3f850a0cadc80f9f00edf671742881bd37c72"
+    ],
+    "evidence/runner-audit/fixture-multi-fail.test.log": [
+      "8535b0385a724df45d521e9d033736f89cd5d25626dce17f4daeb01cdf7e5337",
+      "8535b0385a724df45d521e9d033736f89cd5d25626dce17f4daeb01cdf7e5337"
+    ],
+    "evidence/runner-audit/fixture-multi-nested.test.json": [
+      "0a75b990425c67fea271f5e94a61808059f2f5a01780d67371336e14265edd58",
+      "0a75b990425c67fea271f5e94a61808059f2f5a01780d67371336e14265edd58"
+    ],
+    "evidence/runner-audit/fixture-multi-nested.test.log": [
+      "fe4d73e4dd9c3f45ba75e425053e4a3f238271a41a936c6a075a13512336a1e0",
+      "fe4d73e4dd9c3f45ba75e425053e4a3f238271a41a936c6a075a13512336a1e0"
+    ],
+    "evidence/runner-audit/fixture-parent-one-pass.test.json": [
+      "b6f6b60d503318947539e579ff35bc626228cf18058da59a43bc440444a702a5",
+      "b6f6b60d503318947539e579ff35bc626228cf18058da59a43bc440444a702a5"
+    ],
+    "evidence/runner-audit/fixture-parent-one-pass.test.log": [
+      "131d11ab686c5970c44a6e74729196f57e3e730e6a1026fbc5a303e696f041ec",
+      "131d11ab686c5970c44a6e74729196f57e3e730e6a1026fbc5a303e696f041ec"
+    ],
+    "evidence/runner-audit/fixture-parent-only-skip.test.json": [
+      "3c8238f09bebfb666fb40f1d4c2605a4f000c426e7247b53a29f1294f967ee8d",
+      "3c8238f09bebfb666fb40f1d4c2605a4f000c426e7247b53a29f1294f967ee8d"
+    ],
+    "evidence/runner-audit/fixture-parent-only-skip.test.log": [
+      "5225362dde37040c32989d5d993f35283c9b8284a001d1f6ca09044711545114",
+      "5225362dde37040c32989d5d993f35283c9b8284a001d1f6ca09044711545114"
+    ],
+    "evidence/runner-audit/fixture-parent-only-todo.test.json": [
+      "afee36b165909ca0031633ecf74174cf1a1211a7ef8122e557672998003f9d7e",
+      "afee36b165909ca0031633ecf74174cf1a1211a7ef8122e557672998003f9d7e"
+    ],
+    "evidence/runner-audit/fixture-parent-only-todo.test.log": [
+      "cbd24c9d8c37bf0c36f61d8455c066b09992c18c50ed4aaf646b435bd0ecfc5a",
+      "cbd24c9d8c37bf0c36f61d8455c066b09992c18c50ed4aaf646b435bd0ecfc5a"
+    ],
+    "evidence/runner-audit/fixture-passed.test.json": [
+      "37e03524ea8b8bb3e92ac490e6ef839408facf2d420e061a36748181c1d5cbbf",
+      "37e03524ea8b8bb3e92ac490e6ef839408facf2d420e061a36748181c1d5cbbf"
+    ],
+    "evidence/runner-audit/fixture-passed.test.log": [
+      "bbef8fe92c80e0292faba8dad4be67983f8ae807b4b052eb7746715ef52c9806",
+      "bbef8fe92c80e0292faba8dad4be67983f8ae807b4b052eb7746715ef52c9806"
+    ],
+    "evidence/runner-audit/fixture-skipped.test.json": [
+      "faeea26e3b6ac00039be1f58509e753fa87316cf60ece06da38517c578f72e6f",
+      "faeea26e3b6ac00039be1f58509e753fa87316cf60ece06da38517c578f72e6f"
+    ],
+    "evidence/runner-audit/fixture-skipped.test.log": [
+      "0e83f5d3e96e7ecd56df34168aa3a3537de7565934098dfc9a4d1c895abe21b1",
+      "0e83f5d3e96e7ecd56df34168aa3a3537de7565934098dfc9a4d1c895abe21b1"
+    ],
+    "evidence/runner-audit/fixture-terminated.test.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/runner-audit/fixture-todo.test.json": [
+      "e045483be92553ae9d70e92091473ef9ec0fe9c32296536cd37de5d99b8e45a6",
+      "e045483be92553ae9d70e92091473ef9ec0fe9c32296536cd37de5d99b8e45a6"
+    ],
+    "evidence/runner-audit/fixture-todo.test.log": [
+      "39addd723a71fd17966a50cef35c70fbd9a2d6fc6016f6a86080b5a35b05b305",
+      "39addd723a71fd17966a50cef35c70fbd9a2d6fc6016f6a86080b5a35b05b305"
+    ],
+    "evidence/runner-audit/fixture-uncaught.test.log": [
+      "cf837c486f540cb8b509741248a49409c8f0521da8fb4b9b7d45523584db22cd",
+      "cf837c486f540cb8b509741248a49409c8f0521da8fb4b9b7d45523584db22cd"
+    ],
+    "evidence/runner-audit/hanging.log": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "evidence/runner-audit/hanging.mjs": [
+      "4af688d8b37b132b3bb16932abe3726efa848b697ea4232304393ea221d84762",
+      "4af688d8b37b132b3bb16932abe3726efa848b697ea4232304393ea221d84762"
+    ],
+    "evidence/runner-audit/todo-throws.json": [
+      "4392c6b343062a14d5ec21f859389431349c0503f85180095af017b5bf0d1db2",
+      "4392c6b343062a14d5ec21f859389431349c0503f85180095af017b5bf0d1db2"
+    ],
+    "evidence/runner-audit/todo-throws.log": [
+      "249468a6e9ee1d56d90cdb8dc9c5723c904b90798e73d8d2f3ddfa13bba8e77e",
+      "249468a6e9ee1d56d90cdb8dc9c5723c904b90798e73d8d2f3ddfa13bba8e77e"
+    ],
+    "evidence/runner-audit/todo-throws.mjs": [
+      "c723ec6afe59fb4754052042c76c27207c556aac4cd8b8ebbc3e68cb17cf9fec",
+      "c723ec6afe59fb4754052042c76c27207c556aac4cd8b8ebbc3e68cb17cf9fec"
+    ],
+    "evidence/runner-audit.py": [
+      "2944b724a4a4a03c37f6df04bc5097fcf77037dab4fd69a099b250a2acaeff7f",
+      "2944b724a4a4a03c37f6df04bc5097fcf77037dab4fd69a099b250a2acaeff7f"
+    ],
+    "evidence/runner-exit.log": [
+      "d21e402c2417e38d8b1226a7684f89f1ed9259d12c17cc71ef7e35531101ee68",
+      "d21e402c2417e38d8b1226a7684f89f1ed9259d12c17cc71ef7e35531101ee68"
+    ],
+    "evidence/runner.log": [
+      "392702cc7dfc705b2ceb6e8a91c6874648629e1e394c44f11d0b142cf35bc1ed",
+      "392702cc7dfc705b2ceb6e8a91c6874648629e1e394c44f11d0b142cf35bc1ed"
+    ],
+    "evidence/status.final": [
+      "0f9d078289bfee8b36c0c54bbbf77d3a07f3f68d522b417711c1b3561241e0c4",
+      "0f9d078289bfee8b36c0c54bbbf77d3a07f3f68d522b417711c1b3561241e0c4"
+    ],
+    "evidence/status.inventory": [
+      "0f9d078289bfee8b36c0c54bbbf77d3a07f3f68d522b417711c1b3561241e0c4",
+      "0f9d078289bfee8b36c0c54bbbf77d3a07f3f68d522b417711c1b3561241e0c4"
+    ],
+    "evidence/storage.log": [
+      "432da34479ca24d3f238faf79e85dbf13e60cf2c1e4d0f1d55b931970400ec49",
+      "432da34479ca24d3f238faf79e85dbf13e60cf2c1e4d0f1d55b931970400ec49"
+    ],
+    "evidence/storage.mjs": [
+      "664ed2d934875f92676156dd9140901ef55eb5cdff19039f2661e1917404da01",
+      "664ed2d934875f92676156dd9140901ef55eb5cdff19039f2661e1917404da01"
+    ],
+    "evidence/ts.log": [
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53",
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53"
+    ],
+    "evidence/untracked.final": [
+      "1a779b0ff86c8a7f3894bb099c793fcec44076bf6cef2bff8b77a18eda7b36e1",
+      "1a779b0ff86c8a7f3894bb099c793fcec44076bf6cef2bff8b77a18eda7b36e1"
+    ],
+    "evidence/untracked.inventory": [
+      "1a779b0ff86c8a7f3894bb099c793fcec44076bf6cef2bff8b77a18eda7b36e1",
+      "1a779b0ff86c8a7f3894bb099c793fcec44076bf6cef2bff8b77a18eda7b36e1"
+    ],
+    "evidence/verify.log": [
+      "251583c37ced626689d06b10812f322b6422e3c16ab460760c846449b98f0b91",
+      "251583c37ced626689d06b10812f322b6422e3c16ab460760c846449b98f0b91"
+    ],
+    "evidence/web-first/r1-green-modal.png": [
+      "9abe5273724ba2a49ef043bb97b49ebe8176c416775e5f2c3b9b63c268dc2a9f",
+      "9abe5273724ba2a49ef043bb97b49ebe8176c416775e5f2c3b9b63c268dc2a9f"
+    ],
+    "evidence/web-first/r1-green-overview.png": [
+      "335aec0a6945288016bf53097a7d171b5409015002ff6271e0be113451d95a87",
+      "335aec0a6945288016bf53097a7d171b5409015002ff6271e0be113451d95a87"
+    ],
+    "evidence/web-first/r1-green-perf24h.png": [
+      "e49b6d2236f34b592a95ce2f41eb84de083cffa68437d664f6a9674d0578f769",
+      "e49b6d2236f34b592a95ce2f41eb84de083cffa68437d664f6a9674d0578f769"
+    ],
+    "evidence/web-first/r1-green-platform.png": [
+      "a403c32a63e6afdb5d261a5806b95a88cf9b238e4c799492729c2aef576de12d",
+      "a403c32a63e6afdb5d261a5806b95a88cf9b238e4c799492729c2aef576de12d"
+    ],
+    "evidence/web-first/r1-green-web-results.json": [
+      "f609bafda9c0f76a1d65b5b795b803d0d8ec18341c136002be8892722d2f32e8",
+      "f609bafda9c0f76a1d65b5b795b803d0d8ec18341c136002be8892722d2f32e8"
+    ],
+    "evidence/web-repeat/r1-green-modal.png": [
+      "0a8750941ea5e52bb8d3eb754e1743370b2ed8b66782e364c56f65f5596f128b",
+      "0a8750941ea5e52bb8d3eb754e1743370b2ed8b66782e364c56f65f5596f128b"
+    ],
+    "evidence/web-repeat/r1-green-overview.png": [
+      "2dfc3ec6d4672415d95a7e8991ccd0ed53790694501f77a146d7ee3679d9d1b1",
+      "2dfc3ec6d4672415d95a7e8991ccd0ed53790694501f77a146d7ee3679d9d1b1"
+    ],
+    "evidence/web-repeat/r1-green-perf24h.png": [
+      "509a468e389b59f02cd15c5b87ca43a1067f03983dc29974d8d79bb0aabb04f4",
+      "509a468e389b59f02cd15c5b87ca43a1067f03983dc29974d8d79bb0aabb04f4"
+    ],
+    "evidence/web-repeat/r1-green-platform.png": [
+      "72e356c30cd41a39a4f79ce642ec7aa4ed7133ca2b97a7d600e82dae2be18176",
+      "72e356c30cd41a39a4f79ce642ec7aa4ed7133ca2b97a7d600e82dae2be18176"
+    ],
+    "evidence/web-repeat/r1-green-web-results.json": [
+      "10f5a0017eaf1e061f37ae81641470bc0ed293fbe30a7ae338f102246510702a",
+      "10f5a0017eaf1e061f37ae81641470bc0ed293fbe30a7ae338f102246510702a"
+    ],
+    "evidence/web-repeat-exit.log": [
+      "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    ],
+    "evidence/web-repeat.log": [
+      "bc3539600ea0f44007d74f3c9fef983859319c303977834c720271406c269950",
+      "bc3539600ea0f44007d74f3c9fef983859319c303977834c720271406c269950"
+    ],
+    "evidence/web.log": [
+      "2e9c6ed26ee345be974a3120dd535896ae9d1a1013f4470bdf20de18430fd72a",
+      "2e9c6ed26ee345be974a3120dd535896ae9d1a1013f4470bdf20de18430fd72a"
+    ],
+    "evidence/working.final": [
+      "034c5c270df1be4f82dfc6dbd16b52335f65c2d2718f2b91eaac5215075cf1c9",
+      "034c5c270df1be4f82dfc6dbd16b52335f65c2d2718f2b91eaac5215075cf1c9"
+    ],
+    "evidence/working.inventory": [
+      "034c5c270df1be4f82dfc6dbd16b52335f65c2d2718f2b91eaac5215075cf1c9",
+      "034c5c270df1be4f82dfc6dbd16b52335f65c2d2718f2b91eaac5215075cf1c9"
+    ],
+    "evidence/wx-methods.mjs": [
+      "87bbecaa4dd39f66d9b8fd62b72b498b4523c6a3439a573dbe1321bcd2581f59",
+      "87bbecaa4dd39f66d9b8fd62b72b498b4523c6a3439a573dbe1321bcd2581f59"
+    ],
+    "evidence/wx.log": [
+      "c58481c27f04cc3311882cb0fd01c5e0102987601ccb61cde9322296928e65f6",
+      "c58481c27f04cc3311882cb0fd01c5e0102987601ccb61cde9322296928e65f6"
+    ],
+    "REVIEW_REPORT.md": [
+      "5176821222545fba3dc6361db2b274678fe064c82385257857eab2d2a93c55f2",
+      "5176821222545fba3dc6361db2b274678fe064c82385257857eab2d2a93c55f2"
+    ],
+    "TEST_VERIFICATION.md": [
+      "1c334efc548589e6f06a7fc9dc4b3be50e2a734aa5bbd9870df85f3b24fdd579",
+      "1c334efc548589e6f06a7fc9dc4b3be50e2a734aa5bbd9870df85f3b24fdd579"
+    ]
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-03-DEEPSEEK\\EVIDENCE_MANIFEST.sha256": {
+    "ACCEPTANCE_CHECKLIST.md": [
+      "53478bbc902ede93b26b84cc147e0fa34379ccf47996bb7f66c0467d7dedcee4",
+      "53478bbc902ede93b26b84cc147e0fa34379ccf47996bb7f66c0467d7dedcee4"
+    ],
+    "CODE_REVIEW.md": [
+      "efda441ad9571ae81130468b92a87fa6a95aa01b86449a0c96f715476e5d3318",
+      "efda441ad9571ae81130468b92a87fa6a95aa01b86449a0c96f715476e5d3318"
+    ],
+    "DESIGN_ISSUES.md": [
+      "eda92eb09fa6c32a699b66f7d07e7477ed62c9ea8b8372e26bc34b9672d222c1",
+      "eda92eb09fa6c32a699b66f7d07e7477ed62c9ea8b8372e26bc34b9672d222c1"
+    ],
+    "REVIEW_REPORT.md": [
+      "bf2b96b13be28d80d9f8860a73b36ec10a5d57e5c7cebd88b3b8aac8e68b272f",
+      "bf2b96b13be28d80d9f8860a73b36ec10a5d57e5c7cebd88b3b8aac8e68b272f"
+    ],
+    "TEST_VERIFICATION.md": [
+      "8b0860cfebbab12840461f13b22dcf5ef847d0dd52843437aec8c5f7f4b22279",
+      "8b0860cfebbab12840461f13b22dcf5ef847d0dd52843437aec8c5f7f4b22279"
+    ],
+    "evidence/a02-app-cross-tab.json": [
+      "845d13dbb72323fd95af36f3cbdf4e4dbed49b459891000e7ea5bc27ef12750c",
+      "845d13dbb72323fd95af36f3cbdf4e4dbed49b459891000e7ea5bc27ef12750c"
+    ],
+    "evidence/a02-cross-tab.json": [
+      "eb8f7eaa0e9953bdf8f3e34298d9d71fe6399fb1bc94f0ad6bbe54502b3ef628",
+      "eb8f7eaa0e9953bdf8f3e34298d9d71fe6399fb1bc94f0ad6bbe54502b3ef628"
+    ],
+    "evidence/a03.json": [
+      "b953dbdedc28853f69c01dd90096b0fe5db0c4e6dd1d6d6b12466c3ed2812c1c",
+      "b953dbdedc28853f69c01dd90096b0fe5db0c4e6dd1d6d6b12466c3ed2812c1c"
+    ],
+    "evidence/a04-a06-migration.json": [
+      "e3318239d9271267286ca144f378071318a32d9b52ad2bffa111b3c6f9703b43",
+      "e3318239d9271267286ca144f378071318a32d9b52ad2bffa111b3c6f9703b43"
+    ],
+    "evidence/a09-only.json": [
+      "c956c5a8be22d781c6970d90d4d6c20017b077bb0021bd45ac50cf36ae2e7149",
+      "c956c5a8be22d781c6970d90d4d6c20017b077bb0021bd45ac50cf36ae2e7149"
+    ],
+    "evidence/build-byte-compare.log": [
+      "82928bd5ecec2b4aec7d4f3189967a02fcb0bee3d64f2b2347cc792556ad879e",
+      "82928bd5ecec2b4aec7d4f3189967a02fcb0bee3d64f2b2347cc792556ad879e"
+    ],
+    "evidence/environment.txt": [
+      "4bf85029a5225d1d29476bc7900ffade0b5dbefe7fd1cf33ef4b0d674c1eb6c1",
+      "4bf85029a5225d1d29476bc7900ffade0b5dbefe7fd1cf33ef4b0d674c1eb6c1"
+    ],
+    "evidence/evidence-timing-and-assertions.log": [
+      "0c37712c77aa6eb6dfebad53e95b7202c66e4a917265bb8c4f82f1eae598a826",
+      "0c37712c77aa6eb6dfebad53e95b7202c66e4a917265bb8c4f82f1eae598a826"
+    ],
+    "evidence/git-baseline.txt": [
+      "2cfd4544ac2cdea11511699a775c66988ed77652f50910a148937dfada14bb55",
+      "2cfd4544ac2cdea11511699a775c66988ed77652f50910a148937dfada14bb55"
+    ],
+    "evidence/historical-drift.log": [
+      "7117e5bc6bc9d3908b26efcbc66cdb7f2c8e7b5db2695615ab8fb8afd724faf9",
+      "7117e5bc6bc9d3908b26efcbc66cdb7f2c8e7b5db2695615ab8fb8afd724faf9"
+    ],
+    "evidence/idb-disabled-race-idbOff.json": [
+      "14b0befd10cf4732beb1d713fabfa1f59d259a76e6601c8332cd6f808a6f4fee",
+      "14b0befd10cf4732beb1d713fabfa1f59d259a76e6601c8332cd6f808a6f4fee"
+    ],
+    "evidence/manifest-and-coverage.log": [
+      "50bf252f7e71dfb6f391555b01f3ab7eb6a8999a7a695c6eefed7b31e2250ca6",
+      "50bf252f7e71dfb6f391555b01f3ab7eb6a8999a7a695c6eefed7b31e2250ca6"
+    ],
+    "evidence/manifest-coverage.mjs": [
+      "d1134b32281e91710f21bde229c4e5cb9d1ad084d079df212ea04a6b1bde2468",
+      "d1134b32281e91710f21bde229c4e5cb9d1ad084d079df212ea04a6b1bde2468"
+    ],
+    "evidence/my-verify-web-results.json": [
+      "09bd9c8e468fab92c3b0771f1ade7d73dd5514e684f7432f02a12b9a99d6fbbf",
+      "09bd9c8e468fab92c3b0771f1ade7d73dd5514e684f7432f02a12b9a99d6fbbf"
+    ],
+    "evidence/r3-a02-app-cross-tab.log": [
+      "94e9e7de1d4648e1ed8d3b9a3ebcfdae234dd0d5d934c80fb1e240a4b20df984",
+      "94e9e7de1d4648e1ed8d3b9a3ebcfdae234dd0d5d934c80fb1e240a4b20df984"
+    ],
+    "evidence/r3-a02-app.mjs": [
+      "ce2f62b2c5fb3faeefd2d408716f6e11d0073e14da1e76d97cd1abc505b55f87",
+      "ce2f62b2c5fb3faeefd2d408716f6e11d0073e14da1e76d97cd1abc505b55f87"
+    ],
+    "evidence/r3-a02-cross-tab.log": [
+      "a69c7f376ab49eeabe50374b746031f08b59ea0dc6fb8ac2c3d28076c1b8a842",
+      "a69c7f376ab49eeabe50374b746031f08b59ea0dc6fb8ac2c3d28076c1b8a842"
+    ],
+    "evidence/r3-a02.mjs": [
+      "200d13a274a12d4a1f190c1727e121db4c8afaef9253c23d3cde40bd7d8f06f4",
+      "200d13a274a12d4a1f190c1727e121db4c8afaef9253c23d3cde40bd7d8f06f4"
+    ],
+    "evidence/r3-a03.log": [
+      "30916b509cc1736e9f3a522abe49dd626579ccf8eb4b0d07bd529ccc60c82a65",
+      "30916b509cc1736e9f3a522abe49dd626579ccf8eb4b0d07bd529ccc60c82a65"
+    ],
+    "evidence/r3-a03.mjs": [
+      "3a2c3ddaba30ed0c38629ec6c6cd2800275b94f12932ea484b6150c42a8fb2b4",
+      "3a2c3ddaba30ed0c38629ec6c6cd2800275b94f12932ea484b6150c42a8fb2b4"
+    ],
+    "evidence/r3-a04-a06-migration.log": [
+      "d5ac31c0ad09559a5d212004508a95043c2b6b9ad025b7d27061cffea7971a7f",
+      "d5ac31c0ad09559a5d212004508a95043c2b6b9ad025b7d27061cffea7971a7f"
+    ],
+    "evidence/r3-a04-a06-migration.mjs": [
+      "42953089cd8071d445ba7b6e8d6505790f70c577695d9fb0b0c1b7dc43faf2f8",
+      "42953089cd8071d445ba7b6e8d6505790f70c577695d9fb0b0c1b7dc43faf2f8"
+    ],
+    "evidence/r3-a07-bad-timeout.log": [
+      "dcaba291b63e746265181a6c9248499a15f1f50337e302ec544ba118f87ebc29",
+      "dcaba291b63e746265181a6c9248499a15f1f50337e302ec544ba118f87ebc29"
+    ],
+    "evidence/r3-a07-hang.log": [
+      "7b25b59f877c3af4f2a1b55f7c053afc1bd5c984ebf63fb29080a0ffb77ae80c",
+      "7b25b59f877c3af4f2a1b55f7c053afc1bd5c984ebf63fb29080a0ffb77ae80c"
+    ],
+    "evidence/r3-a07-only.log": [
+      "30327d2d988cd2263e6e55fd0ee446e4034a8e3b83b6c2884014a367ffdb66f5",
+      "30327d2d988cd2263e6e55fd0ee446e4034a8e3b83b6c2884014a367ffdb66f5"
+    ],
+    "evidence/r3-a07-todo.log": [
+      "a0fc2252223b968684384a6c4690d8003b624abcb08ce44b2d93aee36a85b260",
+      "a0fc2252223b968684384a6c4690d8003b624abcb08ce44b2d93aee36a85b260"
+    ],
+    "evidence/r3-a07.log": [
+      "389d8847c754830c2463d120f88ef53415da104f172bd927c1feeb73d833f860",
+      "389d8847c754830c2463d120f88ef53415da104f172bd927c1feeb73d833f860"
+    ],
+    "evidence/r3-a08.log": [
+      "5ab06826a7e7072d8a7c93eb0615a4796ac0bd0aec85091654953eec61f149d5",
+      "5ab06826a7e7072d8a7c93eb0615a4796ac0bd0aec85091654953eec61f149d5"
+    ],
+    "evidence/r3-a08.mjs": [
+      "314a09f1f3b31afda0bdd42bf2041d26e9dd13306a6f3dbb406c7124bdeafc64",
+      "314a09f1f3b31afda0bdd42bf2041d26e9dd13306a6f3dbb406c7124bdeafc64"
+    ],
+    "evidence/r3-a09-only.log": [
+      "b8a4478207a7b878a98eaee757bebeae9b9e5d2581dcde02a110a89c44af1a87",
+      "b8a4478207a7b878a98eaee757bebeae9b9e5d2581dcde02a110a89c44af1a87"
+    ],
+    "evidence/r3-a09-only.mjs": [
+      "adf1cf36e89fee67fee435a6216f42cb3ca25ba5d55efab1daea3017475c7cc2",
+      "adf1cf36e89fee67fee435a6216f42cb3ca25ba5d55efab1daea3017475c7cc2"
+    ],
+    "evidence/r3-a1a8.log": [
+      "b88551e7b9344bd17f89dbc66668b9c3bfada47a6d9a2bdb5148eeb9cf160537",
+      "b88551e7b9344bd17f89dbc66668b9c3bfada47a6d9a2bdb5148eeb9cf160537"
+    ],
+    "evidence/r3-boot-behavior.mjs": [
+      "00a16a3841c66ef592105e53173f39c2472a8edc81786acccc6808fc007ce47b",
+      "00a16a3841c66ef592105e53173f39c2472a8edc81786acccc6808fc007ce47b"
+    ],
+    "evidence/r3-build-web.log": [
+      "62f7eddc063f42318d46521d48445264e3f0a06ad0dab16e936b8997695073c1",
+      "62f7eddc063f42318d46521d48445264e3f0a06ad0dab16e936b8997695073c1"
+    ],
+    "evidence/r3-build-wechat.log": [
+      "202bf10cb10c844d71645be02409eab311c0071a535053ee0297ddd0bc7554f4",
+      "202bf10cb10c844d71645be02409eab311c0071a535053ee0297ddd0bc7554f4"
+    ],
+    "evidence/r3-fe-tests.log": [
+      "7768d291555a06c9bebc4026d379bdbff76b8b7ed54ff26b91d13b72617ad70a",
+      "7768d291555a06c9bebc4026d379bdbff76b8b7ed54ff26b91d13b72617ad70a"
+    ],
+    "evidence/r3-fe-typecheck.log": [
+      "c37ac8dae71154c006877110f5028387445cb55a699d44fa2aabe9927b051183",
+      "c37ac8dae71154c006877110f5028387445cb55a699d44fa2aabe9927b051183"
+    ],
+    "evidence/r3-idb-disabled-race.mjs": [
+      "b97c2ce0f41ebbd15a4cdc7863a1a869f7d1aa1b30efbd6ea154ad110a993015",
+      "b97c2ce0f41ebbd15a4cdc7863a1a869f7d1aa1b30efbd6ea154ad110a993015"
+    ],
+    "evidence/r3-native-todo.log": [
+      "53c69dfd745442d11d81e474345c25a20d92b13ed82de2be8fdfccf7bc81938c",
+      "53c69dfd745442d11d81e474345c25a20d92b13ed82de2be8fdfccf7bc81938c"
+    ],
+    "evidence/r3-perf.log": [
+      "14252ebb195608fbdba19d2c7aae1bf0564f0eb87362f8040c9c2faf6cc48c81",
+      "14252ebb195608fbdba19d2c7aae1bf0564f0eb87362f8040c9c2faf6cc48c81"
+    ],
+    "evidence/r3-race-profileA.log": [
+      "7ea7829c8549dbd65f9233ee1ccbec305f7fbc09ed8c64824efee2169787ec96",
+      "7ea7829c8549dbd65f9233ee1ccbec305f7fbc09ed8c64824efee2169787ec96"
+    ],
+    "evidence/r3-race-profileB.log": [
+      "4414eca6f255c635e2b5f6183a73047bbf99aa581401b44aa254b17ad0213b9c",
+      "4414eca6f255c635e2b5f6183a73047bbf99aa581401b44aa254b17ad0213b9c"
+    ],
+    "evidence/r3-race.mjs": [
+      "99bfcc41ebe58311d85b5c1c66f877c8c054af87ecd962a3436ad07cecafcd69",
+      "99bfcc41ebe58311d85b5c1c66f877c8c054af87ecd962a3436ad07cecafcd69"
+    ],
+    "evidence/r3-runtime-failure.log": [
+      "73e67f20f8026257b2dcd2502c38516783358e9740050661fe74451ef16b8c56",
+      "73e67f20f8026257b2dcd2502c38516783358e9740050661fe74451ef16b8c56"
+    ],
+    "evidence/r3-runtime-failure.mjs": [
+      "3c6b27dff0f3a18d6a86e682b49227f73e3912485cbb7f03c704138a594c5999",
+      "3c6b27dff0f3a18d6a86e682b49227f73e3912485cbb7f03c704138a594c5999"
+    ],
+    "evidence/r3-t2-a09.log": [
+      "bf5b65c3618021448520df12716c0657422e8c4f51fd80975342aa02a2583a32",
+      "bf5b65c3618021448520df12716c0657422e8c4f51fd80975342aa02a2583a32"
+    ],
+    "evidence/r3-t2-a09.mjs": [
+      "9d1b8943f3667eef218790b5e33a38680c8ffc7f5ebeb478e04a90f16e8db2bd",
+      "9d1b8943f3667eef218790b5e33a38680c8ffc7f5ebeb478e04a90f16e8db2bd"
+    ],
+    "evidence/r3-verify-web.log": [
+      "3450b3a48444c88129dedce0dc8a98e41cf1553a33ffdeb5c5eaeaec5ec00d8a",
+      "3450b3a48444c88129dedce0dc8a98e41cf1553a33ffdeb5c5eaeaec5ec00d8a"
+    ],
+    "evidence/r3-verify-wechat.log": [
+      "55aef3c3598e715812b0ca9411a201135ad05d13c4f889c45dcc4d1517e71cfe",
+      "55aef3c3598e715812b0ca9411a201135ad05d13c4f889c45dcc4d1517e71cfe"
+    ],
+    "evidence/r3-verify.log": [
+      "3ef26c97b92c20bcc2444410e69db8e0241d166f8028c0d8c59d6d98097499d2",
+      "3ef26c97b92c20bcc2444410e69db8e0241d166f8028c0d8c59d6d98097499d2"
+    ],
+    "evidence/race-profileA.json": [
+      "ca27e98228057fd4416a38cce9351e1eb3c3befaf93d689ec63ca504c75c04f4",
+      "ca27e98228057fd4416a38cce9351e1eb3c3befaf93d689ec63ca504c75c04f4"
+    ],
+    "evidence/race-profileB.json": [
+      "10e5e407e7a12454497c7256590544c5814ba0cdc9758082750a2a93ee8fcdf1",
+      "10e5e407e7a12454497c7256590544c5814ba0cdc9758082750a2a93ee8fcdf1"
+    ],
+    "evidence/runner-matrix.log": [
+      "ff0225c8c99238eb9c04cff70f2962c70cf5e9bd570f7f38c242623932662afe",
+      "ff0225c8c99238eb9c04cff70f2962c70cf5e9bd570f7f38c242623932662afe"
+    ],
+    "evidence/runtime-failure.json": [
+      "13dc35cd922f6f87092e001000a9ad8f050edb7e3b4f066e1ce4636b833d52be",
+      "13dc35cd922f6f87092e001000a9ad8f050edb7e3b4f066e1ce4636b833d52be"
+    ],
+    "evidence/t2-a09.json": [
+      "d3e5facb21744399a8cbb0cef94a35cae02aaffc7a06b13b62f49fe46f56e798",
+      "d3e5facb21744399a8cbb0cef94a35cae02aaffc7a06b13b62f49fe46f56e798"
+    ]
+  },
+  "E:\\idle-fishing-review\\reports\\review\\FE-000-R1-INTEGRATION-REWORK-04-DEEPSEEK\\EVIDENCE_MANIFEST.sha256": {
+    "./ACCEPTANCE_CHECKLIST.md": [
+      "795380cf10dce3a7525c6eef6b67eada09fb2a9f5a8b97ded84481bf2e74796c",
+      "795380cf10dce3a7525c6eef6b67eada09fb2a9f5a8b97ded84481bf2e74796c"
+    ],
+    "./CODE_REVIEW.md": [
+      "075abe46b58563cfdfad418f64bbc781ec3c26b7ece6f26203295db803194504",
+      "075abe46b58563cfdfad418f64bbc781ec3c26b7ece6f26203295db803194504"
+    ],
+    "./DESIGN_ISSUES.md": [
+      "f9be9c03f4554492d702638d68e031e75d8b05df1021482e31f99dda0675cd60",
+      "f9be9c03f4554492d702638d68e031e75d8b05df1021482e31f99dda0675cd60"
+    ],
+    "./REVIEW_REPORT.md": [
+      "3415a51eef4769d90c29e9bda3be48558ab4794c4fb2353f36026cfc2fd6eed5",
+      "3415a51eef4769d90c29e9bda3be48558ab4794c4fb2353f36026cfc2fd6eed5"
+    ],
+    "./TEST_VERIFICATION.md": [
+      "5c74aaa51a96c89c6be088046afd2ebd6251ed9215e872ff170508bd476f55d3",
+      "5c74aaa51a96c89c6be088046afd2ebd6251ed9215e872ff170508bd476f55d3"
+    ],
+    "./evidence/INPUT-FILES-REWORK.sha256": [
+      "d84e30191afa0e2b11ff45298bdb8f71b0a11e0e0172c2d23120da894f34dfd7",
+      "d84e30191afa0e2b11ff45298bdb8f71b0a11e0e0172c2d23120da894f34dfd7"
+    ],
+    "./evidence/INPUT-R3-EVIDENCE_MANIFEST.sha256": [
+      "6b49b448f80b2e2f75dc72694cf1f930775f06a721b00d8acca0e65f64e7ef8d",
+      "6b49b448f80b2e2f75dc72694cf1f930775f06a721b00d8acca0e65f64e7ef8d"
+    ],
+    "./evidence/a02-app.json": [
+      "4e92bef873d4304b757e4f1f2facdd858f7bd3a676966aaac098d955c35055be",
+      "4e92bef873d4304b757e4f1f2facdd858f7bd3a676966aaac098d955c35055be"
+    ],
+    "./evidence/a02-crash.json": [
+      "630f7540704e4d63dd1b6879a02258ff625ffa5e780698923975582a4b9cd245",
+      "630f7540704e4d63dd1b6879a02258ff625ffa5e780698923975582a4b9cd245"
+    ],
+    "./evidence/a02-engine.json": [
+      "7d0cad9e0df129046800a8abde3e5fa9f5a198465ea3a1f25fd938d26b9f3b52",
+      "7d0cad9e0df129046800a8abde3e5fa9f5a198465ea3a1f25fd938d26b9f3b52"
+    ],
+    "./evidence/a09-evidence-check.txt": [
+      "0e9569c31db9013e06abab897c9576d164b32d62c751b184f29a515f3a8d9bfe",
+      "0e9569c31db9013e06abab897c9576d164b32d62c751b184f29a515f3a8d9bfe"
+    ],
+    "./evidence/a1-a8.log": [
+      "58fca44c908955c6998bdf6ba0d5970956dd6623063e0d6b7f97bf1771b1c0ca",
+      "58fca44c908955c6998bdf6ba0d5970956dd6623063e0d6b7f97bf1771b1c0ca"
+    ],
+    "./evidence/backend-perf.log": [
+      "7dade5ab13b3f140b9f9003b13a00047b53cb7c5a4037cde2d04242c7cb8cb35",
+      "7dade5ab13b3f140b9f9003b13a00047b53cb7c5a4037cde2d04242c7cb8cb35"
+    ],
+    "./evidence/backend-verify.log": [
+      "7fa2a18a23d94af99a5f6ed95623416c03994587ef81383c757c4405510db421",
+      "7fa2a18a23d94af99a5f6ed95623416c03994587ef81383c757c4405510db421"
+    ],
+    "./evidence/build-web.log": [
+      "1ba764d6a870b830700ac5d411ecc6a9ee24a7c748aeee78a253dd7a57c8fb6b",
+      "1ba764d6a870b830700ac5d411ecc6a9ee24a7c748aeee78a253dd7a57c8fb6b"
+    ],
+    "./evidence/build-wechat.log": [
+      "7204153778486e83dff7f68e14a80ceab36610d51ab2d0edb3439e4d9fb63e61",
+      "7204153778486e83dff7f68e14a80ceab36610d51ab2d0edb3439e4d9fb63e61"
+    ],
+    "./evidence/candidate-diff-check.txt": [
+      "5929f9a5580e2dc2b4b759fed9d33c0a7e7c98dea192b05070a550cfd9093304",
+      "5929f9a5580e2dc2b4b759fed9d33c0a7e7c98dea192b05070a550cfd9093304"
+    ],
+    "./evidence/candidate-identity.txt": [
+      "454727e4a1b7d5df721148a8ba7de6453e0305211b44f097d5b32a1b5133393f",
+      "454727e4a1b7d5df721148a8ba7de6453e0305211b44f097d5b32a1b5133393f"
+    ],
+    "./evidence/checks.txt": [
+      "4c2d0f4e6dd5839d2c4329a7d92422811a85954fd2c1760112f2726f96fd4b13",
+      "4c2d0f4e6dd5839d2c4329a7d92422811a85954fd2c1760112f2726f96fd4b13"
+    ],
+    "./evidence/compare-build.mjs": [
+      "64b15ae6c49862f3957153c890f0d1f5b02752dce9dd87fa5e8f916375abca13",
+      "64b15ae6c49862f3957153c890f0d1f5b02752dce9dd87fa5e8f916375abca13"
+    ],
+    "./evidence/frontend-tests.log": [
+      "7714c43d8dac435204438375e1022a3f0221aa161ef3acbbdf0c8a6d443ac4b2",
+      "7714c43d8dac435204438375e1022a3f0221aa161ef3acbbdf0c8a6d443ac4b2"
+    ],
+    "./evidence/frontend-typecheck.log": [
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53",
+      "35ba010245997083d5c1fe750ac76311addfe21ed5ddc39467e00d45edc55f53"
+    ],
+    "./evidence/p2.json": [
+      "92a95536bc940720b3fa671bb343171e7f4c202fb816ad681ceb6b8b7391654e",
+      "92a95536bc940720b3fa671bb343171e7f4c202fb816ad681ceb6b8b7391654e"
+    ],
+    "./evidence/r4-a02-app.log": [
+      "0d4b4e951284dcdf637190303096a2ad34e88cd5812730b9263b886f07cbaf25",
+      "0d4b4e951284dcdf637190303096a2ad34e88cd5812730b9263b886f07cbaf25"
+    ],
+    "./evidence/r4-a02-app.mjs": [
+      "1367c5774ff8049e80948385365a2d8f316e848c61849edb046fa73826cdd378",
+      "1367c5774ff8049e80948385365a2d8f316e848c61849edb046fa73826cdd378"
+    ],
+    "./evidence/r4-a02-crash.log": [
+      "eb9952a6b663d34fc89479ceaf5ad66e134eed25470d1de2b5fce0f60eba645b",
+      "eb9952a6b663d34fc89479ceaf5ad66e134eed25470d1de2b5fce0f60eba645b"
+    ],
+    "./evidence/r4-a02-crash.mjs": [
+      "0ec9be2d03c71370d58a332eba4558024a7ceae1186e8ab5f411f1578700c053",
+      "0ec9be2d03c71370d58a332eba4558024a7ceae1186e8ab5f411f1578700c053"
+    ],
+    "./evidence/r4-a02-engine.log": [
+      "50b3ca0383f0868908fa3fab484b49ddb11244d971b8908066a21850e1ae9955",
+      "50b3ca0383f0868908fa3fab484b49ddb11244d971b8908066a21850e1ae9955"
+    ],
+    "./evidence/r4-a02-engine.mjs": [
+      "c45e36bd3fc6749065af5f214d2f6d9f1b737e323220c3d4e7fba9695af775eb",
+      "c45e36bd3fc6749065af5f214d2f6d9f1b737e323220c3d4e7fba9695af775eb"
+    ],
+    "./evidence/r4-p2.log": [
+      "d5a397f059eaa3ab6bf651a0de1fadb2fac27412cd859b1c101dc559baf74c4d",
+      "d5a397f059eaa3ab6bf651a0de1fadb2fac27412cd859b1c101dc559baf74c4d"
+    ],
+    "./evidence/r4-p2.mjs": [
+      "8348b6186e235560e80d3d2e74491ee7ab8308234be2408b78f7d527c3bab8e5",
+      "8348b6186e235560e80d3d2e74491ee7ab8308234be2408b78f7d527c3bab8e5"
+    ],
+    "./evidence/r4-race-A.log": [
+      "b74836038262195018ce191f1117fbff0f948f86a071f94a696f9808285c4c47",
+      "b74836038262195018ce191f1117fbff0f948f86a071f94a696f9808285c4c47"
+    ],
+    "./evidence/r4-race-B.log": [
+      "552c868217233c6effc4a1e6d916cb3426ea15916dd5ca1f8f58e4b81ab75fe5",
+      "552c868217233c6effc4a1e6d916cb3426ea15916dd5ca1f8f58e4b81ab75fe5"
+    ],
+    "./evidence/r4-race.mjs": [
+      "84bd6fea4612d363f3f7e71088226594d68399027d48b74bbdc305419fe0f65c",
+      "84bd6fea4612d363f3f7e71088226594d68399027d48b74bbdc305419fe0f65c"
+    ],
+    "./evidence/r4-wechat-marker.test.ts": [
+      "28e6853ebd602f1ce70d3818438e07459a662ebbbc26ebff29ab7962ed346d5b",
+      "28e6853ebd602f1ce70d3818438e07459a662ebbbc26ebff29ab7962ed346d5b"
+    ],
+    "./evidence/race-A.json": [
+      "6a90718273649ef428f54fed7844b86a77b1bfd74babbb5e96ad2f87bc80623f",
+      "6a90718273649ef428f54fed7844b86a77b1bfd74babbb5e96ad2f87bc80623f"
+    ],
+    "./evidence/race-B.json": [
+      "6f7ead82660821d4941bca2da6156cff3951ae8c4d74dc753e53fef81c879e9d",
+      "6f7ead82660821d4941bca2da6156cff3951ae8c4d74dc753e53fef81c879e9d"
+    ],
+    "./evidence/rebuild-hash-check.txt": [
+      "4ce99659f2e727cc029580e58f93e7662cac2013110a21fa5234d8af718ab653",
+      "4ce99659f2e727cc029580e58f93e7662cac2013110a21fa5234d8af718ab653"
+    ],
+    "./evidence/source-and-log-mtimes.txt": [
+      "a00c8482871f5e66e8c2727e93b6838725dec4ddc045a47b144b4bd310d265e3",
+      "a00c8482871f5e66e8c2727e93b6838725dec4ddc045a47b144b4bd310d265e3"
+    ],
+    "./evidence/test-summary.txt": [
+      "924679692b4575870562e3bf371301e0dcaad46f25877675d4b863a0fb367869",
+      "924679692b4575870562e3bf371301e0dcaad46f25877675d4b863a0fb367869"
+    ],
+    "./evidence/verify-web-run1.log": [
+      "2b7c4a58835d8c03c98006ad02e97570a903700d4a67b76a419fc0f5ede6accc",
+      "2b7c4a58835d8c03c98006ad02e97570a903700d4a67b76a419fc0f5ede6accc"
+    ],
+    "./evidence/verify-web-run2.log": [
+      "b6b4734c5944dd92e81087d61f9287676f281e2415debfe375779fbc710052a2",
+      "b6b4734c5944dd92e81087d61f9287676f281e2415debfe375779fbc710052a2"
+    ],
+    "./evidence/verify-wechat.log": [
+      "a41513d25e850dcbf4162807911a3eb2ae279b22bdc43510650243a934f330bf",
+      "a41513d25e850dcbf4162807911a3eb2ae279b22bdc43510650243a934f330bf"
+    ],
+    "./evidence/web-run1/r1-green-modal.png": [
+      "9b1fd666381a6dfa139de6e7b5c7f6f48502fb901786010c6a5469a607e2cf11",
+      "9b1fd666381a6dfa139de6e7b5c7f6f48502fb901786010c6a5469a607e2cf11"
+    ],
+    "./evidence/web-run1/r1-green-overview.png": [
+      "3f1890e30da19225a58b766ac2fb6ad3ad6d2d3f0831a795fa604d0532b39854",
+      "3f1890e30da19225a58b766ac2fb6ad3ad6d2d3f0831a795fa604d0532b39854"
+    ],
+    "./evidence/web-run1/r1-green-perf24h.png": [
+      "9107ce7b3caf82e9ca358232d75d6c3984d7d85f4a511174a349afd985ed9807",
+      "9107ce7b3caf82e9ca358232d75d6c3984d7d85f4a511174a349afd985ed9807"
+    ],
+    "./evidence/web-run1/r1-green-platform.png": [
+      "5164b68eb3e9839b0d6eee42e8df2b981fc0714e6cfe3a1d2152ee777f9bad01",
+      "5164b68eb3e9839b0d6eee42e8df2b981fc0714e6cfe3a1d2152ee777f9bad01"
+    ],
+    "./evidence/web-run1/r1-green-web-results.json": [
+      "9e8a8843f43f19a0a5edb4a6872a953bd56e08e2967a8e4c3c777212d8efec70",
+      "9e8a8843f43f19a0a5edb4a6872a953bd56e08e2967a8e4c3c777212d8efec70"
+    ],
+    "./evidence/web-run2/r1-green-modal.png": [
+      "f0db0f2e3f3f28e40119b8d05aaffcf1ca4f5794079009800be9219040dbb94b",
+      "f0db0f2e3f3f28e40119b8d05aaffcf1ca4f5794079009800be9219040dbb94b"
+    ],
+    "./evidence/web-run2/r1-green-overview.png": [
+      "748561ea066ce22e19a50e0edee5dee3ca9af3e60fcf3772ca60b9a195226280",
+      "748561ea066ce22e19a50e0edee5dee3ca9af3e60fcf3772ca60b9a195226280"
+    ],
+    "./evidence/web-run2/r1-green-perf24h.png": [
+      "7cbdec315c553e89634967b36370ae0fa111a7c90c6508a8c6d7eb10a8afb19f",
+      "7cbdec315c553e89634967b36370ae0fa111a7c90c6508a8c6d7eb10a8afb19f"
+    ],
+    "./evidence/web-run2/r1-green-platform.png": [
+      "fabe7db6f21f294f9ce88922e8b8a49d499ac6922edeccdb5a9a7ffed3cc3254",
+      "fabe7db6f21f294f9ce88922e8b8a49d499ac6922edeccdb5a9a7ffed3cc3254"
+    ],
+    "./evidence/web-run2/r1-green-web-results.json": [
+      "eed0fe9aacd30d31f2b0ea522113e2e336b95eaf035674eb91231a1c808d290e",
+      "eed0fe9aacd30d31f2b0ea522113e2e336b95eaf035674eb91231a1c808d290e"
+    ],
+    "./evidence/wechat-marker.log": [
+      "af49e65b222d01470a804fa8209271bed0e39048a71ebe207eeb35027f06b431",
+      "af49e65b222d01470a804fa8209271bed0e39048a71ebe207eeb35027f06b431"
+    ]
+  }
+}

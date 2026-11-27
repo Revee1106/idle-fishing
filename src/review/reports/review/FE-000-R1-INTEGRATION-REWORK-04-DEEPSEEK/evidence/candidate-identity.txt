@@ -1,0 +1,23 @@
+[candidate identity] 2026-11-27T10:57:47+08:00
+HEAD=be62996fae44df24094331d670f6f0ab3741a4f2
+MERGE_HEAD=5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355
+merge-base=358b11105cfdee9bd076049c86a34d8f0aaa00e7
+branch=integration/fe-000-be-r1
+staged=58 unstaged=12 untracked=126
+
+[R4 delivery manifest sha256]
+d84e30191afa0e2b11ff45298bdb8f71b0a11e0e0172c2d23120da894f34dfd7 *reports/integration/FE-000-R1-INTEGRATION-REWORK-04/FILES-REWORK.sha256
+
+[8 changed code/test files]
+950dfd3be00c61d0c7456d177dbe543fea900712fe317670f4389e7df3c9a4eb  apps/game-client/assets/scripts/bootstrap/BootEntry.ts
+e72468319aae250cff9e8571cb51ab2e956de61403c6f4ce779240d06e10faf6  apps/game-client/assets/scripts/platform/BrowserFilePort.ts
+cd93771c9e404a23a9be64e37b7f9ecdea4aa37323349ce965d2b53b8186c576  apps/game-client/assets/scripts/platform/FaultInjectingFilePort.ts
+ae8822d49cbf21659b3f0bdc7a67ed30ed36044520df0bb4ebf935351de24c16  apps/game-client/assets/scripts/platform/PlatformTypes.ts
+42455064e3c31d567c3182d906bd1b65a47d3c4f3ea07dfed0741db0b5a14863  apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts
+f2a75d30dd7fa07679d6c52f202203cdb6b7d27d0e6b3d3a0cb9c6a5d3af6e8d  apps/game-client/assets/scripts/platform/WeChatFilePort.ts
+aff37bb59cad1c2e8ac4d1ebaab0c772ceb39f9a02b5d0fd499b73b9c7d86d7e  tests/frontend/fe-000/platform-and-core.test.ts
+838d597851520d041c354edc10db152fef9fa773c05a2286400fe937d4d166ec  tests/frontend/fe-000/verify-web-build.mjs
+
+[28 carried code/test files]
+28
+[0 new source/fixture files relative to R3]
