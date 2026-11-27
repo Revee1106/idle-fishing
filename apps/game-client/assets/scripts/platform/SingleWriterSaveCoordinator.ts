@@ -55,6 +55,7 @@ import {
   sha256Hex,
   SLOT_PATHS,
   SpikeFileSaveRepository,
+  validateSpikeState,
   type Nat,
   type SpikeCommitResult,
   type SpikeGameState,
@@ -67,7 +68,7 @@ import {
   writeIndexedDbHistoryStateForNamespace,
   writeIndexedDbTxStateForNamespace,
 } from './BrowserFilePort';
-import type { FilePort, StorageHealthState } from './PlatformTypes';
+import type { FilePort, StorageHealthState, StorageProbeResult } from './PlatformTypes';
 import { FilePortIoError } from './WeChatFilePort';
 
 export type RecoveryFailureClassification =
@@ -137,11 +138,26 @@ export interface SafeLoadOptions {
   readonly clearPendingTxMarker?: boolean;
   /** Optional owner lifecycle cancellation hooks (R5-03). */
   readonly hooks?: RecoveryLifecycleHooks;
+  /**
+   * R5-02 (REWORK-07): Optional legitimate initial state to persist via the existing 3-slot commit +
+   * readback + monotonic history protocol when recovering from a write-failure freeze on a confirmed
+   * empty initial-create domain. If absent or invalid when empty-domain write verification is required,
+   * recovery remains FROZEN (`WRITE_CAPABILITY_UNAVAILABLE`) and NEVER unfreezes via a synthetic probe.
+   */
+  readonly initialCommitState?: Readonly<SpikeGameState> | null;
 }
 
 export type SafeSaveLoadResult =
   | SpikeLoadResult
-  | { readonly kind: 'CANCELLED'; readonly detail: string }
+  | {
+      readonly kind: 'CANCELLED';
+      readonly detail: string;
+      /**
+       * R5-03 (REWORK-07): True if any persistent side effect (such as a storage probe put/delete)
+       * had already legitimately started before cancellation. False guarantees 0 persistent mutations.
+       */
+      readonly persistentMutationOccurred?: boolean;
+    }
   | {
       readonly kind: 'STORAGE_UNAVAILABLE';
       readonly detail: string;
@@ -212,8 +228,6 @@ const fallbackHistoryStates = new Map<string, string>();
 const anonymousPortIds = new WeakMap<FilePort, string>();
 let nextAnonymousId = 1;
 let nextTxSeq = 1;
-
-const EMPTY_DOMAIN_WRITE_PROBE_PATH = 'save_slot_write_probe.tmp';
 
 const FATAL_STORAGE_ERROR_CODES = new Set<string>([
   'STORAGE_UNAVAILABLE',
@@ -783,7 +797,7 @@ export class SingleWriterSaveCoordinator {
     const observedPort: FilePort = {
       kind: this.port.kind,
       storageKey: this.port.storageKey,
-      probeStorage: this.port.probeStorage ? () => this.port.probeStorage!() : undefined,
+      probeStorage: this.port.probeStorage ? (opts) => this.port.probeStorage!(opts) : undefined,
       read: async (p) => {
         try {
           const val = await this.port.read(p);
@@ -1039,30 +1053,37 @@ export class SingleWriterSaveCoordinator {
   }
 
   /**
-   * R5-02: Verifies real save-slot-path write+readback+remove capability on a confirmed empty
-   * initial-create freeze without fabricating a fake business save slot.
+   * R5-02 (REWORK-07): Verifies real initial-save persistence capability on a confirmed empty
+   * initial-create write-failure freeze by committing the caller's actual valid initial state
+   * through the existing 3-slot commit + readback + monotonic history + tx marker protocol.
+   * Zero fabricated business data, zero business gain, zero time advancement, zero synthetic 2KB probe.
    */
-  private async executeEmptyDomainWriteVerification(existingMarker: SharedTxMarker): Promise<SafeSaveLoadResult | null> {
-    const probePayload = JSON.stringify({
-      kind: 'IDLE_FISHING_EMPTY_WRITE_RECOVERY_PROBE',
-      txId: existingMarker.txId,
-      padding: 'P'.repeat(2048),
-    });
+  private async executeSafeInitialSaveCommit(
+    initialState: Readonly<SpikeGameState>,
+    existingMarker: SharedTxMarker,
+    persistedHistoryFloor: string | null
+  ): Promise<SafeSaveLoadResult> {
+    const initTxId = createTxId();
+    const now = Date.now();
+
+    // Update durable marker to PENDING before touching slot 0, preserving initial-create provenance!
     try {
-      await this.port.write(EMPTY_DOMAIN_WRITE_PROBE_PATH, probePayload);
-      const readback = await this.port.read(EMPTY_DOMAIN_WRITE_PROBE_PATH);
-      if (readback !== probePayload) {
-        throw new FilePortIoError('WRITE_IO_ERROR', EMPTY_DOMAIN_WRITE_PROBE_PATH, 'Empty-domain write probe readback mismatch');
-      }
-      await this.port.remove(EMPTY_DOMAIN_WRITE_PROBE_PATH);
-      return null;
+      await this.writeSharedTxMarker({
+        version: 1,
+        storageKey: this.storageKey,
+        txId: initTxId,
+        state: 'PENDING',
+        expectedRevision: null,
+        targetRevision: '1',
+        priorSaveHistory: 'CONFIRMED_EMPTY_INITIAL_CREATE',
+        confirmedRevision: null,
+        requiresWriteVerification: true,
+        createdAtMs: existingMarker.createdAtMs,
+        updatedAtMs: now,
+        reason: 'Recovery initial-save write verification commit on confirmed empty domain',
+      });
     } catch (err) {
-      try {
-        await this.port.remove(EMPTY_DOMAIN_WRITE_PROBE_PATH);
-      } catch {
-        // Ignore cleanup failure when storage write/remove is failing
-      }
-      const reason = `WRITE_CAPABILITY_UNAVAILABLE: confirmed empty domain failed real slot-path write verification: ${errorMessage(err)}`;
+      const reason = `WRITE_CAPABILITY_UNAVAILABLE: failed to update tx marker before recovery initial-save commit: ${errorMessage(err)}`;
       markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
       return {
         kind: 'STORAGE_UNAVAILABLE',
@@ -1073,6 +1094,127 @@ export class SingleWriterSaveCoordinator {
         corruptMarkerRecoveryPreview: null,
       };
     }
+
+    let committedInit: Extract<SpikeCommitResult, { kind: 'COMMITTED' }> | null = null;
+    let failKind: 'FAILED' | 'UNCERTAIN' | 'CONFLICT' | 'THREW' = 'FAILED';
+    let failDetail = 'initial-save recovery commit returned no result';
+    try {
+      const repo = new SpikeFileSaveRepository(this.port);
+      const initRes = await repo.commit(initialState, null);
+      if (initRes.kind === 'COMMITTED') {
+        committedInit = initRes;
+      } else {
+        failKind = initRes.kind;
+        failDetail = `${initRes.kind}: ${initRes.detail}`;
+      }
+    } catch (err) {
+      failKind = 'THREW';
+      failDetail = `threw ${errorMessage(err)}`;
+    }
+
+    if (committedInit === null) {
+      const reason = `WRITE_CAPABILITY_UNAVAILABLE: confirmed empty domain failed real initial-save persistence verification (${failDetail}); writes remain frozen`;
+      try {
+        await this.writeSharedTxMarker({
+          version: 1,
+          storageKey: this.storageKey,
+          txId: initTxId,
+          state: failKind === 'UNCERTAIN' ? 'UNCERTAIN' : 'FROZEN',
+          expectedRevision: null,
+          targetRevision: '1',
+          priorSaveHistory: 'CONFIRMED_EMPTY_INITIAL_CREATE',
+          confirmedRevision: null,
+          requiresWriteVerification: true,
+          createdAtMs: existingMarker.createdAtMs,
+          updatedAtMs: Date.now(),
+          reason,
+        });
+      } catch {
+        // Durable PENDING/FROZEN marker remains on disk
+      }
+      markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
+      return {
+        kind: 'STORAGE_UNAVAILABLE',
+        detail: reason,
+        recoveryClassification: 'WRITE_CAPABILITY_UNAVAILABLE',
+        unreadableSlots: [],
+        readOnlyBackup: null,
+        corruptMarkerRecoveryPreview: null,
+      };
+    }
+
+    // Initial save committed & readback-verified! Persist monotonic SaveHistoryMeta BEFORE clearing marker & unfreezing!
+    try {
+      await this.persistMonotonicHistoryMeta(committedInit.revision, persistedHistoryFloor);
+    } catch (err) {
+      const reason = `HISTORY_STATE_WRITE_FAILED: recovery initial save committed rev=${committedInit.revision}, but failed to persist monotonic save history metadata: ${errorMessage(err)}`;
+      try {
+        await this.writeSharedTxMarker({
+          version: 1,
+          storageKey: this.storageKey,
+          txId: initTxId,
+          state: 'FROZEN',
+          expectedRevision: committedInit.revision,
+          targetRevision: null,
+          priorSaveHistory: 'CONFIRMED_VALID',
+          confirmedRevision: maxNatString(persistedHistoryFloor, committedInit.revision),
+          requiresWriteVerification: true,
+          createdAtMs: existingMarker.createdAtMs,
+          updatedAtMs: Date.now(),
+          reason,
+        });
+      } catch {
+        // Durable PENDING marker remains on disk
+      }
+      markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
+      return {
+        kind: 'STORAGE_UNAVAILABLE',
+        detail: reason,
+        recoveryClassification: 'HISTORY_STATE_WRITE_FAILED',
+        unreadableSlots: [],
+        readOnlyBackup: {
+          revision: committedInit.revision,
+          schemaVersion: initialState.schemaVersion,
+          epoch: initialState.saveEpoch,
+          warnings: [],
+        },
+        corruptMarkerRecoveryPreview: null,
+      };
+    }
+
+    // Clear marker only after BOTH initial save commit and history metadata are durably confirmed
+    try {
+      await this.clearSharedTxMarker();
+    } catch (err) {
+      const reason = `TX_STATE_CLEAR_FAILED: recovery initial save committed rev=${committedInit.revision}, but failed to clear shared tx marker: ${errorMessage(err)}`;
+      markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
+      return {
+        kind: 'STORAGE_UNAVAILABLE',
+        detail: reason,
+        recoveryClassification: 'TX_STATE_CLEAR_FAILED',
+        unreadableSlots: [],
+        readOnlyBackup: {
+          revision: committedInit.revision,
+          schemaVersion: initialState.schemaVersion,
+          epoch: initialState.saveEpoch,
+          warnings: [],
+        },
+        corruptMarkerRecoveryPreview: null,
+      };
+    }
+
+    markStorageAvailable(this.storageKey);
+    return {
+      kind: 'VALID',
+      revision: committedInit.revision,
+      schemaVersion: initialState.schemaVersion,
+      epoch: initialState.saveEpoch,
+      raw: initialState,
+      recovered: false,
+      warnings: [
+        `recovery initial save committed rev=${committedInit.revision} (slot=${committedInit.slot}, state unchanged)`,
+      ],
+    };
   }
 
   /**
@@ -1082,13 +1224,17 @@ export class SingleWriterSaveCoordinator {
   loadSafe(options?: SafeLoadOptions): Promise<SafeSaveLoadResult> {
     const clearPendingTxMarker = options?.clearPendingTxMarker !== false;
     const hooks = options?.hooks;
+    const initialCommitState = options?.initialCommitState ?? null;
     return this.withExclusiveLock<SafeSaveLoadResult>(
       async () => {
+        let probeMutationOccurred = false;
+
         // R5-03 Check #1: Cancel immediately upon acquiring lock BEFORE any probe, read, or mutation!
         if (hooks?.shouldCancelBeforeMutation?.()) {
           return {
             kind: 'CANCELLED',
             detail: 'Recovery cancelled after acquiring lock before any probe or read (owner destroyed)',
+            persistentMutationOccurred: false,
           };
         }
         if (hooks?.beforeRecoveryBody) {
@@ -1097,14 +1243,21 @@ export class SingleWriterSaveCoordinator {
             return {
               kind: 'CANCELLED',
               detail: 'Recovery cancelled before probe/scan after async wait (owner destroyed)',
+              persistentMutationOccurred: false,
             };
           }
         }
 
         if (typeof this.port.probeStorage === 'function') {
-          let probe: { readonly available: boolean; readonly reason: string | null };
+          let probe: StorageProbeResult;
           try {
-            probe = await this.port.probeStorage();
+            probe = await this.port.probeStorage({
+              shouldCancelBeforeMutation: hooks?.shouldCancelBeforeMutation,
+              onMutationStarted: () => {
+                probeMutationOccurred = true;
+                hooks?.onMutationStarted?.();
+              },
+            });
           } catch (err) {
             const reason = `Persistent storage probe threw: ${errorMessage(err)}`;
             markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
@@ -1117,6 +1270,17 @@ export class SingleWriterSaveCoordinator {
               corruptMarkerRecoveryPreview: null,
             };
           }
+          if (probe.mutated === true && !probeMutationOccurred) {
+            probeMutationOccurred = true;
+            hooks?.onMutationStarted?.();
+          }
+          if (probe.cancelled === true && !probeMutationOccurred) {
+            return {
+              kind: 'CANCELLED',
+              detail: probe.reason ?? 'Recovery cancelled before storage probe write (owner destroyed)',
+              persistentMutationOccurred: false,
+            };
+          }
           if (!probe.available) {
             const reason = probe.reason ?? 'Persistent storage probe failed';
             markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
@@ -1127,6 +1291,15 @@ export class SingleWriterSaveCoordinator {
               unreadableSlots: [...SLOT_PATHS],
               readOnlyBackup: null,
               corruptMarkerRecoveryPreview: null,
+            };
+          }
+          if (hooks?.shouldCancelBeforeMutation?.()) {
+            return {
+              kind: 'CANCELLED',
+              detail: probeMutationOccurred
+                ? 'Storage probe write/cleanup completed after owner destroy; aborted before save-domain mutation'
+                : 'Recovery cancelled after storage probe before save-domain scan (owner destroyed)',
+              persistentMutationOccurred: probeMutationOccurred,
             };
           }
         }
@@ -1261,6 +1434,7 @@ export class SingleWriterSaveCoordinator {
               return {
                 kind: 'CANCELLED',
                 detail: 'Recovery cancelled before persisting partial-IO freeze marker (owner destroyed)',
+                persistentMutationOccurred: probeMutationOccurred,
               };
             }
             hooks?.onMutationStarted?.();
@@ -1345,6 +1519,7 @@ export class SingleWriterSaveCoordinator {
                 return {
                   kind: 'CANCELLED',
                   detail: 'Recovery cancelled before persisting save-disappeared freeze marker (owner destroyed)',
+                  persistentMutationOccurred: probeMutationOccurred,
                 };
               }
               hooks?.onMutationStarted?.();
@@ -1397,6 +1572,7 @@ export class SingleWriterSaveCoordinator {
               return {
                 kind: 'CANCELLED',
                 detail: 'Recovery cancelled before persisting revision-regression freeze marker (owner destroyed)',
+                persistentMutationOccurred: probeMutationOccurred,
               };
             }
             hooks?.onMutationStarted?.();
@@ -1436,12 +1612,40 @@ export class SingleWriterSaveCoordinator {
           return {
             kind: 'CANCELLED',
             detail: 'Recovery cancelled after scan before any persistent mutation (owner destroyed)',
+            persistentMutationOccurred: probeMutationOccurred,
           };
         }
 
         // Only VALID or verified-safe EMPTY with 0 IO errors reaches here.
         if (res.kind === 'VALID' || res.kind === 'EMPTY') {
           const needsWriteVerification = existingMarker !== null && markerRequiresWriteVerification(existingMarker);
+
+          // R5-02 (REWORK-07): Confirmed empty initial-create write-failure freeze CANNOT unfreeze via a
+          // fixed-size synthetic probe! It MUST persist the caller's actual valid initial state via the
+          // existing 3-slot + readback + monotonic history protocol; without a valid initialCommitState,
+          // stay FROZEN (0 disk mutations) and NEVER falsely report EMPTY/recovered.
+          if (res.kind === 'EMPTY' && needsWriteVerification && existingMarker !== null) {
+            const initialValidationErrors =
+              initialCommitState && typeof initialCommitState === 'object'
+                ? validateSpikeState(initialCommitState)
+                : ['missing initialCommitState'];
+            if (!initialCommitState || initialValidationErrors.length > 0) {
+              const reason = `WRITE_CAPABILITY_UNAVAILABLE: confirmed empty initial-create write-failure freeze requires a valid initial save state to persist and verify real write capability (${initialValidationErrors.join('; ')}); keeping storage frozen`;
+              markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
+              return {
+                kind: 'STORAGE_UNAVAILABLE',
+                detail: reason,
+                recoveryClassification: 'WRITE_CAPABILITY_UNAVAILABLE',
+                unreadableSlots: [],
+                readOnlyBackup: null,
+                corruptMarkerRecoveryPreview: null,
+              };
+            }
+            // Zero await gap between Check #2 and onMutationStarted() -> point of no return!
+            hooks?.onMutationStarted?.();
+            return this.executeSafeInitialSaveCommit(initialCommitState, existingMarker, persistedHistoryFloor);
+          }
+
           const needsHistoryUpgrade =
             res.kind === 'VALID' &&
             (persistedHistoryFloor === null || natToBigInt(res.revision) > natToBigInt(persistedHistoryFloor));
@@ -1453,20 +1657,14 @@ export class SingleWriterSaveCoordinator {
             hooks?.onMutationStarted?.();
           }
 
-          // R5-02: Real write-failure freeze MUST prove real save-slot write capability before unfreezing!
-          if (needsWriteVerification && existingMarker !== null) {
-            if (res.kind === 'VALID') {
-              return this.executeSafeCheckpointCommit(
-                res,
-                existingMarker,
-                knownConfirmedFloor,
-                persistedHistoryFloor
-              );
-            }
-            const emptyProbeFail = await this.executeEmptyDomainWriteVerification(existingMarker);
-            if (emptyProbeFail !== null) {
-              return emptyProbeFail;
-            }
+          // R5-02: Real write-failure freeze on VALID save executes zero-gain safe checkpoint commit!
+          if (needsWriteVerification && existingMarker !== null && res.kind === 'VALID') {
+            return this.executeSafeCheckpointCommit(
+              res,
+              existingMarker,
+              knownConfirmedFloor,
+              persistedHistoryFloor
+            );
           }
 
           // R5-01: Persist monotonic SaveHistoryMeta if VALID save has a higher (or first-time) confirmed revision
@@ -1543,11 +1741,14 @@ export class SingleWriterSaveCoordinator {
   ): Promise<SafeSaveLoadResult> {
     return this.withExclusiveLock<SafeSaveLoadResult>(
       async () => {
+        let probeMutationOccurred = false;
+
         // R5-03 Check #1: Cancel immediately after acquiring lock BEFORE any probe, read, or mutation!
         if (hooks?.shouldCancelBeforeMutation?.()) {
           return {
             kind: 'CANCELLED',
             detail: 'Controlled corrupt-marker recovery cancelled after acquiring lock before any read or mutation (owner destroyed)',
+            persistentMutationOccurred: false,
           };
         }
         if (hooks?.beforeRecoveryBody) {
@@ -1556,14 +1757,21 @@ export class SingleWriterSaveCoordinator {
             return {
               kind: 'CANCELLED',
               detail: 'Controlled corrupt-marker recovery cancelled before probe/scan after async wait (owner destroyed)',
+              persistentMutationOccurred: false,
             };
           }
         }
 
         if (typeof this.port.probeStorage === 'function') {
-          let probe: { readonly available: boolean; readonly reason: string | null };
+          let probe: StorageProbeResult;
           try {
-            probe = await this.port.probeStorage();
+            probe = await this.port.probeStorage({
+              shouldCancelBeforeMutation: hooks?.shouldCancelBeforeMutation,
+              onMutationStarted: () => {
+                probeMutationOccurred = true;
+                hooks?.onMutationStarted?.();
+              },
+            });
           } catch (err) {
             const reason = `Persistent storage probe threw during corrupt-marker recovery: ${errorMessage(err)}`;
             markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
@@ -1576,6 +1784,19 @@ export class SingleWriterSaveCoordinator {
               corruptMarkerRecoveryPreview: null,
             };
           }
+          if (probe.mutated === true && !probeMutationOccurred) {
+            probeMutationOccurred = true;
+            hooks?.onMutationStarted?.();
+          }
+          if (probe.cancelled === true && !probeMutationOccurred) {
+            return {
+              kind: 'CANCELLED',
+              detail:
+                probe.reason ??
+                'Controlled corrupt-marker recovery cancelled before storage probe write (owner destroyed)',
+              persistentMutationOccurred: false,
+            };
+          }
           if (!probe.available) {
             const reason = probe.reason ?? 'Persistent storage probe failed during corrupt-marker recovery';
             markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
@@ -1586,6 +1807,15 @@ export class SingleWriterSaveCoordinator {
               unreadableSlots: [...SLOT_PATHS],
               readOnlyBackup: null,
               corruptMarkerRecoveryPreview: null,
+            };
+          }
+          if (hooks?.shouldCancelBeforeMutation?.()) {
+            return {
+              kind: 'CANCELLED',
+              detail: probeMutationOccurred
+                ? 'Storage probe write/cleanup completed after owner destroy during corrupt-marker recovery; aborted before save-domain mutation'
+                : 'Controlled corrupt-marker recovery cancelled after storage probe before save-domain scan (owner destroyed)',
+              persistentMutationOccurred: probeMutationOccurred,
             };
           }
         }
@@ -1749,6 +1979,7 @@ export class SingleWriterSaveCoordinator {
           return {
             kind: 'CANCELLED',
             detail: 'Controlled corrupt-marker recovery cancelled right before clearing tx marker (owner destroyed)',
+            persistentMutationOccurred: probeMutationOccurred,
           };
         }
         hooks?.onMutationStarted?.();
@@ -1877,13 +2108,21 @@ export class SingleWriterSaveCoordinator {
 
         // Re-verify storage health before writing
         if (typeof this.port.probeStorage === 'function') {
-          let probe: { readonly available: boolean; readonly reason: string | null };
+          let probe: StorageProbeResult;
           try {
-            probe = await this.port.probeStorage();
+            probe = await this.port.probeStorage({
+              shouldCancelBeforeMutation: hooks?.shouldCancelBeforeStart,
+            });
           } catch (err) {
             const reason = `Persistent storage probe threw during commit: ${errorMessage(err)}`;
             markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
             return { kind: 'STORAGE_UNAVAILABLE', detail: reason };
+          }
+          if (probe.cancelled === true && probe.mutated !== true) {
+            return {
+              kind: 'CANCELLED',
+              detail: probe.reason ?? 'Commit cancelled before storage probe write (owner destroyed or halted)',
+            };
           }
           if (!probe.available) {
             const reason = probe.reason ?? 'Persistent storage probe failed during commit';
@@ -1912,7 +2151,7 @@ export class SingleWriterSaveCoordinator {
         const observedPort: FilePort = {
           kind: this.port.kind,
           storageKey: this.port.storageKey,
-          probeStorage: this.port.probeStorage ? () => this.port.probeStorage!() : undefined,
+          probeStorage: this.port.probeStorage ? (opts) => this.port.probeStorage!(opts) : undefined,
           read: async (p) => {
             try {
               return await this.port.read(p);

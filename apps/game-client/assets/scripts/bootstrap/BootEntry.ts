@@ -151,6 +151,7 @@ export class BootEntry extends Component {
   private activeRecoveryPromise: Promise<BootPersistenceRecord> | null = null;
   private persistState: SpikeGameState | null = null;
   private persistRevision: string | null = null;
+  private pendingInitialCommitState: SpikeGameState | null = null;
   private persistenceHalted = false;
   private isDestroyed = false;
   private hideEnqueueSeq = 0;
@@ -200,6 +201,7 @@ export class BootEntry extends Component {
     this.persistCoordinator = null;
     this.persistPort = null;
     this.persistState = null;
+    this.pendingInitialCommitState = null;
     this.activeRecoveryPromise = null;
     this.lifecycleUnsub?.();
     this.lifecycleUnsub = null;
@@ -219,6 +221,14 @@ export class BootEntry extends Component {
     });
   }
 
+  private createDefaultInitialState(): SpikeGameState {
+    return createInitialState({
+      saveEpoch: 'fe000-lifecycle-epoch',
+      startMs: 1_700_000_000_000,
+      allowanceMs: 8 * 3600 * 1000,
+    });
+  }
+
   private buildRecordFromLoadResult(
     prev: BootPersistenceRecord,
     coordinator: SingleWriterSaveCoordinator,
@@ -230,6 +240,7 @@ export class BootEntry extends Component {
       const restored = existing.raw as SpikeGameState;
       this.persistState = restored;
       this.persistRevision = existing.revision;
+      this.pendingInitialCommitState = null;
       this.persistenceHalted = false;
       return {
         ...prev,
@@ -258,13 +269,10 @@ export class BootEntry extends Component {
     }
 
     if (existing.kind === 'EMPTY') {
-      const fresh = createInitialState({
-        saveEpoch: 'fe000-lifecycle-epoch',
-        startMs: 1_700_000_000_000,
-        allowanceMs: 8 * 3600 * 1000,
-      });
+      const fresh = this.createDefaultInitialState();
       this.persistState = fresh;
       this.persistRevision = null;
+      this.pendingInitialCommitState = null;
       this.persistenceHalted = false;
       return {
         ...prev,
@@ -650,16 +658,20 @@ export class BootEntry extends Component {
                 )
               : await coordinator.loadSafe({
                   clearPendingTxMarker: true,
+                  initialCommitState: this.pendingInitialCommitState ?? this.createDefaultInitialState(),
                   hooks: recoveryHooks,
                 });
 
-          // R5-03: True pre-mutation cancellation (0 persistent side effects!)
+          // R5-03 (REWORK-07): True pre-mutation cancellation ONLY when 0 persistent side effects occurred!
+          // If a storage probe put/delete had already legitimately started before destroy, NEVER disguise
+          // it as unexecuted CANCELLED_DESTROYED — truthfully record COMPLETED_AFTER_DESTROY.
           if (loadRes.kind === 'CANCELLED') {
+            const hadPersistentMutation = mutationStarted || loadRes.persistentMutationOccurred === true;
             latestPersistRecord = {
               ...latestPersistRecord,
               recoveryInProgress: false,
               persistenceHalted: true,
-              lastRecoveryOutcome: 'CANCELLED_DESTROYED',
+              lastRecoveryOutcome: hadPersistentMutation ? 'COMPLETED_AFTER_DESTROY' : 'CANCELLED_DESTROYED',
               lastRecoveryDetail: loadRes.detail,
             };
             resolveRecovery(latestPersistRecord);
@@ -675,15 +687,17 @@ export class BootEntry extends Component {
                 : loadRes.kind === 'EMPTY'
                   ? 'EMPTY'
                   : `${loadRes.kind}: ${loadRes.detail}`;
+            const isFailedDiskOutcome =
+              loadRes.kind === 'STORAGE_UNAVAILABLE' || loadRes.kind === 'CORRUPT' || loadRes.kind === 'UNSUPPORTED';
             latestPersistRecord = {
               ...latestPersistRecord,
               recoveryInProgress: false,
               persistenceHalted: true,
-              lastRecoveryOutcome: mutationStarted
-                ? loadRes.kind === 'VALID' || loadRes.kind === 'EMPTY'
+              lastRecoveryOutcome: isFailedDiskOutcome
+                ? 'FAILED'
+                : mutationStarted
                   ? 'COMPLETED_AFTER_DESTROY'
-                  : 'FAILED'
-                : 'CANCELLED_DESTROYED',
+                  : 'CANCELLED_DESTROYED',
               lastRecoveryDetail: mutationStarted
                 ? `Persistent recovery mutation had already started before BootEntry destroy; disk result=${diskOutcome}; destroyed BootEntry remained inactive`
                 : `BootEntry destroyed before persistent mutation; disk result=${diskOutcome}; destroyed BootEntry remained inactive`,
@@ -828,6 +842,7 @@ export class BootEntry extends Component {
             if (!this.isComponentDestroyed()) {
               this.persistState = nextState;
               this.persistRevision = committed.revision;
+              this.pendingInitialCommitState = null;
             }
             updatePersistRecord({
               ...latestPersistRecord,
@@ -857,6 +872,9 @@ export class BootEntry extends Component {
               this.persistenceHalted = true;
               this.persistState = null;
               this.persistRevision = null;
+              if (expectedRev === null) {
+                this.pendingInitialCommitState = nextState;
+              }
             }
             updatePersistRecord({
               ...latestPersistRecord,
@@ -887,6 +905,9 @@ export class BootEntry extends Component {
               this.persistenceHalted = true;
               this.persistState = null;
               this.persistRevision = null;
+              if (expectedRev === null) {
+                this.pendingInitialCommitState = nextState;
+              }
             }
             updatePersistRecord({
               ...latestPersistRecord,

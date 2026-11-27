@@ -1,0 +1,82 @@
+[CleanCheckout] Temp dir: C:\Users\catji\AppData\Local\Temp\fe000-r7-clean-checkout-4jWdhZ
+[CleanCheckout] Exported 282 candidate files (tracked=302, newCandidateFiles=1)
+[CleanCheckout] Legacy fixture present in clean export: true
+
+=== npm ci: npm ci ===
+
+added 4 packages in 4s
+[npm ci] exitCode=0
+
+=== build:cocos: npm run build:cocos ===
+
+> idle-fishing@0.1.0 build:cocos
+> npm run build && npm run build:cocos -w @idle-fishing/game-core
+
+
+> idle-fishing@0.1.0 build
+> npm run build -w @idle-fishing/game-core
+
+
+> @idle-fishing/game-core@0.0.0-spike build
+> tsc -p tsconfig.json
+
+
+> @idle-fishing/game-core@0.0.0-spike build:cocos
+> node scripts/emit-cocos-mjs.mjs
+
+cocos artifacts: 9 .mjs + 9 .d.mts -> C:\Users\catji\AppData\Local\Temp\fe000-r7-clean-checkout-4jWdhZ\packages\game-core\dist\cocos\spike\
+[build:cocos] exitCode=0
+
+=== test:frontend (standalone clean checkout): npm --prefix apps/game-client run test:frontend ===
+
+> idle-fishing-client@0.0.0-spike test:frontend
+> node ../../tests/frontend/fe-000/run-node-tests.mjs
+
+✔ [NODE/T02/T03] Shared @idle-fishing/game-core golden PRNG, BigInt & BE-000 epoch.be000 hashes (80.2758ms)
+✔ [MOCK-WX/T04] WeChatFilePort CRUD, ENOENT->null, IO/quota errors, path guard & 3-slot save (22.725ms)
+✔ [NODE-MEMORY/T04/T05/T07] MemoryFilePort 3-slot rotation, fault injection & v1->v2 migration (2.0612ms)
+✔ [MOCK-WX/I01/I05/T08] Local unsubscribe keeps siblings alive; suites dispose wx hooks on normal & fault exits (9.1771ms)
+✔ [MOCK-DOM/I05/T08] Suites dispose DOM visibilitychange listeners on normal & post-subscribe fault exits (7.2267ms)
+✔ [NODE/I03/T08] Unsupported monotonic source freezes +48h jump; rollback/recovery & deadline clamp (0.2518ms)
+✔ [MOCK-WX/I04/T09] Ad SDK single-instance guard, load/show reject cleanup, duplicate callback & 5-case stub (0.9757ms)
+✔ [NODE/COMPAT-SAVE] 5bcc9ac save protocol: UNCERTAIN, unknown slot, post-write unreadable, conflict, mixed epoch, UNSUPPORTED & lock mismatch (19.1557ms)
+✔ [NODE/COMPAT-OFFLINE-MIGRATION] 5bcc9ac offline checkpoints, overflow/allowance guards & in-progress FIGHTING/PREPARING migration (2.9201ms)
+✔ [NODE/COMPAT-LEGACY-358B111] Real pre-R1 (358b111) v2 Spike saves load & advance cleanly on 5bcc9ac (14.8218ms)
+✔ [NODE/P1-01/COMPAT-SAVE-BOOT-UNAVAILABLE] Storage probe failure returns STORAGE_UNAVAILABLE (never EMPTY or false COMMITTED) and recovers original save (2.0552ms)
+✔ [NODE/P2-04/COMPAT-SAVE-CONCURRENT-COMMIT] SingleWriterSaveCoordinator prevents double COMMITTED across same & shared-namespace callers (38.3657ms)
+✔ [NODE/P1-03/COMPAT-RUNNER-ZERO-AND-SKIP-GUARD] Supervised Node 24 runner accurately counts nested leaves and blocks early exit / unsafe out-dir (37914.762ms)
+✔ [NODE/P1-01/TEST-01-A-B-C-D-E] Runtime storage freeze/recovery & WeChat missing-FS fail-closed (N1+N2) (4.2874ms)
+✔ [NODE/P2-05/COMPAT-SAFE-PATH-GUARD] Output dir deletion guard enforces exact allowlist and blocks traversal, roots, UNC & Windows junctions (31.8884ms)
+✔ [NODE/P1-01/A02-UNCERTAIN-CROSS-COORDINATOR-FREEZE] UNCERTAIN freezes the entire shared namespace across ALL coordinator instances until explicit verified loadSafe() (4.1685ms)
+✔ [NODE/P1-02/A03-PARTIAL-IO-NO-PREMATURE-UNFREEZE] Partial slot IO unavailability stays frozen and distinguishes missing vs corrupt vs IO error (4.2958ms)
+✔ [NODE/A05/CROSS-TAB-LOCK-VS-TASK-ERROR-CLASSIFICATION] Task exception inside Web Lock is not misclassified as CROSS_TAB_LOCK_REJECTED (1.169ms)
+✔ [NODE/REWORK-04/A02-SHARED-TX-MARKER-PROTOCOL] Persistent tx marker enforces write-ahead gate, fault isolation, crash/reload survival, recovery & domain isolation (5.8849ms)
+✔ [NODE/REWORK-04/P2-IDB-UNAVAILABLE-AND-LEGACY-LOCALSTORAGE] Missing IndexedDB fails closed, never misclassifies browser as Node, and preserves/reports legacy localStorage saves (0.582ms)
+✔ [NODE/REWORK-05/REV4-01-RECOVERY-SAFETY-MATRIX] Prior-valid EMPTY, partial-IO FROZEN EMPTY, unknown EMPTY, initial-create EMPTY & revision regression (3.2509ms)
+✔ [NODE/REWORK-05/REV4-03-CONTROLLED-CORRUPT-MARKER-RECOVERY] Distinguishes IO vs corrupt vs valid marker and enforces controlled re-verified recovery (2.889ms)
+✔ [MOCK-WX/REV4-08/1-MARKER-ROUNDTRIP-AND-TRUNCATION] WeChat tx marker roundtrip, list filter & truncated write detection (1.8135ms)
+✔ [MOCK-WX/REV4-08/2-MARKER-WRITE-FAIL] WeChat marker write failure -> STORAGE_UNAVAILABLE, zero slot writes, recovers rev 1 (1.9183ms)
+✔ [MOCK-WX/REV4-08/3-MARKER-READ-FAIL] WeChat marker read failure -> TX_STATE_UNREADABLE, zero slot writes (0.8804ms)
+✔ [MOCK-WX/REV4-08/4-MARKER-CORRUPT-CONTROLLED-RECOVERY] WeChat truncated marker -> TX_STATE_CORRUPT -> controlled recovery preserves slots (1.5169ms)
+✔ [MOCK-WX/REV4-08/5-MARKER-CLEAR-FAIL] WeChat committed-but-unlink-failed -> UNCERTAIN, marker retained, recovers rev 2 (1.8918ms)
+✔ [MOCK-WX/REV4-08/6-PREWRITE-VS-QUOTA-RECOVERY] WeChat deterministic PRE_WRITE_ERROR vs conservative QUOTA freeze + explicit recovery (4.8637ms)
+✔ [MOCK-WX/REV4-08/7-CROSS-COORDINATOR-AND-EMPTY-GUARD] WeChat cross-coordinator UNCERTAIN freeze, lost-slots EMPTY guard & stale CONFLICT (3.3329ms)
+✔ [NODE/REWORK-06/R5-01-CONFIRMED-REVISION-MONOTONIC-GUARD] Confirmed revision floor never regresses across partial IO, slot loss, new coordinator, history-write failure, or corrupt metadata (7.4581ms)
+✔ [NODE/REWORK-06/R5-02-WRITE-CAPABILITY-CHECKPOINT-RECOVERY] Persistent slot write failure keeps frozen until real write capability recovers via zero-gain checkpoint commit (4.6735ms)
+✔ [NODE/REWORK-06/R5-03-RECOVERY-OWNER-CANCELLATION] Queued STANDARD & CONFIRM_CORRUPT_MARKER cancel with zero disk mutation when owner destroyed before mutation (1.4464ms)
+✔ [MOCK-WX/REWORK-06/R5-01-02-03-WECHAT-INVARIANTS] WeChat FilePort enforces monotonic history, truncated history detection, write-verified recovery & owner cancel (2.4989ms)
+✔ [NODE/REWORK-07/R5-02-EMPTY-CAPACITY-COUNTEREXAMPLE] Astra 2304/2552 constant-quota initial-create stays frozen until actual initial state persists cleanly (5.2792ms)
+✔ [NODE/REWORK-07/R5-03-PRE-PROBE-CANCELLATION-BOUNDARY] Pre-probe cancellation executes 0 probe writes, post-start probe records mutation truthfully, and probe failure cleans up (1.3646ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38254.9644
+
+[FE-000 Test Summary] total=35 pass=35 fail=0 skip=0 todo=0 containerFail=0 procErr=0
+[test:frontend (standalone clean checkout)] exitCode=0
+
+[CleanCheckout] PASS: Clean standalone checkout executed Node/Mock tests with zero manual archive copies.

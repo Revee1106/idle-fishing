@@ -11,7 +11,7 @@
  * - read() returns null ONLY when the file does not exist (ENOENT) on a healthy FS.
  * - IO / permission errors throw FilePortIoError so corrupt/unreadable slots are never treated as empty.
  */
-import type { FilePort } from './PlatformTypes';
+import type { FilePort, StorageProbeOptions, StorageProbeResult } from './PlatformTypes';
 
 interface WxFileSystemManager {
   accessSync(path: string): void;
@@ -81,8 +81,11 @@ export class UnavailableFilePort implements FilePort {
     this.unavailableReason = reason;
   }
 
-  probeStorage(): { available: boolean; reason: string | null } {
-    return { available: false, reason: this.unavailableReason };
+  probeStorage(options?: StorageProbeOptions): StorageProbeResult {
+    if (options?.shouldCancelBeforeMutation?.()) {
+      return { available: false, cancelled: true, mutated: false, reason: 'Unavailable storage probe cancelled (owner destroyed)' };
+    }
+    return { available: false, mutated: false, reason: this.unavailableReason };
   }
 
   async readTxState(): Promise<string | null> {
@@ -151,28 +154,36 @@ export class WeChatFilePort implements FilePort {
     return this._unavailableReason;
   }
 
-  probeStorage(): { available: boolean; reason: string | null } {
+  probeStorage(options?: StorageProbeOptions): StorageProbeResult {
+    if (options?.shouldCancelBeforeMutation?.()) {
+      return {
+        available: false,
+        cancelled: true,
+        mutated: false,
+        reason: 'WeChat storage probe cancelled before FS check (owner destroyed)',
+      };
+    }
     const wxObj = (globalThis as { wx?: WxMiniGameGlobal }).wx;
     if (!wxObj || typeof wxObj !== 'object') {
       this.fs = null;
       this.rootDir = null;
       this._storageAvailable = false;
       this._unavailableReason = 'wx global is unavailable';
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: false, reason: this._unavailableReason };
     }
     if (typeof wxObj.getFileSystemManager !== 'function') {
       this.fs = null;
       this.rootDir = null;
       this._storageAvailable = false;
       this._unavailableReason = 'wx.getFileSystemManager is missing';
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: false, reason: this._unavailableReason };
     }
     if (!wxObj.env?.USER_DATA_PATH || typeof wxObj.env.USER_DATA_PATH !== 'string') {
       this.fs = null;
       this.rootDir = null;
       this._storageAvailable = false;
       this._unavailableReason = 'wx.env.USER_DATA_PATH is missing';
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: false, reason: this._unavailableReason };
     }
 
     let fsm: WxFileSystemManager;
@@ -183,14 +194,14 @@ export class WeChatFilePort implements FilePort {
       this.rootDir = null;
       this._storageAvailable = false;
       this._unavailableReason = `wx.getFileSystemManager() threw: ${String((err as { errMsg?: string })?.errMsg ?? err)}`;
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: false, reason: this._unavailableReason };
     }
     if (!fsm || typeof fsm !== 'object') {
       this.fs = null;
       this.rootDir = null;
       this._storageAvailable = false;
       this._unavailableReason = 'wx.getFileSystemManager() returned null/invalid object';
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: false, reason: this._unavailableReason };
     }
     for (const method of REQUIRED_WX_FS_METHODS) {
       if (typeof fsm[method] !== 'function') {
@@ -198,22 +209,32 @@ export class WeChatFilePort implements FilePort {
         this.rootDir = null;
         this._storageAvailable = false;
         this._unavailableReason = `wx FileSystemManager missing required method: ${method}`;
-        return { available: false, reason: this._unavailableReason };
+        return { available: false, mutated: false, reason: this._unavailableReason };
       }
     }
 
     this.fs = fsm;
     this.rootDir = `${wxObj.env.USER_DATA_PATH}/${this.namespaceDir}`;
+    let mutated = false;
     try {
-      this.ensureRootDir();
+      const outcome = this.ensureRootDir(options);
+      if (outcome === 'CANCELLED') {
+        return {
+          available: false,
+          cancelled: true,
+          mutated: false,
+          reason: 'WeChat storage probe cancelled before creating sandbox directory (owner destroyed)',
+        };
+      }
+      mutated = outcome === 'CREATED';
     } catch (err) {
       this._storageAvailable = false;
       this._unavailableReason = err instanceof Error ? err.message : String(err);
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated, reason: this._unavailableReason };
     }
     this._storageAvailable = true;
     this._unavailableReason = null;
-    return { available: true, reason: null };
+    return { available: true, mutated, reason: null };
   }
 
   private assertAvailable(relPath: string): { fs: WxFileSystemManager; rootDir: string } {
@@ -227,19 +248,26 @@ export class WeChatFilePort implements FilePort {
     return { fs: this.fs, rootDir: this.rootDir };
   }
 
-  private ensureRootDir(): void {
+  private ensureRootDir(options?: StorageProbeOptions): 'EXISTS' | 'CREATED' | 'CANCELLED' {
     if (!this.fs || !this.rootDir) {
       throw new FilePortIoError('STORAGE_UNAVAILABLE', this.namespaceDir, 'WeChat FS not initialized');
     }
     try {
       this.fs.accessSync(this.rootDir);
+      return 'EXISTS';
     } catch {
+      if (options?.shouldCancelBeforeMutation?.()) {
+        return 'CANCELLED';
+      }
+      options?.onMutationStarted?.();
       try {
         this.fs.mkdirSync(this.rootDir, true);
+        return 'CREATED';
       } catch (err) {
         if (!/file already exists|eexist/i.test(String(err))) {
           throw new FilePortIoError('MKDIR_FAILED', this.rootDir, String(err));
         }
+        return 'EXISTS';
       }
     }
   }

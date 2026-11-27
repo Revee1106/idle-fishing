@@ -2852,13 +2852,14 @@ test('[NODE/REWORK-06/R5-02-WRITE-CAPABILITY-CHECKPOINT-RECOVERY] Persistent slo
   assert.equal(nextCommit.kind, 'COMMITTED');
   if (nextCommit.kind === 'COMMITTED') assert.equal(nextCommit.revision, '3');
 
-  // 2. Confirmed EMPTY initial-create freeze by persistent QUOTA_EXCEEDED -> verifies slot-path write+readback+remove
+  // 2. Confirmed EMPTY initial-create freeze by persistent QUOTA_EXCEEDED -> REWORK-07 R5-02:
+  //    NEVER unfreezes via synthetic probe or without valid initialCommitState; requires persisting actual initial state!
   const memEmpty = new MemoryFilePort(10 * 1024 * 1024, 'r6_r502_quota_empty');
   let emptyQuotaFull = true;
   const emptyQuotaPort: FilePort = {
     kind: 'MEMORY',
     storageKey: memEmpty.storageKey,
-    probeStorage: () => memEmpty.probeStorage(),
+    probeStorage: (opts) => memEmpty.probeStorage(opts),
     readTxState: () => memEmpty.readTxState(),
     writeTxState: (txt) => memEmpty.writeTxState(txt),
     clearTxState: () => memEmpty.clearTxState(),
@@ -2877,17 +2878,37 @@ test('[NODE/REWORK-06/R5-02-WRITE-CAPABILITY-CHECKPOINT-RECOVERY] Persistent slo
   };
   const coordEmpty = new SingleWriterSaveCoordinator(emptyQuotaPort);
   assert.equal((await coordEmpty.commit(s1, null)).kind, 'STORAGE_UNAVAILABLE');
-  const emptyStillFull = await coordEmpty.loadSafe();
-  assert.equal(emptyStillFull.kind, 'STORAGE_UNAVAILABLE');
-  if (emptyStillFull.kind === 'STORAGE_UNAVAILABLE') {
-    assert.equal(emptyStillFull.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+  const emptyStillFullNoState = await coordEmpty.loadSafe();
+  assert.equal(emptyStillFullNoState.kind, 'STORAGE_UNAVAILABLE');
+  if (emptyStillFullNoState.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(emptyStillFullNoState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
   }
+  const emptyStillFullWithState = await coordEmpty.loadSafe({ initialCommitState: s1 });
+  assert.equal(emptyStillFullWithState.kind, 'STORAGE_UNAVAILABLE');
+  if (emptyStillFullWithState.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(emptyStillFullWithState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+  }
+  assert.ok(await memEmpty.readTxState(), 'FROZEN marker must stay while initial-save write fails');
+
+  // Even after quota clears, loadSafe() WITHOUT initialCommitState MUST stay frozen (cannot verify actual save size!)
   emptyQuotaFull = false;
-  const emptyHealed = await coordEmpty.loadSafe();
-  assert.equal(emptyHealed.kind, 'EMPTY');
+  const emptyHealedWithoutState = await coordEmpty.loadSafe();
+  assert.equal(emptyHealedWithoutState.kind, 'STORAGE_UNAVAILABLE');
+  if (emptyHealedWithoutState.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(emptyHealedWithoutState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+  }
+  assert.ok(await memEmpty.readTxState(), 'Marker must stay frozen when no valid initialCommitState is supplied');
+
+  // Supplying the actual valid initial state commits rev 1 via 3-slot + readback + history meta -> unfreezes!
+  const emptyHealed = await coordEmpty.loadSafe({ initialCommitState: s1 });
+  assert.equal(emptyHealed.kind, 'VALID');
+  if (emptyHealed.kind === 'VALID') {
+    assert.equal(emptyHealed.revision, '1');
+    assert.equal(canonicalStringify(emptyHealed.raw), canonicalStringify(s1));
+  }
   assert.equal(await memEmpty.readTxState(), null);
-  assert.deepEqual(await memEmpty.list(), [], 'Empty-domain write verification probe must be cleaned up');
-  assert.equal((await coordEmpty.commit(s1, null)).kind, 'COMMITTED');
+  assert.equal(JSON.parse((await memEmpty.readHistoryState())!).confirmedRevision, '1');
+  assert.equal((await coordEmpty.commit(s2, '1')).kind, 'COMMITTED');
 });
 
 test('[NODE/REWORK-06/R5-03-RECOVERY-OWNER-CANCELLATION] Queued STANDARD & CONFIRM_CORRUPT_MARKER cancel with zero disk mutation when owner destroyed before mutation', async () => {
@@ -3055,6 +3076,350 @@ test('[MOCK-WX/REWORK-06/R5-01-02-03-WECHAT-INVARIANTS] WeChat FilePort enforces
     const truncHistCommit = await coord.commit(s2, '2');
     mock.setTruncateWriteOn(null);
     assert.equal(truncHistCommit.kind, 'UNCERTAIN', 'Truncated WeChat history metadata write must not return COMMITTED');
+  } finally {
+    (globalThis as Record<string, unknown>).wx = prevWx;
+  }
+});
+
+// =========================================================================
+// REWORK-07: Formal Regression Suite for Astra P2 Counterexamples (R5-02 & R5-03)
+// =========================================================================
+
+test('[NODE/REWORK-07/R5-02-EMPTY-CAPACITY-COUNTEREXAMPLE] Astra 2304/2552 constant-quota initial-create stays frozen until actual initial state persists cleanly', async () => {
+  const seed = createInitialState({ saveEpoch: 'astra-capacity', startMs: 1_700_000_000_000, allowanceMs: 28_800_000 });
+  const state = advanceOffline(seed, seed.cursorMs + 3_600_000).state;
+  const nextState = advanceOffline(state, state.cursorMs + 60_000).state;
+
+  // Measure actual full slot size on generous port (must remain > 2304, exact Astra fixture = 2552 bytes)
+  const reference = new MemoryFilePort(10 * 1024 * 1024, 'r7_astra_size');
+  const validRef = await new SingleWriterSaveCoordinator(reference).commit(state, null);
+  assert.equal(validRef.kind, 'COMMITTED');
+  const fullSlotBytes = Buffer.byteLength((await reference.read(SLOT_PATHS[0]))!);
+  assert.ok(fullSlotBytes > 2304, `Expected real initial save > 2304 bytes, got ${fullSlotBytes}`);
+
+  // 1. Exact Astra counterexample: constant 2304-byte quota where small synthetic probes (< 2304) succeed
+  //    but real 2552-byte initial save fails -> loadSafe() (with OR without initialCommitState) MUST NOT unfreeze!
+  const port2304 = new MemoryFilePort(2304, 'r7_astra_capacity_2304');
+  const coord2304 = new SingleWriterSaveCoordinator(port2304);
+  const first = await coord2304.commit(state, null);
+  assert.equal(first.kind, 'STORAGE_UNAVAILABLE');
+  const markerBefore = await port2304.readTxState();
+  assert.ok(markerBefore, 'Failed initial save must persist FROZEN tx marker');
+
+  // Verify small probe writes CAN succeed on this 2304-byte port (confirming small probes are insufficient)
+  await port2304.write('small_probe.tmp', 'x'.repeat(2048));
+  assert.equal(await port2304.read('small_probe.tmp'), 'x'.repeat(2048));
+  await port2304.remove('small_probe.tmp');
+
+  // Recovery without initialCommitState -> stays FROZEN, marker preserved!
+  const recNoState = await coord2304.loadSafe();
+  assert.equal(recNoState.kind, 'STORAGE_UNAVAILABLE');
+  if (recNoState.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(recNoState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+  }
+  assert.ok(await port2304.readTxState(), 'Marker must remain when initialCommitState is absent');
+
+  // Recovery WITH the real 2552-byte initial state under 2304 quota -> STILL stays FROZEN, marker preserved!
+  const recWithState = await coord2304.loadSafe({ initialCommitState: state });
+  assert.equal(recWithState.kind, 'STORAGE_UNAVAILABLE');
+  if (recWithState.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(recWithState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+  }
+  assert.ok(await port2304.readTxState(), 'Marker must remain when real initial save exceeds quota');
+  assert.deepEqual(await port2304.list(), [], 'No stray probe or slot files may remain');
+
+  // Invalid initialCommitState -> rejected with 0 mutations & marker preserved!
+  const recBadState = await coord2304.loadSafe({ initialCommitState: { invalid: true } as unknown as SpikeGameState });
+  assert.equal(recBadState.kind, 'STORAGE_UNAVAILABLE');
+  if (recBadState.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(recBadState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+  }
+  assert.ok(await port2304.readTxState());
+
+  // Retry commit while still frozen -> STORAGE_UNAVAILABLE (never falsely unfrozen!)
+  const retry = await coord2304.commit(state, null);
+  assert.equal(retry.kind, 'STORAGE_UNAVAILABLE');
+
+  // 2. Dynamic quota port: 2304 bytes -> fails & stays frozen -> raise quota to 64KB -> actual initial save persists rev 1 -> next commit rev 2 -> fresh coordinator reloads rev 2!
+  const backing = new MemoryFilePort(64 * 1024, 'r7_astra_capacity_dynamic');
+  let activeLimit = 2304;
+  const dynamicQuotaPort: FilePort = {
+    kind: 'MEMORY',
+    storageKey: backing.storageKey,
+    probeStorage: (opts) => backing.probeStorage(opts),
+    readTxState: () => backing.readTxState(),
+    writeTxState: (t) => backing.writeTxState(t),
+    clearTxState: () => backing.clearTxState(),
+    readHistoryState: () => backing.readHistoryState(),
+    writeHistoryState: (t) => backing.writeHistoryState(t),
+    clearHistoryState: () => backing.clearHistoryState(),
+    read: (p) => backing.read(p),
+    write: async (p, text) => {
+      const files = await backing.list();
+      let otherBytes = 0;
+      for (const f of files) {
+        if (f !== p) otherBytes += Buffer.byteLength((await backing.read(f)) ?? '');
+      }
+      if (otherBytes + Buffer.byteLength(text) > activeLimit) {
+        throw new FilePortIoError('QUOTA_EXCEEDED', p, `Exceeded dynamic quota ${activeLimit} bytes`);
+      }
+      return backing.write(p, text);
+    },
+    remove: (p) => backing.remove(p),
+    list: (d) => backing.list(d),
+  };
+  const coordDyn = new SingleWriterSaveCoordinator(dynamicQuotaPort);
+  assert.equal((await coordDyn.commit(state, null)).kind, 'STORAGE_UNAVAILABLE');
+  assert.equal((await coordDyn.loadSafe({ initialCommitState: state })).kind, 'STORAGE_UNAVAILABLE');
+
+  // Quota recovers -> loadSafe({ initialCommitState: state }) persists exact state at rev 1 (zero gain/time change)
+  activeLimit = 64 * 1024;
+  const recovered = await coordDyn.loadSafe({ initialCommitState: state });
+  assert.equal(recovered.kind, 'VALID');
+  if (recovered.kind === 'VALID') {
+    assert.equal(recovered.revision, '1');
+    assert.equal(canonicalStringify(recovered.raw), canonicalStringify(state));
+    assert.equal((recovered.raw as SpikeGameState).gold, state.gold);
+    assert.equal((recovered.raw as SpikeGameState).cursorMs, state.cursorMs);
+  }
+  assert.equal(await backing.readTxState(), null, 'Tx marker must clear after verified initial-save commit');
+  assert.equal(JSON.parse((await backing.readHistoryState())!).confirmedRevision, '1');
+
+  // Subsequent normal commit advances cleanly rev 1 -> rev 2, and fresh coordinator reloads rev 2
+  const c2 = await coordDyn.commit(nextState, '1');
+  assert.equal(c2.kind, 'COMMITTED');
+  if (c2.kind === 'COMMITTED') assert.equal(c2.revision, '2');
+  const freshReload = await new SingleWriterSaveCoordinator(dynamicQuotaPort).loadSafe();
+  assert.equal(freshReload.kind, 'VALID');
+  if (freshReload.kind === 'VALID') {
+    assert.equal(freshReload.revision, '2');
+    assert.equal(canonicalStringify(freshReload.raw), canonicalStringify(nextState));
+  }
+});
+
+test('[NODE/REWORK-07/R5-03-PRE-PROBE-CANCELLATION-BOUNDARY] Pre-probe cancellation executes 0 probe writes, post-start probe records mutation truthfully, and probe failure cleans up', async () => {
+  const START = 1_700_000_000_000;
+  const s1 = advanceOffline(createInitialState({ saveEpoch: 'epoch.r7.r503', startMs: START, allowanceMs: 3_600_000 }), START + 60_000).state;
+
+  // Build an async probe-capable FilePort mirroring BrowserFilePort's openDb -> check -> put/read/delete boundary
+  function createAsyncProbePort(ns: string) {
+    const inner = new MemoryFilePort(10 * 1024 * 1024, ns);
+    const probeOps: string[] = [];
+    let probeStoreValue: string | null = null;
+    let pauseOpen: (() => Promise<void>) | null = null;
+    let onPutStarted: (() => void) | null = null;
+    let failReadBack = false;
+
+    const port: FilePort = {
+      kind: 'MEMORY',
+      storageKey: inner.storageKey,
+      probeStorage: async (options) => {
+        if (options?.shouldCancelBeforeMutation?.()) {
+          return { available: false, cancelled: true, mutated: false, reason: 'cancelled before open' };
+        }
+        if (pauseOpen) {
+          await pauseOpen();
+        }
+        if (options?.shouldCancelBeforeMutation?.()) {
+          return { available: false, cancelled: true, mutated: false, reason: 'cancelled after open before put' };
+        }
+        let mutated = true;
+        options?.onMutationStarted?.();
+        let wrote = false;
+        let opErr: unknown = null;
+        try {
+          probeOps.push('put');
+          probeStoreValue = '1';
+          wrote = true;
+          onPutStarted?.();
+          await Promise.resolve();
+          if (failReadBack) {
+            throw new Error('Injected probe readback failure');
+          }
+          if (probeStoreValue !== '1') {
+            throw new Error('Probe readback mismatch');
+          }
+        } catch (err) {
+          opErr = err;
+        }
+        if (wrote) {
+          probeOps.push('delete');
+          probeStoreValue = null;
+        }
+        if (opErr !== null) {
+          return { available: false, mutated, reason: opErr instanceof Error ? opErr.message : String(opErr) };
+        }
+        return { available: true, mutated, reason: null };
+      },
+      readTxState: () => inner.readTxState(),
+      writeTxState: (t) => inner.writeTxState(t),
+      clearTxState: () => inner.clearTxState(),
+      readHistoryState: () => inner.readHistoryState(),
+      writeHistoryState: (t) => inner.writeHistoryState(t),
+      clearHistoryState: () => inner.clearHistoryState(),
+      read: (p) => inner.read(p),
+      write: (p, t) => inner.write(p, t),
+      remove: (p) => inner.remove(p),
+      list: (d) => inner.list(d),
+    };
+    return {
+      inner,
+      port,
+      probeOps,
+      getProbeStoreValue: () => probeStoreValue,
+      setPauseOpen: (fn: (() => Promise<void>) | null) => { pauseOpen = fn; },
+      setOnPutStarted: (fn: (() => void) | null) => { onPutStarted = fn; },
+      setFailReadBack: (v: boolean) => { failReadBack = v; },
+    };
+  }
+
+  // 1. STANDARD & CONFIRM_CORRUPT_MARKER: owner destroyed during async openDb BEFORE probe put -> 0 put, 0 delete!
+  const envStd = createAsyncProbePort('r7_r503_std');
+  const coordStd = new SingleWriterSaveCoordinator(envStd.port);
+  assert.equal((await coordStd.commit(s1, null)).kind, 'COMMITTED');
+  const slotBefore = await envStd.inner.read(SLOT_PATHS[0]);
+  const histBefore = await envStd.inner.readHistoryState();
+  const frozenMarker = JSON.stringify({
+    version: 1,
+    storageKey: envStd.inner.storageKey,
+    txId: 'tx_r7_std',
+    state: 'FROZEN',
+    expectedRevision: '1',
+    targetRevision: '2',
+    priorSaveHistory: 'CONFIRMED_VALID',
+    confirmedRevision: '1',
+    requiresWriteVerification: false,
+    createdAtMs: START,
+    updatedAtMs: START,
+    reason: 'r7 pre-probe cancel test',
+  });
+  await envStd.inner.writeTxState(frozenMarker);
+  envStd.probeOps.length = 0;
+
+  let destroyedStd = false;
+  let mutatedStd = false;
+  envStd.setPauseOpen(async () => {
+    destroyedStd = true; // Destroyed while awaiting async DB open, before probe put!
+  });
+  const resStd = await coordStd.loadSafe({
+    clearPendingTxMarker: true,
+    hooks: {
+      shouldCancelBeforeMutation: () => destroyedStd,
+      onMutationStarted: () => { mutatedStd = true; },
+    },
+  });
+  assert.equal(resStd.kind, 'CANCELLED');
+  if (resStd.kind === 'CANCELLED') assert.equal(resStd.persistentMutationOccurred, false);
+  assert.equal(mutatedStd, false);
+  assert.deepEqual(envStd.probeOps, [], 'Pre-probe cancel MUST execute 0 put and 0 delete ops');
+  assert.equal(await envStd.inner.readTxState(), frozenMarker);
+  assert.equal(await envStd.inner.read(SLOT_PATHS[0]), slotBefore);
+  assert.equal(await envStd.inner.readHistoryState(), histBefore);
+
+  // CONFIRM_CORRUPT_MARKER destroyed during async openDb before probe put -> 0 put, 0 delete!
+  await envStd.inner.writeTxState('{bad');
+  envStd.setPauseOpen(null);
+  const previewRes = await coordStd.loadSafe();
+  assert.equal(previewRes.kind, 'STORAGE_UNAVAILABLE');
+  const preview = previewRes.kind === 'STORAGE_UNAVAILABLE' ? previewRes.corruptMarkerRecoveryPreview! : null;
+  assert.ok(preview?.canConfirmRecovery);
+  envStd.probeOps.length = 0;
+
+  let destroyedConfirm = false;
+  let mutatedConfirm = false;
+  envStd.setPauseOpen(async () => {
+    destroyedConfirm = true;
+  });
+  const resConfirm = await coordStd.recoverFromCorruptTxMarker(
+    {
+      expectedCorruptMarkerSha256: preview!.corruptMarkerSha256,
+      expectedValidRevision: preview!.verifiedRevision!,
+      expectedSlotsSnapshotSha256: preview!.slotsSnapshotSha256!,
+    },
+    {
+      shouldCancelBeforeMutation: () => destroyedConfirm,
+      onMutationStarted: () => { mutatedConfirm = true; },
+    }
+  );
+  assert.equal(resConfirm.kind, 'CANCELLED');
+  if (resConfirm.kind === 'CANCELLED') assert.equal(resConfirm.persistentMutationOccurred, false);
+  assert.equal(mutatedConfirm, false);
+  assert.deepEqual(envStd.probeOps, [], 'CONFIRM pre-probe cancel MUST execute 0 put and 0 delete ops');
+  assert.equal(await envStd.inner.readTxState(), '{bad');
+
+  // 2. Owner destroyed AFTER probe put legitimately started -> probe cleans up (put+delete),
+  //    aborts before save-domain mutation, AND sets persistentMutationOccurred === true (never disguised as unexecuted!)
+  envStd.setPauseOpen(null);
+  envStd.probeOps.length = 0;
+  let destroyedAfterPut = false;
+  let mutatedAfterPut = false;
+  envStd.setOnPutStarted(() => {
+    destroyedAfterPut = true;
+  });
+  const resAfterPut = await coordStd.recoverFromCorruptTxMarker(
+    {
+      expectedCorruptMarkerSha256: preview!.corruptMarkerSha256,
+      expectedValidRevision: preview!.verifiedRevision!,
+      expectedSlotsSnapshotSha256: preview!.slotsSnapshotSha256!,
+    },
+    {
+      shouldCancelBeforeMutation: () => destroyedAfterPut,
+      onMutationStarted: () => { mutatedAfterPut = true; },
+    }
+  );
+  assert.equal(resAfterPut.kind, 'CANCELLED');
+  if (resAfterPut.kind === 'CANCELLED') {
+    assert.equal(resAfterPut.persistentMutationOccurred, true, 'Must truthfully report that probe mutation occurred');
+  }
+  assert.equal(mutatedAfterPut, true);
+  assert.deepEqual(envStd.probeOps, ['put', 'delete']);
+  assert.equal(envStd.getProbeStoreValue(), null, 'Probe key must be cleaned up');
+  assert.equal(await envStd.inner.readTxState(), '{bad', 'Corrupt marker must stay untouched after post-probe abort');
+
+  // 3. Probe readback exception cleans up probe key and returns STORAGE_UNAVAILABLE (PROBE_FAILED)
+  envStd.setOnPutStarted(null);
+  envStd.setFailReadBack(true);
+  envStd.probeOps.length = 0;
+  const resProbeFail = await coordStd.loadSafe();
+  assert.equal(resProbeFail.kind, 'STORAGE_UNAVAILABLE');
+  if (resProbeFail.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(resProbeFail.recoveryClassification, 'PROBE_FAILED');
+  }
+  assert.deepEqual(envStd.probeOps, ['put', 'delete'], 'Probe readback error must still clean up probe key');
+  assert.equal(envStd.getProbeStoreValue(), null);
+
+  // 4. WeChatFilePort probeStorage cancels before mkdirSync when owner is already destroyed (0 FS mutations)
+  const prevWx = (globalThis as Record<string, unknown>).wx;
+  let mkdirCalls = 0;
+  const mockWx = {
+    __FE000_MOCK__: true,
+    env: { USER_DATA_PATH: 'wxfile://usr' },
+    getFileSystemManager: () => ({
+      accessSync: () => {
+        throw new Error('ENOENT');
+      },
+      mkdirSync: () => {
+        mkdirCalls += 1;
+      },
+      readFileSync: () => '',
+      writeFileSync: () => {},
+      unlinkSync: () => {},
+      readdirSync: () => [],
+    }),
+  };
+  (globalThis as Record<string, unknown>).wx = mockWx;
+  try {
+    const wxPort = new WeChatFilePort('r7_wx_preprobe_cancel');
+    mkdirCalls = 0; // Reset after constructor probe
+    let wxMutated = false;
+    const wxProbeRes = wxPort.probeStorage({
+      shouldCancelBeforeMutation: () => true,
+      onMutationStarted: () => { wxMutated = true; },
+    });
+    assert.equal(wxProbeRes.cancelled, true);
+    assert.equal(wxProbeRes.mutated, false);
+    assert.equal(wxMutated, false);
+    assert.equal(mkdirCalls, 0, 'Cancelled WeChat probe must not call mkdirSync');
   } finally {
     (globalThis as Record<string, unknown>).wx = prevWx;
   }

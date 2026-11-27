@@ -8,9 +8,25 @@ export type RuntimeEnvKind = 'WECHAT_DEVICE' | 'WECHAT_DEVTOOLS' | 'WECHAT_MOCK'
 /** Persistent storage health state, strictly distinct from save-slot content state (EMPTY/VALID/CORRUPT/UNSUPPORTED). */
 export type StorageHealthState = 'AVAILABLE' | 'STORAGE_UNAVAILABLE';
 
+export interface StorageProbeOptions {
+  /**
+   * Optional owner cancellation predicate checked right before any persistent probe write
+   * with zero await gap between check and mutation start (R5-03 / REWORK-07).
+   */
+  readonly shouldCancelBeforeMutation?: () => boolean;
+  /**
+   * Invoked synchronously immediately before the first persistent probe write begins.
+   */
+  readonly onMutationStarted?: () => void;
+}
+
 export interface StorageProbeResult {
   readonly available: boolean;
   readonly reason: string | null;
+  /** True ONLY when cancelled before any persistent probe mutation started (0 put/delete side effects). */
+  readonly cancelled?: boolean;
+  /** True when the probe actually initiated a persistent write/mutation during this call. */
+  readonly mutated?: boolean;
 }
 
 /** Read-only report for legacy experimental localStorage saves (never auto-migrated, resurrected, or deleted). */
@@ -43,7 +59,7 @@ export interface FilePort {
   /** Stable single-runtime storage namespace key used by SingleWriterSaveCoordinator. */
   readonly storageKey?: string;
   /** Optional explicit persistence availability check (sync or async; unavailable storage is never EMPTY). */
-  probeStorage?(): StorageProbeResult | Promise<StorageProbeResult>;
+  probeStorage?(options?: StorageProbeOptions): StorageProbeResult | Promise<StorageProbeResult>;
   /** Optional shared persistent transaction marker operations bound to this storage domain (REWORK-04 A02). */
   readTxState?(): Promise<string | null>;
   writeTxState?(text: string): Promise<void>;

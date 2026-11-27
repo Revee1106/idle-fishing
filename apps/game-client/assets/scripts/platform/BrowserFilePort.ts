@@ -22,7 +22,7 @@
  *   reports `DETECTED_IGNORED_NO_AUTO_MIGRATION` without auto-migrating, resurrecting, or deleting.
  */
 import { SLOT_PATHS } from '@idle-fishing/game-core';
-import type { FilePort, LegacyLocalStorageStatus, StorageProbeResult } from './PlatformTypes';
+import type { FilePort, LegacyLocalStorageStatus, StorageProbeOptions, StorageProbeResult } from './PlatformTypes';
 import { FilePortIoError } from './WeChatFilePort';
 
 export const BROWSER_IDB_NAME = 'idle_fishing_fs_v1';
@@ -450,51 +450,115 @@ export class BrowserFilePort implements FilePort {
     return p;
   }
 
-  private probeLocalStorageSync(): StorageProbeResult {
+  private probeLocalStorageSync(options?: StorageProbeOptions): StorageProbeResult {
+    if (options?.shouldCancelBeforeMutation?.()) {
+      return {
+        available: false,
+        cancelled: true,
+        mutated: false,
+        reason: 'localStorage probe cancelled before write (owner destroyed)',
+      };
+    }
+    let probeMutationStarted = false;
     try {
       if (typeof globalThis.localStorage === 'undefined' || globalThis.localStorage === null) {
         this._storageAvailable = false;
         this._unavailableReason = 'localStorage is undefined in current runtime';
-        return { available: false, reason: this._unavailableReason };
+        return { available: false, mutated: false, reason: this._unavailableReason };
       }
       const probe = `${this.prefix}__probe__`;
+      // R5-03: Zero await gap between cancellation check and first persistent probe write
+      if (options?.shouldCancelBeforeMutation?.()) {
+        return {
+          available: false,
+          cancelled: true,
+          mutated: false,
+          reason: 'localStorage probe cancelled before write (owner destroyed)',
+        };
+      }
+      probeMutationStarted = true;
+      options?.onMutationStarted?.();
       globalThis.localStorage.setItem(probe, '1');
-      const readBack = globalThis.localStorage.getItem(probe);
-      globalThis.localStorage.removeItem(probe);
+      let readBack: string | null = null;
+      try {
+        readBack = globalThis.localStorage.getItem(probe);
+      } finally {
+        globalThis.localStorage.removeItem(probe);
+      }
       if (readBack !== '1') {
         this._storageAvailable = false;
         this._unavailableReason = 'localStorage probe readback mismatch';
-        return { available: false, reason: this._unavailableReason };
+        return { available: false, mutated: probeMutationStarted, reason: this._unavailableReason };
       }
       this._storageAvailable = true;
       this._unavailableReason = null;
-      return { available: true, reason: null };
+      return { available: true, mutated: probeMutationStarted, reason: null };
     } catch (err) {
       this._storageAvailable = false;
       this._unavailableReason = `localStorage probe failed: ${errorMessage(err)}`;
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: probeMutationStarted, reason: this._unavailableReason };
     }
   }
 
-  private async probeIndexedDbAsync(): Promise<StorageProbeResult> {
+  private async probeIndexedDbAsync(options?: StorageProbeOptions): Promise<StorageProbeResult> {
     const probeKey = `${this.prefix}__probe__`;
+    let probeMutationStarted = false;
     try {
+      // R5-03 Check #1: Cancel before opening DB if owner already destroyed
+      if (options?.shouldCancelBeforeMutation?.()) {
+        return {
+          available: false,
+          cancelled: true,
+          mutated: false,
+          reason: 'IndexedDB probe cancelled before opening database (owner destroyed)',
+        };
+      }
       const db = await this.openDb('__probe__');
-      await idbWriteStringKey(db, probeKey, '1');
-      const readBack = await idbReadStringKey(db, probeKey, '__probe__');
-      await idbDeleteKey(db, probeKey);
+      // R5-03 Check #2: Re-check owner IMMEDIATELY after openDb resolves with ZERO await gap
+      // before initiating the first persistent IndexedDB put transaction!
+      if (options?.shouldCancelBeforeMutation?.()) {
+        return {
+          available: false,
+          cancelled: true,
+          mutated: false,
+          reason: 'IndexedDB probe cancelled after opening database before first write (owner destroyed)',
+        };
+      }
+      // Point of no return for probe persistence mutation: zero await gap before idbWriteStringKey!
+      probeMutationStarted = true;
+      options?.onMutationStarted?.();
+      let writeSucceeded = false;
+      let readBack: string | null = null;
+      let opError: unknown = null;
+      try {
+        await idbWriteStringKey(db, probeKey, '1');
+        writeSucceeded = true;
+        readBack = await idbReadStringKey(db, probeKey, '__probe__');
+      } catch (err) {
+        opError = err;
+      }
+      if (writeSucceeded) {
+        try {
+          await idbDeleteKey(db, probeKey);
+        } catch (delErr) {
+          if (opError === null) opError = delErr;
+        }
+      }
+      if (opError !== null) {
+        throw opError;
+      }
       if (readBack !== '1') {
         this._storageAvailable = false;
         this._unavailableReason = 'IndexedDB probe readback mismatch';
-        return { available: false, reason: this._unavailableReason };
+        return { available: false, mutated: probeMutationStarted, reason: this._unavailableReason };
       }
       this._storageAvailable = true;
       this._unavailableReason = null;
-      return { available: true, reason: null };
+      return { available: true, mutated: probeMutationStarted, reason: null };
     } catch (err) {
       this._storageAvailable = false;
       this._unavailableReason = `IndexedDB probe failed: ${errorMessage(err)}`;
-      return { available: false, reason: this._unavailableReason };
+      return { available: false, mutated: probeMutationStarted, reason: this._unavailableReason };
     }
   }
 
@@ -502,15 +566,24 @@ export class BrowserFilePort implements FilePort {
    * Probes actual storage read/write capability without altering any real save slot or tx marker.
    * Never silently falls back to localStorage or ephemeral memory on failure.
    */
-  probeStorage(): StorageProbeResult | Promise<StorageProbeResult> {
+  probeStorage(options?: StorageProbeOptions): StorageProbeResult | Promise<StorageProbeResult> {
     if (this.backend === 'INDEXED_DB') {
-      return this.probeIndexedDbAsync();
+      return this.probeIndexedDbAsync(options);
     }
     if (this.backend === 'LOCAL_STORAGE_MOCK') {
-      return this.probeLocalStorageSync();
+      return this.probeLocalStorageSync(options);
+    }
+    if (options?.shouldCancelBeforeMutation?.()) {
+      return {
+        available: false,
+        cancelled: true,
+        mutated: false,
+        reason: 'Storage probe cancelled before execution (owner destroyed)',
+      };
     }
     return {
       available: false,
+      mutated: false,
       reason: this._unavailableReason ?? 'INDEXED_DB_UNAVAILABLE',
     };
   }
@@ -870,8 +943,16 @@ export class MemoryFilePort implements FilePort {
     this.maxBytes = maxBytes;
   }
 
-  probeStorage(): StorageProbeResult {
-    return { available: true, reason: null };
+  probeStorage(options?: StorageProbeOptions): StorageProbeResult {
+    if (options?.shouldCancelBeforeMutation?.()) {
+      return {
+        available: false,
+        cancelled: true,
+        mutated: false,
+        reason: 'Memory storage probe cancelled (owner destroyed)',
+      };
+    }
+    return { available: true, mutated: false, reason: null };
   }
 
   async readTxState(): Promise<string | null> {

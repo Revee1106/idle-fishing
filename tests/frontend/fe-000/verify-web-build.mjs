@@ -247,6 +247,19 @@ const IDB_HELPERS_EXPR = `(() => {
         });
       } finally { db.close(); }
     },
+    async readHistoryState(ns) {
+      const db = await openDb();
+      try {
+        return await new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE, 'readonly');
+          const req = tx.objectStore(STORE).get(ns + ':__save_history__');
+          let val = null;
+          req.onsuccess = () => { val = req.result ?? null; };
+          tx.oncomplete = () => resolve(val);
+          tx.onerror = () => reject(tx.error);
+        });
+      } finally { db.close(); }
+    },
     async writeTxState(ns, val) {
       const db = await openDb();
       try {
@@ -348,6 +361,8 @@ const report = {
   rework06R501MonotonicCrossTabReload: null,
   rework06R502AppUiPersistentQuotaLoop: null,
   rework06R503AppUiRecoveryOwnerLifecycle: null,
+  rework07R502InitialSaveQuotaUi: null,
+  rework07R503PreProbeCancelChrome: null,
   modalClickCheck: null,
   platformChecks: null,
   scrollOffsetCheck: null,
@@ -3256,6 +3271,419 @@ try {
           r503AfterRetry.outcome === 'RECOVERED_VALID' &&
           r503AfterRetry.rev === '3',
         JSON.stringify(report.rework06R503AppUiRecoveryOwnerLifecycle)
+      );
+    }
+
+    // -----------------------------------------------------------------------
+    // 3m. REWORK-07 R5-02: Real Chrome UI first-time save creation under tight quota
+    //     - Small probe (__probe__) succeeds, while real initial save slot exceeds quota
+    //     - Real UI stays frozen on BtnRecoverStorage until quota actually admits real initial save
+    //     - After quota recovers, actual initial save commits rev=1 -> normal HIDE commits rev=2 -> reload keeps rev=2
+    // -----------------------------------------------------------------------
+    console.log('[Web E2E] Starting REWORK-07 R5-02/R5-03 checks...');
+    {
+      // We are on a freshly cleaned EMPTY appNs after REWORK-06 reset above.
+      // Enforce a 1000-byte limit on save_slot_* puts (smaller than +60s HIDE save ~1249 bytes,
+      // while 1-byte __probe__ and tx markers succeed!).
+      await cdp.evalJson(`(() => {
+        globalThis.__R7_ORIG_PUT__ = IDBObjectStore.prototype.put;
+        globalThis.__R7_SLOT_LIMIT__ = 1000;
+        globalThis.__R7_PROBE_PUT_OK__ = 0;
+        IDBObjectStore.prototype.put = function(val, key) {
+          const k = String(key);
+          if (k === ${JSON.stringify(appNs + ':__probe__')}) {
+            globalThis.__R7_PROBE_PUT_OK__ += 1;
+          }
+          if (k.startsWith(${JSON.stringify(appNs + ':save_slot_')}) && typeof val === 'string' && val.length > globalThis.__R7_SLOT_LIMIT__) {
+            throw new DOMException('REWORK-07 tight quota ' + globalThis.__R7_SLOT_LIMIT__, 'QuotaExceededError');
+          }
+          return globalThis.__R7_ORIG_PUT__.call(this, val, key);
+        };
+        return true;
+      })()`);
+
+      // First HIDE save fails with QuotaExceededError -> UI freezes!
+      await cdp.evalJson(`(async () => {
+        for (const st of ['hidden', 'visible']) {
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
+          document.dispatchEvent(new Event('visibilitychange'));
+        }
+        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+      })()`);
+      const afterFirstFail = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const markerRaw = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
+        const slots = await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)});
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          marker: markerRaw ? JSON.parse(markerRaw) : null,
+          slotCount: slots.filter(Boolean).length,
+        };
+      })()`);
+
+      // Click REAL UI BtnRecoverStorage while tight quota (1000B) is STILL active (__probe__ succeeds, real initial save fails!)
+      await clickUiBtn(cdp, 'BtnRecoverStorage');
+      await new Promise((r) => setTimeout(r, 250));
+      const whileStillTight = await cdp.evalJson(`(async () => {
+        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const markerRaw = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
+        const slots = await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)});
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          cls: snap.lifecyclePersistence.recoveryClassification,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          probePuts: globalThis.__R7_PROBE_PUT_OK__,
+          hasMarker: Boolean(markerRaw),
+          slotCount: slots.filter(Boolean).length,
+        };
+      })()`);
+
+      // Restore quota -> click REAL UI BtnRecoverStorage -> actual initial save commits rev=1!
+      await cdp.evalJson(`(() => { IDBObjectStore.prototype.put = globalThis.__R7_ORIG_PUT__; return true; })()`);
+      await clickUiBtn(cdp, 'BtnRecoverStorage');
+      await new Promise((r) => setTimeout(r, 250));
+      const afterHeal = await cdp.evalJson(`(async () => {
+        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const markerRaw = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
+        const histRaw = await (${IDB_HELPERS_EXPR}).readHistoryState(${JSON.stringify(appNs)});
+        const slots = await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)});
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          rev: snap.lifecyclePersistence.revision,
+          gold: snap.lifecyclePersistence.gold,
+          cursorMs: snap.lifecyclePersistence.cursorMs,
+          markerRaw,
+          histRev: histRaw ? JSON.parse(histRaw).confirmedRevision : null,
+          slot0Rev: slots[0] ? JSON.parse(slots[0]).revision : null,
+        };
+      })()`);
+
+      // Normal HIDE after recovery commits rev=2, and real reload preserves rev=2!
+      await cdp.evalJson(`(async () => {
+        for (const st of ['hidden', 'visible']) {
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
+          document.dispatchEvent(new Event('visibilitychange'));
+        }
+        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+      })()`);
+      const afterNextHide = await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.getSnapshot().lifecyclePersistence`);
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R7-R502 reload');
+      await new Promise((r) => setTimeout(r, 300));
+      const afterReload = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const markerRaw = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
+        const histRaw = await (${IDB_HELPERS_EXPR}).readHistoryState(${JSON.stringify(appNs)});
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          rev: snap.lifecyclePersistence.revision,
+          gold: snap.lifecyclePersistence.gold,
+          cursorMs: snap.lifecyclePersistence.cursorMs,
+          markerRaw,
+          histRev: histRaw ? JSON.parse(histRaw).confirmedRevision : null,
+        };
+      })()`);
+
+      report.rework07R502InitialSaveQuotaUi = {
+        afterFirstFail,
+        whileStillTight,
+        afterHeal,
+        afterNextHide: {
+          rev: afterNextHide.revision,
+          gold: afterNextHide.gold,
+          cursorMs: afterNextHide.cursorMs,
+          lastCommitKind: afterNextHide.lastCommitKind,
+        },
+        afterReload,
+      };
+      assertCheck(
+        'web_rework07_r5_02_initial_save_quota_ui_recovery',
+        afterFirstFail.halted === true &&
+          afterFirstFail.overlay === true &&
+          afterFirstFail.marker?.priorSaveHistory === 'CONFIRMED_EMPTY_INITIAL_CREATE' &&
+          afterFirstFail.marker?.requiresWriteVerification === true &&
+          afterFirstFail.slotCount === 0 &&
+          whileStillTight.halted === true &&
+          whileStillTight.overlay === true &&
+          whileStillTight.cls === 'WRITE_CAPABILITY_UNAVAILABLE' &&
+          whileStillTight.outcome === 'FAILED' &&
+          whileStillTight.probePuts >= 1 &&
+          whileStillTight.hasMarker === true &&
+          whileStillTight.slotCount === 0 &&
+          afterHeal.halted === false &&
+          afterHeal.overlay === false &&
+          afterHeal.outcome === 'RECOVERED_VALID' &&
+          afterHeal.rev === '1' &&
+          afterHeal.markerRaw === null &&
+          afterHeal.histRev === '1' &&
+          afterHeal.slot0Rev === '1' &&
+          afterNextHide.lastCommitKind === 'COMMITTED' &&
+          afterNextHide.revision === '2' &&
+          afterReload.halted === false &&
+          afterReload.rev === '2' &&
+          afterReload.gold === afterNextHide.gold &&
+          afterReload.cursorMs === afterNextHide.cursorMs &&
+          afterReload.markerRaw === null &&
+          afterReload.histRev === '2',
+        JSON.stringify(report.rework07R502InitialSaveQuotaUi)
+      );
+    }
+
+    // -----------------------------------------------------------------------
+    // 3n. REWORK-07 R5-03: Real Chrome pre-probe-write cancellation (STANDARD & CONFIRM),
+    //     post-probe-put-start destroy (COMPLETED_AFTER_DESTROY + cleanup), & probe readback exception cleanup
+    // -----------------------------------------------------------------------
+    {
+      const runPreProbeCancelCase = async (mode) => {
+        const markerVal =
+          mode === 'confirm'
+            ? '{bad'
+            : JSON.stringify({
+                version: 1,
+                storageKey: `browser:${appNs}`,
+                txId: 'r7_preprobe_std',
+                state: 'FROZEN',
+                expectedRevision: '2',
+                targetRevision: '3',
+                priorSaveHistory: 'CONFIRMED_VALID',
+                confirmedRevision: '2',
+                requiresWriteVerification: false,
+                createdAtMs: 1700000000000,
+                updatedAtMs: 1700000000000,
+                reason: 'REWORK-07 R5-03 pre-probe cancel fixture',
+              });
+        await cdp.evalJson(`(${IDB_HELPERS_EXPR}).writeTxState(${JSON.stringify(appNs)}, ${JSON.stringify(markerVal)})`);
+        await cdp.send('Page.reload', { ignoreCache: true });
+        await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, `R7-R503 ${mode} reload`);
+        await new Promise((r) => setTimeout(r, 300));
+        const slotsBefore = await cdp.evalJson(`(${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})`);
+        const histBefore = await cdp.evalJson(`(${IDB_HELPERS_EXPR}).readHistoryState(${JSON.stringify(appNs)})`);
+        await cdp.evalJson(`(async () => {
+          const { BrowserFilePort } = await System.import('chunks:///_virtual/BrowserFilePort.ts');
+          const origOpen = BrowserFilePort.prototype.openDb;
+          globalThis.__R7_PROBE_OPS__ = [];
+          globalThis.__R7_OPEN_REL__ = null;
+          BrowserFilePort.prototype.openDb = async function(key) {
+            const db = await origOpen.call(this, key);
+            if (key === '__probe__' && this.namespace === ${JSON.stringify(appNs)} && !globalThis.__R7_OPEN_REL__) {
+              await new Promise((resolve) => { globalThis.__R7_OPEN_REL__ = resolve; });
+            }
+            return db;
+          };
+          for (const method of ['put', 'delete']) {
+            const orig = IDBObjectStore.prototype[method];
+            IDBObjectStore.prototype[method] = function(...args) {
+              const key = String(args[method === 'put' ? 1 : 0]);
+              const req = orig.apply(this, args);
+              if (key === ${JSON.stringify(appNs + ':__probe__')}) {
+                this.transaction.addEventListener('complete', () => {
+                  globalThis.__R7_PROBE_OPS__.push({ method, key, destroyed: globalThis.__SPIKE_HARNESS__.getSnapshot().destroyed });
+                }, { once: true });
+              }
+              return req;
+            };
+          }
+          return true;
+        })()`);
+        await clickUiBtn(cdp, mode === 'confirm' ? 'BtnConfirmCorruptMarkerRecovery' : 'BtnRecoverStorage');
+        await waitUntil(() => cdp.evalJson(`typeof globalThis.__R7_OPEN_REL__ === 'function'`), 10000, `R7-R503 ${mode} openDb paused`);
+        await cdp.evalJson(`cc.director.getScene().getComponentInChildren('BootEntry').destroy(); true`);
+        await waitUntil(() => cdp.evalJson(`globalThis.__SPIKE_HARNESS__.getSnapshot().destroyed === true`), 8000, `R7-R503 ${mode} destroyed`);
+        await cdp.evalJson(`globalThis.__R7_OPEN_REL__(); true`);
+        await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.awaitPendingHideSave()`);
+        await new Promise((r) => setTimeout(r, 250));
+        const snap = await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.getSnapshot()`);
+        const slotsAfter = await cdp.evalJson(`(${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})`);
+        const markerAfter = await cdp.evalJson(`(${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)})`);
+        const histAfter = await cdp.evalJson(`(${IDB_HELPERS_EXPR}).readHistoryState(${JSON.stringify(appNs)})`);
+        const ops = await cdp.evalJson(`globalThis.__R7_PROBE_OPS__`);
+        return {
+          mode,
+          destroyed: snap.destroyed,
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          opsCount: ops.length,
+          slotsIdentical: JSON.stringify(slotsBefore) === JSON.stringify(slotsAfter),
+          markerIdentical: markerAfter === markerVal,
+          histIdentical: histBefore === histAfter,
+        };
+      };
+
+      const preProbeStd = await runPreProbeCancelCase('standard');
+      const preProbeConfirm = await runPreProbeCancelCase('confirm');
+
+      // Destroy AFTER probe put has legitimately started -> put+delete complete & clean up,
+      // outcome MUST be COMPLETED_AFTER_DESTROY (NEVER CANCELLED_DESTROYED!), business marker/slots untouched!
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R7-R503 afterPut reload');
+      await new Promise((r) => setTimeout(r, 300));
+      const slotsBeforeAfterPut = await cdp.evalJson(`(${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})`);
+      await cdp.evalJson(`(() => {
+        globalThis.__R7_AFTER_PUT_OPS__ = [];
+        globalThis.__R7_DESTROYED_ON_PUT__ = false;
+        for (const method of ['put', 'delete']) {
+          const orig = IDBObjectStore.prototype[method];
+          IDBObjectStore.prototype[method] = function(...args) {
+            const key = String(args[method === 'put' ? 1 : 0]);
+            const req = orig.apply(this, args);
+            if (key === ${JSON.stringify(appNs + ':__probe__')}) {
+              if (method === 'put' && !globalThis.__R7_DESTROYED_ON_PUT__) {
+                globalThis.__R7_DESTROYED_ON_PUT__ = true;
+                cc.director.getScene().getComponentInChildren('BootEntry').destroy();
+              }
+              this.transaction.addEventListener('complete', () => {
+                globalThis.__R7_AFTER_PUT_OPS__.push({ method, key });
+              }, { once: true });
+            }
+            return req;
+          };
+        }
+        return true;
+      })()`);
+      await clickUiBtn(cdp, 'BtnConfirmCorruptMarkerRecovery');
+      await waitUntil(() => cdp.evalJson(`globalThis.__SPIKE_HARNESS__.getSnapshot().destroyed === true`), 8000, 'R7-R503 afterPut destroyed');
+      await cdp.evalJson(`globalThis.__SPIKE_HARNESS__.awaitPendingHideSave()`);
+      await new Promise((r) => setTimeout(r, 250));
+      const afterProbePutStart = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const markerAfter = await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)});
+        const slotsAfter = await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)});
+        const probeLeft = await new Promise((res, rej) => {
+          const r = indexedDB.open('idle_fishing_fs_v1', 1);
+          r.onsuccess = () => {
+            const db = r.result;
+            const tx = db.transaction('files', 'readonly');
+            let v = null;
+            const q = tx.objectStore('files').get(${JSON.stringify(appNs + ':__probe__')});
+            q.onsuccess = () => { v = q.result ?? null; };
+            tx.oncomplete = () => { db.close(); res(v); };
+            tx.onerror = () => { db.close(); rej(tx.error); };
+          };
+          r.onerror = () => rej(r.error);
+        });
+        return {
+          destroyed: snap.destroyed,
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          ops: globalThis.__R7_AFTER_PUT_OPS__,
+          markerAfter,
+          slotsIdentical: JSON.stringify(slotsAfter) === ${JSON.stringify(JSON.stringify(slotsBeforeAfterPut))},
+          probeLeft,
+        };
+      })()`);
+
+      // Probe readback exception cleanup: put succeeds, get throws -> delete STILL runs so 0 orphan __probe__ remains!
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R7-R503 probeErr reload');
+      await new Promise((r) => setTimeout(r, 300));
+      await cdp.evalJson(`(() => {
+        globalThis.__R7_ERR_OPS__ = [];
+        const origGet = IDBObjectStore.prototype.get;
+        IDBObjectStore.prototype.get = function(key) {
+          if (String(key) === ${JSON.stringify(appNs + ':__probe__')}) {
+            IDBObjectStore.prototype.get = origGet;
+            throw new Error('REWORK-07 injected probe readback error');
+          }
+          return origGet.call(this, key);
+        };
+        for (const method of ['put', 'delete']) {
+          const orig = IDBObjectStore.prototype[method];
+          IDBObjectStore.prototype[method] = function(...args) {
+            const key = String(args[method === 'put' ? 1 : 0]);
+            const req = orig.apply(this, args);
+            if (key === ${JSON.stringify(appNs + ':__probe__')}) {
+              this.transaction.addEventListener('complete', () => {
+                globalThis.__R7_ERR_OPS__.push(method);
+              }, { once: true });
+            }
+            return req;
+          };
+        }
+        return true;
+      })()`);
+      await clickUiBtn(cdp, 'BtnConfirmCorruptMarkerRecovery');
+      await new Promise((r) => setTimeout(r, 300));
+      const probeErrorCleanup = await cdp.evalJson(`(async () => {
+        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const probeLeft = await new Promise((res, rej) => {
+          const r = indexedDB.open('idle_fishing_fs_v1', 1);
+          r.onsuccess = () => {
+            const db = r.result;
+            const tx = db.transaction('files', 'readonly');
+            let v = null;
+            const q = tx.objectStore('files').get(${JSON.stringify(appNs + ':__probe__')});
+            q.onsuccess = () => { v = q.result ?? null; };
+            tx.oncomplete = () => { db.close(); res(v); };
+            tx.onerror = () => { db.close(); rej(tx.error); };
+          };
+          r.onerror = () => rej(r.error);
+        });
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          cls: snap.lifecyclePersistence.recoveryClassification,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          ops: globalThis.__R7_ERR_OPS__,
+          probeLeft,
+        };
+      })()`);
+
+      // Clean app namespace & reload clean healthy EMPTY state before Step 4 UI clicks!
+      await cdp.evalJson(`(${IDB_HELPERS_EXPR}).clearNs(${JSON.stringify(appNs)})`);
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R7 clean boot before Step 4');
+      await new Promise((r) => setTimeout(r, 350));
+
+      report.rework07R503PreProbeCancelChrome = {
+        preProbeStd,
+        preProbeConfirm,
+        afterProbePutStart,
+        probeErrorCleanup,
+      };
+      assertCheck(
+        'web_rework07_r5_03_probe_write_cancellation_chrome',
+        preProbeStd.destroyed === true &&
+          preProbeStd.halted === true &&
+          preProbeStd.overlay === false &&
+          preProbeStd.outcome === 'CANCELLED_DESTROYED' &&
+          preProbeStd.opsCount === 0 &&
+          preProbeStd.slotsIdentical === true &&
+          preProbeStd.markerIdentical === true &&
+          preProbeStd.histIdentical === true &&
+          preProbeConfirm.destroyed === true &&
+          preProbeConfirm.halted === true &&
+          preProbeConfirm.overlay === false &&
+          preProbeConfirm.outcome === 'CANCELLED_DESTROYED' &&
+          preProbeConfirm.opsCount === 0 &&
+          preProbeConfirm.slotsIdentical === true &&
+          preProbeConfirm.markerIdentical === true &&
+          preProbeConfirm.histIdentical === true &&
+          afterProbePutStart.destroyed === true &&
+          afterProbePutStart.halted === true &&
+          afterProbePutStart.overlay === false &&
+          afterProbePutStart.outcome === 'COMPLETED_AFTER_DESTROY' &&
+          afterProbePutStart.ops.length === 2 &&
+          afterProbePutStart.ops[0]?.method === 'put' &&
+          afterProbePutStart.ops[1]?.method === 'delete' &&
+          afterProbePutStart.markerAfter === '{bad' &&
+          afterProbePutStart.slotsIdentical === true &&
+          afterProbePutStart.probeLeft === null &&
+          probeErrorCleanup.halted === true &&
+          probeErrorCleanup.cls === 'PROBE_FAILED' &&
+          probeErrorCleanup.outcome === 'FAILED' &&
+          probeErrorCleanup.ops.length === 2 &&
+          probeErrorCleanup.ops[0] === 'put' &&
+          probeErrorCleanup.ops[1] === 'delete' &&
+          probeErrorCleanup.probeLeft === null,
+        JSON.stringify(report.rework07R503PreProbeCancelChrome)
       );
     }
   }

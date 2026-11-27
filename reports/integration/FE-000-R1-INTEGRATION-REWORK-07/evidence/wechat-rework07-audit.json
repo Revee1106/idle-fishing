@@ -1,0 +1,116 @@
+{
+  "buildDir": "E:\\idle-fishing-rework07\\apps\\game-client\\build\\wechatgame",
+  "status": "PASS",
+  "appid": "touristappid",
+  "compileType": "game",
+  "gameJson": {
+    "deviceOrientation": "portrait",
+    "networkTimeout": {
+      "request": 5000,
+      "connectSocket": 5000,
+      "uploadFile": 5000,
+      "downloadFile": 500000
+    },
+    "subpackages": [
+      {
+        "name": "spike-pack",
+        "root": "subpackages/spike-pack/"
+      }
+    ]
+  },
+  "sizes": {
+    "totalFiles": 41,
+    "totalBytes": 2083847,
+    "totalKB": 2035.01,
+    "mainFiles": 34,
+    "mainBytes": 2081250,
+    "mainKB": 2032.47,
+    "subpackageRoot": "subpackages/spike-pack",
+    "subpackageFiles": 7,
+    "subpackageBytes": 2597,
+    "subpackageKB": 2.54
+  },
+  "subpackageFileList": [
+    {
+      "rel": "config.json",
+      "bytes": 563
+    },
+    {
+      "rel": "game.js",
+      "bytes": 608
+    },
+    {
+      "rel": "47cd4a6d-1822-4566-8f1f-d589e3abc836.json",
+      "bytes": 292
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90.json",
+      "bytes": 72
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90@6c48a.json",
+      "bytes": 149
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90@f9941.json",
+      "bytes": 600
+    },
+    {
+      "rel": "99611724-5348-4028-858a-4fc3a5c16d90.png",
+      "bytes": 313
+    }
+  ],
+  "checks": [
+    {
+      "name": "wechatgame_dir_exists",
+      "status": "PASS",
+      "detail": "E:\\idle-fishing-rework07\\apps\\game-client\\build\\wechatgame"
+    },
+    {
+      "name": "main_game_js",
+      "status": "PASS",
+      "detail": "E:\\idle-fishing-rework07\\apps\\game-client\\build\\wechatgame\\game.js"
+    },
+    {
+      "name": "project_config_json",
+      "status": "PASS",
+      "detail": "compileType=game, appid=touristappid"
+    },
+    {
+      "name": "game_json_subpackages_registered",
+      "status": "PASS",
+      "detail": "{\"name\":\"spike-pack\",\"root\":\"subpackages/spike-pack/\"}"
+    },
+    {
+      "name": "subpackage_root_exists",
+      "status": "PASS",
+      "detail": "subpackages/spike-pack"
+    },
+    {
+      "name": "subpackage_entry_js",
+      "status": "PASS",
+      "detail": "config.json, game.js, 47cd4a6d-1822-4566-8f1f-d589e3abc836.json, 99611724-5348-4028-858a-4fc3a5c16d90.json, 99611724-5348-4028-858a-4fc3a5c16d90@6c48a.json, 99611724-5348-4028-858a-4fc3a5c16d90@f9941.json, 99611724-5348-4028-858a-4fc3a5c16d90.png"
+    },
+    {
+      "name": "subpackage_bundle_config",
+      "status": "PASS",
+      "detail": "file=config.json, name=spike-pack, manifestInPaths=true, iconInPaths=true"
+    },
+    {
+      "name": "subpackage_manifest_asset",
+      "status": "PASS",
+      "detail": "Found spike-pack-v1 payload inside subpackage"
+    },
+    {
+      "name": "subpackage_icon_png",
+      "status": "PASS",
+      "detail": "99611724-5348-4028-858a-4fc3a5c16d90.png (313 B)"
+    },
+    {
+      "name": "settings_json_subpackages",
+      "status": "PASS",
+      "detail": "assets.subpackages=[\"spike-pack\"]"
+    }
+  ],
+  "errors": []
+}

@@ -6,7 +6,7 @@
  * - POST_WRITE_THROW: write complete valid bytes then throw (uncertain write -> rescan must claim)
  * - READ_ERROR: throw IO error on read of a specific path
  */
-import type { FilePort, LegacyLocalStorageStatus, StorageProbeResult } from './PlatformTypes';
+import type { FilePort, LegacyLocalStorageStatus, StorageProbeOptions, StorageProbeResult } from './PlatformTypes';
 import { FilePortIoError } from './WeChatFilePort';
 
 export type WriteFaultMode = 'NONE' | 'PRE_WRITE_ERROR' | 'PARTIAL_WRITE' | 'POST_WRITE_THROW';
@@ -30,11 +30,14 @@ export class FaultInjectingFilePort implements FilePort {
     return this.inner.storageKey;
   }
 
-  probeStorage(): StorageProbeResult | Promise<StorageProbeResult> {
+  probeStorage(options?: StorageProbeOptions): StorageProbeResult | Promise<StorageProbeResult> {
     if (typeof this.inner.probeStorage === 'function') {
-      return this.inner.probeStorage();
+      return this.inner.probeStorage(options);
     }
-    return { available: true, reason: null };
+    if (options?.shouldCancelBeforeMutation?.()) {
+      return { available: false, cancelled: true, mutated: false, reason: 'Storage probe cancelled (owner destroyed)' };
+    }
+    return { available: true, mutated: false, reason: null };
   }
 
   getLegacyStorageStatus(): LegacyLocalStorageStatus {
