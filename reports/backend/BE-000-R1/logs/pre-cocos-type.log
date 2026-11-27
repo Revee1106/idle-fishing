@@ -1,0 +1,1 @@
+reports/backend/BE-000-R1/evidence/pre/cocos-type-audit.mts(2,29): error TS7016: Could not find a declaration file for module '../../../../../packages/game-core/dist/cocos/spike/index.mjs'. 'E:/idle-fishing-backend/packages/game-core/dist/cocos/spike/index.mjs' implicitly has an 'any' type.

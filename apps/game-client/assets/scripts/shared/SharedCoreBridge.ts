@@ -1,6 +1,6 @@
 /**
- * FE-000 SharedCoreBridge: consumes the SINGLE source-of-truth backend module
- * `@idle-fishing/game-core` built by BE-000 (pinned at commit 358b111 for FE-000-R1).
+ * FE-000-R1-INTEGRATION SharedCoreBridge: consumes the SINGLE source-of-truth backend module
+ * `@idle-fishing/game-core` (integrated reviewed backend commit 5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355).
  * Zero duplicate business algorithms.
  */
 import {
@@ -18,12 +18,16 @@ import {
   natToBigInt,
   newRngState,
   sha256Hex,
+  SLOT_PATHS,
   triangularQuantile,
+  validateSpikeState,
+  workFromMs,
   xoshiroStep,
   type RngWords,
   type SpikeGameState,
   type SpikeGameStateV1,
 } from '@idle-fishing/game-core';
+export { advanceOffline, canonicalStringify, createInitialState, SLOT_PATHS } from '@idle-fishing/game-core';
 import { detectRuntimeEnv, type VerificationCaseResult } from '../platform/PlatformTypes';
 
 export interface FrameIntervalStats {
@@ -34,6 +38,7 @@ export interface FrameIntervalStats {
 
 export interface Offline24hBenchmarkResult {
   readonly env: string;
+  readonly backendCoreCommit: string;
   readonly singleShotMs: number;
   readonly slicedTotalWallMs: number;
   readonly slicedComputeMs: number;
@@ -47,7 +52,10 @@ export interface Offline24hBenchmarkResult {
   readonly big: string;
   readonly singleEqualsSliced: boolean;
   readonly canonicalHash: string;
+  readonly envelopeInnerSha256: string;
   readonly envelopeHashRev1: string;
+  readonly matchesBe000Golden24hEnvelopeInner: boolean;
+  readonly matchesBe000Golden24hEnvelopeText: boolean;
   readonly matchesBe000Golden24hEnvelope: boolean;
   readonly memorySnapshot: string;
   readonly slicedRafStats: FrameIntervalStats | null;
@@ -55,6 +63,7 @@ export interface Offline24hBenchmarkResult {
 
 export interface SharedCoreReport {
   readonly env: string;
+  readonly backendCoreCommit: string;
   readonly allPassed: boolean;
   readonly cases: VerificationCaseResult[];
   readonly summaryState: {
@@ -63,21 +72,41 @@ export interface SharedCoreReport {
     cycles: number;
     attempts: number;
     cursorMs: number;
+    settledUntilMs: number | null;
     rngPreview: string;
     canonicalHash: string;
+    oneHourEnvelopeInnerSha256: string;
+    oneHourEnvelopeTextSha256: string;
+    eightHourCanonicalHash: string;
+    eightHourHasAttemptLock: boolean;
   };
 }
 
-// Golden hashes published in reports/backend/BE-000/SHARED_MODULE_HANDOFF.md §6.2 (pinned commit 358b111)
+/**
+ * Authoritative BE-000-R1-P2 golden vectors (reviewed backend commit 5bcc9ac).
+ * Strictly distinguishes:
+ * - *StateSha256: sha256Hex(canonicalStringify(state))
+ * - *EnvelopeInnerSha256: buildEnvelope(state, '1').sha256 == computeEnvelopeHash([magic,format,rev,epoch,payload])
+ * - *EnvelopeTextSha256: sha256Hex(buildEnvelope(state, '1').text)
+ *
+ * Legacy 358b111 pre-R1 values (changed solely due to settledUntilMs checkpoint + FIGHTING attemptLock):
+ * - oneHourStateSha256: bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a
+ * - oneHourEnvelopeTextSha256: 2c768fc2d368faa38b841e8b94c55d1e9398c80ff4e894a49cc2644b056ed5ee
+ * - eightHourStateSha256: 7da517674df168ca5f88535b949f51a072982e77a0577b362811aa21c430839f
+ * - twentyFourHourEnvelopeTextSha256: 88cb5751c258baec38c452814d5653bb2535029ab7e21c762603e10310ff8536
+ */
 export const BE000_GOLDEN = {
+  backendCommit: '5bcc9ac',
   epoch: 'epoch.be000',
   startMs: 1_700_000_000_000,
   allowanceMs: 86_400_000,
   initialSha256: '79a773550beb088cf0462e0851b043c7b86ebd2bd0f3cbe3447dd4d6ca0a35f4',
-  oneHourSha256: 'bdfacdeb8d54b6c8f34665f48ae6337244491ae648cc70cfffc23768a97cab2a',
-  oneHourEnvelopeSha256: '2c768fc2d368faa38b841e8b94c55d1e9398c80ff4e894a49cc2644b056ed5ee',
-  eightHourSha256: '7da517674df168ca5f88535b949f51a072982e77a0577b362811aa21c430839f',
-  twentyFourHourEnvelopeSha256: '88cb5751c258baec38c452814d5653bb2535029ab7e21c762603e10310ff8536',
+  oneHourSha256: '8a882ec894b37d2b8eeb0f3941f79a533a8dd3bf59f804845c4cf1b79c95aa63',
+  oneHourEnvelopeInnerSha256: '183ed74c32d759e434345eb7fe152eec1192f8ea69637cf60e657d629010681a',
+  oneHourEnvelopeSha256: '4e1d068a64ce1ad30f8aed07dc9671b6f3bbcfea0b2250d36d6c4441c6d1ddd6',
+  eightHourSha256: '91bfd08b46447c204fd035bda989a0db3cc783eb86616b00de070884a300e4e9',
+  twentyFourHourEnvelopeInnerSha256: '9ed7cded1c1d5391691c9172e837c36915fb94605b1aaf19f2afea856e717e1d',
+  twentyFourHourEnvelopeSha256: '0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f',
 } as const;
 
 function nowMs(): number {
@@ -224,41 +253,87 @@ export function runSharedCoreVerification(): SharedCoreReport {
     return `q(0)=${q0}, q(0.5)=${qHalf.toFixed(12)}, imul=${imulVal}`;
   });
 
-  // 6. Continuous vs Sliced time advancement + exact BE-000 golden vector comparison (epoch.be000)
-  let latestState: SpikeGameState = createInitialState({
+  // 6. Continuous vs Sliced time advancement + exact BE-000-R1-P2 golden vector comparison (epoch.be000 @ 5bcc9ac)
+  const initialState: SpikeGameState = createInitialState({
     saveEpoch: BE000_GOLDEN.epoch,
     startMs: BE000_GOLDEN.startMs,
     allowanceMs: BE000_GOLDEN.allowanceMs,
   });
+  let latestState: SpikeGameState = initialState;
+  let oneHourEnvelopeInnerSha256 = '';
+  let oneHourEnvelopeTextSha256 = '';
+  let eightHourCanonicalHash = '';
+  let eightHourHasAttemptLock = false;
 
-  runCase('T03-ADVANCE', 'Continuous vs 60s-sliced 1h & BE-000 golden hash match', () => {
-    const initHash = sha256Hex(canonicalStringify(latestState));
+  runCase('T03-ADVANCE', 'Continuous vs 60s-sliced 1h/8h & BE-000-R1-P2 golden vectors', () => {
+    const initHash = sha256Hex(canonicalStringify(initialState));
     if (initHash !== BE000_GOLDEN.initialSha256) {
-      throw new Error(`Initial state hash mismatch vs BE-000: ${initHash}`);
+      throw new Error(`Initial state hash mismatch vs 5bcc9ac: ${initHash}`);
     }
-    const targetMs = latestState.cursorMs + 3_600_000;
-    const cont = advanceOffline(latestState, targetMs);
-    const sliced = advanceOfflineSliced(latestState, targetMs, 60_000);
+    const targetMs = initialState.cursorMs + 3_600_000;
+    const cont = advanceOffline(initialState, targetMs);
+    const sliced = advanceOfflineSliced(initialState, targetMs, 60_000);
     const contJson = canonicalStringify(cont.state);
     const slicedJson = canonicalStringify(sliced.state);
     if (contJson !== slicedJson) {
       throw new Error('Continuous and 60s-sliced states diverged');
     }
+    if (cont.state.offline?.settledUntilMs !== targetMs) {
+      throw new Error(`Expected 1h settledUntilMs=${targetMs}, got ${cont.state.offline?.settledUntilMs}`);
+    }
     const oneHourHash = sha256Hex(contJson);
     if (oneHourHash !== BE000_GOLDEN.oneHourSha256) {
-      throw new Error(`1h hash mismatch vs BE-000: ${oneHourHash}`);
+      throw new Error(`1h state hash mismatch vs 5bcc9ac: ${oneHourHash}`);
     }
     const env1h = buildEnvelope(cont.state, '1');
-    const env1hTextHash = sha256Hex(env1h.text);
-    if (env1hTextHash !== BE000_GOLDEN.oneHourEnvelopeSha256) {
-      throw new Error(`1h envelope text sha256 mismatch vs BE-000: ${env1hTextHash}`);
+    oneHourEnvelopeInnerSha256 = env1h.sha256;
+    oneHourEnvelopeTextSha256 = sha256Hex(env1h.text);
+    if (oneHourEnvelopeInnerSha256 !== BE000_GOLDEN.oneHourEnvelopeInnerSha256) {
+      throw new Error(`1h envelope inner sha256 mismatch: ${oneHourEnvelopeInnerSha256}`);
     }
+    if (oneHourEnvelopeTextSha256 !== BE000_GOLDEN.oneHourEnvelopeSha256) {
+      throw new Error(`1h envelope text sha256 mismatch vs 5bcc9ac: ${oneHourEnvelopeTextSha256}`);
+    }
+
+    // Also verify 8h state hash + FIGHTING attemptLock persistence (5bcc9ac)
+    const eightHour = advanceOffline(initialState, initialState.cursorMs + 8 * 3_600_000).state;
+    eightHourCanonicalHash = sha256Hex(canonicalStringify(eightHour));
+    eightHourHasAttemptLock = Boolean(eightHour.attemptLock && eightHour.stage === 'FIGHTING');
+    if (eightHourCanonicalHash !== BE000_GOLDEN.eightHourSha256) {
+      throw new Error(`8h state hash mismatch vs 5bcc9ac: ${eightHourCanonicalHash}`);
+    }
+    if (!eightHourHasAttemptLock || eightHour.attemptLock?.claimKey !== 'fish:970') {
+      throw new Error('Expected 8h FIGHTING attemptLock for fish:970');
+    }
+
+    // Verify 5bcc9ac invariants: allowanceMs=0 and custom fixture must be rejected
+    let rejectedZeroAllow = false;
+    try {
+      createInitialState({ saveEpoch: 'zero.test', startMs: BE000_GOLDEN.startMs, allowanceMs: 0 });
+    } catch {
+      rejectedZeroAllow = true;
+    }
+    if (!rejectedZeroAllow) throw new Error('Expected allowanceMs=0 to be rejected');
+
+    let rejectedCustomFixture = false;
+    try {
+      createInitialState({
+        saveEpoch: 'fix.test',
+        startMs: BE000_GOLDEN.startMs,
+        allowanceMs: 60_000,
+        fixture: { castMs: 17 },
+      } as unknown as Parameters<typeof createInitialState>[0]);
+    } catch {
+      rejectedCustomFixture = true;
+    }
+    if (!rejectedCustomFixture) throw new Error('Expected custom fixture to be rejected');
+
     latestState = cont.state;
-    return `1h exact match vs BE-000: cycles=${cont.state.counters.cycles}, gold=${cont.state.gold}, sha256=${oneHourHash.slice(0, 16)}...`;
+    return `1h/8h exact match vs 5bcc9ac: cycles=${cont.state.counters.cycles}, gold=${cont.state.gold}, sha256=${oneHourHash.slice(0, 16)}...`;
   });
 
-  // 7. Schema v1 -> v2 migration check (T07 bridge check)
-  runCase('T07-MIGRATE', 'v1 -> v2 schema migration & invalid input guard', () => {
+  // 7. Schema v1 -> v2 migration check (IDLE + in-progress FIGHTING/PREPARING + invalid guard)
+  runCase('T07-MIGRATE', 'v1 -> v2 migration (IDLE, FIGHTING, PREPARING) & invalid guard', () => {
     const v1: SpikeGameStateV1 = {
       schemaVersion: 1,
       saveEpoch: 'fe000-migrate-1',
@@ -272,6 +347,31 @@ export function runSharedCoreVerification(): SharedCoreReport {
     if (migrated.schemaVersion !== 2 || migrated.gold !== '4200' || migrated.counters.attempts !== 7) {
       throw new Error('Unexpected migrated v2 fields');
     }
+
+    // 5bcc9ac experimental in-progress PREPARING migration (already settled; no double grant)
+    const v1Prep: SpikeGameStateV1 = {
+      ...v1,
+      saveEpoch: 'fe000-migrate-prep',
+      attempt: {
+        stage: 'PREPARING',
+        stageStartMs: 1_699_999_999_000,
+        stageDone: workFromMs(1000),
+        stageRequired: workFromMs(2500),
+      },
+    };
+    const migratedPrep = migrateSpikeState(v1Prep, 1, 2);
+    if (
+      validateSpikeState(migratedPrep).length !== 0 ||
+      migratedPrep.lastTerminalAttemptSeq !== '7' ||
+      !migratedPrep.claims.includes('fish:7')
+    ) {
+      throw new Error('PREPARING migration failed state validation or claim preservation');
+    }
+    const afterPrep = advanceOffline(migratedPrep, migratedPrep.cursorMs + 2_000).state;
+    if (afterPrep.gold !== '4200') {
+      throw new Error(`PREPARING migration double-granted gold: ${afterPrep.gold}`);
+    }
+
     let rejectedBad = false;
     try {
       migrateSpikeState({ schemaVersion: 1, saveEpoch: '' }, 1, 2);
@@ -279,7 +379,7 @@ export function runSharedCoreVerification(): SharedCoreReport {
       rejectedBad = true;
     }
     if (!rejectedBad) throw new Error('Invalid v1 payload was not rejected');
-    return `v1->v2 ok (gold=${migrated.gold}, attempts=${migrated.counters.attempts}); bad v1 rejected`;
+    return `v1->v2 IDLE & PREPARING ok (gold=${migrated.gold}, fish:7 preserved); bad v1 rejected`;
   });
 
   const finalCanon = canonicalStringify(latestState);
@@ -288,6 +388,7 @@ export function runSharedCoreVerification(): SharedCoreReport {
 
   return {
     env,
+    backendCoreCommit: BE000_GOLDEN.backendCommit,
     allPassed: cases.every((c) => c.status === 'PASS'),
     cases,
     summaryState: {
@@ -296,8 +397,13 @@ export function runSharedCoreVerification(): SharedCoreReport {
       cycles: latestState.counters.cycles,
       attempts: latestState.counters.attempts,
       cursorMs: latestState.cursorMs,
+      settledUntilMs: latestState.offline?.settledUntilMs ?? null,
       rngPreview: `wait=[${waitWords.join(',')}]`,
       canonicalHash,
+      oneHourEnvelopeInnerSha256,
+      oneHourEnvelopeTextSha256,
+      eightHourCanonicalHash,
+      eightHourHasAttemptLock,
     },
   };
 }
@@ -392,11 +498,19 @@ export async function run24hOfflineBenchmark(maxNodesPerSlice = 250): Promise<Of
   const slicedJson = canonicalStringify(state);
   const singleEqualsSliced = singleJson === slicedJson;
   const canonicalHash = sha256Hex(singleJson);
-  const envelopeHashRev1 = sha256Hex(buildEnvelope(single.state, '1').text);
-  const matchesBe000Golden24hEnvelope = envelopeHashRev1 === BE000_GOLDEN.twentyFourHourEnvelopeSha256;
+  const env24h = buildEnvelope(single.state, '1');
+  const envelopeInnerSha256 = env24h.sha256;
+  const envelopeHashRev1 = sha256Hex(env24h.text);
+  const matchesBe000Golden24hEnvelopeInner =
+    envelopeInnerSha256 === BE000_GOLDEN.twentyFourHourEnvelopeInnerSha256;
+  const matchesBe000Golden24hEnvelopeText =
+    envelopeHashRev1 === BE000_GOLDEN.twentyFourHourEnvelopeSha256;
+  const matchesBe000Golden24hEnvelope =
+    matchesBe000Golden24hEnvelopeInner && matchesBe000Golden24hEnvelopeText;
 
   return {
     env,
+    backendCoreCommit: BE000_GOLDEN.backendCommit,
     singleShotMs,
     slicedTotalWallMs,
     slicedComputeMs: Number(computeSum.toFixed(3)),
@@ -410,7 +524,10 @@ export async function run24hOfflineBenchmark(maxNodesPerSlice = 250): Promise<Of
     big: single.state.big,
     singleEqualsSliced,
     canonicalHash,
+    envelopeInnerSha256,
     envelopeHashRev1,
+    matchesBe000Golden24hEnvelopeInner,
+    matchesBe000Golden24hEnvelopeText,
     matchesBe000Golden24hEnvelope,
     memorySnapshot: sampleMemory(),
     slicedRafStats,

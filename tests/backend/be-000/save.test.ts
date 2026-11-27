@@ -9,9 +9,11 @@ import {
   computeEnvelopeHash,
   copyStateForCommit,
   parseEnvelope,
+  validateSpikeState,
 } from '../../../packages/game-core/src/spike/save.ts';
-import { createInitialState, cloneState } from '../../../packages/game-core/src/spike/offline.ts';
-import { canonicalStringify, natFromBigInt, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
+import { createInitialState, advanceOffline } from '../../../packages/game-core/src/spike/offline.ts';
+import { canonicalStringify, natToBigInt } from '../../../packages/game-core/src/spike/canonical-json.ts';
+import { workFromMs } from '../../../packages/game-core/src/spike/time.ts';
 import type { SpikeGameState, SpikeGameStateV1 } from '../../../packages/game-core/src/spike/types.ts';
 import { MemoryFilePort, createTempPort, type WriteBehavior } from './helpers.ts';
 
@@ -34,6 +36,15 @@ async function commitRevision(
 
 function corrupt(path: string, port: MemoryFilePort): void {
   port.files.set(path, '{"not":"a valid envelope"');
+}
+
+function advanceToStage(state: SpikeGameState, stage: SpikeGameState['stage'], targetMs: number): SpikeGameState {
+  let current = state;
+  for (let guard = 0; current.stage !== stage; guard++) {
+    assert.ok(guard < 1_000_000, `stage ${stage} must be reached`);
+    current = advanceOffline(current, targetMs, { maxNodes: 1 }).state;
+  }
+  return current;
 }
 
 test('SAVE-T01 three slots rotate and never overwrite the highest revision', async () => {
@@ -197,29 +208,66 @@ test('SAVE-T04e unobservable write with a concurrent higher revision is UNCERTAI
   port.writeBehavior = null;
 });
 
-test('SAVE-T05 committed reward is not re-applied after reload', async () => {
+test('SAVE-T05 real FIGHTING settlement is idempotent across save/load and rejects replay', async () => {
   const port = new MemoryFilePort();
   const repo = new SpikeFileSaveRepository(port);
-  const grant = (state: SpikeGameState, key: string, amount: string): { state: SpikeGameState; applied: boolean } => {
-    if (state.claims.includes(key)) return { state, applied: false };
-    const next = cloneState(state);
-    next.claims.push(key);
-    next.gold = natFromBigInt(natToBigInt(next.gold) + BigInt(amount));
-    return { state: next, applied: true };
-  };
+  const fighting = freshState('100');
+  fighting.stage = 'FIGHTING';
+  fighting.stageStartMs = fighting.cursorMs;
+  fighting.stageDone = '0';
+  fighting.stageRequired = '1000000';
+  fighting.counters.attempts = 1;
 
-  const first = grant(freshState('5'), 'fish:1', '10');
-  assert.equal(first.applied, true);
-  await repo.commit(first.state, null);
+  const settled = advanceOffline(fighting, fighting.cursorMs + 1).state;
+  assert.equal(settled.stage, 'PREPARING');
+  assert.deepEqual(settled.claims, ['fish:1']);
+  assert.equal(settled.lastTerminalAttemptSeq, '1');
+  assert.equal(settled.counters.events, 1);
+  assert.ok(natToBigInt(settled.gold) > 100n);
+  assert.ok(natToBigInt(settled.big) > 0n);
+  const settledGold = settled.gold;
+  const settledBig = settled.big;
 
+  const committed = await repo.commit(settled, null);
+  assert.equal(committed.kind, 'COMMITTED');
   const loaded = await repo.load();
   assert.equal(loaded.kind, 'VALID');
   if (loaded.kind !== 'VALID') return;
   const restored = copyStateForCommit(loaded.raw as SpikeGameState);
-  const replay = grant(restored, 'fish:1', '10');
-  assert.equal(replay.applied, false);
-  assert.equal(replay.state.gold, '15');
-  assert.deepEqual(replay.state.claims, ['fish:1']);
+  assert.equal(restored.gold, settledGold);
+  assert.equal(restored.big, settledBig);
+  assert.deepEqual(restored.claims, ['fish:1']);
+  assert.equal(canonicalStringify(restored.rng), canonicalStringify(settled.rng));
+
+  const replayed = advanceOffline(restored, restored.cursorMs + 1000).state;
+  assert.equal(replayed.gold, settledGold, 'restored settlement must not pay again');
+  assert.equal(replayed.big, settledBig);
+  assert.deepEqual(replayed.claims, ['fish:1']);
+  assert.equal(replayed.counters.events, 1);
+
+  const forged = copyStateForCommit(restored);
+  Object.assign(forged, {
+    stage: 'FIGHTING',
+    stageStartMs: forged.cursorMs,
+    stageDone: '999999',
+    stageRequired: '1000000',
+    counters: { ...forged.counters, attempts: 1, events: 1 },
+    claims: ['fish:1'],
+    lastTerminalAttemptSeq: '1',
+    gold: '100',
+    big: '0',
+  });
+  assert.throws(
+    () => advanceOffline(forged, forged.cursorMs + 1),
+    /already settled/
+  );
+  const beforeReject = new Map(port.files);
+  const refused = await repo.commit(forged, loaded.revision);
+  assert.equal(refused.kind, 'FAILED');
+  assert.deepEqual(port.files, beforeReject, 'invalid replay state must not be written');
+  assert.equal(natToBigInt(forged.gold), 100n);
+  assert.equal(forged.big, '0');
+  assert.deepEqual(forged.claims, ['fish:1']);
 });
 
 test('SAVE-T06 revision and epoch conflicts are rejected without writing', async () => {
@@ -239,17 +287,21 @@ test('SAVE-T06 revision and epoch conflicts are rejected without writing', async
   assert.deepEqual(port.files, before, 'conflicts must not touch the filesystem');
 });
 
-test('SAVE-T07 all slot reads failing is CORRUPT; commit cannot guess the revision', async () => {
+test('SAVE-T07 all slot reads failing is CORRUPT; commit stays UNCERTAIN and writes nothing', async () => {
   const port = new MemoryFilePort();
   const repo = new SpikeFileSaveRepository(port);
   await commitRevision(repo, '1', null);
+  const before = new Map(port.files);
+  const writes = port.writeCount;
   for (const path of SLOT_PATHS) port.readErrors.set(path, 'disk error');
 
   const load = await repo.load();
   assert.equal(load.kind, 'CORRUPT');
 
   const commit = await repo.commit(freshState('2'), '1');
-  assert.equal(commit.kind, 'FAILED');
+  assert.equal(commit.kind, 'UNCERTAIN');
+  assert.equal(port.writeCount, writes, 'unknown slots must not trigger a write');
+  assert.deepEqual(port.files, before);
 });
 
 test('SAVE-T08 mixed epochs across valid slots is CORRUPT', async () => {
@@ -343,4 +395,38 @@ test('SAVE-T12 rollback after uncertain write keeps the previously committed rev
     assert.equal(natToBigInt(load.revision), 2n);
     assert.equal((load.raw as SpikeGameState).gold, '3');
   }
+});
+
+test('SAVE-T13 attemptLock fightMs must match stageRequired before commit and load', async () => {
+  const fighting = advanceToStage(freshState('0'), 'FIGHTING', START_MS + 3_600_000);
+  assert.deepEqual(validateSpikeState(fighting), []);
+  const lock = fighting.attemptLock;
+  if (lock === undefined || lock === null) assert.fail('real FIGHTING state must carry a locked result');
+  assert.equal(workFromMs(lock.fightMs), fighting.stageRequired);
+
+  const tampered = copyStateForCommit(fighting);
+  tampered.attemptLock = { ...lock, fightMs: lock.fightMs + 1 };
+  const issues = validateSpikeState(tampered);
+  assert.ok(
+    issues.some((issue) => issue.path === 'attemptLock.fightMs'),
+    'duration mismatch must be reported by state validation'
+  );
+  assert.notEqual(tampered.attemptLock.fightMs, lock.fightMs);
+
+  const port = new MemoryFilePort();
+  const repo = new SpikeFileSaveRepository(port);
+  const accepted = await repo.commit(fighting, null);
+  if (accepted.kind !== 'COMMITTED') assert.fail(`legal FIGHTING state must commit: ${accepted.detail}`);
+  const writes = port.writeCount;
+  const snapshot = new Map(port.files);
+  const rejected = await repo.commit(tampered, accepted.revision);
+  if (rejected.kind !== 'FAILED') assert.fail('tampered lock must be refused');
+  assert.match(rejected.detail, /attemptLock\.fightMs/);
+  assert.equal(port.writeCount, writes, 'invalid state must not trigger a write');
+  assert.deepEqual(port.files, snapshot);
+
+  const tamperedPort = new MemoryFilePort();
+  tamperedPort.files.set(SLOT_PATHS[0] as string, buildEnvelope(tampered, '1').text);
+  const loaded = await new SpikeFileSaveRepository(tamperedPort).load();
+  assert.equal(loaded.kind, 'CORRUPT', 'a persisted inconsistent lock must not load as VALID');
 });

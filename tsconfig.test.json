@@ -4,5 +4,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["packages/game-core/src/**/*.ts", "tests/backend/be-000/**/*.ts"]
+  "include": ["packages/game-core/src/**/*.ts", "tests/backend/be-000/**/*.ts"],
+  "exclude": ["tests/backend/be-000/cocos-probe"]
 }

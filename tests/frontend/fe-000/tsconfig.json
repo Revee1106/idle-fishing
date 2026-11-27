@@ -11,6 +11,7 @@
     "types": ["node"]
   },
   "include": [
-    "./platform-and-core.test.ts"
+    "./platform-and-core.test.ts",
+    "./fixtures/**/*.ts"
   ]
 }

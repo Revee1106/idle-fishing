@@ -1,0 +1,118 @@
+
+> idle-fishing@0.1.0 verify
+> npm run typecheck && npm run build:cocos && npm run typecheck:cocos && npm run test
+
+
+> idle-fishing@0.1.0 typecheck
+> tsc -p tsconfig.test.json
+
+
+> idle-fishing@0.1.0 build:cocos
+> npm run build && npm run build:cocos -w @idle-fishing/game-core
+
+
+> idle-fishing@0.1.0 build
+> npm run build -w @idle-fishing/game-core
+
+
+> @idle-fishing/game-core@0.0.0-spike build
+> tsc -p tsconfig.json
+
+
+> @idle-fishing/game-core@0.0.0-spike build:cocos
+> node scripts/emit-cocos-mjs.mjs
+
+cocos artifacts: 9 .mjs + 9 .d.mts -> E:\idle-fishing-backend\packages\game-core\dist\cocos\spike\
+
+> idle-fishing@0.1.0 typecheck:cocos
+> tsc -p tsconfig.cocos-consumer.json
+
+
+> idle-fishing@0.1.0 test
+> node --test "tests/backend/be-000/**/*.test.ts"
+
+✔ CANON-01 sorts object keys by UTF-16 code unit and keeps array order (3.044ms)
+✔ CANON-02 rejects values that cannot round-trip (2.2647ms)
+✔ CANON-03 Nat helpers enforce canonical decimal strings (5.4988ms)
+✔ CANON-04 UTF-8 encoder matches Node Buffer for ASCII, CJK and emoji (3.0541ms)
+✔ SHA-01 matches node:crypto for block-boundary messages (18.4127ms)
+✔ SHA-02 byte-level hashing matches for binary input (1.1817ms)
+✔ SHA-03 canonical payload hash is stable across key insertion order (0.914ms)
+✔ COCOS-01 .mjs artifact imports in Node and reproduces RNG-01 (95.4855ms)
+✔ COCOS-02 emitted modules and .d.mts declarations use .mjs specifiers only (118.4132ms)
+✔ D01-01 envelope hash covers the fixed outer array and matches an independent UTF-8 SHA-256 (4.3837ms)
+✔ D01-02 quotes, backslashes, control escapes and non-ASCII match the independent vector (1.7723ms)
+✔ D01-03 object keys sort by UTF-16 code unit, arrays keep order, no Unicode normalization (1.1207ms)
+✔ DIST-01 built ESM artifact runs in Node and matches RNG-01 (61.8567ms)
+✔ DIST-02 built artifact reproduces the same offline states as the source (360.2518ms)
+✔ DIST-03 built artifact exposes the documented spike module surface (1.0645ms)
+✔ MIG-01 v1 loads, migrates to v2 and is committed as a new revision (54.8779ms)
+✔ MIG-02 invalid v1 is rejected without touching persisted data (2.7846ms)
+✔ MIG-05 in-progress v1 attempt keeps progress, lock and RNG and settles once (25.2323ms)
+✔ MIG-06 invalid in-progress v1 leaves the original slot bytes untouched (3.3976ms)
+✔ MIG-03 unsupported migration paths are refused (1.4388ms)
+✔ MIG-04 same-version migration returns an independent deep copy (1.1222ms)
+✔ OFF-01 8h continuous, 60s-sliced and 37s-sliced advancement are identical (402.5803ms)
+✔ OFF-02 checkpoint save/restore in the middle continues identically (206.8309ms)
+✔ OFF-03 node-budget slices produce the same final state (55.3662ms)
+✔ OFF-04 no fishing attempt starts at or after the offline deadline (313.1153ms)
+✔ OFF-05 huge BigInt savings survive canonical JSON round-trip (15.3406ms)
+✔ OFF-06 RNG streams are lazy, named and valid after advancement (5.167ms)
+✔ OFF-07 activity stays inside the spike band and changes over time (13.1201ms)
+✔ OFF-08 attempt sequence advances monotonically and each terminal attempt is claimed once (38.123ms)
+✔ OFF-09 checkpoint advances to the deadline and freezes past it (563.0993ms)
+✔ OFF-10 input state is never mutated (26.261ms)
+✔ OFF-12 custom fixture option is rejected instead of being silently ignored (1.6843ms)
+✔ OFF-11 triangle quantile honours bounds and approximates mean 1 (4.6264ms)
+✔ RNG-01 golden vector from docs/interfaces/20 matches (5.3065ms)
+✔ RNG-02 stream derivation is stable and independent of other streams (2.0895ms)
+✔ RNG-03 U53 stream regression vector (1.8845ms)
+✔ RNG-04 state export/restore continues the exact same stream (52.2934ms)
+✔ RNG-05 drawing other streams does not shift the wait stream (6.24ms)
+✔ RNG-06 each U53 consumes exactly two uint32 steps (1.1214ms)
+✔ RNG-07 invalid root seed is rejected (1.7852ms)
+✔ R1-SAVE-01 an unreadable slot blocks commit even when an older backup is readable (57.9173ms)
+✔ R1-SAVE-02 valid checksum with a null payload is isolated and backup is recovered (3.6616ms)
+✔ R1-SAVE-03 same revision with different content blocks commit without writing (3.3725ms)
+✔ R1-SAVE-04 a hidden higher revision forbids a new first commit (8.7029ms)
+✔ R1-SAVE-05 durable write whose target becomes unreadable stays UNCERTAIN (5.9733ms)
+✔ R1-CHK-01 persistence records cursor, rewards, RNG and checkpoint before, at and past the deadline (194.9781ms)
+✔ R1-TIME-01 completion and slices reject unrepresentable millisecond results (4.4003ms)
+✔ SAVE-T01 three slots rotate and never overwrite the highest revision (40.1069ms)
+✔ SAVE-T02 corrupt newest slot falls back; all corrupt refuses silent overwrite (4.4462ms)
+✔ SAVE-T03 future schema returns UNSUPPORTED without overwriting (3.6209ms)
+✔ SAVE-T04a write failure before bytes is FAILED and old save survives (6.0836ms)
+✔ SAVE-T04b partial write is FAILED and detected as corruption (3.0316ms)
+✔ SAVE-T04c full write followed by an exception is recovered as COMMITTED (2.8767ms)
+✔ SAVE-T04d silent short write is not reported as success and does not lose old data (3.2473ms)
+✔ SAVE-T04e unobservable write with a concurrent higher revision is UNCERTAIN (3.4353ms)
+✔ SAVE-T05 real FIGHTING settlement is idempotent across save/load and rejects replay (7.452ms)
+✔ SAVE-T06 revision and epoch conflicts are rejected without writing (4.2659ms)
+✔ SAVE-T07 all slot reads failing is CORRUPT; commit stays UNCERTAIN and writes nothing (11.0869ms)
+✔ SAVE-T08 mixed epochs across valid slots is CORRUPT (6.5389ms)
+✔ SAVE-T09 initial commit over EMPTY slots only; expectedRevision null with existing save conflicts (1.2366ms)
+✔ SAVE-T10 3-slot rotation works on a real filesystem adapter (152.8181ms)
+✔ SAVE-T11 v1 envelope loads as VALID and reports schema 1 (1.9797ms)
+✔ SAVE-T12 rollback after uncertain write keeps the previously committed revision loadable (6.5642ms)
+✔ TIME-01 ms to micro-work uses round(ms*1e6) and keeps tiny positives at 1 (6.289ms)
+✔ TIME-02 rate quantization is one millionth and never below 1 (1.5158ms)
+✔ TIME-03 ceilDiv is exact at multiples and rounds up otherwise (1.4057ms)
+✔ TIME-04 integration completes at the exact millisecond and discards surplus (4.0364ms)
+✔ TIME-05 split integration equals one continuous integration (1.4814ms)
+✔ TIME-06 completionTimeMs agrees with integrateWork and rejects unsafe spans (0.7157ms)
+✔ TIME-07 nat multiplier follows (v*q+500000)/1e6 with floor/ceil modes (0.8173ms)
+✔ TIME-08 BigInt accumulation exceeds Number.MAX_SAFE_INTEGER and round-trips (0.4672ms)
+✔ TIME-09 invalid millisecond inputs are rejected (0.6284ms)
+✔ VEC-01 Math cross-runtime fixtures match this runtime (23.3636ms)
+✔ VEC-02 Math.imul fixture agrees with an independent BigInt implementation (7.7528ms)
+✔ VEC-03 exact square roots and half-rounding are IEEE-754 stable (5.7244ms)
+✔ VEC-04 RNG fixture matches derivation, U53 sequence and exported state (15.2669ms)
+✔ VEC-05 offline/save fixtures are reproducible from the spike source (147.8434ms)
+ℹ tests 77
+ℹ suites 0
+ℹ pass 77
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3323.2461

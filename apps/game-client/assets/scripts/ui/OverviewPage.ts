@@ -206,11 +206,11 @@ export class OverviewPage implements SpikePage {
 
     const s = report.summaryState;
     this.sharedSummaryLabel.string = [
-      `Source: @idle-fishing/game-core (single TS source)`,
+      `Source: @idle-fishing/game-core (${report.backendCoreCommit}, single TS source)`,
       `1h Cycles: ${s.cycles} | Attempts: ${s.attempts} | Gold(Nat): ${s.gold}`,
       `BigInt(>2^53): ${s.big}`,
       `RNG: ${s.rngPreview}`,
-      `Canonical SHA-256: ${s.canonicalHash.slice(0, 32)}...`,
+      `1h State SHA-256: ${s.canonicalHash.slice(0, 32)}...`,
     ].join('\n');
 
     this.list.setItems(
@@ -263,13 +263,13 @@ export class OverviewPage implements SpikePage {
     const core = this.lastCoreReport;
     const perf = this.lastPerfReport;
     const lines = [
-      `FE-000 Code First Modal (Animated Tween)`,
-      `Runtime: ${core?.env ?? 'unknown'}`,
+      `FE-000-R1-INTEGRATION Code First Modal (Tween)`,
+      `Runtime: ${core?.env ?? 'unknown'} | Core: ${core?.backendCoreCommit ?? '-'}`,
       `Shared Core Checks: ${core ? `${core.cases.filter((c) => c.status === 'PASS').length}/${core.cases.length} PASS` : 'Not run'}`,
-      `1h State Gold: ${core?.summaryState.gold ?? '-'}`,
+      `1h State Gold: ${core?.summaryState.gold ?? '-'} | 8h Lock: ${String(core?.summaryState.eightHourHasAttemptLock ?? false)}`,
       `1h State BigInt: ${core?.summaryState.big ?? '-'}`,
-      `1h Hash: ${core?.summaryState.canonicalHash.slice(0, 36) ?? '-'}`,
-      `24h Perf: ${perf ? `single=${perf.singleShotMs}ms, maxSlice=${perf.maxSliceMs}ms, match=${perf.singleEqualsSliced}` : 'Click "Run 24h Offline Perf"'}`,
+      `1h State SHA: ${core?.summaryState.canonicalHash.slice(0, 32) ?? '-'}`,
+      `24h Perf: ${perf ? `single=${perf.singleShotMs}ms, maxSlice=${perf.maxSliceMs}ms, golden=${perf.matchesBe000Golden24hEnvelope}` : 'Click "Run 24h Offline Perf"'}`,
     ];
     this.modal.show('Shared Module & Perf Report', lines.join('\n'));
   }

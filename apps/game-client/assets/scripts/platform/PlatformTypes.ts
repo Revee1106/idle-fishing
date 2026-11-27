@@ -5,6 +5,22 @@
 
 export type RuntimeEnvKind = 'WECHAT_DEVICE' | 'WECHAT_DEVTOOLS' | 'WECHAT_MOCK' | 'WEB' | 'NODE';
 
+/** Persistent storage health state, strictly distinct from save-slot content state (EMPTY/VALID/CORRUPT/UNSUPPORTED). */
+export type StorageHealthState = 'AVAILABLE' | 'STORAGE_UNAVAILABLE';
+
+export interface StorageProbeResult {
+  readonly available: boolean;
+  readonly reason: string | null;
+}
+
+/** Read-only report for legacy experimental localStorage saves (never auto-migrated, resurrected, or deleted). */
+export interface LegacyLocalStorageStatus {
+  readonly detected: boolean;
+  readonly keys: readonly string[];
+  readonly policy: 'DETECTED_IGNORED_NO_AUTO_MIGRATION' | 'NONE' | 'UNINSPECTABLE';
+  readonly detail: string | null;
+}
+
 export type VerificationStatus = 'PASS' | 'FAIL' | 'BLOCKED' | 'NOT_RUN';
 
 export interface VerificationCaseResult {
@@ -17,7 +33,27 @@ export interface VerificationCaseResult {
 }
 
 export interface FilePort {
-  readonly kind: 'WECHAT_FS' | 'BROWSER_LOCAL_STORAGE_FALLBACK' | 'MEMORY' | 'FAULT_WRAPPER';
+  readonly kind:
+    | 'WECHAT_FS'
+    | 'BROWSER_INDEXED_DB'
+    | 'BROWSER_STORAGE_UNAVAILABLE'
+    | 'BROWSER_LOCAL_STORAGE_FALLBACK'
+    | 'MEMORY'
+    | 'FAULT_WRAPPER';
+  /** Stable single-runtime storage namespace key used by SingleWriterSaveCoordinator. */
+  readonly storageKey?: string;
+  /** Optional explicit persistence availability check (sync or async; unavailable storage is never EMPTY). */
+  probeStorage?(): StorageProbeResult | Promise<StorageProbeResult>;
+  /** Optional shared persistent transaction marker operations bound to this storage domain (REWORK-04 A02). */
+  readTxState?(): Promise<string | null>;
+  writeTxState?(text: string): Promise<void>;
+  clearTxState?(): Promise<void>;
+  /** Optional shared persistent monotonic confirmed-revision history metadata bound to this storage domain (REWORK-06 R5-01). */
+  readHistoryState?(): Promise<string | null>;
+  writeHistoryState?(text: string): Promise<void>;
+  clearHistoryState?(): Promise<void>;
+  /** Optional read-only inspection of legacy experimental localStorage saves (REWORK-04 P2). */
+  getLegacyStorageStatus?(): LegacyLocalStorageStatus;
   read(path: string): Promise<string | null>;
   write(path: string, text: string): Promise<void>;
   remove(path: string): Promise<void>;
@@ -63,11 +99,10 @@ export function detectRuntimeEnv(): RuntimeEnvKind {
     g.process !== null &&
     typeof (g.process as { versions?: { node?: string } }).versions?.node === 'string';
 
-  if (
-    typeof g.wx === 'object' &&
-    g.wx !== null &&
-    typeof (g.wx as Record<string, unknown>).getFileSystemManager === 'function'
-  ) {
+  // Host detection is strictly decoupled from FileSystemManager capability (P1-01 N2):
+  // A WeChat host with a missing or failing getFileSystemManager is STILL a WeChat host
+  // and must enter STORAGE_UNAVAILABLE rather than silently falling back to NODE/MEMORY.
+  if (typeof g.wx === 'object' && g.wx !== null) {
     const wxObj = g.wx as {
       __FE000_MOCK__?: boolean;
       getSystemInfoSync?: () => { platform?: string };

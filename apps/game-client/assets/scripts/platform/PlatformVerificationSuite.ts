@@ -10,17 +10,22 @@ import {
   canonicalStringify,
   createInitialState,
   SLOT_PATHS,
-  SpikeFileSaveRepository,
   type SpikeGameState,
 } from '@idle-fishing/game-core';
 import { BrowserFilePort, MemoryFilePort } from './BrowserFilePort';
 import { ExperimentalAdStubCoordinator } from './ExperimentalAdProvider';
 import { FaultInjectingFilePort } from './FaultInjectingFilePort';
 import { detectRuntimeEnv, isWeChatRealEnv, type FilePort, type VerificationCaseResult } from './PlatformTypes';
+import { SingleWriterSaveCoordinator } from './SingleWriterSaveCoordinator';
 import { MonotonicTimelineGuard, RuntimeClockProvider, VirtualClockProvider } from './WeChatClockProvider';
-import { FilePortIoError, WeChatFilePort } from './WeChatFilePort';
+import { FilePortIoError, UnavailableFilePort, WeChatFilePort } from './WeChatFilePort';
 import { RuntimeLifecycleProvider } from './WeChatLifecycleProvider';
 
+/**
+ * Returns the persistent storage FilePort for the current runtime host.
+ * P1-01 N2: NEVER silently downgrades to MemoryFilePort when persistent storage is missing.
+ * Explicit in-memory tests must construct new MemoryFilePort() directly.
+ */
 export function createRuntimeFilePort(namespace = 'idle_fishing_spike'): FilePort {
   const env = detectRuntimeEnv();
   if (isWeChatRealEnv(env) || env === 'WECHAT_MOCK') {
@@ -29,7 +34,11 @@ export function createRuntimeFilePort(namespace = 'idle_fishing_spike'): FilePor
   if (env === 'WEB') {
     return new BrowserFilePort(`${namespace}_fs`);
   }
-  return new MemoryFilePort();
+  return new UnavailableFilePort(
+    env,
+    namespace,
+    `No persistent runtime storage available for host ${env}; pass explicit MemoryFilePort for in-memory experiments`
+  );
 }
 
 function nowMs(): number {
@@ -45,6 +54,12 @@ async function cleanSlots(port: FilePort): Promise<void> {
   }
   await port.remove('spike_probe.txt');
   await port.remove('spike_size_probe.dat');
+  if (typeof port.clearTxState === 'function') {
+    await port.clearTxState();
+  }
+  if (typeof port.clearHistoryState === 'function') {
+    await port.clearHistoryState();
+  }
 }
 
 export interface SuiteTestHooks {
@@ -57,7 +72,11 @@ export async function runFileSystemAndSaveSuite(
   hooks?: SuiteTestHooks
 ): Promise<VerificationCaseResult[]> {
   const env = detectRuntimeEnv();
-  const basePort = customPort ?? createRuntimeFilePort();
+  // A09: Isolate each default diagnostic run in its own ephemeral namespace so concurrent tabs
+  // running diagnostics never interfere with each other or with idle_fishing_lifecycle_persist.
+  const ephemeralNamespace = `idle_fishing_spike_diag_${Date.now()}_${Math.floor(Math.random() * 1_000_000)}`;
+  const ownsEphemeralPort = !customPort;
+  const basePort = customPort ?? createRuntimeFilePort(ephemeralNamespace);
   const results: VerificationCaseResult[] = [];
 
   const run = async (id: string, name: string, fn: () => Promise<string>): Promise<void> => {
@@ -77,6 +96,7 @@ export async function runFileSystemAndSaveSuite(
     }
   };
 
+  try {
   await cleanSlots(basePort);
 
   // 1. CRUD + missing file returns null + traversal guard
@@ -105,11 +125,11 @@ export async function runFileSystemAndSaveSuite(
     return `CRUD ok on ${basePort.kind}; idempotent delete & path guard verified`;
   });
 
-  // 2. Multi-slot rotation (T04)
+  // 2. Multi-slot rotation (T04) via unified SingleWriterSaveCoordinator
   await run('T04-ROTATE', '3-slot rotation & highest revision load', async () => {
     await cleanSlots(basePort);
-    const repo = new SpikeFileSaveRepository(basePort);
-    const empty = await repo.load();
+    const repo = new SingleWriterSaveCoordinator(basePort);
+    const empty = await repo.loadSafe();
     if (empty.kind !== 'EMPTY') throw new Error(`Expected EMPTY, got ${empty.kind}`);
 
     let state: SpikeGameState = createInitialState({
@@ -124,7 +144,7 @@ export async function runFileSystemAndSaveSuite(
       if (committed.kind !== 'COMMITTED') throw new Error(`Commit #${i} failed: ${committed.kind}`);
       rev = committed.revision;
     }
-    const loaded = await repo.load();
+    const loaded = await repo.loadSafe();
     if (loaded.kind !== 'VALID' || loaded.revision !== '5') {
       throw new Error(`Expected VALID rev=5, got ${loaded.kind}`);
     }
@@ -134,29 +154,30 @@ export async function runFileSystemAndSaveSuite(
     return `5 commits rotated across 3 slots; loaded rev=${loaded.revision}, gold=${state.gold}`;
   });
 
-  // 3. Corrupt single slot -> recover backup; all slots corrupt -> CORRUPT (never EMPTY)
+  // 3. Corrupt single older/uncommitted slot -> recover valid highest rev=5; all slots corrupt -> CORRUPT (never EMPTY)
   await run('T04-CORRUPT', 'Corrupt slot fallback & all-corrupt fail-closed', async () => {
-    const repo = new SpikeFileSaveRepository(basePort);
-    await basePort.write(SLOT_PATHS[1], '{"broken":true');
-    const recovered = await repo.load();
-    if (recovered.kind !== 'VALID' || !recovered.recovered || recovered.revision !== '4') {
-      throw new Error(`Expected backup rev=4 recovered=true, got ${JSON.stringify(recovered)}`);
+    const repo = new SingleWriterSaveCoordinator(basePort);
+    // Corrupt slot 2 (older rev=3 / simulated partial rev=6 write) without regressing confirmed rev=5
+    await basePort.write(SLOT_PATHS[2], '{"broken":true');
+    const recovered = await repo.loadSafe();
+    if (recovered.kind !== 'VALID' || !recovered.recovered || recovered.revision !== '5') {
+      throw new Error(`Expected verified rev=5 recovered=true, got ${JSON.stringify(recovered)}`);
     }
     await basePort.write(SLOT_PATHS[0], 'BAD0');
     await basePort.write(SLOT_PATHS[1], 'BAD1');
     await basePort.write(SLOT_PATHS[2], 'BAD2');
-    const allBad = await repo.load();
+    const allBad = await repo.loadSafe();
     if (allBad.kind !== 'CORRUPT') {
       throw new Error(`All-corrupt must return CORRUPT (not EMPTY), got ${allBad.kind}`);
     }
-    return `Single-slot corruption recovered rev=4; all-corrupt returned CORRUPT (${allBad.detail.slice(0, 60)})`;
+    return `Single-slot corruption recovered rev=5; all-corrupt returned CORRUPT (${allBad.detail.slice(0, 60)})`;
   });
 
-  // 4. Write failure & Fault injection (T05)
-  await run('T05-FAULTS', 'Fault injection: pre-write / partial / uncertain post-write', async () => {
+  // 4. Write failure, Fault injection & 5bcc9ac UNCERTAIN save-protocol checks (T05)
+  await run('T05-FAULTS', 'Fault injection: pre-write / partial / uncertain / unknown-slot guard', async () => {
     await cleanSlots(basePort);
     const faultPort = new FaultInjectingFilePort(basePort);
-    const repo = new SpikeFileSaveRepository(faultPort);
+    const repo = new SingleWriterSaveCoordinator(faultPort);
     let state = createInitialState({
       saveEpoch: 'fe000-fault-epoch',
       startMs: 1_700_000_000_000,
@@ -173,9 +194,31 @@ export async function runFileSystemAndSaveSuite(
     faultPort.armNextWriteFault('PARTIAL_WRITE');
     const fPartial = await repo.commit(state, '1');
     if (fPartial.kind !== 'FAILED') throw new Error(`Expected FAILED on partial write, got ${fPartial.kind}`);
-    const afterPartial = await repo.load();
+    const afterPartial = await repo.loadSafe();
     if (afterPartial.kind !== 'VALID' || afterPartial.revision !== '1' || !afterPartial.recovered) {
       throw new Error(`Expected rev=1 recovered=true after partial write, got ${afterPartial.kind}`);
+    }
+
+    // 5bcc9ac I01: unknown slot read MUST return UNCERTAIN with ZERO write attempts
+    const writesBeforeUnknown = faultPort.trace.filter((e) => e.startsWith('WRITE_')).length;
+    faultPort.setReadFault(SLOT_PATHS[2], true);
+    const fUnknown = await repo.commit(state, '1');
+    faultPort.setReadFault(SLOT_PATHS[2], false);
+    const writesAfterUnknown = faultPort.trace.filter((e) => e.startsWith('WRITE_')).length;
+    if (fUnknown.kind !== 'UNCERTAIN' || writesAfterUnknown !== writesBeforeUnknown) {
+      throw new Error(
+        `Unknown slot must return UNCERTAIN with 0 writes, got kind=${fUnknown.kind} writes=${writesAfterUnknown - writesBeforeUnknown}`
+      );
+    }
+
+    // A02: UNCERTAIN freezes the shared namespace until explicit verified loadSafe() recovery
+    const blockedBeforeRecover = await repo.commit(state, '1');
+    if (blockedBeforeRecover.kind !== 'STORAGE_UNAVAILABLE') {
+      throw new Error(`Expected STORAGE_UNAVAILABLE before explicit recovery, got ${JSON.stringify(blockedBeforeRecover)}`);
+    }
+    const recoveredAfterUnknown = await repo.loadSafe();
+    if (recoveredAfterUnknown.kind !== 'VALID' || recoveredAfterUnknown.revision !== '1') {
+      throw new Error(`Expected VALID rev=1 on explicit recovery, got ${JSON.stringify(recoveredAfterUnknown)}`);
     }
 
     faultPort.armNextWriteFault('POST_WRITE_THROW');
@@ -183,7 +226,7 @@ export async function runFileSystemAndSaveSuite(
     if (fPost.kind !== 'COMMITTED' || !fPost.recoveredFromUncertainWrite || fPost.revision !== '2') {
       throw new Error(`Expected COMMITTED recoveredFromUncertainWrite=true rev=2, got ${JSON.stringify(fPost)}`);
     }
-    return `Pre-write=FAILED, Partial=recovered rev 1, Post-write throw=claimed rev 2 once`;
+    return `Pre-write=FAILED, Partial=recovered rev 1, Unknown-slot=UNCERTAIN(0 writes), Post-write throw=claimed rev 2 once`;
   });
 
   // 5. Storage size probe (64KB + 256KB)
@@ -205,7 +248,7 @@ export async function runFileSystemAndSaveSuite(
   // 6. HIDE callback triggered save + fresh repository reload (I01 + I05 owner try/finally disposal)
   await run('FS-BG-RECOVERY', 'HIDE callback save & same-process repo reload', async () => {
     await cleanSlots(basePort);
-    const repo = new SpikeFileSaveRepository(basePort);
+    const repo = new SingleWriterSaveCoordinator(basePort);
     const lifecycle = new RuntimeLifecycleProvider();
     let unsub: (() => void) | null = null;
     try {
@@ -233,9 +276,9 @@ export async function runFileSystemAndSaveSuite(
       const c2 = await pendingCommits[0];
       if (c2.kind !== 'COMMITTED') throw new Error(`Hide callback commit failed: ${c2.kind}`);
 
-      // Same-process fresh repository load (real cross-reload verified separately in Web E2E; real kill BLOCKED on device)
-      const freshRepo = new SpikeFileSaveRepository(basePort);
-      const reloaded = await freshRepo.load();
+      // Same-process fresh coordinator load (real cross-reload verified separately in Web E2E; real kill BLOCKED on device)
+      const freshRepo = new SingleWriterSaveCoordinator(basePort);
+      const reloaded = await freshRepo.loadSafe();
       if (reloaded.kind !== 'VALID' || reloaded.revision !== '2') {
         throw new Error(`Expected rev=2 after repo reload, got ${reloaded.kind}`);
       }
@@ -250,7 +293,14 @@ export async function runFileSystemAndSaveSuite(
     }
   });
 
-  await cleanSlots(basePort);
+  } finally {
+    await cleanSlots(basePort).catch(() => {
+      // Ignore cleanup error if storage became unavailable during fault test
+    });
+    if (ownsEphemeralPort && 'clearAll' in basePort && typeof (basePort as { clearAll?: () => Promise<void> }).clearAll === 'function') {
+      await (basePort as { clearAll: () => Promise<void> }).clearAll().catch(() => {});
+    }
+  }
   return results;
 }
 

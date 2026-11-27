@@ -1,0 +1,5 @@
+G01 outerText=["IDLE_FISHING",1,"7","epoch.audit","{\"gold\":\"0\"}"]
+G01 bytes=55 expectedBytes=55 sha256=7322a23453d23eca40a924d1b24105c95a157f3931430cc4c56ac82862c40a27 expectedSha256=7322a23453d23eca40a924d1b24105c95a157f3931430cc4c56ac82862c40a27 match=true
+G02 outerText=["IDLE_FISHING",1,"7","epoch.audit","{\"name\":\"黄金鲤鱼\\\"A\\\"\",\"note\":\"第一行\\n第二行\\t完\",\"path\":\"C:\\\\fish\\\\存档\"}"]
+G02 bytes=150 expectedBytes=150 sha256=431dafc1a07776a1bb9d80357a62323176faabc7c38385da0e13a80daf8b5354 expectedSha256=431dafc1a07776a1bb9d80357a62323176faabc7c38385da0e13a80daf8b5354 match=true
+RESULT=PASS

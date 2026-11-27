@@ -10,8 +10,8 @@
  */
 import { natFromBigInt, natToBigInt } from './canonical-json.ts';
 import { drawU53, newRngState, cloneRngState } from './prng.ts';
-import { assertSafeMs, workFromMs } from './time.ts';
-import type { Nat, SpikeCounters, SpikeGameState, SpikeOfflineSession } from './types.ts';
+import { assertSafeMs, safeAddMs, workFromMs } from './time.ts';
+import type { Nat, SpikeAttemptLock, SpikeCounters, SpikeGameState, SpikeOfflineSession } from './types.ts';
 
 export interface SpikeOfflineFixture {
   readonly rootSeed: number;
@@ -58,17 +58,23 @@ export interface CreateInitialOptions {
   readonly saveEpoch: string;
   readonly startMs: number;
   readonly allowanceMs: number;
-  readonly fixture?: SpikeOfflineFixture;
 }
 
 export function createInitialState(options: CreateInitialOptions): SpikeGameState {
-  const fixture = options.fixture ?? DEFAULT_OFFLINE_FIXTURE;
+  const unsupported = options as CreateInitialOptions & { fixture?: unknown };
+  if (unsupported.fixture !== undefined) {
+    throw new Error('Custom offline fixtures are not supported by this experimental entry point');
+  }
+  const fixture = DEFAULT_OFFLINE_FIXTURE;
   assertSafeMs(options.startMs, 'startMs');
   assertSafeMs(options.allowanceMs, 'allowanceMs');
+  if (options.allowanceMs <= 0) {
+    throw new Error('allowanceMs must be positive');
+  }
   const session: SpikeOfflineSession = {
     startedMs: options.startMs,
     allowanceMs: options.allowanceMs,
-    deadlineMs: options.startMs + options.allowanceMs,
+    deadlineMs: safeAddMs(options.startMs, options.allowanceMs, 'offline deadline'),
     settledUntilMs: options.startMs,
   };
   return {
@@ -86,7 +92,7 @@ export function createInitialState(options: CreateInitialOptions): SpikeGameStat
     lastTerminalAttemptSeq: '0',
     rng: newRngState(),
     big: '0',
-    envNextCheckMs: options.startMs + fixture.envCheckEveryMs,
+    envNextCheckMs: safeAddMs(options.startMs, fixture.envCheckEveryMs, 'initial environment check time'),
     envActivityMicro: 1_000_000,
     offline: session,
   };
@@ -111,6 +117,9 @@ export function cloneState(state: Readonly<SpikeGameState>): SpikeGameState {
     envNextCheckMs: state.envNextCheckMs,
     envActivityMicro: state.envActivityMicro,
     offline: state.offline ? { ...state.offline } : null,
+    ...(state.attemptLock !== undefined
+      ? { attemptLock: state.attemptLock === null ? null : { ...state.attemptLock } }
+      : {}),
   };
 }
 
@@ -134,6 +143,14 @@ export interface AdvanceResult {
   readonly reachedTarget: boolean;
 }
 
+function advanceSettledCheckpoint(state: SpikeGameState): void {
+  if (state.offline === null) return;
+  const effectiveUntil = Math.min(state.cursorMs, state.offline.deadlineMs);
+  if (effectiveUntil > state.offline.settledUntilMs) {
+    state.offline.settledUntilMs = effectiveUntil;
+  }
+}
+
 function completionTime(done: Nat, required: Nat, startMs: number, rate: bigint): number | null {
   const doneBig = natToBigInt(done);
   const requiredBig = natToBigInt(required);
@@ -141,7 +158,8 @@ function completionTime(done: Nat, required: Nat, startMs: number, rate: bigint)
   if (doneBig >= requiredBig) return startMs;
   const elapsed = Number((requiredBig - doneBig + rate - 1n) / rate);
   if (!Number.isSafeInteger(elapsed)) return null;
-  return startMs + elapsed;
+  const completion = startMs + elapsed;
+  return Number.isSafeInteger(completion) ? completion : null;
 }
 
 function integrateTo(
@@ -159,8 +177,11 @@ function integrateTo(
     return { completedAtMs: null };
   }
   const elapsed = Number((requiredBig - doneBig + rate - 1n) / rate);
+  if (!Number.isSafeInteger(elapsed)) return { completedAtMs: null };
+  const completion = state.cursorMs + elapsed;
+  if (!Number.isSafeInteger(completion)) return { completedAtMs: null };
   state.stageDone = state.stageRequired;
-  return { completedAtMs: state.cursorMs + elapsed };
+  return { completedAtMs: completion };
 }
 
 /**
@@ -224,13 +245,14 @@ export function advanceOffline(
 
     const previousCursor = s.cursorMs;
     s.cursorMs = nextT;
+    advanceSettledCheckpoint(s);
 
     if (s.envNextCheckMs <= s.cursorMs) {
       s.counters.envChecks += 1;
       const draw = drawU53(s.rng, s.rootSeed, ENV_STREAM_NAME);
       s.rng = draw.state;
       s.envActivityMicro = Math.round((0.8 + 0.4 * draw.u) * 1_000_000);
-      s.envNextCheckMs = s.cursorMs + fixture.envCheckEveryMs;
+      s.envNextCheckMs = safeAddMs(s.cursorMs, fixture.envCheckEveryMs, 'next environment check');
       processedNodes += 1;
     }
 
@@ -274,6 +296,15 @@ function completeStage(state: SpikeGameState, fixture: SpikeOfflineFixture): voi
       const capture = drawU53(state.rng, state.rootSeed, 'capture');
       state.rng = capture.state;
       const fightMs = fixture.fightBaseMs + Math.round(fixture.fightVarianceMs * Math.pow(species.u, 1.5));
+      const seq = state.counters.attempts;
+      const lock: SpikeAttemptLock = {
+        seq,
+        claimKey: `fish:${seq}`,
+        speciesU: species.u,
+        captureU: capture.u,
+        fightMs,
+      };
+      state.attemptLock = lock;
       state.stage = 'FIGHTING';
       state.stageStartMs = state.cursorMs;
       state.stageDone = '0';
@@ -282,19 +313,38 @@ function completeStage(state: SpikeGameState, fixture: SpikeOfflineFixture): voi
       break;
     }
     case 'FIGHTING': {
+      const seq = state.counters.attempts;
+      if (seq <= 0) throw new Error('FIGHTING requires a positive attempt sequence');
+      const locked = state.attemptLock;
+      let claimKey = `fish:${seq}`;
+      if (locked !== undefined && locked !== null) {
+        if (locked.seq !== seq || locked.claimKey !== claimKey) {
+          throw new Error(`Locked attempt ${locked.seq} does not match current attempt ${seq}`);
+        }
+        if (workFromMs(locked.fightMs) !== state.stageRequired) {
+          throw new Error('Locked fight duration does not match stageRequired');
+        }
+        claimKey = locked.claimKey;
+      }
+      if (
+        state.claims.includes(claimKey) ||
+        natToBigInt(state.lastTerminalAttemptSeq) >= BigInt(seq)
+      ) {
+        throw new Error(`Attempt ${seq} already settled; refusing duplicate reward ${claimKey}`);
+      }
       state.counters.events += 1;
       const individual = drawU53(state.rng, state.rootSeed, 'individual');
       state.rng = individual.state;
       const gain = fixture.fishGoldBase + BigInt(Math.floor(individual.u * Number(fixture.fishGoldRange)));
       state.gold = natFromBigInt(natToBigInt(state.gold) + gain);
       state.big = natFromBigInt(natToBigInt(state.big) + fixture.bigIncrement);
-      state.lastTerminalAttemptSeq = String(state.counters.attempts);
-      const claim = `fish:${state.counters.attempts}`;
-      if (!state.claims.includes(claim)) state.claims.push(claim);
+      state.lastTerminalAttemptSeq = String(seq);
+      state.claims.push(claimKey);
       state.stage = 'PREPARING';
       state.stageStartMs = state.cursorMs;
       state.stageDone = '0';
       state.stageRequired = workFromMs(fixture.prepareMs);
+      delete state.attemptLock;
       state.counters.prepares += 1;
       break;
     }
@@ -323,7 +373,8 @@ export function advanceOfflineSliced(
   let current = cloneState(state);
   let nodes = 0;
   while (current.cursorMs < targetMs) {
-    const next = Math.min(current.cursorMs + sliceMs, targetMs);
+    const step = Math.min(sliceMs, targetMs - current.cursorMs);
+    const next = safeAddMs(current.cursorMs, step, 'slice target');
     const result = advanceOffline(current, next, options);
     nodes += result.processedNodes;
     current = result.state;

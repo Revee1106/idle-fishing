@@ -21,16 +21,22 @@ test('COCOS-01 .mjs artifact imports in Node and reproduces RNG-01', async () =>
   assert.equal(step.value, 11520);
 });
 
-test('COCOS-02 all emitted modules use relative .mjs specifiers and no CJS/Node APIs', async () => {
+test('COCOS-02 emitted modules and .d.mts declarations use .mjs specifiers only', async () => {
   const names = await readdir(COCOS_DIR);
   const modules = names.filter((n) => n.endsWith('.mjs'));
+  const declarations = names.filter((n) => n.endsWith('.d.mts'));
   assert.ok(modules.length >= 9, `expected spike modules, found ${modules.join(',')}`);
+  assert.equal(declarations.length, modules.length, 'each module needs a .d.mts declaration');
   for (const name of modules) {
     const text = await readFile(`${COCOS_DIR}${name}`, 'utf8');
     assert.ok(!/(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.js["']/.test(text), `${name} still imports .js`);
     assert.ok(!/\brequire\s*\(|\bmodule\.exports\b/.test(text), `${name} contains CJS syntax`);
     assert.ok(!/from\s+["']node:/.test(text), `${name} imports a Node builtin`);
   }
+  for (const name of declarations) {
+    const text = await readFile(`${COCOS_DIR}${name}`, 'utf8');
+    assert.ok(!/(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.ts["']/.test(text), `${name} still imports .ts`);
+  }
   assert.ok(modules.includes('index.mjs'));
-  assert.ok(names.includes('index.d.ts'), 'declarations should be copied for editor typechecking');
+  assert.ok(names.includes('index.d.mts'), 'strict consumers need a declaration next to index.mjs');
 });

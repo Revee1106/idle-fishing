@@ -8,7 +8,7 @@
  * reports/backend/BE-000/SHARED_MODULE_HANDOFF.md). This does not imply
  * WeChat real-device or other platform support.
  */
-import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const SOURCE_DIR = fileURLToPath(new URL('../dist/spike/', import.meta.url));
@@ -16,6 +16,8 @@ const OUTPUT_DIR = fileURLToPath(new URL('../dist/cocos/spike/', import.meta.url
 
 const RELATIVE_SPECIFIER = /(from\s*["']|import\s*\(\s*["'])(\.{1,2}\/[^"']+)\.js(["'])/g;
 const REMAINING_JS_SPECIFIER = /(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.js["']/;
+const DECLARATION_SPECIFIER = /(from\s*["']|import\s*\(\s*["'])(\.{1,2}\/[^"']+)\.(?:ts|js)(["'])/g;
+const REMAINING_TS_SPECIFIER = /(?:from\s*["']|import\s*\(\s*["'])\.{1,2}\/[^"']+\.ts["']/;
 
 async function main() {
   await rm(OUTPUT_DIR, { recursive: true, force: true });
@@ -26,7 +28,13 @@ async function main() {
   let declarations = 0;
   for (const name of names) {
     if (name.endsWith('.d.ts')) {
-      await copyFile(`${SOURCE_DIR}${name}`, `${OUTPUT_DIR}${name}`);
+      const text = await readFile(`${SOURCE_DIR}${name}`, 'utf8');
+      const outName = name.replace(/\.d\.ts$/, '.d.mts');
+      const converted = text.replace(DECLARATION_SPECIFIER, '$1$2.mjs$3');
+      if (REMAINING_TS_SPECIFIER.test(converted)) {
+        throw new Error(`unconverted relative .ts specifier remains in ${outName}`);
+      }
+      await writeFile(`${OUTPUT_DIR}${outName}`, converted, 'utf8');
       declarations += 1;
       continue;
     }
@@ -45,7 +53,7 @@ async function main() {
   }
 
   if (emitted === 0) throw new Error(`no built .js files in ${SOURCE_DIR}; run "npm run build" first`);
-  console.log(`cocos artifacts: ${emitted} .mjs + ${declarations} .d.ts -> ${OUTPUT_DIR}`);
+  console.log(`cocos artifacts: ${emitted} .mjs + ${declarations} .d.mts -> ${OUTPUT_DIR}`);
 }
 
 await main();

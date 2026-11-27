@@ -1,0 +1,80 @@
+[
+  {
+    "label": "r502_seed_rev1",
+    "halted": false,
+    "outcome": null,
+    "rev": "1",
+    "overlay": false,
+    "marker": null,
+    "slotRevs": [
+      "1",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "r502_quota_frozen",
+    "halted": true,
+    "outcome": null,
+    "rev": "1",
+    "overlay": true,
+    "marker": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"txId\":\"tx_1795761326369_2_914389\",\"state\":\"FROZEN\",\"expectedRevision\":\"1\",\"targetRevision\":\"2\",\"priorSaveHistory\":\"CONFIRMED_VALID\",\"confirmedRevision\":\"1\",\"createdAtMs\":1795761326370,\"updatedAtMs\":1795761327273,\"reason\":\"Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_1.json: quota remains full. Free storage space or restore permissions, then trigger explicit storage recovery.\"}",
+    "slotRevs": [
+      "1",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "r502_clicked_recovery_while_quota_still_active",
+    "halted": false,
+    "outcome": "RECOVERED_VALID",
+    "rev": "1",
+    "overlay": false,
+    "marker": null,
+    "slotRevs": [
+      "1",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "r503_corrupt_marker_preview",
+    "halted": true,
+    "outcome": null,
+    "rev": null,
+    "overlay": true,
+    "marker": "{bad",
+    "slotRevs": [
+      "1",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "r503_destroyed_while_waiting_lock",
+    "halted": true,
+    "outcome": null,
+    "rev": null,
+    "overlay": false,
+    "marker": "{bad",
+    "slotRevs": [
+      "1",
+      null,
+      null
+    ]
+  },
+  {
+    "label": "r503_after_lock_released",
+    "halted": true,
+    "outcome": "CANCELLED_DESTROYED",
+    "rev": null,
+    "overlay": false,
+    "marker": null,
+    "slotRevs": [
+      "1",
+      null,
+      null
+    ]
+  }
+]

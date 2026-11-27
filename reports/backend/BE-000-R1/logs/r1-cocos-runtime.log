@@ -1,0 +1,20 @@
+{
+  "probe": {
+    "value": 11520,
+    "state": "[7,0,1026,12288]"
+  },
+  "node": {
+    "sha256": "9ed7cded1c1d5391691c9172e837c36915fb94605b1aaf19f2afea856e717e1d",
+    "stateHash": "0be078f13066528fa78973822193d3d156e0777e28c00460448af686ac0ae69f",
+    "gold": "85366",
+    "big": "361604935017160493501716049349810"
+  },
+  "cocos": {
+    "sha256": "9ed7cded1c1d5391691c9172e837c36915fb94605b1aaf19f2afea856e717e1d",
+    "gold": "85366",
+    "big": "361604935017160493501716049349810"
+  },
+  "mathModule": "chunks:///_virtual/index.mjs",
+  "mathCases": 19,
+  "result": "PASS"
+}
