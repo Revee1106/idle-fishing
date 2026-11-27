@@ -1,0 +1,11 @@
+{
+  "path": "apps/game-client/settings/v2/packages/information.json",
+  "before": "a5f47c582862b4379cabae793d03180d0f96284b7dbb044ef45887d2f0d4d6aa",
+  "afterBuild": "cbb733c8bf691ac9d561469cf945b21a23328e68fa694d75ab9f844f1866d754",
+  "changedFields": [
+    "/information/customSplash/customSplash/form",
+    "/information/customSplash/enable",
+    "/information/removeSplash/enable",
+    "/information/removeSplash/removeSplash/form"
+  ]
+}

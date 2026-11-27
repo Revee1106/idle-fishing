@@ -1,0 +1,11 @@
+--- 
++++ 
+@@ -40,7 +40,7 @@
+ const timeoutArg = process.argv.find((a) => a.startsWith('--worker-timeout-ms='));
+ const rawTimeout = timeoutArg
+   ? timeoutArg.slice('--worker-timeout-ms='.length)
+-  : process.env.FE000_WORKER_TIMEOUT_MS || '180000';
++  : process.env.FE000_WORKER_TIMEOUT_MS || '300000';
+ const workerTimeoutMs = Number(rawTimeout);
+ if (!Number.isFinite(workerTimeoutMs) || workerTimeoutMs < 200 || workerTimeoutMs > 600_000) {
+   console.error(`[FE-000 Test Runner] FAIL: Invalid --worker-timeout-ms value: ${rawTimeout} (must be 200..600000)`);

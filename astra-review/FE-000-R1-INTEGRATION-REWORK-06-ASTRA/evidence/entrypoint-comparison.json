@@ -1,0 +1,20 @@
+{
+  "web-mobile": {
+    "templateMatch": [
+      1761,
+      "\r\n\r\n<script src=\"src/polyfills.bundle.js\" charset=\"utf-8\"> </script>"
+    ],
+    "target": "R5 legacy entrypoint digest; Web also exact R6 reference",
+    "actualBytes": 2090,
+    "referenceBytes": 2158
+  },
+  "wechatgame": {
+    "templateMatch": [
+      197,
+      "\r\n\r\n// Polyfills bundle.\r\nrequire(\"src/polyfills.bundle.js\");"
+    ],
+    "target": "R5 legacy entrypoint digest; Web also exact R6 reference",
+    "actualBytes": 2547,
+    "referenceBytes": 2608
+  }
+}

@@ -1,0 +1,15 @@
+
+> idle-fishing-client@0.0.0-spike typecheck
+> node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.typecheck.json
+
+assets/scripts/bootstrap/BootEntry.ts(21,74): error TS2307: Cannot find module 'cc' or its corresponding type declarations.
+assets/scripts/bootstrap/BootEntry.ts(187,80): error TS2339: Property 'isValid' does not exist on type 'BootEntry'.
+assets/scripts/bootstrap/BootEntry.ts(461,10): error TS2339: Property 'node' does not exist on type 'BootEntry'.
+assets/scripts/bootstrap/BootEntry.ts(464,35): error TS2339: Property 'node' does not exist on type 'BootEntry'.
+assets/scripts/bootstrap/BootEntry.ts(748,12): error TS2339: Property 'node' does not exist on type 'BootEntry'.
+assets/scripts/bootstrap/BootEntry.ts(976,10): error TS2339: Property 'schedule' does not exist on type 'BootEntry'.
+assets/scripts/ui/CodeFirstFactory.ts(26,8): error TS2307: Cannot find module 'cc' or its corresponding type declarations.
+assets/scripts/ui/OverviewPage.ts(8,49): error TS2307: Cannot find module 'cc' or its corresponding type declarations.
+assets/scripts/ui/PageRouter.ts(5,27): error TS2307: Cannot find module 'cc' or its corresponding type declarations.
+assets/scripts/ui/PlatformPage.ts(5,82): error TS2307: Cannot find module 'cc' or its corresponding type declarations.
+assets/scripts/ui/ResponsiveCanvas.ts(5,53): error TS2307: Cannot find module 'cc' or its corresponding type declarations.

@@ -1,0 +1,14 @@
+import {MemoryFilePort} from '../tests/frontend/fe-000/.compiled/apps/game-client/assets/scripts/platform/BrowserFilePort.js';
+import {SingleWriterSaveCoordinator} from '../tests/frontend/fe-000/.compiled/apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.js';
+import {createInitialState,advanceOffline} from '@idle-fishing/game-core';
+const seed=createInitialState({saveEpoch:'astra-capacity',startMs:1700000000000,allowanceMs:28800000});
+const state=advanceOffline(seed,seed.cursorMs+3600000).state;
+const reference=new MemoryFilePort(10*1024*1024,'astra-size');
+const valid=await new SingleWriterSaveCoordinator(reference).commit(state,null);
+const bytes=Buffer.byteLength(await reference.read('save_slot_0.json'));
+if(valid.kind!=='COMMITTED'||bytes<=2304) throw Error('Inapplicable fixture');
+const port=new MemoryFilePort(2304,'astra-capacity');const coord=new SingleWriterSaveCoordinator(port);
+const first=await coord.commit(state,null), markerBefore=await port.readTxState();
+const recovered=await coord.loadSafe(), markerAfter=await port.readTxState(),retry=await coord.commit(state,null);
+console.log(JSON.stringify({fullSlotBytes:bytes,limit:2304,first:first.kind,markerBefore:!!markerBefore,recovered:recovered.kind,markerAfter:!!markerAfter,retry:retry.kind},null,2));
+if(recovered.kind==='EMPTY'&&retry.kind!=='COMMITTED')process.exitCode=1;

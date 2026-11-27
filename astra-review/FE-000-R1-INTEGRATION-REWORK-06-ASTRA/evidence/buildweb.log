@@ -1,0 +1,64 @@
+
+> idle-fishing-client@0.0.0-spike build:web
+> node scripts/build-cocos.mjs web-mobile
+
+[FE-000 Build] Target: web-mobile
+[FE-000 Build] Exe: C:\ProgramData\cocos\editors\Creator\3.8.8\CocosCreator.exe
+[FE-000 Build] Args: ["--project","E:\\idle-fishing-astra-test-20261127\\apps\\game-client","--build","configPath=E:\\idle-fishing-astra-test-20261127\\apps\\game-client\\build-configs\\buildConfig_web-mobile.json"]
+[FE-000 Build] Raw Exit Code: 36
+[FE-000 Build] Duration: 99308 ms
+[FE-000 Build] Output Exists: true (E:\idle-fishing-astra-test-20261127\apps\game-client\build\web-mobile)
+[FE-000 Build] Total Output: 35 files, 2088.06 KB (2138176 bytes)
+--- STDOUT TAIL ---
+2026-11-27 21:42:17 - debug: // ---- build task cocos-service：onAfterBuild ----
+
+2026-11-27 21:42:17 - debug: // ---- build task cocos-service：onAfterBuild ---- (28ms)
+
+2026-11-27 21:42:17 - debug: cocos-service:(onAfterBuild) in 28 ms ✓, progress: 58%
+
+2026-11-27 21:42:17 - debug: adsense-h5g-plugin:(onAfterBuild) start..., progress: 58%
+
+2026-11-27 21:42:17 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ----
+
+2026-11-27 21:42:17 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ---- (2ms)
+
+2026-11-27 21:42:17 - debug: adsense-h5g-plugin:(onAfterBuild) in 2 ms ✓, progress: 60%
+
+2026-11-27 21:42:17 - log: Asset DB is resume!
+
+2026-11-27 21:42:17 - debug: builder:build-project-total (63138ms)
+
+2026-11-27 21:42:17 - debug: build task(web-mobile) in 63138!
+
+2026-11-27 21:42:17 - debug: [Build Memory track]: builder:build-project-total start:498.50MB, end 234.40MB, increase: -270441.31KB
+
+2026-11-27 21:42:17 - debug: ================================ build Task (web-mobile) Finished in (1 min 4 s)ms ================================
+
+
+--- STDERR TAIL ---
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: [Function: emitRequestTimeout],
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: '127.0.0.1',
+      protocol: 'http:',
+      _redirectable: [Writable],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: ''
+  }
+}
+
+[FE-000 Build] SUCCESS (Cocos raw status=36, artifact checks PASSED)

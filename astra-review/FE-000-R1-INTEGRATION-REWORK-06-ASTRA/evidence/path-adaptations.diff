@@ -1,0 +1,62 @@
+--- E:\idle-fishing-evidence-20261127\src\review\reports\review\FE-000-R1-INTEGRATION-REWORK-05-ASTRA\evidence\astra-ui-ordered.mjs
++++ E:\idle-fishing-astra-test-20261127\astra-home-run\history-ui.mjs
+@@ -30,10 +30,10 @@
+ import path from 'node:path';
+ import { spawn } from 'node:child_process';
+ import { fileURLToPath } from 'node:url';
+-import { safeRemoveOutputDir } from './safe-path-guard.mjs';
++import { safeRemoveOutputDir } from 'file:///E:/idle-fishing-astra-test-20261127/tests/frontend/fe-000/safe-path-guard.mjs';
+ 
+ const __dirname = path.dirname(fileURLToPath(import.meta.url));
+-const repoRoot = path.resolve(__dirname, '../../..');
++const repoRoot = 'E:/idle-fishing-astra-test-20261127';
+ const webBuildDir = path.join(repoRoot, 'apps/game-client/build/web-mobile');
+ const outDirArg = process.argv.find((a) => a.startsWith('--out-dir='));
+ const evidenceDir = outDirArg
+@@ -389,7 +389,7 @@
+       return coord;
+     };
+ 
+-const ev=s=>cdp.evalJson(s),wait=()=>new Promise(r=>setTimeout(r,450)),snap=()=>ev('__SPIKE_HARNESS__.getSnapshot()'),rows=[];async function record(label){const s=await snap();rows.push({label,state:s.lifecyclePersistence,overlay:s.recoveryOverlayVisible,marker:await ev('('+IDB_HELPERS_EXPR+').readTxState('+JSON.stringify(appNs)+')'),slots:await ev('('+IDB_HELPERS_EXPR+').readSlots('+JSON.stringify(appNs)+')')});fs.writeFileSync(path.join(repoRoot,'astra-ui-ordered.json'),JSON.stringify(rows,null,2))}
++const ev=s=>cdp.evalJson(s),wait=()=>new Promise(r=>setTimeout(r,450)),snap=()=>ev('__SPIKE_HARNESS__.getSnapshot()'),rows=[];async function record(label){const s=await snap();rows.push({label,state:s.lifecyclePersistence,overlay:s.recoveryOverlayVisible,marker:await ev('('+IDB_HELPERS_EXPR+').readTxState('+JSON.stringify(appNs)+')'),slots:await ev('('+IDB_HELPERS_EXPR+').readSlots('+JSON.stringify(appNs)+')')});fs.writeFileSync('E:/idle-fishing-astra-review-20261127/FE-000-R1-INTEGRATION-REWORK-06-ASTRA/evidence/historical-ui.json',JSON.stringify(rows,null,2))}
+ async function hide(){await ev("for(const st of ['hidden','visible']){Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>st});document.dispatchEvent(new Event('visibilitychange'))};__SPIKE_HARNESS__.awaitPendingHideSave()")}
+ await hide();await record('seed');await ev("globalThis.origPut=IDBObjectStore.prototype.put;IDBObjectStore.prototype.put=function(v,k){if(String(k).includes(':save_slot_'))throw new DOMException('quota remains full','QuotaExceededError');return origPut.call(this,v,k)};true");await hide();await record('quota');await clickUiBtn(cdp,'BtnRecoverStorage');await wait();await ev('__SPIKE_HARNESS__.awaitPendingHideSave()');await record('clicked recovery with fault still enabled');await hide();await record('next HIDE same fault');await ev('IDBObjectStore.prototype.put=origPut;true');await clickUiBtn(cdp,'BtnRecoverStorage');await wait();await hide();await record('capacity restored');
+ await ev("IDBObjectStore.prototype.put=function(v,k){const r=origPut.call(this,v,k);if(String(k).includes(':save_slot_'))r.addEventListener('success',()=>this.transaction.abort(),{once:true});return r};true");await hide();await record('request succeeded then transaction aborted');await ev('IDBObjectStore.prototype.put=origPut;true');
+--- E:\idle-fishing-evidence-20261127\src\review\reports\review\FE-000-R1-INTEGRATION-REWORK-05-ASTRA\evidence\astra-history.mjs
++++ E:\idle-fishing-astra-test-20261127\astra-home-run\history-node.mjs
+@@ -1,4 +1,4 @@
+-import {SingleWriterSaveCoordinator as C} from './tests/frontend/fe-000/.compiled/apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.js';
++import {SingleWriterSaveCoordinator as C} from 'file:///E:/idle-fishing-astra-test-20261127/tests/frontend/fe-000/.compiled/apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.js';
+ import {createInitialState,advanceOffline} from '@idle-fishing/game-core';
+ const p={kind:'MEMORY',storageKey:'review.history',disk:new Map(),marker:null,readTxState(){return this.marker},writeTxState(t){this.marker=t},clearTxState(){this.marker=null},async read(k){if(k===this.hidden)throw Error('temporary IO');return this.disk.get(k)??null},async write(k,v){this.disk.set(k,v)},async remove(k){this.disk.delete(k)},async list(){return [...this.disk.keys()]}};
+ const a=new C(p),s=createInitialState({saveEpoch:'audit',startMs:1700000000000,allowanceMs:3600000}),t=advanceOffline(s,s.cursorMs+60000).state;
+--- E:\idle-fishing-integration-home\reports\integration\FE-000-R1-INTEGRATION-REWORK-06\evidence\r6-isolated-race.mjs
++++ E:\idle-fishing-astra-test-20261127\astra-home-run\race.mjs
+@@ -16,11 +16,11 @@
+ import { fileURLToPath } from 'node:url';
+ 
+ const __dirname = path.dirname(fileURLToPath(import.meta.url));
+-const repoRoot = path.resolve(__dirname, '../../../..');
++const repoRoot = 'E:/idle-fishing-astra-test-20261127';
+ const webDir = path.join(repoRoot, 'apps/game-client/build/web-mobile');
+ const chromeExe = process.env.CHROME_EXE || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+ const label = process.argv[2] || 'profileA';
+-const outJsonPath = path.join(__dirname, `r6-isolated-race-${label}.json`);
++const outJsonPath = path.join('E:/idle-fishing-astra-review-20261127/FE-000-R1-INTEGRATION-REWORK-06-ASTRA/evidence', `r6-isolated-race-${label}.json`);
+ 
+ const MIME = {
+   '.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8',
+--- E:\idle-fishing-integration-home\reports\integration\FE-000-R1-INTEGRATION-REWORK-06\evidence\after-fix-repro\verify-r5-02-03-after.mjs
++++ E:\idle-fishing-astra-test-20261127\astra-home-run\current-ui.mjs
+@@ -4,9 +4,9 @@
+ import path from 'node:path';
+ import { spawn } from 'node:child_process';
+ 
+-const repoRoot = 'E:/idle-fishing-integration';
++const repoRoot = 'E:/idle-fishing-astra-test-20261127';
+ const webBuildDir = path.join(repoRoot, 'apps/game-client/build/web-mobile');
+-const outJson = path.join(repoRoot, 'reports/integration/FE-000-R1-INTEGRATION-REWORK-06/evidence/after-fix-repro/verify-r5-02-03-after.json');
++const outJson = 'E:/idle-fishing-astra-review-20261127/FE-000-R1-INTEGRATION-REWORK-06-ASTRA/evidence/current-ui.json';
+ const chromeExe = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+ const MIME = {
+   '.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8',

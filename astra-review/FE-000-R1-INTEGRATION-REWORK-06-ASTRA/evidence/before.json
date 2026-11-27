@@ -1,0 +1,39 @@
+{
+  "identity": [
+    "dda015cbc5ae698f3df406ea8ffbdd7f756332bc",
+    "be62996fae44df24094331d670f6f0ab3741a4f2",
+    "5bcc9accfe6dfd60e0da0de0fa44bde9dc88f355"
+  ],
+  "archive": "03639ab7511c0399439a63d9a50084c9aaf2600e",
+  "trees": {
+    "E:\\idle-fishing-integration-home": 302,
+    "E:\\idle-fishing-astra-test-20261127": 302,
+    "E:\\idle-fishing-evidence-20261127": 2441
+  },
+  "history": {
+    "FE-000-R1-INTEGRATION-REWORK-05-ASTRA": 68,
+    "FE-000-R1-INTEGRATION-REWORK-04-DEEPSEEK": 54
+  },
+  "protected": 58,
+  "supplement": {
+    "BE-000-R1": {
+      "review": 41
+    },
+    "BE-000-R1-P2": {
+      "review": 7,
+      "backend-local": 22
+    }
+  },
+  "supplementFiles": 68,
+  "handoff": "Candidate: 82 plus manifest OK\r\nArchive: 2134 source files OK\r\n",
+  "status": {
+    "E:\\idle-fishing-evidence-20261127": "",
+    "E:\\idle-fishing-integration-home": "",
+    "E:\\idle-fishing-astra-test-20261127": ""
+  },
+  "digest": {
+    "E:\\idle-fishing-integration-home": "373672c2bcaac41be20bac2c6d2129f0b346d016bc2bb7f90473737fe4bc05f2",
+    "E:\\idle-fishing-astra-test-20261127": "373672c2bcaac41be20bac2c6d2129f0b346d016bc2bb7f90473737fe4bc05f2",
+    "E:\\idle-fishing-evidence-20261127": "29acb8ddea6061dddb097deb3a95f166e63226c5c87587e78f2fdb53440b01fa"
+  }
+}

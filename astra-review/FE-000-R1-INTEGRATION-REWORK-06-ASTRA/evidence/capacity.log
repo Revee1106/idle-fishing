@@ -1,0 +1,9 @@
+{
+  "fullSlotBytes": 2552,
+  "limit": 2304,
+  "first": "STORAGE_UNAVAILABLE",
+  "markerBefore": true,
+  "recovered": "EMPTY",
+  "markerAfter": false,
+  "retry": "STORAGE_UNAVAILABLE"
+}
