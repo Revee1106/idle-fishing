@@ -2881,7 +2881,7 @@ test('[NODE/REWORK-06/R5-02-WRITE-CAPABILITY-CHECKPOINT-RECOVERY] Persistent slo
   const emptyStillFullNoState = await coordEmpty.loadSafe();
   assert.equal(emptyStillFullNoState.kind, 'STORAGE_UNAVAILABLE');
   if (emptyStillFullNoState.kind === 'STORAGE_UNAVAILABLE') {
-    assert.equal(emptyStillFullNoState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+    assert.equal(emptyStillFullNoState.recoveryClassification, 'INITIAL_COMMIT_STATE_UNAVAILABLE');
   }
   const emptyStillFullWithState = await coordEmpty.loadSafe({ initialCommitState: s1 });
   assert.equal(emptyStillFullWithState.kind, 'STORAGE_UNAVAILABLE');
@@ -2890,12 +2890,12 @@ test('[NODE/REWORK-06/R5-02-WRITE-CAPABILITY-CHECKPOINT-RECOVERY] Persistent slo
   }
   assert.ok(await memEmpty.readTxState(), 'FROZEN marker must stay while initial-save write fails');
 
-  // Even after quota clears, loadSafe() WITHOUT initialCommitState MUST stay frozen (cannot verify actual save size!)
+  // Even after quota clears, loadSafe() WITHOUT initialCommitState MUST stay frozen (cannot substitute default!)
   emptyQuotaFull = false;
   const emptyHealedWithoutState = await coordEmpty.loadSafe();
   assert.equal(emptyHealedWithoutState.kind, 'STORAGE_UNAVAILABLE');
   if (emptyHealedWithoutState.kind === 'STORAGE_UNAVAILABLE') {
-    assert.equal(emptyHealedWithoutState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+    assert.equal(emptyHealedWithoutState.recoveryClassification, 'INITIAL_COMMIT_STATE_UNAVAILABLE');
   }
   assert.ok(await memEmpty.readTxState(), 'Marker must stay frozen when no valid initialCommitState is supplied');
 
@@ -3111,11 +3111,11 @@ test('[NODE/REWORK-07/R5-02-EMPTY-CAPACITY-COUNTEREXAMPLE] Astra 2304/2552 const
   assert.equal(await port2304.read('small_probe.tmp'), 'x'.repeat(2048));
   await port2304.remove('small_probe.tmp');
 
-  // Recovery without initialCommitState -> stays FROZEN, marker preserved!
+  // Recovery without initialCommitState -> stays FROZEN (INITIAL_COMMIT_STATE_UNAVAILABLE), marker preserved!
   const recNoState = await coord2304.loadSafe();
   assert.equal(recNoState.kind, 'STORAGE_UNAVAILABLE');
   if (recNoState.kind === 'STORAGE_UNAVAILABLE') {
-    assert.equal(recNoState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+    assert.equal(recNoState.recoveryClassification, 'INITIAL_COMMIT_STATE_UNAVAILABLE');
   }
   assert.ok(await port2304.readTxState(), 'Marker must remain when initialCommitState is absent');
 
@@ -3132,7 +3132,7 @@ test('[NODE/REWORK-07/R5-02-EMPTY-CAPACITY-COUNTEREXAMPLE] Astra 2304/2552 const
   const recBadState = await coord2304.loadSafe({ initialCommitState: { invalid: true } as unknown as SpikeGameState });
   assert.equal(recBadState.kind, 'STORAGE_UNAVAILABLE');
   if (recBadState.kind === 'STORAGE_UNAVAILABLE') {
-    assert.equal(recBadState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+    assert.equal(recBadState.recoveryClassification, 'INITIAL_COMMIT_STATE_UNAVAILABLE');
   }
   assert.ok(await port2304.readTxState());
 
@@ -3423,4 +3423,113 @@ test('[NODE/REWORK-07/R5-03-PRE-PROBE-CANCELLATION-BOUNDARY] Pre-probe cancellat
   } finally {
     (globalThis as Record<string, unknown>).wx = prevWx;
   }
+});
+
+// =========================================================================
+// REWORK-08: Formal Regression for R5-02 Cross-Refresh Initial-State Guard
+// =========================================================================
+
+test('[NODE/REWORK-08/R5-02-CROSS-REFRESH-INITIAL-STATE-UNAVAILABLE] Lost pending initial state across reload/new coordinator stays frozen (INITIAL_COMMIT_STATE_UNAVAILABLE) without substituting default state', async () => {
+  const START = 1_700_000_000_000;
+  const bootDefault = createInitialState({
+    saveEpoch: 'fe000-lifecycle-epoch',
+    startMs: START,
+    allowanceMs: 8 * 3600 * 1000,
+  });
+  const firstHideState = advanceOffline(bootDefault, START + 60_000).state;
+  const secondHideState = advanceOffline(firstHideState, firstHideState.cursorMs + 60_000).state;
+  assert.equal(firstHideState.gold, '31');
+  assert.equal(firstHideState.cursorMs, START + 60_000);
+
+  // 1. First save fails on quota -> FROZEN marker persisted, 0 slots written
+  const backing = new MemoryFilePort(10 * 1024 * 1024, 'r8_cross_refresh');
+  let failSlotWrite = true;
+  const port: FilePort = {
+    kind: 'MEMORY',
+    storageKey: backing.storageKey,
+    probeStorage: (opts) => backing.probeStorage(opts),
+    readTxState: () => backing.readTxState(),
+    writeTxState: (t) => backing.writeTxState(t),
+    clearTxState: () => backing.clearTxState(),
+    readHistoryState: () => backing.readHistoryState(),
+    writeHistoryState: (t) => backing.writeHistoryState(t),
+    clearHistoryState: () => backing.clearHistoryState(),
+    read: (p) => backing.read(p),
+    write: async (p, text) => {
+      if (failSlotWrite && p.startsWith('save_slot_')) {
+        throw new FilePortIoError('QUOTA_EXCEEDED', p, 'Simulated first-save quota failure');
+      }
+      return backing.write(p, text);
+    },
+    remove: (p) => backing.remove(p),
+    list: (d) => backing.list(d),
+  };
+
+  const coord1 = new SingleWriterSaveCoordinator(port);
+  const firstFail = await coord1.commit(firstHideState, null);
+  assert.equal(firstFail.kind, 'STORAGE_UNAVAILABLE');
+  const markerBefore = await backing.readTxState();
+  assert.ok(markerBefore);
+  assert.deepEqual(await backing.list(), []);
+
+  // 2. Simulate page reload (storage fault cleared, new coordinator, memory pendingInitialCommitState lost -> null)
+  failSlotWrite = false;
+  const coordAfterReload1 = new SingleWriterSaveCoordinator(port);
+  const bootAfterReload1 = await coordAfterReload1.loadSafe({ clearPendingTxMarker: false });
+  assert.equal(bootAfterReload1.kind, 'STORAGE_UNAVAILABLE');
+  if (bootAfterReload1.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(bootAfterReload1.recoveryClassification, 'PENDING_RECOVERY_REQUIRED');
+  }
+
+  // Explicit recovery without original pending state MUST stay frozen with INITIAL_COMMIT_STATE_UNAVAILABLE!
+  const rec1 = await coordAfterReload1.loadSafe({ clearPendingTxMarker: true, initialCommitState: null });
+  assert.equal(rec1.kind, 'STORAGE_UNAVAILABLE');
+  if (rec1.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(rec1.recoveryClassification, 'INITIAL_COMMIT_STATE_UNAVAILABLE');
+  }
+  assert.equal(coordAfterReload1.storageHealth, 'STORAGE_UNAVAILABLE');
+  assert.equal(await backing.readTxState(), markerBefore, 'Pending tx marker must remain intact');
+  assert.equal(await backing.readHistoryState(), null, 'No default revision 1 history may be confirmed');
+  assert.deepEqual(await backing.list(), [], 'No default save slot may be written');
+
+  // Repeated recovery clicks / second reload (third coordinator) MUST NOT bypass freeze!
+  const rec2 = await coordAfterReload1.loadSafe({ clearPendingTxMarker: true, initialCommitState: null });
+  assert.equal(rec2.kind, 'STORAGE_UNAVAILABLE');
+  if (rec2.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(rec2.recoveryClassification, 'INITIAL_COMMIT_STATE_UNAVAILABLE');
+  }
+  const coordAfterReload2 = new SingleWriterSaveCoordinator(port);
+  const bootAfterReload2 = await coordAfterReload2.loadSafe({ clearPendingTxMarker: false });
+  assert.equal(bootAfterReload2.kind, 'STORAGE_UNAVAILABLE');
+  if (bootAfterReload2.kind === 'STORAGE_UNAVAILABLE') {
+    assert.equal(bootAfterReload2.recoveryClassification, 'PENDING_RECOVERY_REQUIRED');
+  }
+  assert.equal(await backing.readTxState(), markerBefore);
+  assert.deepEqual(await backing.list(), []);
+
+  // 3. Same-session recovery WITH the exact original pending state persists 31 gold & +60s cursor at rev 1, then rev 2!
+  const recOriginal = await coordAfterReload2.loadSafe({
+    clearPendingTxMarker: true,
+    initialCommitState: firstHideState,
+  });
+  assert.equal(recOriginal.kind, 'VALID');
+  if (recOriginal.kind === 'VALID') {
+    assert.equal(recOriginal.revision, '1');
+    assert.equal((recOriginal.raw as SpikeGameState).gold, '31');
+    assert.equal((recOriginal.raw as SpikeGameState).cursorMs, START + 60_000);
+    assert.equal(canonicalStringify(recOriginal.raw), canonicalStringify(firstHideState));
+  }
+  assert.equal(await backing.readTxState(), null);
+  assert.equal(JSON.parse((await backing.readHistoryState())!).confirmedRevision, '1');
+  const nextCommit = await coordAfterReload2.commit(secondHideState, '1');
+  assert.equal(nextCommit.kind, 'COMMITTED');
+  if (nextCommit.kind === 'COMMITTED') assert.equal(nextCommit.revision, '2');
+
+  // 4. Normal clean new domain (no marker, no history) still boots EMPTY & commits rev 1 cleanly!
+  const cleanPort = new MemoryFilePort(10 * 1024 * 1024, 'r8_clean_new_domain');
+  const cleanCoord = new SingleWriterSaveCoordinator(cleanPort);
+  assert.equal((await cleanCoord.loadSafe({ clearPendingTxMarker: false })).kind, 'EMPTY');
+  const cleanCommit = await cleanCoord.commit(firstHideState, null);
+  assert.equal(cleanCommit.kind, 'COMMITTED');
+  if (cleanCommit.kind === 'COMMITTED') assert.equal(cleanCommit.revision, '1');
 });

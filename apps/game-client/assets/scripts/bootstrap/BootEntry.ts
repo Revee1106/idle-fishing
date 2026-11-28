@@ -405,10 +405,12 @@ export class BootEntry extends Component {
             rec.recoveryClassification === 'HISTORY_STATE_CORRUPT' ||
             rec.recoveryClassification === 'HISTORY_STATE_UNREADABLE'
           ? 'Action: Save history invariant violation detected. Writes remain frozen to prevent silent rollback or reset.'
-          : rec.recoveryClassification === 'WRITE_CAPABILITY_UNAVAILABLE' ||
-              rec.recoveryClassification === 'HISTORY_STATE_WRITE_FAILED'
-            ? 'Action: Backup save is readable, but save-slot write capability is still failing. Free storage space / restore permissions, then click "Re-check & Recover Save".'
-            : 'Action: If storage was full (QUOTA) or unavailable, free space / restore permissions, then click "Re-check & Recover Save".';
+          : rec.recoveryClassification === 'INITIAL_COMMIT_STATE_UNAVAILABLE'
+            ? 'Action: Original unsaved initial progress is unavailable or unverifiable (for example after page reload) and cannot be safely recovered with a default reset. Writes remain frozen.'
+            : rec.recoveryClassification === 'WRITE_CAPABILITY_UNAVAILABLE' ||
+                rec.recoveryClassification === 'HISTORY_STATE_WRITE_FAILED'
+              ? 'Action: Backup save is readable, but save-slot write capability is still failing. Free storage space / restore permissions, then click "Re-check & Recover Save".'
+              : 'Action: If storage was full (QUOTA) or unavailable, free space / restore permissions, then click "Re-check & Recover Save".';
     const lines = [
       `Status: ${rec.loadStatus} | StorageHealth: ${rec.storageHealth}`,
       `Classification: ${rec.recoveryClassification ?? 'NONE'}`,
@@ -658,7 +660,10 @@ export class BootEntry extends Component {
                 )
               : await coordinator.loadSafe({
                   clearPendingTxMarker: true,
-                  initialCommitState: this.pendingInitialCommitState ?? this.createDefaultInitialState(),
+                  // R5-02 (REWORK-08): Pass ONLY the real pending initial state from this session;
+                  // NEVER substitute createDefaultInitialState() when the original unsaved state was
+                  // lost (e.g. across page reload).
+                  initialCommitState: this.pendingInitialCommitState,
                   hooks: recoveryHooks,
                 });
 
@@ -872,7 +877,7 @@ export class BootEntry extends Component {
               this.persistenceHalted = true;
               this.persistState = null;
               this.persistRevision = null;
-              if (expectedRev === null) {
+              if (expectedRev === null && committed.detail.startsWith('Runtime storage write failure')) {
                 this.pendingInitialCommitState = nextState;
               }
             }

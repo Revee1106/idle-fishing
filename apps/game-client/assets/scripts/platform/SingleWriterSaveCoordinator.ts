@@ -83,6 +83,7 @@ export type RecoveryFailureClassification =
   | 'HISTORY_STATE_CORRUPT'
   | 'HISTORY_STATE_WRITE_FAILED'
   | 'WRITE_CAPABILITY_UNAVAILABLE'
+  | 'INITIAL_COMMIT_STATE_UNAVAILABLE'
   | 'PENDING_RECOVERY_REQUIRED'
   | 'SAVE_DISAPPEARED_PENDING_RECOVERY'
   | 'REVISION_REGRESSION_PENDING_RECOVERY'
@@ -1620,22 +1621,24 @@ export class SingleWriterSaveCoordinator {
         if (res.kind === 'VALID' || res.kind === 'EMPTY') {
           const needsWriteVerification = existingMarker !== null && markerRequiresWriteVerification(existingMarker);
 
-          // R5-02 (REWORK-07): Confirmed empty initial-create write-failure freeze CANNOT unfreeze via a
-          // fixed-size synthetic probe! It MUST persist the caller's actual valid initial state via the
-          // existing 3-slot + readback + monotonic history protocol; without a valid initialCommitState,
-          // stay FROZEN (0 disk mutations) and NEVER falsely report EMPTY/recovered.
+          // R5-02 (REWORK-07 / REWORK-08): Confirmed empty initial-create write-failure freeze CANNOT
+          // unfreeze via a synthetic probe or a substituted default initial state! It MUST persist the
+          // caller's original valid pending initial state via the existing 3-slot + readback + monotonic
+          // history protocol; when that original state is unavailable or unverifiable (e.g. lost across
+          // page reload), stay FROZEN (`INITIAL_COMMIT_STATE_UNAVAILABLE`, 0 disk mutations), preserve the
+          // pending tx marker, and NEVER report RECOVERED_VALID or EMPTY.
           if (res.kind === 'EMPTY' && needsWriteVerification && existingMarker !== null) {
             const initialValidationErrors =
               initialCommitState && typeof initialCommitState === 'object'
                 ? validateSpikeState(initialCommitState)
                 : ['missing initialCommitState'];
             if (!initialCommitState || initialValidationErrors.length > 0) {
-              const reason = `WRITE_CAPABILITY_UNAVAILABLE: confirmed empty initial-create write-failure freeze requires a valid initial save state to persist and verify real write capability (${initialValidationErrors.join('; ')}); keeping storage frozen`;
+              const reason = `INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (${initialValidationErrors.join('; ')}); refusing to substitute a default save or clear the pending tx marker; keeping storage frozen`;
               markStorageUnavailable(this.storageKey, 'STORAGE_IO_UNAVAILABLE', reason);
               return {
                 kind: 'STORAGE_UNAVAILABLE',
                 detail: reason,
-                recoveryClassification: 'WRITE_CAPABILITY_UNAVAILABLE',
+                recoveryClassification: 'INITIAL_COMMIT_STATE_UNAVAILABLE',
                 unreadableSlots: [],
                 readOnlyBackup: null,
                 corruptMarkerRecoveryPreview: null,

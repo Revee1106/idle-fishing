@@ -363,6 +363,7 @@ const report = {
   rework06R503AppUiRecoveryOwnerLifecycle: null,
   rework07R502InitialSaveQuotaUi: null,
   rework07R503PreProbeCancelChrome: null,
+  rework08R502CrossRefreshGuard: null,
   modalClickCheck: null,
   platformChecks: null,
   scrollOffsetCheck: null,
@@ -3684,6 +3685,187 @@ try {
           probeErrorCleanup.ops[1] === 'delete' &&
           probeErrorCleanup.probeLeft === null,
         JSON.stringify(report.rework07R503PreProbeCancelChrome)
+      );
+    }
+
+    // -----------------------------------------------------------------------
+    // 3o. REWORK-08 R5-02: Real Chrome cross-refresh first-save failure guard
+    //     - First HIDE fails (31 gold, +60s cursor) -> freezes
+    //     - Page reloads BEFORE recovery (memory pendingInitialCommitState lost, storage fault gone)
+    //     - Clicking BtnRecoverStorage MUST stay frozen (INITIAL_COMMIT_STATE_UNAVAILABLE),
+    //       NOT write default 0-gold rev 1, NOT clear tx marker, NOT report RECOVERED_VALID
+    //     - Repeated click and second reload MUST remain frozen
+    //     - Clean domain normal first boot & first HIDE save still succeed
+    // -----------------------------------------------------------------------
+    console.log('[Web E2E] Starting REWORK-08 R5-02 cross-refresh guard check...');
+    {
+      // Already on freshly cleaned EMPTY appNs after REWORK-07 reset above.
+      await cdp.evalJson(`(() => {
+        const orig = IDBObjectStore.prototype.put;
+        globalThis.__R8_ATTEMPTED_SLOT__ = null;
+        IDBObjectStore.prototype.put = function(value, key) {
+          if (String(key).startsWith(${JSON.stringify(appNs + ':save_slot_')}) && typeof value === 'string' && value.length > 1000) {
+            globalThis.__R8_ATTEMPTED_SLOT__ = value;
+            throw new DOMException('REWORK-08 audit slot quota', 'QuotaExceededError');
+          }
+          return orig.call(this, value, key);
+        };
+        return true;
+      })()`);
+      await cdp.evalJson(`(async () => {
+        for (const st of ['hidden', 'visible']) {
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
+          document.dispatchEvent(new Event('visibilitychange'));
+        }
+        await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+      })()`);
+      const beforeReload = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        const attempted = globalThis.__R8_ATTEMPTED_SLOT__;
+        const payload = attempted ? JSON.parse(JSON.parse(attempted).payload) : null;
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          markerBefore: await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)}),
+          slotCount: (await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})).filter(Boolean).length,
+          attemptedGold: payload?.gold ?? null,
+          attemptedCursorMs: payload?.cursorMs ?? null,
+        };
+      })()`);
+
+      // Reload page BEFORE recovery (quota fault no longer injected; pendingInitialCommitState lost!)
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(
+        () => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready && globalThis.__SPIKE_HARNESS__.getSnapshot().recoveryOverlayVisible)`),
+        25000,
+        'R8 reload frozen'
+      );
+      await clickUiBtn(cdp, 'BtnRecoverStorage');
+      await waitUntil(
+        () => cdp.evalJson(`(() => { const lp = globalThis.__SPIKE_HARNESS__.getSnapshot().lifecyclePersistence; return lp.recoveryAttemptCount >= 1 && !lp.recoveryInProgress; })()`),
+        10000,
+        'R8 first click settled'
+      );
+      const afterClick1 = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          cls: snap.lifecyclePersistence.recoveryClassification,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          rev: snap.lifecyclePersistence.revision,
+          attempts: snap.lifecyclePersistence.recoveryAttemptCount,
+          markerAfter: await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)}),
+          histAfter: await (${IDB_HELPERS_EXPR}).readHistoryState(${JSON.stringify(appNs)}),
+          slotCount: (await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})).filter(Boolean).length,
+        };
+      })()`);
+
+      // Repeat click MUST NOT bypass freeze!
+      await clickUiBtn(cdp, 'BtnRecoverStorage');
+      await waitUntil(
+        () => cdp.evalJson(`(() => { const lp = globalThis.__SPIKE_HARNESS__.getSnapshot().lifecyclePersistence; return lp.recoveryAttemptCount >= 2 && !lp.recoveryInProgress; })()`),
+        10000,
+        'R8 second click settled'
+      );
+      const afterClick2 = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          cls: snap.lifecyclePersistence.recoveryClassification,
+          outcome: snap.lifecyclePersistence.lastRecoveryOutcome,
+          attempts: snap.lifecyclePersistence.recoveryAttemptCount,
+          markerAfter: await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)}),
+          slotCount: (await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})).filter(Boolean).length,
+        };
+      })()`);
+
+      // Reload a SECOND time -> STILL frozen with marker intact!
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R8 second reload');
+      await new Promise((r) => setTimeout(r, 300));
+      const afterSecondReload = await cdp.evalJson(`(async () => {
+        const snap = globalThis.__SPIKE_HARNESS__.getSnapshot();
+        return {
+          halted: snap.lifecyclePersistence.persistenceHalted,
+          overlay: snap.recoveryOverlayVisible,
+          cls: snap.lifecyclePersistence.recoveryClassification,
+          markerAfter: await (${IDB_HELPERS_EXPR}).readTxState(${JSON.stringify(appNs)}),
+          histAfter: await (${IDB_HELPERS_EXPR}).readHistoryState(${JSON.stringify(appNs)}),
+          slotCount: (await (${IDB_HELPERS_EXPR}).readSlots(${JSON.stringify(appNs)})).filter(Boolean).length,
+        };
+      })()`);
+
+      // Scenario 4: Clean domain normal first boot & first HIDE save still succeed!
+      await cdp.evalJson(`(${IDB_HELPERS_EXPR}).clearNs(${JSON.stringify(appNs)})`);
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R8 clean new boot');
+      await new Promise((r) => setTimeout(r, 300));
+      const cleanFirstHide = await cdp.evalJson(`(async () => {
+        const bootLp = globalThis.__SPIKE_HARNESS__.getSnapshot().lifecyclePersistence;
+        for (const st of ['hidden', 'visible']) {
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => st });
+          document.dispatchEvent(new Event('visibilitychange'));
+        }
+        const afterHide = await globalThis.__SPIKE_HARNESS__.awaitPendingHideSave();
+        return {
+          bootLoadStatus: bootLp.loadStatus,
+          bootHalted: bootLp.persistenceHalted,
+          afterHideKind: afterHide.lastCommitKind,
+          afterHideRev: afterHide.revision,
+          afterHideGold: afterHide.gold,
+        };
+      })()`);
+
+      // Clean app namespace & reload clean healthy EMPTY state before Step 4 UI clicks!
+      await cdp.evalJson(`(${IDB_HELPERS_EXPR}).clearNs(${JSON.stringify(appNs)})`);
+      await cdp.send('Page.reload', { ignoreCache: true });
+      await waitUntil(() => cdp.evalJson(`Boolean(globalThis.__SPIKE_HARNESS__?.ready)`), 25000, 'R8 clean boot before Step 4');
+      await new Promise((r) => setTimeout(r, 350));
+
+      report.rework08R502CrossRefreshGuard = {
+        beforeReload,
+        afterClick1,
+        afterClick2,
+        afterSecondReload,
+        cleanFirstHide,
+      };
+      assertCheck(
+        'web_rework08_r5_02_cross_refresh_no_default_substitution',
+        beforeReload.halted === true &&
+          beforeReload.overlay === true &&
+          beforeReload.attemptedGold === '31' &&
+          beforeReload.attemptedCursorMs === 1700000060000 &&
+          beforeReload.slotCount === 0 &&
+          Boolean(beforeReload.markerBefore) &&
+          afterClick1.halted === true &&
+          afterClick1.overlay === true &&
+          afterClick1.cls === 'INITIAL_COMMIT_STATE_UNAVAILABLE' &&
+          afterClick1.outcome === 'FAILED' &&
+          afterClick1.rev === null &&
+          afterClick1.markerAfter === beforeReload.markerBefore &&
+          afterClick1.histAfter === null &&
+          afterClick1.slotCount === 0 &&
+          afterClick2.halted === true &&
+          afterClick2.overlay === true &&
+          afterClick2.cls === 'INITIAL_COMMIT_STATE_UNAVAILABLE' &&
+          afterClick2.outcome === 'FAILED' &&
+          afterClick2.attempts === 2 &&
+          afterClick2.markerAfter === beforeReload.markerBefore &&
+          afterClick2.slotCount === 0 &&
+          afterSecondReload.halted === true &&
+          afterSecondReload.overlay === true &&
+          afterSecondReload.cls === 'PENDING_RECOVERY_REQUIRED' &&
+          afterSecondReload.markerAfter === beforeReload.markerBefore &&
+          afterSecondReload.histAfter === null &&
+          afterSecondReload.slotCount === 0 &&
+          cleanFirstHide.bootLoadStatus === 'EMPTY' &&
+          cleanFirstHide.bootHalted === false &&
+          cleanFirstHide.afterHideKind === 'COMMITTED' &&
+          cleanFirstHide.afterHideRev === '1' &&
+          cleanFirstHide.afterHideGold === '31',
+        JSON.stringify(report.rework08R502CrossRefreshGuard)
       );
     }
   }
