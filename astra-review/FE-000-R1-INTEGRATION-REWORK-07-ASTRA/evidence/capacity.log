@@ -1,0 +1,13 @@
+{
+  "fullSlotBytes": 2552,
+  "limit": 2304,
+  "first": "STORAGE_UNAVAILABLE",
+  "markerBefore": true,
+  "recoveredNoState": "STORAGE_UNAVAILABLE",
+  "recoveredNoStateClassification": "WRITE_CAPABILITY_UNAVAILABLE",
+  "markerAfterNoState": true,
+  "recoveredWithState": "STORAGE_UNAVAILABLE",
+  "recoveredWithStateClassification": "WRITE_CAPABILITY_UNAVAILABLE",
+  "markerAfterWithState": true,
+  "retry": "STORAGE_UNAVAILABLE"
+}

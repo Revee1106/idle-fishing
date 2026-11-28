@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'FAILED'
+- 'STORAGE_UNAVAILABLE'
+
+    at file:///E:/idle-fishing-astra-review-20261127/FE-000-R1-INTEGRATION-REWORK-07-ASTRA/evidence/transaction.mjs:43:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'FAILED',
+  expected: 'STORAGE_UNAVAILABLE',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.20.0

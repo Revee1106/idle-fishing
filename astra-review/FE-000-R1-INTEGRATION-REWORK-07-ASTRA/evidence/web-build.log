@@ -1,0 +1,38 @@
+
+> idle-fishing-client@0.0.0-spike build:web
+> node scripts/build-cocos.mjs web-mobile
+
+[FE-000 Build] Target: web-mobile
+[FE-000 Build] Exe: C:/ProgramData/cocos/editors/Creator/3.8.8/CocosCreator.exe
+[FE-000 Build] Args: ["--project","E:\\idle-fishing-astra-r7-test\\apps\\game-client","--build","configPath=E:\\idle-fishing-astra-r7-test\\apps\\game-client\\build-configs\\buildConfig_web-mobile.json"]
+[FE-000 Build] Raw Exit Code: 36
+[FE-000 Build] Duration: 50936 ms
+[FE-000 Build] Output Exists: true (E:\idle-fishing-astra-r7-test\apps\game-client\build\web-mobile)
+[FE-000 Build] Total Output: 36 files, 2104.47 KB (2154982 bytes)
+--- STDOUT TAIL ---
+2026-11-27 23:08:34 - debug: // ---- build task cocos-service：onAfterBuild ----
+
+2026-11-27 23:08:34 - debug: // ---- build task cocos-service：onAfterBuild ---- (2ms)
+
+2026-11-27 23:08:34 - debug: cocos-service:(onAfterBuild) in 2 ms ✓, progress: 58%
+
+2026-11-27 23:08:34 - debug: adsense-h5g-plugin:(onAfterBuild) start..., progress: 58%
+
+2026-11-27 23:08:34 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ----
+
+2026-11-27 23:08:34 - debug: // ---- build task adsense-h5g-plugin：onAfterBuild ---- (1ms)
+
+2026-11-27 23:08:34 - debug: adsense-h5g-plugin:(onAfterBuild) in 1 ms ✓, progress: 60%
+
+2026-11-27 23:08:34 - log: Asset DB is resume!
+
+2026-11-27 23:08:34 - debug: builder:build-project-total (10546ms)
+
+2026-11-27 23:08:34 - debug: build task(web-mobile) in 10546!
+
+2026-11-27 23:08:34 - debug: [Build Memory track]: builder:build-project-total start:241.26MB, end 248.65MB, increase: 7.39MB
+
+2026-11-27 23:08:34 - debug: ================================ build Task (web-mobile) Finished in (10 s)ms ================================
+
+
+[FE-000 Build] SUCCESS (Cocos raw status=36, artifact checks PASSED)

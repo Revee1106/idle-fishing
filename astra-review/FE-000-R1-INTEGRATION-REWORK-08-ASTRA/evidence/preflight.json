@@ -1,0 +1,60 @@
+{
+  "branch": "dev/fe-000-rework08",
+  "head": "8458cb34362cf3a207eed963355cdfcd6ba36ea7",
+  "headParents": "dda015cbc5ae698f3df406ea8ffbdd7f756332bc",
+  "remote": "https://github.com/Revee1106/idle-fishing.git",
+  "remoteR8": [],
+  "remoteR7": [
+    "8458cb34362cf3a207eed963355cdfcd6ba36ea7\trefs/heads/candidate/fe-000-rework07"
+  ],
+  "localRefs": "refs/heads/dev/fe-000-rework08 8458cb34362cf3a207eed963355cdfcd6ba36ea7",
+  "status": "## dev/fe-000-rework08\n M apps/game-client/assets/scripts/bootstrap/BootEntry.ts\n M apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts\n M tests/frontend/fe-000/platform-and-core.test.ts\n M tests/frontend/fe-000/verify-web-build.mjs\n?? reports/integration/FE-000-R1-INTEGRATION-REWORK-08/",
+  "staged": "",
+  "workingChanges": [
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts",
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts",
+    "tests/frontend/fe-000/platform-and-core.test.ts",
+    "tests/frontend/fe-000/verify-web-build.mjs"
+  ],
+  "unchangedRaw": 351,
+  "protectedCount": 58,
+  "protectedMismatch": [],
+  "delivery": {
+    "entries": 47,
+    "mismatches": [],
+    "manifestSha256": "5276bc16090717b48de6f4e7ddd0e55688877257cd173d3ec09159be1b323a0f"
+  },
+  "unlisted": [],
+  "extra": [],
+  "history": {
+    "entries": 90,
+    "mismatches": [],
+    "manifestSha256": "595c7fb8921b6c04e719dedb25e725b2423e3de681316338969e2429b8e54153"
+  },
+  "fixtureBytes": 169730,
+  "fixtureSHA256": "21c750c5c52701d29183c64fe9965798140b18cf4df4c69c32ddb2d3159e0258",
+  "priorIndependentResults": {
+    "refresh-ui.log": {
+      "pendingPayload": [
+        "31",
+        1700000060000
+      ],
+      "savedPayload": [
+        "0",
+        1700000000000
+      ],
+      "outcome": "RECOVERED_VALID"
+    },
+    "refresh-repeat.log": {
+      "pendingPayload": [
+        "31",
+        1700000060000
+      ],
+      "savedPayload": [
+        "0",
+        1700000000000
+      ],
+      "outcome": "RECOVERED_VALID"
+    }
+  }
+}

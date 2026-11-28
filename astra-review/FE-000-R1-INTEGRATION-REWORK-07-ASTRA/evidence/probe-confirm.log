@@ -1,0 +1,13 @@
+{
+  "mode": "confirm",
+  "destroyed": true,
+  "halted": true,
+  "cls": "TX_STATE_CORRUPT",
+  "outcome": "CANCELLED_DESTROYED",
+  "detail": "IndexedDB probe cancelled after opening database before first write (owner destroyed)",
+  "overlay": false,
+  "slotsIdentical": true,
+  "markerIdentical": true,
+  "historyIdentical": true,
+  "ops": []
+}

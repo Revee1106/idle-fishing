@@ -1,0 +1,13 @@
+{
+  "mode": "standard",
+  "destroyed": true,
+  "halted": true,
+  "cls": "PENDING_RECOVERY_REQUIRED",
+  "outcome": "CANCELLED_DESTROYED",
+  "detail": "IndexedDB probe cancelled after opening database before first write (owner destroyed)",
+  "overlay": false,
+  "slotsIdentical": true,
+  "markerIdentical": true,
+  "historyIdentical": true,
+  "ops": []
+}

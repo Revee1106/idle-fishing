@@ -1,0 +1,39 @@
+tests/frontend/fe-000/platform-and-core.test.ts deleted lines: 11 inserted: 376
+-   // 2. Confirmed EMPTY initial-create freeze by persistent QUOTA_EXCEEDED -> verifies slot-path write+readback+remove
++   // 2. Confirmed EMPTY initial-create freeze by persistent QUOTA_EXCEEDED -> REWORK-07 R5-02:
++   //    NEVER unfreezes via synthetic probe or without valid initialCommitState; requires persisting actual initial state!
+-     probeStorage: () => memEmpty.probeStorage(),
++     probeStorage: (opts) => memEmpty.probeStorage(opts),
+-   const emptyStillFull = await coordEmpty.loadSafe();
+-   assert.equal(emptyStillFull.kind, 'STORAGE_UNAVAILABLE');
+-   if (emptyStillFull.kind === 'STORAGE_UNAVAILABLE') {
+-     assert.equal(emptyStillFull.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
++   const emptyStillFullNoState = await coordEmpty.loadSafe();
++   assert.equal(emptyStillFullNoState.kind, 'STORAGE_UNAVAILABLE');
++   if (emptyStillFullNoState.kind === 'STORAGE_UNAVAILABLE') {
++     assert.equal(emptyStillFullNoState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
+-   const emptyHealed = await coordEmpty.loadSafe();
+-   assert.equal(emptyHealed.kind, 'EMPTY');
++   const emptyHealedWithoutState = await coordEmpty.loadSafe();
++   assert.equal(emptyHealedWithoutState.kind, 'STORAGE_UNAVAILABLE');
++   if (emptyHealedWithoutState.kind === 'STORAGE_UNAVAILABLE') {
++     assert.equal(emptyHealedWithoutState.recoveryClassification, 'WRITE_CAPABILITY_UNAVAILABLE');
++   }
++   assert.ok(await memEmpty.readTxState(), 'Marker must stay frozen when no valid initialCommitState is supplied');
++ 
++   // Supplying the actual valid initial state commits rev 1 via 3-slot + readback + history meta -> unfreezes!
++   const emptyHealed = await coordEmpty.loadSafe({ initialCommitState: s1 });
++   assert.equal(emptyHealed.kind, 'VALID');
++   if (emptyHealed.kind === 'VALID') {
++     assert.equal(emptyHealed.revision, '1');
++     assert.equal(canonicalStringify(emptyHealed.raw), canonicalStringify(s1));
++   }
+-   assert.deepEqual(await memEmpty.list(), [], 'Empty-domain write verification probe must be cleaned up');
+-   assert.equal((await coordEmpty.commit(s1, null)).kind, 'COMMITTED');
++   assert.equal(JSON.parse((await memEmpty.readHistoryState())!).confirmedRevision, '1');
++   assert.equal((await coordEmpty.commit(s2, '1')).kind, 'COMMITTED');
+{"old": 38, "new": 40, "added": ["[NODE/REWORK-07/R5-02-EMPTY-CAPACITY-COUNTEREXAMPLE] Astra 2304/2552 constant-quota initial-create stays frozen until actual initial state persists cleanly", "[NODE/REWORK-07/R5-03-PRE-PROBE-CANCELLATION-BOUNDARY] Pre-probe cancellation executes 0 probe writes, post-start probe records mutation truthfully, and probe failure cleans up"]}
+tests/frontend/fe-000/verify-web-build.mjs deleted lines: 0 inserted: 428
+{"old": 37, "new": 39, "added": ["web_rework07_r5_02_initial_save_quota_ui_recovery", "web_rework07_r5_03_probe_write_cancellation_chrome"]}
+tests/frontend/fe-000/run-node-tests.mjs deleted lines: 0 inserted: 0
+{"old": 1, "new": 1, "added": []}
