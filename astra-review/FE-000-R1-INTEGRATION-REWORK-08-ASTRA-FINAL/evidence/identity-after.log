@@ -1,0 +1,39 @@
+{
+  "remote": "e523d67d92dd85499a3ddca0dc8a84dfcb437f3b\trefs/heads/archive/20261128-rework07-08-astra\nff6941f013fefd385c904920d69c1b12d43742c6\trefs/heads/candidate/fe-000-rework08",
+  "sha": "ff6941f013fefd385c904920d69c1b12d43742c6",
+  "parent": "8458cb34362cf3a207eed963355cdfcd6ba36ea7",
+  "archive": "e523d67d92dd85499a3ddca0dc8a84dfcb437f3b",
+  "rawFilesPerTree": 399,
+  "statuses": {
+    "E:\\idle-fishing-verify-rework08": "",
+    "E:\\idle-fishing-astra-r8-test": "",
+    "E:\\idle-fishing-rework08": ""
+  },
+  "changed": [
+    "apps/game-client/assets/scripts/bootstrap/BootEntry.ts",
+    "apps/game-client/assets/scripts/platform/SingleWriterSaveCoordinator.ts",
+    "tests/frontend/fe-000/platform-and-core.test.ts",
+    "tests/frontend/fe-000/verify-web-build.mjs"
+  ],
+  "added": 44,
+  "parentFilesUnchanged": 351,
+  "protected": 58,
+  "fixture": [
+    169730,
+    "21c750c5c52701d29183c64fe9965798140b18cf4df4c69c32ddb2d3159e0258"
+  ],
+  "manifest": [
+    47,
+    "5276bc16090717b48de6f4e7ddd0e55688877257cd173d3ec09159be1b323a0f"
+  ],
+  "history": {
+    "E:\\idle-fishing-astra-review-20261127\\FE-000-R1-INTEGRATION-REWORK-07-ASTRA": [
+      90,
+      "595c7fb8921b6c04e719dedb25e725b2423e3de681316338969e2429b8e54153"
+    ],
+    "E:\\idle-fishing-astra-review-20261128\\FE-000-R1-INTEGRATION-REWORK-08-ASTRA": [
+      9,
+      "92be325a50737f93ab62d0fdfdb9a5675eb2f464d90bc16fa0d95883e9cbbebf"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+[PASS] meta/IndexedDB shared domain :: {"metaA":{"kind":"BROWSER_INDEXED_DB","keyEmpty":"browser:r6_race_empty_independentB_1795855189497","keyNon":"browser:r6_race_nonempty_independentB_1795855189497"},"metaB":{"kind":"BROWSER_INDEXED_DB","keyEmpty":"browser:r6_race_empty_independentB_1795855189497","keyNon":"browser:r6_race_nonempty_independentB_1795855189497"}}
+[PASS] A01/empty race :: {"a":"COMMITTED/1","b":"CONFLICT","topA":{"rev":"1","gold":"31","cursorMs":1700000060000}}
+[PASS] A01/seed rev8 :: 8
+  [round 0] pre-write expected=8 A=COMMITTED/9/s2 B=CONFLICT goldMatch=true (124ms)
+  [round 1] pre-write expected=9 A=COMMITTED/10/s0 B=CONFLICT goldMatch=true (225ms)
+  [round 2] pre-write expected=10 A=COMMITTED/11/s1 B=CONFLICT goldMatch=true (53ms)
+  [round 3] pre-write expected=11 A=COMMITTED/12/s2 B=CONFLICT goldMatch=true (136ms)
+  [round 4] pre-write expected=12 A=COMMITTED/13/s0 B=CONFLICT goldMatch=true (109ms)
+  [round 5] pre-write expected=13 A=COMMITTED/14/s1 B=CONFLICT goldMatch=true (241ms)
+  [round 6] post-write-pre-readback expected=14 A=COMMITTED/15/s2 B=CONFLICT goldMatch=true (1979ms)
+  [round 7] post-write-pre-readback expected=15 A=COMMITTED/16/s0 B=CONFLICT goldMatch=true (1911ms)
+  [round 8] post-write-pre-readback expected=16 A=COMMITTED/17/s1 B=CONFLICT goldMatch=true (225ms)
+  [round 9] post-write-pre-readback expected=17 A=COMMITTED/18/s2 B=CONFLICT goldMatch=true (213ms)
+  [round 10] post-write-pre-readback expected=18 A=COMMITTED/19/s0 B=CONFLICT goldMatch=true (349ms)
+  [round 11] post-write-pre-readback expected=19 A=COMMITTED/20/s1 B=CONFLICT goldMatch=true (333ms)
+[PASS] A01/12 rounds interleaved :: rounds=12, doubles=0
+[PASS] A01/lock holder crash recovery :: {"rev":"20","kind":"COMMITTED","newRev":"21","reload":"21"}
+===== ISOLATED RACE independentB: PASS (32077ms) =====

@@ -1,0 +1,134 @@
+{
+  "scenario": "same",
+  "rows": [
+    {
+      "step": "same-page recovery",
+      "pendingState": {
+        "attemptLock": {
+          "captureU": 0.3125558344356786,
+          "claimKey": "fish:2",
+          "fightMs": 20014,
+          "seq": 2,
+          "speciesU": 0.944454692848536
+        },
+        "big": "123456789012345678901234567890",
+        "claims": [
+          "fish:1"
+        ],
+        "counters": {
+          "attempts": 2,
+          "casts": 2,
+          "cycles": 1,
+          "envChecks": 0,
+          "events": 1,
+          "fights": 2,
+          "prepares": 1,
+          "waits": 2
+        },
+        "cursorMs": 1700000060000,
+        "envActivityMicro": 1000000,
+        "envNextCheckMs": 1700000300000,
+        "gold": "31",
+        "lastTerminalAttemptSeq": "1",
+        "offline": {
+          "allowanceMs": 28800000,
+          "deadlineMs": 1700028800000,
+          "settledUntilMs": 1700000060000,
+          "startedMs": 1700000000000
+        },
+        "rng": {
+          "algorithm": "XOSHIRO128SS_V1",
+          "streams": {
+            "capture": [
+              3951429580,
+              1873850799,
+              3985475855,
+              4018641643
+            ],
+            "individual": [
+              146919874,
+              2562642410,
+              452640390,
+              148064894
+            ],
+            "species": [
+              2290466411,
+              2791327581,
+              2081715074,
+              2238547583
+            ],
+            "wait": [
+              771026996,
+              723525524,
+              1704469592,
+              3999580728
+            ]
+          }
+        },
+        "rootSeed": 305441741,
+        "saveEpoch": "fe000-lifecycle-epoch",
+        "schemaVersion": 2,
+        "stage": "FIGHTING",
+        "stageDone": "19950000000",
+        "stageRequired": "20014000000",
+        "stageStartMs": 1700000040050
+      },
+      "readBack": {
+        "epoch": "fe000-lifecycle-epoch",
+        "format": 1,
+        "magic": "IDLE_FISHING",
+        "payload": "{\"attemptLock\":{\"captureU\":0.3125558344356786,\"claimKey\":\"fish:2\",\"fightMs\":20014,\"seq\":2,\"speciesU\":0.944454692848536},\"big\":\"123456789012345678901234567890\",\"claims\":[\"fish:1\"],\"counters\":{\"attempts\":2,\"casts\":2,\"cycles\":1,\"envChecks\":0,\"events\":1,\"fights\":2,\"prepares\":1,\"waits\":2},\"cursorMs\":1700000060000,\"envActivityMicro\":1000000,\"envNextCheckMs\":1700000300000,\"gold\":\"31\",\"lastTerminalAttemptSeq\":\"1\",\"offline\":{\"allowanceMs\":28800000,\"deadlineMs\":1700028800000,\"settledUntilMs\":1700000060000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"capture\":[3951429580,1873850799,3985475855,4018641643],\"individual\":[146919874,2562642410,452640390,148064894],\"species\":[2290466411,2791327581,2081715074,2238547583],\"wait\":[771026996,723525524,1704469592,3999580728]}},\"rootSeed\":305441741,\"saveEpoch\":\"fe000-lifecycle-epoch\",\"schemaVersion\":2,\"stage\":\"FIGHTING\",\"stageDone\":\"19950000000\",\"stageRequired\":\"20014000000\",\"stageStartMs\":1700000040050}",
+        "revision": "1",
+        "sha256": "1bf412b747250624f4c6ba53060f46d67b6250cd2ec381432f8c3eb8940c5fcf"
+      },
+      "history": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"confirmedRevision\":\"1\",\"updatedAtMs\":1795855007448}",
+      "app": {
+        "storageHealth": "AVAILABLE",
+        "storageUnavailableReason": null,
+        "recoveryClassification": null,
+        "readOnlyBackup": null,
+        "corruptMarkerRecoveryPreview": null,
+        "legacyExperimentalSave": {
+          "detected": false,
+          "keys": [],
+          "policy": "NONE",
+          "detail": null
+        },
+        "loadStatus": "VALID",
+        "loadDetail": "recovery initial save committed rev=1 (slot=0, state unchanged)",
+        "persistenceHalted": false,
+        "recoveryInProgress": false,
+        "recoveryAttemptCount": 1,
+        "recoveryDuplicateClicksIgnored": 0,
+        "lastRecoveryOutcome": "RECOVERED_VALID",
+        "lastRecoveryDetail": "Recovered verified save rev=1 (gold=31)",
+        "restoredOnBoot": false,
+        "revision": "1",
+        "gold": "31",
+        "cursorMs": 1700000060000,
+        "deadlineMs": 1700028800000,
+        "lastHideCommitAtMs": null,
+        "lastHideTriggerSource": "document.visibilitychange",
+        "lastCommitKind": "STORAGE_UNAVAILABLE",
+        "lastCommitDetail": "Runtime storage write failure (QUOTA_EXCEEDED): [QUOTA_EXCEEDED] save_slot_0.json: audit slot quota. Free storage space or restore permissions, then trigger explicit storage recovery.",
+        "hideCommitCount": 0,
+        "showEventCount": 1
+      }
+    },
+    {
+      "step": "next HIDE",
+      "revision": "2",
+      "gold": "84",
+      "cursorMs": 1700000120000,
+      "readBack": {
+        "epoch": "fe000-lifecycle-epoch",
+        "format": 1,
+        "magic": "IDLE_FISHING",
+        "payload": "{\"attemptLock\":{\"captureU\":0.18028175210429753,\"claimKey\":\"fish:4\",\"fightMs\":13364,\"seq\":4,\"speciesU\":0.5095025301723276},\"big\":\"370370367037037036703703703670\",\"claims\":[\"fish:1\",\"fish:2\",\"fish:3\"],\"counters\":{\"attempts\":4,\"casts\":4,\"cycles\":3,\"envChecks\":0,\"events\":3,\"fights\":4,\"prepares\":3,\"waits\":4},\"cursorMs\":1700000120000,\"envActivityMicro\":1000000,\"envNextCheckMs\":1700000300000,\"gold\":\"84\",\"lastTerminalAttemptSeq\":\"3\",\"offline\":{\"allowanceMs\":28800000,\"deadlineMs\":1700028800000,\"settledUntilMs\":1700000120000,\"startedMs\":1700000000000},\"rng\":{\"algorithm\":\"XOSHIRO128SS_V1\",\"streams\":{\"capture\":[3205581217,1980569442,4181317099,3332318031],\"individual\":[899463051,3569043273,819158940,1312552944],\"species\":[1732286730,2661920002,2419132755,1559291852],\"wait\":[2019278767,4266330727,1022809557,1572741852]}},\"rootSeed\":305441741,\"saveEpoch\":\"fe000-lifecycle-epoch\",\"schemaVersion\":2,\"stage\":\"FIGHTING\",\"stageDone\":\"11947000000\",\"stageRequired\":\"13364000000\",\"stageStartMs\":1700000108053}",
+        "revision": "2",
+        "sha256": "c2220c7206f0748248d2a4a45e8b9ac8ad4ed659b3d997b2fa2d24fb0edb213f"
+      },
+      "history": "{\"version\":1,\"storageKey\":\"browser:idle_fishing_lifecycle_persist_fs\",\"confirmedRevision\":\"2\",\"updatedAtMs\":1795855011745}"
+    }
+  ]
+}

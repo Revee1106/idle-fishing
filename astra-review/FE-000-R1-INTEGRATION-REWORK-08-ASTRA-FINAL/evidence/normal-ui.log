@@ -1,0 +1,46 @@
+[
+  {
+    "storageHealth": "AVAILABLE",
+    "storageUnavailableReason": null,
+    "recoveryClassification": null,
+    "readOnlyBackup": null,
+    "corruptMarkerRecoveryPreview": null,
+    "legacyExperimentalSave": {
+      "detected": false,
+      "keys": [],
+      "policy": "NONE",
+      "detail": null
+    },
+    "loadStatus": "EMPTY",
+    "loadDetail": null,
+    "persistenceHalted": false,
+    "recoveryInProgress": false,
+    "recoveryAttemptCount": 0,
+    "recoveryDuplicateClicksIgnored": 0,
+    "lastRecoveryOutcome": null,
+    "lastRecoveryDetail": null,
+    "restoredOnBoot": false,
+    "revision": null,
+    "gold": "0",
+    "cursorMs": 1700000000000,
+    "deadlineMs": 1700028800000,
+    "lastHideCommitAtMs": null,
+    "lastHideTriggerSource": null,
+    "lastCommitKind": null,
+    "lastCommitDetail": null,
+    "hideCommitCount": 0,
+    "showEventCount": 0
+  },
+  {
+    "revision": "1",
+    "gold": "31",
+    "cursorMs": 1700000060000,
+    "confirmed": "1"
+  },
+  {
+    "revision": "2",
+    "gold": "84",
+    "cursorMs": 1700000120000,
+    "confirmed": "2"
+  }
+]

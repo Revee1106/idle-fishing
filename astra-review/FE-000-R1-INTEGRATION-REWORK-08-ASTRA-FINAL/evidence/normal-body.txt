@@ -1,0 +1,21 @@
+  const {default:assert}=await import('node:assert/strict');
+  const rows=[await snapshot()];
+  assert.equal(rows[0].loadStatus,'EMPTY');
+  assert.equal(rows[0].persistenceHalted,false);
+  assert.equal(rows[0].revision,null);
+  for(const revision of ['1','2']){
+    await hide();
+    const state=await snapshot();
+    const envelopes=(await slots()).filter(Boolean).map(v=>JSON.parse(v));
+    const stored=envelopes.find(v=>v.revision===revision);
+    const his=JSON.parse(await cdp.eval(`(${IDB_HELPERS}).readHistoryState(${JSON.stringify(appNs)})`));
+    assert.equal(state.lastCommitKind,'COMMITTED');
+    assert.equal(state.revision,revision);
+    assert.ok(stored);
+    assert.equal(JSON.parse(stored.payload).gold,state.gold);
+    assert.equal(JSON.parse(stored.payload).cursorMs,state.cursorMs);
+    assert.equal(his.confirmedRevision,revision);
+    assert.equal(await marker(),null);
+    rows.push({revision,gold:state.gold,cursorMs:state.cursorMs,confirmed:his.confirmedRevision});
+  }
+  console.log(JSON.stringify(rows,null,2));pass=true;

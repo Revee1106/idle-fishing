@@ -1,0 +1,81 @@
+{
+  "scenario": "repeat",
+  "rows": [
+    {
+      "cycle": 1,
+      "click": 1,
+      "count": 1,
+      "outcome": "FAILED",
+      "labels": [
+        {
+          "name": "RecoveryBody",
+          "text": "Status: STORAGE_UNAVAILABLE | StorageHealth: STORAGE_UNAVAILABLE\nClassification: INITIAL_COMMIT_STATE_UNAVAILABLE\nRead-Only Backup: none\nReason: INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to substitute a default save or clear the pending tx marker; keeping storage frozen\nAction: Original unsaved initial progress is unavailable or unverifiable (for example after page reload) and cannot be safely recovered with a default reset. Writes remain frozen.\nLast Recovery: FAILED — INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to su"
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null
+      ],
+      "history": null,
+      "markerUnchanged": true
+    },
+    {
+      "cycle": 1,
+      "click": 2,
+      "count": 2,
+      "outcome": "FAILED",
+      "labels": [
+        {
+          "name": "RecoveryBody",
+          "text": "Status: STORAGE_UNAVAILABLE | StorageHealth: STORAGE_UNAVAILABLE\nClassification: INITIAL_COMMIT_STATE_UNAVAILABLE\nRead-Only Backup: none\nReason: INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to substitute a default save or clear the pending tx marker; keeping storage frozen\nAction: Original unsaved initial progress is unavailable or unverifiable (for example after page reload) and cannot be safely recovered with a default reset. Writes remain frozen.\nLast Recovery: FAILED — INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to su"
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null
+      ],
+      "history": null,
+      "markerUnchanged": true
+    },
+    {
+      "cycle": 2,
+      "click": 1,
+      "count": 1,
+      "outcome": "FAILED",
+      "labels": [
+        {
+          "name": "RecoveryBody",
+          "text": "Status: STORAGE_UNAVAILABLE | StorageHealth: STORAGE_UNAVAILABLE\nClassification: INITIAL_COMMIT_STATE_UNAVAILABLE\nRead-Only Backup: none\nReason: INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to substitute a default save or clear the pending tx marker; keeping storage frozen\nAction: Original unsaved initial progress is unavailable or unverifiable (for example after page reload) and cannot be safely recovered with a default reset. Writes remain frozen.\nLast Recovery: FAILED — INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to su"
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null
+      ],
+      "history": null,
+      "markerUnchanged": true
+    },
+    {
+      "cycle": 2,
+      "click": 2,
+      "count": 2,
+      "outcome": "FAILED",
+      "labels": [
+        {
+          "name": "RecoveryBody",
+          "text": "Status: STORAGE_UNAVAILABLE | StorageHealth: STORAGE_UNAVAILABLE\nClassification: INITIAL_COMMIT_STATE_UNAVAILABLE\nRead-Only Backup: none\nReason: INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to substitute a default save or clear the pending tx marker; keeping storage frozen\nAction: Original unsaved initial progress is unavailable or unverifiable (for example after page reload) and cannot be safely recovered with a default reset. Writes remain frozen.\nLast Recovery: FAILED — INITIAL_COMMIT_STATE_UNAVAILABLE: original unsaved initial state is unavailable or unverifiable (missing initialCommitState); refusing to su"
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null
+      ],
+      "history": null,
+      "markerUnchanged": true
+    }
+  ]
+}

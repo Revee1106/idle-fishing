@@ -1,0 +1,53 @@
+  const {default: assert} = await import('node:assert/strict');
+  const history = () => cdp.eval(`(${IDB_HELPERS}).readHistoryState(${JSON.stringify(appNs)})`);
+  const snap = () => cdp.eval('__SPIKE_HARNESS__.getSnapshot()');
+  const pendingState = JSON.parse(JSON.parse(pending).payload);
+  assert.equal(pendingState.gold,'31');
+  assert.equal(pendingState.cursorMs,1700000060000);
+  assert.equal(await history(),null);
+  const rows = [];
+  if (process.argv[4] === 'same') {
+    await cdp.eval('IDBObjectStore.prototype.put=globalThis.auditOriginalPut;true');
+    await clickBtn('BtnRecoverStorage');
+    await waitUntil(async () => (await snapshot()).lastRecoveryOutcome === 'RECOVERED_VALID',10000,'same-page recovery');
+    const actual = (await slots()).filter(Boolean).map(x=>JSON.parse(x));
+    assert.equal(actual.length,1);
+    assert.equal(actual[0].revision,'1');
+    assert.equal(actual[0].payload,JSON.parse(pending).payload);
+    assert.equal(JSON.parse(await history()).confirmedRevision,'1');
+    assert.equal(await marker(),null);
+    rows.push({step:'same-page recovery',pendingState,readBack:actual[0],history:await history(),app:await snapshot()});
+    await hide();
+    const rec=await snapshot();
+    assert.equal(rec.revision,'2');
+    assert.equal(rec.lastCommitKind,'COMMITTED');
+    const next=(await slots()).filter(Boolean).map(x=>JSON.parse(x)).find(x=>x.revision==='2');
+    assert.ok(next);
+    assert.equal(JSON.parse(await history()).confirmedRevision,'2');
+    rows.push({step:'next HIDE',revision:rec.revision,gold:rec.gold,cursorMs:rec.cursorMs,readBack:next,history:await history()});
+  } else {
+    for (let cycle=1;cycle<=2;cycle++) {
+      await cdp.send('Page.reload',{ignoreCache:true});
+      await waitUntil(()=>cdp.eval('globalThis.__SPIKE_HARNESS__?.ready && __SPIKE_HARNESS__.getSnapshot().recoveryOverlayVisible'),25000,'frozen boot');
+      for (let click=1;click<=2;click++) {
+        const count=(await snapshot()).recoveryAttemptCount;
+        await clickBtn('BtnRecoverStorage');
+        await waitUntil(async()=>{const p=await snapshot();return p.recoveryAttemptCount>count && !p.recoveryInProgress && p.lastRecoveryOutcome==='FAILED'},10000,'completed click');
+        const state = await snap();
+        const p = state.lifecyclePersistence;
+        const labels=await cdp.eval(`cc.director.getScene().getComponentsInChildren(cc.Label).filter(label=>label.node.activeInHierarchy && label.string.includes('Original unsaved initial progress')).map(label=>({name:label.node.name,text:label.string}))`);
+        const currentSlots=await slots(), currentMarker=await marker(), hist=await history();
+        assert.equal(state.recoveryOverlayVisible,true);
+        assert.equal(p.persistenceHalted,true);
+        assert.equal(p.recoveryClassification,'INITIAL_COMMIT_STATE_UNAVAILABLE');
+        assert.equal(p.revision,null);
+        assert.equal(hist,null);
+        assert.equal(currentMarker,markerBefore);
+        assert.equal(currentSlots.filter(Boolean).length,0);
+        assert.ok(labels.some(x=>x.text.includes('Writes remain frozen')));
+        rows.push({cycle,click,count:p.recoveryAttemptCount,outcome:p.lastRecoveryOutcome,labels,slots:currentSlots,history:hist,markerUnchanged:currentMarker===markerBefore});
+      }
+    }
+  }
+  console.log(JSON.stringify({scenario:process.argv[4],rows},null,2));
+  pass=true;

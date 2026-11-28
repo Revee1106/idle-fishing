@@ -1,0 +1,176 @@
+{
+  "label": "independentB",
+  "elapsedMs": 32063,
+  "metaA": {
+    "kind": "BROWSER_INDEXED_DB",
+    "keyEmpty": "browser:r6_race_empty_independentB_1795855189497",
+    "keyNon": "browser:r6_race_nonempty_independentB_1795855189497"
+  },
+  "metaB": {
+    "kind": "BROWSER_INDEXED_DB",
+    "keyEmpty": "browser:r6_race_empty_independentB_1795855189497",
+    "keyNon": "browser:r6_race_nonempty_independentB_1795855189497"
+  },
+  "empty": {
+    "a": "COMMITTED",
+    "b": "CONFLICT",
+    "topA": {
+      "rev": "1",
+      "gold": "31",
+      "cursorMs": 1700000060000
+    }
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "8",
+      "a": "COMMITTED/9/s2",
+      "b": "CONFLICT",
+      "postA": "9",
+      "postB": "9",
+      "goldMatch": true,
+      "ms": 124
+    },
+    {
+      "round": 1,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "9",
+      "a": "COMMITTED/10/s0",
+      "b": "CONFLICT",
+      "postA": "10",
+      "postB": "10",
+      "goldMatch": true,
+      "ms": 225
+    },
+    {
+      "round": 2,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "10",
+      "a": "COMMITTED/11/s1",
+      "b": "CONFLICT",
+      "postA": "11",
+      "postB": "11",
+      "goldMatch": true,
+      "ms": 53
+    },
+    {
+      "round": 3,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "11",
+      "a": "COMMITTED/12/s2",
+      "b": "CONFLICT",
+      "postA": "12",
+      "postB": "12",
+      "goldMatch": true,
+      "ms": 136
+    },
+    {
+      "round": 4,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "12",
+      "a": "COMMITTED/13/s0",
+      "b": "CONFLICT",
+      "postA": "13",
+      "postB": "13",
+      "goldMatch": true,
+      "ms": 109
+    },
+    {
+      "round": 5,
+      "mode": "pre-write",
+      "distinctClients": true,
+      "expectedRev": "13",
+      "a": "COMMITTED/14/s1",
+      "b": "CONFLICT",
+      "postA": "14",
+      "postB": "14",
+      "goldMatch": true,
+      "ms": 241
+    },
+    {
+      "round": 6,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "14",
+      "a": "COMMITTED/15/s2",
+      "b": "CONFLICT",
+      "postA": "15",
+      "postB": "15",
+      "goldMatch": true,
+      "ms": 1979
+    },
+    {
+      "round": 7,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "15",
+      "a": "COMMITTED/16/s0",
+      "b": "CONFLICT",
+      "postA": "16",
+      "postB": "16",
+      "goldMatch": true,
+      "ms": 1911
+    },
+    {
+      "round": 8,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "16",
+      "a": "COMMITTED/17/s1",
+      "b": "CONFLICT",
+      "postA": "17",
+      "postB": "17",
+      "goldMatch": true,
+      "ms": 225
+    },
+    {
+      "round": 9,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "17",
+      "a": "COMMITTED/18/s2",
+      "b": "CONFLICT",
+      "postA": "18",
+      "postB": "18",
+      "goldMatch": true,
+      "ms": 213
+    },
+    {
+      "round": 10,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "18",
+      "a": "COMMITTED/19/s0",
+      "b": "CONFLICT",
+      "postA": "19",
+      "postB": "19",
+      "goldMatch": true,
+      "ms": 349
+    },
+    {
+      "round": 11,
+      "mode": "post-write-pre-readback",
+      "distinctClients": true,
+      "expectedRev": "19",
+      "a": "COMMITTED/20/s1",
+      "b": "CONFLICT",
+      "postA": "20",
+      "postB": "20",
+      "goldMatch": true,
+      "ms": 333
+    }
+  ],
+  "crash": {
+    "rev": "20",
+    "kind": "COMMITTED",
+    "newRev": "21",
+    "reload": "21"
+  },
+  "failures": []
+}
